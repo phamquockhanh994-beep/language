@@ -307,7 +307,7 @@ html,body{
 
 <!-- VOCAB MENU -->
 <div id="s-vocab" class="screen active">
-  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 16px;flex-shrink:0;">
+  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--grn);margin-bottom:2px;">&gt; русский_словарь.exe</div>
     <div style="font-size:22px;font-weight:700;letter-spacing:-0.5px;">LEARN RUSSIAN</div>
     <div style="font-size:10px;color:var(--com);margin-top:2px;" id="v-sub">// đang tải...</div>
@@ -494,7 +494,7 @@ html,body{
 
 <!-- STORIES -->
 <div id="s-stories" class="screen">
-  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 16px;flex-shrink:0;">
+  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--grn);margin-bottom:2px;">&gt; texts.library</div>
     <div style="font-size:20px;font-weight:700;">ĐỌC TIẾNG NGA</div>
     <div style="font-size:10px;color:var(--com);margin-top:2px;">// Truyện thiếu nhi · Tin tức báo chí</div>
@@ -531,12 +531,12 @@ html,body{
 
 <!-- GRAMMAR -->
 <div id="s-grammar" class="screen">
-  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 16px;flex-shrink:0;">
+  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
-    <div style="font-size:20px;font-weight:700;">NGỮ PHÁP TIẾNG NGA</div>
+    <div style="font-size:20px;font-weight:700;" id="gram-title">NGỮ PHÁP TIẾNG NGA</div>
   </div>
   <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;">
-    <button class="btn" id="gt-cases" style="font-size:11px;" onclick="App.gramTab('cases')">⚖️ 6 Cách</button>
+    <button class="btn" id="gt-cases" style="font-size:11px;" onclick="App.gramTab('cases')" id="gt-cases">⚖️ 6 Cách</button>
     <button class="btn" id="gt-form" style="font-size:11px;" onclick="App.gramTab('formation')">🔄 Từ loại</button>
     <button class="btn" id="gt-quiz" style="font-size:11px;" onclick="App.gramTab('quiz')">🎯 Quiz</button>
   </div>
@@ -554,7 +554,6 @@ html,body{
 
 </div>
 <div id="offline-badge">✈ offline</div>
-<div id="toast"></div>
 <script>
 
 // ═══ DATA ═══════════════════════════════════════════════════
@@ -5473,7 +5472,7 @@ const caseData = [
   {
     id: 1, name: 'Именительный', nameVn: 'Cách 1 — Chủ cách', abbr: 'ИМ',
     color: '#58a6ff', bg: '#0d1a2a',
-    question: 'Кто? / Что?', questionVn: 'Ai? / Cái gì? (chủ thể)',
+    question: 'Кто? / Что?', questionVn: 'Ai? / Cái gì? (chủ thể)', questionEn: 'Who? / What? (subject)',
     role: 'Chủ ngữ — ai/cái gì thực hiện hành động. Dạng gốc trong từ điển.',
     endings: [
       { label: 'Đực (-∅ -й -ь)',   sg: '—',        pl: '-ы / -и' },
@@ -5500,7 +5499,7 @@ const caseData = [
   {
     id: 2, name: 'Родительный', nameVn: 'Cách 2 — Sở hữu cách', abbr: 'РОД',
     color: '#e3b341', bg: '#1a1400',
-    question: 'Кого? / Чего?', questionVn: 'Của ai? / Của cái gì?',
+    question: 'Кого? / Чего?', questionVn: 'Của ai? / Của cái gì?', questionEn: 'Whose? / Of what?',
     role: 'Sở hữu, phủ định (нет), số lượng (5+), xuất xứ.',
     endings: [
       { label: 'Đực (-∅ -й -ь)',   sg: '-а / -я',  pl: '-ов/-ев/-ей' },
@@ -5537,7 +5536,7 @@ const caseData = [
   {
     id: 3, name: 'Дательный', nameVn: 'Cách 3 — Tặng cách', abbr: 'ДАТ',
     color: '#bc8cff', bg: '#1a0d2a',
-    question: 'Кому? / Чему?', questionVn: 'Cho ai? / Cho cái gì?',
+    question: 'Кому? / Чему?', questionVn: 'Cho ai? / Cho cái gì?', questionEn: 'To whom? / For what?',
     role: 'Đối tượng gián tiếp, người nhận, tuổi tác, cảm giác chủ quan.',
     endings: [
       { label: 'Đực / Trung',      sg: '-у / -ю',   pl: '-ам / -ям' },
@@ -5566,7 +5565,7 @@ const caseData = [
   {
     id: 4, name: 'Винительный', nameVn: 'Cách 4 — Đối cách', abbr: 'ВИН',
     color: '#ff7b72', bg: '#1a0d10',
-    question: 'Кого? / Что?', questionVn: 'Ai? / Cái gì? (tân ngữ trực tiếp)',
+    question: 'Кого? / Что?', questionVn: 'Ai? / Cái gì? (tân ngữ trực tiếp)', questionEn: 'Who? / What? (direct object)',
     role: 'Tân ngữ trực tiếp. Đực HỮU SINH = Cách 2. Hướng đến (в/на + C4).',
     endings: [
       { label: 'Đực VÔ SINH',       sg: '= Cách 1', pl: '= Cách 1' },
@@ -5600,7 +5599,7 @@ const caseData = [
   {
     id: 5, name: 'Творительный', nameVn: 'Cách 5 — Công cụ cách', abbr: 'ТВ',
     color: '#39d353', bg: '#0d2318',
-    question: 'Кем? / Чем?', questionVn: 'Bởi ai? / Bằng cái gì?',
+    question: 'Кем? / Чем?', questionVn: 'Bởi ai? / Bằng cái gì?', questionEn: 'By whom? / By what?',
     role: 'Công cụ/phương tiện, nghề nghiệp (быть/стать), cùng với (с).',
     endings: [
       { label: 'Đực / Trung',      sg: '-ом / -ем',  pl: '-ами / -ями' },
@@ -5633,7 +5632,7 @@ const caseData = [
   {
     id: 6, name: 'Предложный', nameVn: 'Cách 6 — Giới cách', abbr: 'ПРД',
     color: '#8b949e', bg: '#161b22',
-    question: 'О ком? / О чём?', questionVn: 'Về ai? / Ở đâu?',
+    question: 'О ком? / О чём?', questionVn: 'Về ai? / Ở đâu?', questionEn: 'About whom? / Where?',
     role: 'Vị trí (ở đâu — в/на), chủ đề nói chuyện (о + C6). LUÔN có giới từ.',
     endings: [
       { label: 'Đực / Trung',      sg: '-е / -и',    pl: '-ах / -ях' },
@@ -5669,7 +5668,7 @@ const caseData = [
 
 const wordFormationData = [
   {
-    root: 'РАБОТ-', rootVn: 'Làm việc / Công việc', color: '#58a6ff',
+    root: 'РАБОТ-', rootVn: 'Làm việc / Công việc', rootEn: 'Work / Labor', color: '#58a6ff',
     noun: [
       { w: 'работа', vn: 'công việc', ph: 'rabóta', suf: '-а' },
       { w: 'работник', vn: 'nhân viên', ph: 'rabótnik', suf: '-ник' },
@@ -5692,7 +5691,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'УЧ-', rootVn: 'Học / Dạy', color: '#bc8cff',
+    root: 'УЧ-', rootVn: 'Học / Dạy', rootEn: 'Study / Teach', color: '#bc8cff',
     noun: [
       { w: 'учёба', vn: 'việc học', ph: 'uchyóba', suf: '-ёба' },
       { w: 'учитель', vn: 'giáo viên', ph: 'uchítel\'', suf: '-итель' },
@@ -5719,7 +5718,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'ЧИТ-', rootVn: 'Đọc', color: '#e3b341',
+    root: 'ЧИТ-', rootVn: 'Đọc', rootEn: 'Read', color: '#e3b341',
     noun: [
       { w: 'чтение', vn: 'việc đọc', ph: 'chteniye', suf: '-ение' },
       { w: 'читатель', vn: 'người đọc', ph: 'chitátel\'', suf: '-атель' },
@@ -5739,7 +5738,7 @@ const wordFormationData = [
     adv: [],
   },
   {
-    root: 'ГОВ-/РЕЧ-', rootVn: 'Nói', color: '#ff7b72',
+    root: 'ГОВ-/РЕЧ-', rootVn: 'Nói', rootEn: 'Speak / Say', color: '#ff7b72',
     noun: [
       { w: 'речь', vn: 'bài diễn văn / lời nói', ph: 'rech\'', suf: '-ь' },
       { w: 'разговор', vn: 'cuộc trò chuyện', ph: 'razgovór', suf: 'раз-+-ор' },
@@ -5762,7 +5761,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'ЛЮБ-', rootVn: 'Yêu / Thích', color: '#39d353',
+    root: 'ЛЮБ-', rootVn: 'Yêu / Thích', rootEn: 'Love / Like', color: '#39d353',
     noun: [
       { w: 'любовь', vn: 'tình yêu', ph: 'lyubóv\'', suf: '-овь' },
       { w: 'любимый', vn: 'người yêu / yêu thích', ph: 'lyubímyy', suf: '-имый' },
@@ -5783,7 +5782,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'ЖИ-', rootVn: 'Sống / Cuộc sống', color: '#58a6ff',
+    root: 'ЖИ-', rootVn: 'Sống / Cuộc sống', rootEn: 'Live / Life', color: '#58a6ff',
     noun: [
       { w: 'жизнь', vn: 'cuộc sống', ph: 'zhizn\'', suf: '-знь' },
       { w: 'житель', vn: 'cư dân', ph: 'zhítel\'', suf: '-итель' },
@@ -5804,7 +5803,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'ЗНАЙ-/ЗНАН-', rootVn: 'Biết / Kiến thức', color: '#e3b341',
+    root: 'ЗНАЙ-/ЗНАН-', rootVn: 'Biết / Kiến thức', rootEn: 'Know / Knowledge', color: '#e3b341',
     noun: [
       { w: 'знание', vn: 'kiến thức', ph: 'znániye', suf: '-ание' },
       { w: 'знакомый', vn: 'người quen', ph: 'znakómyy', suf: '-омый' },
@@ -5825,7 +5824,7 @@ const wordFormationData = [
     ],
   },
   {
-    root: 'ПИСА-', rootVn: 'Viết', color: '#bc8cff',
+    root: 'ПИСА-', rootVn: 'Viết', rootEn: 'Write', color: '#bc8cff',
     noun: [
       { w: 'письмо', vn: 'bức thư', ph: 'pis\'mó', suf: '-ьмо' },
       { w: 'писатель', vn: 'nhà văn', ph: 'pisátel\'', suf: '-атель' },
@@ -6396,6 +6395,49 @@ function storyNav(d){
 }
 
 // GRAMMAR
+
+function trGram(s){
+  if(S.lang!=='en'||!s) return s||'';
+  return String(s)
+    .replace(/Cách 1 — Именительный/g,'Case 1 — Nominative')
+    .replace(/Cách 2 — Родительный/g,'Case 2 — Genitive')
+    .replace(/Cách 3 — Дательный/g,'Case 3 — Dative')
+    .replace(/Cách 4 — Винительный/g,'Case 4 — Accusative')
+    .replace(/Cách 5 — Творительный/g,'Case 5 — Instrumental')
+    .replace(/Cách 6 — Предложный/g,'Case 6 — Prepositional')
+    .replace(/Cách 1 — chủ ngữ/g,'Case 1 — subject')
+    .replace(/Cách 1 — vị ngữ danh từ/g,'Case 1 — predicate noun')
+    .replace(/Cách 2 — phủ định tân ngữ/g,'Case 2 — negated object')
+    .replace(/Cách 2 — phủ định/g,'Case 2 — negation')
+    .replace(/Cách 2 — phần\/lượng/g,'Case 2 — partitive')
+    .replace(/Cách 3 — sau giới từ К/g,'Case 3 — after К')
+    .replace(/Cách 4 — sau В \(chuyển động\)/g,'Case 4 — after В (motion)')
+    .replace(/Cách 4 — sau ЧЕРЕЗ/g,'Case 4 — after ЧЕРЕЗ')
+    .replace(/Cách 5 — vị ngữ nghề nghiệp/g,'Case 5 — profession predicate')
+    .replace(/Cách 5 — sau МЕЖДУ/g,'Case 5 — after МЕЖДУ')
+    .replace(/Cách 5 — sau С/g,'Case 5 — after С')
+    .replace(/Cách 6 — vị trí/g,'Case 6 — location')
+    .replace(/Cách 6 — sau О \(về\)/g,'Case 6 — after О (about)')
+    .replace(/Cách ([1-6]) số nhiều/g,'Case $1 plural')
+    .replace(/Cách ([1-6])/g,'Case $1')
+    .replace(/số nhiều/g,'plural').replace(/số ít/g,'singular')
+    .replace(/chủ ngữ/g,'subject').replace(/sở hữu/g,'possessive')
+    .replace(/tân ngữ/g,'object').replace(/vị ngữ/g,'predicate');
+}
+function trGramQ(s){
+  if(S.lang!=='en'||!s) return s||'';
+  return trGram(String(s))
+    .replace(/đóng vai trò CHỦ NGỮ\. Dùng cách nào\?/g,'acts as SUBJECT. Which case?')
+    .replace(/Từ ([\wА-ЯЁа-яё]+) ở cách mấy và số nào\?/g,'What case and number is $1?')
+    .replace(/Từ ([\wА-ЯЁа-яё]+) ở cách mấy\?/g,'What case is $1?')
+    .replace(/Danh từ giống TRUNG \(-о\/-е\) ở Cách 1 số ÍT có đuôi nào\?/g,'NEUTER noun (-о/-е) ending in Case 1 singular?')
+    .replace(/Điền từ "([^"]+)" vào đúng cách:/g,'Put "$1" in the correct case:')
+    .replace(/dùng cách mấy\?/g,'which case?')
+    .replace(/ở cách mấy\?/g,'in which case?')
+    .replace(/thuộc cách mấy\?/g,'belongs to which case?')
+    .replace(/sau giới từ /g,'after ');
+}
+
 function gramTab(t){
   S.gramTab=t;
   const cols={cases:'var(--yel)',formation:'var(--pur)',quiz:'var(--pnk)'};
@@ -6431,16 +6473,16 @@ function openCase(id){
     <div style="font-size:16px;font-weight:700;font-family:var(--serif);color:${c.color};">${c.name}</div>
     <div style="font-size:13px;color:var(--txd);margin-top:4px;">${c.nameVn||''}</div>
     <div style="font-size:15px;color:${c.color};margin-top:10px;">${c.question}</div>
-    <div style="font-size:12px;color:var(--com);margin-top:4px;">${c.questionVn||''}</div>
+    <div style="font-size:12px;color:var(--com);margin-top:4px;">${S.lang==='en'?(c.questionEn||''): (c.questionVn||'')}</div>
     <div class="divdr"></div>
     <div style="font-size:12px;color:var(--txd);line-height:1.6;">${c.role||''}</div>
   </div>`;
-  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">// ĐUÔI CẤU THÀNH</div><div style="background:var(--surf);border:1px solid var(--bord);border-radius:8px;overflow:hidden;"><table class="eTable"><tr><th>Giới tính</th><th>Số ít</th><th>Số nhiều</th></tr>${(c.endings||[]).map(e=>`<tr><td style="color:var(--com);">${e.label}</td><td style="font-weight:700;color:${c.color};">${e.sg}</td><td style="font-weight:700;color:${c.color};">${e.pl}</td></tr>`).join('')}</table></div></div>`;
-  if(c.prepositions?.length){h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">// GIỚI TỪ ĐI KÈM</div>`;c.prepositions.forEach(p=>{h+=`<div style="display:flex;gap:12px;background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:10px 12px;margin-bottom:6px;align-items:flex-start;"><div style="background:${c.color}22;border:1px solid ${c.color};border-radius:4px;padding:4px 10px;font-size:16px;font-family:var(--serif);font-weight:700;color:${c.color};flex-shrink:0;">${p.p}</div><div><div style="font-size:12px;">${p.vn}</div><div style="font-size:11px;color:var(--com);font-style:italic;margin-top:2px;">${p.ex}</div></div></div>`;});h+='</div>';}
-  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">// VÍ DỤ</div>`;
-  (c.examples||[]).forEach(ex=>{h+=`<div style="background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:12px;margin-bottom:8px;"><div style="font-size:15px;font-family:var(--serif);margin-bottom:4px;line-height:1.5;">${ex.ru.split(ex.hi).join(`<span style="color:${c.color};font-weight:700;">${ex.hi}</span>`)}</div><div style="font-size:12px;color:var(--txd);">${ex.vn}</div></div>`;});
+  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${S.lang==='en'?'// ENDINGS':'// ĐUÔI CẤU THÀNH'}</div><div style="background:var(--surf);border:1px solid var(--bord);border-radius:8px;overflow:hidden;"><table class="eTable"><tr><th>${S.lang==='en'?'Gender':'Giới tính'}</th><th>${S.lang==='en'?'Singular':'Số ít'}</th><th>${S.lang==='en'?'Plural':'Số nhiều'}</th></tr>${(c.endings||[]).map(e=>`<tr><td style="color:var(--com);">${e.label}</td><td style="font-weight:700;color:${c.color};">${e.sg}</td><td style="font-weight:700;color:${c.color};">${e.pl}</td></tr>`).join('')}</table></div></div>`;
+  if(c.prepositions?.length){h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${S.lang==='en'?'// PREPOSITIONS':'// GIỚI TỪ ĐI KÈM'}</div>`;c.prepositions.forEach(p=>{h+=`<div style="display:flex;gap:12px;background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:10px 12px;margin-bottom:6px;align-items:flex-start;"><div style="background:${c.color}22;border:1px solid ${c.color};border-radius:4px;padding:4px 10px;font-size:16px;font-family:var(--serif);font-weight:700;color:${c.color};flex-shrink:0;">${p.p}</div><div><div style="font-size:12px;">${S.lang==='en'?(p.en||p.vn):p.vn}</div><div style="font-size:11px;color:var(--com);font-style:italic;margin-top:2px;">${p.ex}</div></div></div>`;});h+='</div>';}
+  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${S.lang==='en'?'// EXAMPLES':'// VÍ DỤ'}</div>`;
+  (c.examples||[]).forEach(ex=>{h+=`<div style="background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:12px;margin-bottom:8px;"><div style="font-size:15px;font-family:var(--serif);margin-bottom:4px;line-height:1.5;">${ex.ru.split(ex.hi).join(`<span style="color:${c.color};font-weight:700;">${ex.hi}</span>`)}</div><div style="font-size:12px;color:var(--txd);">${S.lang==='en'?(ex.en||ex.vn):ex.vn}</div></div>`;});
   h+='</div>';
-  h+=`<div style="margin-bottom:20px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">// MẸO NHỚ</div>`;
+  h+=`<div style="margin-bottom:20px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${S.lang==='en'?'// TIPS':'// MẸO NHỚ'}</div>`;
   (c.tips||[]).forEach(t=>{h+=`<div style="display:flex;gap:8px;margin-bottom:7px;align-items:flex-start;"><span style="font-size:14px;margin-top:1px;">💡</span><span style="font-size:12px;color:var(--txd);line-height:1.6;flex:1;">${t}</span></div>`;});
   h+='</div>';
   document.getElementById('case-body').innerHTML=h;
@@ -6455,7 +6497,7 @@ function renderFormation(){
     h+=`<div style="background:#0d1117;border:1px solid ${item.color}55;border-radius:8px;padding:14px;margin-bottom:10px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <div style="background:${item.color}22;border:1px solid ${item.color};border-radius:6px;padding:5px 12px;"><div style="font-size:15px;font-weight:700;color:${item.color};">${item.root}</div></div>
-        <div><div style="font-size:12px;color:${item.color};">${item.rootVn}</div><div style="font-size:10px;color:var(--com);margin-top:2px;">${types.map(t=>item[t.k]?.length>0?`${t.l}:${item[t.k].length}`:null).filter(Boolean).join('  ')}</div></div>
+        <div><div style="font-size:12px;color:${item.color};">${S.lang==='en'?(item.rootEn||item.rootVn):item.rootVn}</div><div style="font-size:10px;color:var(--com);margin-top:2px;">${types.map(t=>item[t.k]?.length>0?`${t.l}:${item[t.k].length}`:null).filter(Boolean).join('  ')}</div></div>
       </div>`;
     types.forEach(({k,l,c,bg})=>{
       const items=item[k]; if(!items?.length)return;
@@ -6478,7 +6520,7 @@ function gqReset(type){
 function renderGQ(){
   const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?grammarQuizData.cases:grammarQuizData.formation);
   const done=S.gqIdx>=allQ.length;
-  let h=`<div style="display:flex;gap:8px;margin-bottom:16px;">${[['cases',`⚖️ 6 Cách (${grammarQuizData.cases.length})`],['formation',`🔄 Từ loại (${grammarQuizData.formation.length})`]].map(([t,l])=>`<button onclick="App.gqSwitch('${t}')" style="flex:1;padding:10px 4px;border-radius:6px;border:1px solid ${S.gqType===t?'var(--pnk)':'var(--bord)'};background:${S.gqType===t?'#1a0d10':'var(--surf)'};color:${S.gqType===t?'var(--pnk)':'var(--com)'};font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;">${l}</button>`).join('')}</div>`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:16px;">${[['cases',`⚖️ ${S.lang==='en'?'6 Cases':'6 Cách'} (${grammarQuizData.cases.length})`],['formation',`🔄 ${S.lang==='en'?'Word Types':'Từ loại'} (${grammarQuizData.formation.length})`]].map(([t,l])=>`<button onclick="App.gqSwitch('${t}')" style="flex:1;padding:10px 4px;border-radius:6px;border:1px solid ${S.gqType===t?'var(--pnk)':'var(--bord)'};background:${S.gqType===t?'#1a0d10':'var(--surf)'};color:${S.gqType===t?'var(--pnk)':'var(--com)'};font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;">${l}</button>`).join('')}</div>`;
   if(done){
     const p=allQ.length>0?Math.round(S.gqScore.c/allQ.length*100):0;
     h+=`<div style="background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:24px;text-align:center;">
@@ -6489,9 +6531,9 @@ function renderGQ(){
     document.getElementById('gram-body').innerHTML=h; return;
   }
   const q=allQ[S.gqIdx];
-  h+=`<div class="rowSB mb8"><span style="font-size:10px;color:var(--com);">// câu ${S.gqIdx+1}/${allQ.length}</span><span style="font-size:10px;color:var(--grn);">${S.gqScore.c}/${S.gqScore.t}</span></div>`;
+  h+=`<div class="rowSB mb8"><span style="font-size:10px;color:var(--com);">${S.lang==='en'?'// question':'// câu'} ${S.gqIdx+1}/${allQ.length}</span><span style="font-size:10px;color:var(--grn);">${S.gqScore.c}/${S.gqScore.t}</span></div>`;
   h+=`<div class="pbar mb12"><div class="pfill" style="background:var(--pnk);width:${(S.gqIdx/allQ.length)*100}%"></div></div>`;
-  h+=`<div style="background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:16px;margin-bottom:14px;"><div style="font-size:10px;color:var(--pnk);margin-bottom:6px;">// question_${S.gqIdx+1}</div><div style="font-size:15px;font-weight:700;line-height:1.5;">${q.q}</div></div>`;
+  h+=`<div style="background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:16px;margin-bottom:14px;"><div style="font-size:10px;color:var(--pnk);margin-bottom:6px;">// question_${S.gqIdx+1}</div><div style="font-size:15px;font-weight:700;line-height:1.5;">${trGramQ(q.q)}</div></div>`;
   // CRITICAL FIX: dùng index thay vì JSON.stringify(option text)
   h+=q.opts.map((o,i)=>{
     const isC=o===q.a,isSel=o===S.gqSel;
@@ -6500,10 +6542,10 @@ function renderGQ(){
     const icon=S.gqSel?(isC?'✓':(isSel?'✗':['A','B','C','D'][i])):['A','B','C','D'][i];
     return`<div onclick="App.gqAnswer(${i})" style="border:1px solid ${bc};background:${bg};border-radius:6px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:50px;">
       <div style="width:24px;height:24px;border-radius:50%;background:${bc}22;border:1px solid ${bc};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${bc};flex-shrink:0;">${icon}</div>
-      <div style="font-size:13px;color:${tc};flex:1;line-height:1.4;">${o}</div>
+      <div style="font-size:13px;color:${tc};flex:1;line-height:1.4;">${trGram(o)}</div>
     </div>`;
   }).join('');
-  if(S.gqSel){h+=`<div style="background:#0d1117;border:1px solid rgba(121,192,255,.3);border-radius:6px;padding:12px;margin-top:4px;"><div style="font-size:10px;color:var(--cyn);margin-bottom:4px;">// giải thích</div><div style="font-size:12px;color:var(--txd);line-height:1.6;">${q.exp}</div></div>`;}
+  if(S.gqSel){h+=`<div style="background:#0d1117;border:1px solid rgba(121,192,255,.3);border-radius:6px;padding:12px;margin-top:4px;"><div style="font-size:10px;color:var(--cyn);margin-bottom:4px;">${S.lang==='en'?'// explanation':'// giải thích'}</div><div style="font-size:12px;color:var(--txd);line-height:1.6;">${trGram(q.exp)}</div></div>`;}
   document.getElementById('gram-body').innerHTML=h;
 }
 function gqSwitch(t){S.gqType=t;gqReset(t);renderGQ();}
