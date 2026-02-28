@@ -13,10 +13,14 @@
 <style>
   /* Prevent iOS text size adjust on rotation */
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
-  /* Prevent iOS bounce scroll on body */
-  body{overscroll-behavior:none;}
-  /* Hardware acceleration for all composited layers */
+  /* iOS: only prevent bounce on body, allow scroll in containers */
+  body{overscroll-behavior:none;-webkit-overflow-scrolling:auto;}
+  /* Scrollable containers: always allow momentum scroll */
+  .scrl{-webkit-overflow-scrolling:touch !important;}
+  /* Hardware acceleration for composited layers */
   #app,#bnav,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
+  /* iOS safe height support */
+  @supports(height:100svh){#app{height:100svh;}}
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
@@ -36,22 +40,40 @@
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{
+/* Interactive elements: prevent double-tap zoom, keep scroll unaffected */
+button,a,[onclick],.btn,.iBtn,.bBtn,.fcard,.qOpt,.srsBtn,.wChip,.tCard,.lvlBtn,.caseRow,.spkBtn{touch-action:manipulation;}
+html{
+  width:100%;height:100%;
+  overflow:hidden;
+  -webkit-text-size-adjust:100%;
+}
+body{
   width:100%;height:100%;background:var(--bg);color:var(--tx);font-family:var(--mono);
-  overflow:hidden;position:fixed;touch-action:manipulation;
+  overflow:hidden;position:fixed;
+  /* iOS: position:fixed prevents rubber-band on body, scroll happens in .scrl */
+  touch-action:pan-y;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
-#app{width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--sat);padding-bottom:var(--sab);}
+#app{
+  width:100%;
+  height:100%;
+  height:100svh; /* iOS safe dynamic viewport */
+  display:flex;flex-direction:column;overflow:hidden;
+  padding-top:var(--sat);
+  /* Don't add padding-bottom here, bnav handles it */
+}
 
 /* ── Screen transitions: GPU-accelerated, iOS 60fps ── */
 .screen{
-  display:none;flex-direction:column;flex:1;overflow:hidden;
+  display:none;flex-direction:column;flex:1;
+  overflow:hidden;
   will-change:transform,opacity;
   -webkit-backface-visibility:hidden;backface-visibility:hidden;
-  transform:translateZ(0);
+  /* Explicitly occupy remaining space */
+  min-height:0;
 }
-.screen.active{display:flex;animation:screenIn .22s cubic-bezier(0.25,0.46,0.45,0.94) both;}
+.screen.active{display:flex;animation:screenIn .22s cubic-bezier(0.25,0.46,0.45,0.94) both;transform:translateZ(0);}
 .screen.slide-back{animation:screenBack .22s cubic-bezier(0.25,0.46,0.45,0.94) both;}
 
 @keyframes screenIn{
@@ -65,12 +87,17 @@ html,body{
 
 /* ── Scroll: momentum + haptic feel ── */
 .scrl{
-  flex:1;overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  scroll-behavior:smooth;
+  flex:1;
+  overflow-y:scroll; /* MUST be scroll not auto for iOS */
+  -webkit-overflow-scrolling:touch; /* iOS momentum scroll */
+  overscroll-behavior-y:contain;
+  /* NO scroll-behavior:smooth — conflicts with iOS native momentum */
+  touch-action:pan-y; /* explicitly allow vertical pan, override parent */
   padding:14px 16px calc(20px + var(--sab));
   transform:translateZ(0);
+  /* iOS fix: prevent flickering during scroll */
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
 }
 
 /* ── Header ── */
@@ -248,21 +275,6 @@ html,body{
   <button class="lt-btn" id="lt-en" onclick="App.setLang('en')">EN</button>
 </div>
 
-
-<div id="bnav">
-  <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
-    <span class="bIcon">📖</span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
-  </button>
-  <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
-    <span class="bIcon">🔁</span><span class="bLbl" id="bn-srs-lbl">ÔN TẬP</span>
-  </button>
-  <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
-    <span class="bIcon">📐</span><span class="bLbl" id="bn-grammar-lbl">NGỮ PHÁP</span>
-  </button>
-  <button class="bBtn" id="bn-stories" onclick="App.nav('stories')">
-    <span class="bIcon">📰</span><span class="bLbl" id="bn-stories-lbl">ĐỌC</span>
-  </button>
-</div>
 
 <!-- VOCAB MENU -->
 <div id="s-vocab" class="screen active">
@@ -509,6 +521,22 @@ html,body{
     <div id="case-hdr" class="f1"></div>
   </div>
   <div class="scrl" id="case-body"></div>
+</div>
+
+<!-- BOTTOM NAV — placed LAST so flex column puts it at bottom -->
+<div id="bnav">
+  <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
+    <span class="bIcon">📖</span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
+  </button>
+  <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
+    <span class="bIcon">🔁</span><span class="bLbl" id="bn-srs-lbl">ÔN TẬP</span>
+  </button>
+  <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
+    <span class="bIcon">📐</span><span class="bLbl" id="bn-grammar-lbl">NGỮ PHÁP</span>
+  </button>
+  <button class="bBtn" id="bn-stories" onclick="App.nav('stories')">
+    <span class="bIcon">📰</span><span class="bLbl" id="bn-stories-lbl">ĐỌC</span>
+  </button>
 </div>
 
 </div>
