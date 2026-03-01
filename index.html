@@ -189,25 +189,42 @@ html,body{
 }
 
 /* ── Bottom Nav ── */
-#bnav{
-  display:flex;background:var(--surf);border-top:1px solid var(--bord);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  flex-shrink:0;
-  /* iOS fix: dính cố định cuối viewport, không bị scroll cùng content */
-  position:sticky;
-  bottom:0;
-  z-index:100;
-  width:100%;
+/* ── Floating pill nav wrapper ── */
+#bnav-wrap{
+  position:fixed;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+  left:50%;
+  transform:translateX(-50%);
+  z-index:200;
+  width:calc(100% - 32px);
+  max-width:420px;
 }
+#bnav{
+  display:flex;
+  background:rgba(22,27,34,0.82);
+  border:1px solid rgba(48,54,61,0.9);
+  border-radius:24px;
+  padding:6px 8px;
+  gap:4px;
+  backdrop-filter:blur(20px) saturate(1.6);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  box-shadow:0 8px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.06) inset;
+  touch-action:manipulation;
+}
+/* Padding so content not hidden behind floating pill */
+#app > .screen > .scrl{ padding-bottom:calc(env(safe-area-inset-bottom,0px) + 88px) !important; }
 .bBtn{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:9px 4px;cursor:pointer;min-height:50px;border:none;background:transparent;
-  transition:transform .14s cubic-bezier(0.34,1.56,0.64,1);
+  gap:3px;padding:8px 4px;cursor:pointer;min-height:48px;border:none;background:transparent;
+  border-radius:18px;
+  transition:transform .14s cubic-bezier(0.34,1.56,0.64,1), background .15s ease;
   transform:translateZ(0);
+  touch-action:manipulation;
 }
-.bBtn:active{transform:scale3d(0.85,0.85,1);}
-.bIcon{font-size:19px;transition:filter .2s ease;display:block;}
-.bLbl{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--com);transition:color .15s ease;}
+.bBtn:active{transform:scale3d(0.82,0.82,1);background:rgba(255,255,255,0.07);}
+.bBtn.on{background:rgba(57,211,83,0.12);}
+.bIcon{font-size:20px;transition:filter .2s ease;display:block;}
+.bLbl{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--com);transition:color .15s ease;letter-spacing:0.3px;}
 .bBtn.on .bLbl{color:var(--grn);}
 .bBtn.on .bIcon{filter:drop-shadow(0 0 6px var(--grn));animation:iconPulse .3s cubic-bezier(0.34,1.56,0.64,1);}
 @keyframes iconPulse{from{transform:scale3d(0.75,0.75,1)}to{transform:scale3d(1,1,1)}}
@@ -541,7 +558,8 @@ html,body{
   <div class="scrl" id="case-body"></div>
 </div>
 
-<!-- BOTTOM NAV — phải ở cuối cùng trong #app để không bị các screen đè lên hit area trên iOS -->
+<!-- BOTTOM NAV — floating pill, fixed position -->
+<div id="bnav-wrap">
 <div id="bnav">
   <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
     <span class="bIcon">📖</span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
@@ -555,6 +573,7 @@ html,body{
   <button class="bBtn" id="bn-stories" onclick="App.nav('stories')">
     <span class="bIcon">📰</span><span class="bLbl" id="bn-stories-lbl">ĐỌC</span>
   </button>
+</div>
 </div>
 
 </div>
