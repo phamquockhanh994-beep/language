@@ -23,7 +23,8 @@
   @media (display-mode:standalone){
     html,body{height:100%;background:#0d1117;}
   }
-  #app,#bnav,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
+  #app,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
+  /* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
@@ -343,7 +344,8 @@ html,body{
       HƯỚNG DẪN: Sau khi tạo Ad Unit tại AdSense, thay data-ad-slot="XXXXXXXXXX" bằng ID thật
       Vào AdSense → Quảng cáo → Theo đơn vị quảng cáo → Quảng cáo hiển thị
     -->
-    <div class="ad-slot" style="position:relative;margin-top:14px;">
+    <!-- Ad slot: chỉ hiện khi đã có publisher ID thật -->
+    <div class="ad-slot" id="ad-slot-main" style="position:relative;margin-top:14px;display:none;">
       <span class="ad-label">// quảng cáo · ads</span>
       <ins class="adsbygoogle"
            style="display:block;width:100%;min-height:90px;"
@@ -558,7 +560,9 @@ html,body{
   <div class="scrl" id="case-body"></div>
 </div>
 
-<!-- BOTTOM NAV — floating pill, fixed position -->
+</div><!-- end #app -->
+
+<!-- BOTTOM NAV: outside #app so position:fixed works correctly on iOS -->
 <div id="bnav-wrap">
 <div id="bnav">
   <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
@@ -576,7 +580,6 @@ html,body{
 </div>
 </div>
 
-</div>
 <div id="offline-badge">✈ offline</div>
 <div id="toast"></div>
 <script>
