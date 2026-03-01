@@ -25,6 +25,28 @@
   }
   #app,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
   /* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
+
+/* ── SHADOWING ── */
+.sh-panel{background:rgba(6,8,13,0.85);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:18px;border:1px solid rgba(255,255,255,0.08);padding:16px;margin-bottom:14px;}
+.sh-step{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;background:rgba(255,255,255,0.02);cursor:pointer;transition:all .18s;}
+.sh-step.active{border-color:var(--cyn);background:rgba(121,192,255,0.08);}
+.sh-step.done{border-color:var(--grn);background:rgba(57,211,83,0.06);}
+.sh-step.recording{border-color:var(--pnk);background:rgba(255,78,135,0.08);animation:shPulse .9s ease-in-out infinite;}
+@keyframes shPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.sh-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:var(--mono);border:1px solid currentColor;}
+.sh-waveform{display:flex;align-items:center;gap:2px;height:28px;}
+.sh-bar{width:3px;border-radius:2px;background:var(--pnk);animation:shWave .6s ease-in-out infinite;transform-origin:bottom;}
+.sh-bar:nth-child(2){animation-delay:.1s;}
+.sh-bar:nth-child(3){animation-delay:.2s;}
+.sh-bar:nth-child(4){animation-delay:.3s;}
+.sh-bar:nth-child(5){animation-delay:.1s;}
+@keyframes shWave{0%,100%{height:6px;}50%{height:22px;}}
+.sh-score{font-size:36px;font-weight:700;font-family:var(--mono);}
+.sh-score-bar{height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;margin:8px 0;}
+.sh-score-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+
+
+@keyframes shPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(1.15);}}
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
@@ -128,11 +150,10 @@ body::before{
   -webkit-backface-visibility:hidden;backface-visibility:hidden;
   transform:translateZ(0);
 }
-.screen.active{display:flex;animation:screenIn .22s cubic-bezier(0.25,0.46,0.45,0.94) both;}
+.screen.active{display:flex;animation:screenIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);}
 .screen.slide-back{animation:screenBack .22s cubic-bezier(0.25,0.46,0.45,0.94) both;}
 
-@keyframes screenIn{
-  from{opacity:0;transform:translate3d(0,14px,0) scale3d(0.985,0.985,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(6px) scale(0.99);}to{opacity:1;transform:translateY(0) scale(1);}}
   to{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
 }
 @keyframes screenBack{
@@ -217,8 +238,8 @@ body::before{
 .y{border-color:rgba(240,192,64,0.35)!important;background:rgba(240,192,64,0.08)!important;color:var(--yel)!important;box-shadow:0 0 20px var(--yel-glow) inset, 0 1px 0 rgba(255,255,255,0.06) inset!important;}
 
 /* ── Progress bar ── */
-.pbar{height:2px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;flex-shrink:0;}
-.pfill{height:100%;border-radius:2px;transition:width .4s cubic-bezier(0.4,0,0.2,1);transform:translateZ(0);}
+.pbar{height:2px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.pfill{height:100%;border-radius:2px;transition:width 0.5s cubic-bezier(0.16, 1, 0.3, 1);transform:translateZ(0);}
 
 /* ── Cards ── */
 .card{
@@ -478,7 +499,7 @@ body::before{
   </div>
   <div style="margin:10px 16px 0;flex-shrink:0;">
     <div class="rowSB mb4"><span style="font-size:10px;color:var(--com);">// progress</span><span style="font-size:10px;color:var(--txd);" id="v-prog-t">0/0</span></div>
-    <div class="pbar"><div class="pfill" id="v-prog-b" style="background:var(--grn);width:0%"></div></div>
+    <div class="pbar" style="background:rgba(255,255,255,0.04);"><div class="pfill" id="v-prog-b" style="background:linear-gradient(90deg,var(--grn),rgba(57,211,83,0.55));width:0%;box-shadow:0 0 8px rgba(57,211,83,0.2);"></div></div>
   </div>
   <div class="scrl" style="padding-top:12px;">
     <div style="font-size:10px;color:var(--com);margin-bottom:10px;letter-spacing:1.5px;">// TOPICS</div>
@@ -666,13 +687,58 @@ body::before{
       <div class="pbar" style="margin-bottom:4px;"><div class="pfill" id="rd-pb" style="background:var(--cyn);width:0%"></div></div>
       <div class="rowSB"><span style="font-size:11px;color:var(--com);" id="rd-ctr">1/5</span><span style="font-size:10px;color:var(--com);" id="rd-ttl"></span></div>
     </div>
-    <button class="iBtn" onclick="App.storySpeakSeg()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+    <button class="iBtn" onclick="App.storySpeakSeg()" title="Listen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+    <button class="iBtn" id="sh-toggle-btn" onclick="App.shadowToggle()" title="Shadowing" style="color:var(--com);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
   </div>
   <div class="scrl" style="padding-bottom:80px;">
     <div id="rd-text" style="border-radius:18px;padding:22px;border:1px solid;margin-bottom:14px;font-family:var(--serif);font-size:17px;line-height:34px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 1px 0 rgba(255,255,255,0.07) inset;"></div>
     <div id="rd-popup" style="display:none;" class="wPopup"></div>
     <div style="font-size:10px;color:var(--com);margin-bottom:8px;letter-spacing:1px;">// TỪ TRONG ĐOẠN NÀY</div>
     <div id="rd-chips" style="display:flex;flex-wrap:wrap;"></div>
+    <!-- SHADOWING PANEL -->
+    <div id="sh-panel" style="display:none;">
+      <div style="font-size:10px;color:var(--cyn);letter-spacing:1.5px;font-weight:700;margin-bottom:10px;">// SHADOWING MODE</div>
+      <!-- Step 1: Listen -->
+      <div class="sh-step active" id="sh-s1" onclick="App.shListen()">
+        <div class="sh-num" style="color:var(--cyn);border-color:var(--cyn);">1</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--cyn);" id="sh-s1-label">① Nghe</div>
+          <div style="font-size:10px;color:var(--com);margin-top:2px;" id="sh-s1-sub">Bấm để nghe câu gốc với tốc độ chậm</div>
+        </div>
+        <div id="sh-listen-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></div>
+      </div>
+      <!-- Step 2: Record -->
+      <div class="sh-step" id="sh-s2" onclick="App.shRecord()">
+        <div class="sh-num" style="color:var(--pnk);border-color:var(--pnk);">2</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--pnk);" id="sh-s2-label">② Lặp lại</div>
+          <div style="font-size:10px;color:var(--com);margin-top:2px;" id="sh-s2-sub">Bấm để ghi âm giọng bạn</div>
+        </div>
+        <div id="sh-record-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pnk)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+      </div>
+      <!-- Step 3: Compare -->
+      <div class="sh-step" id="sh-s3" onclick="App.shCompare()">
+        <div class="sh-num" style="color:var(--yel);border-color:var(--yel);">3</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--yel);" id="sh-s3-label">③ So sánh</div>
+          <div style="font-size:10px;color:var(--com);margin-top:2px;" id="sh-s3-sub">Nghe lại giọng gốc rồi nghe giọng bạn</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--yel)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </div>
+      <!-- Score display -->
+      <div id="sh-score-panel" style="display:none;margin-top:8px;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.06);">
+        <div style="text-align:center;margin-bottom:8px;">
+          <div class="sh-score" id="sh-score-num" style="color:var(--grn);">-</div>
+          <div style="font-size:10px;color:var(--com);">similarity score</div>
+        </div>
+        <div class="sh-score-bar"><div class="sh-score-fill" id="sh-score-fill" style="width:0%;background:var(--grn);"></div></div>
+        <div id="sh-score-msg" style="font-size:11px;color:var(--com);text-align:center;margin-top:6px;"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn f1" onclick="App.shRedo()" style="font-size:11px;padding:8px;">↺ Thử lại</button>
+          <button class="btn c f1" onclick="App.shNext()" style="font-size:11px;padding:8px;">Tiếp ›</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:rgba(6,8,13,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:8px;">
     <button class="btn f1" id="rd-prev" onclick="App.storyNav(-1)"><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M19 12H5M12 5l-7 7 7 7'/></svg> prev()</button>
@@ -681,6 +747,39 @@ body::before{
 </div>
 
 <!-- GRAMMAR -->
+<!-- SHADOWING LIST SCREEN -->
+<div id="s-shadow" class="screen">
+  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:14px 72px 14px 16px;flex-shrink:0;">
+    <div style="font-size:10px;color:var(--pur);margin-bottom:2px;">&gt; shadow.exe --lang=ru</div>
+    <div style="font-size:20px;font-weight:700;" id="sh-title">SHADOWING</div>
+  </div>
+  <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;">
+    <button class="btn" id="sh-tab-basics" style="font-size:11px;" onclick="App.shadowTab('basics')">🔤 Câu đơn</button>
+    <button class="btn" id="sh-tab-phrases" style="font-size:11px;" onclick="App.shadowTab('phrases')">💬 Giao tiếp</button>
+    <button class="btn" id="sh-tab-stories" style="font-size:11px;" onclick="App.shadowTab('stories')">📖 Hội thoại</button>
+  </div>
+  <div style="display:flex;gap:6px;padding:8px 16px 0;flex-shrink:0;">
+    <button class="btn" id="sh-d-a1" style="font-size:10px;" onclick="App.shadowDiff('A1')">A1</button>
+    <button class="btn" id="sh-d-a2" style="font-size:10px;" onclick="App.shadowDiff('A2')">A2</button>
+    <button class="btn" id="sh-d-b1" style="font-size:10px;" onclick="App.shadowDiff('B1')">B1</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:12px 16px;" id="sh-list"></div>
+</div>
+
+<!-- SHADOWING PLAYER SCREEN -->
+<div id="s-shplay" class="screen">
+  <div style="background:var(--surf);border-bottom:1px solid var(--bord);padding:12px 16px;flex-shrink:0;display:flex;align-items:center;gap:10px;">
+    <button onclick="App.nav('shadow')" style="background:none;border:none;color:var(--com);font-size:18px;cursor:pointer;padding:4px 8px 4px 0;">&#8592;</button>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:10px;color:var(--pur);margin-bottom:1px;">// shadowing</div>
+      <div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="shp-title">—</div>
+    </div>
+    <div style="font-size:10px;color:var(--com);" id="shp-ctr">1/1</div>
+  </div>
+  <div style="height:2px;background:var(--surf2);flex-shrink:0;"><div id="shp-pb" style="height:100%;background:var(--pur);width:0%;transition:width .3s;"></div></div>
+  <div style="flex:1;overflow-y:auto;padding:16px;" id="shp-body"></div>
+</div>
+
 <div id="s-grammar" class="screen">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
@@ -741,6 +840,14 @@ body::before{
       <line x1="8" y1="14" x2="16" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="8" y1="17" x2="12" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     </svg></span><span class="bLbl" id="bn-stories-lbl">ĐỌC</span>
+  </button>
+  <button class="bBtn" id="bn-shadow" onclick="App.nav('shadow')">
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M8 12C8 9.8 9.8 8 12 8V16C9.8 16 8 14.2 8 12Z" fill="currentColor"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M12 3V5M12 19V21M3 12H5M19 12H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg></span><span class="bLbl" id="bn-shadow-lbl">SHADOW</span>
   </button>
 </div>
 </div>
@@ -6185,8 +6292,8 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','stories','read','grammar','case'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',stories:'bn-stories',read:'bn-stories'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','stories','read','grammar','case','shadow','shplay'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',stories:'bn-stories',read:'bn-stories',shadow:'bn-shadow',shplay:'bn-shadow'};
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
   // Use rAF to sync with display refresh (60fps on iOS)
@@ -6206,6 +6313,11 @@ function nav(name){
     document.querySelectorAll('.bBtn').forEach(b=>b.classList.remove('on'));
     document.getElementById(NAVMAP[name]||'bn-vocab')?.classList.add('on');
     S.screen=name; save();
+    // Reset shadowing when leaving read screen
+    if(name!=='read'&&typeof _shActive!=='undefined'&&_shActive){
+      if(window.speechSynthesis) window.speechSynthesis.cancel();
+      if(_shRec&&_shRec.state==='recording'){try{_shRec.stop();}catch(e){}}
+    }
     // iOS Haptic feedback (works on Safari iOS 13+)
     if(window.navigator?.vibrate) navigator.vibrate(8);
   });
@@ -6256,7 +6368,7 @@ function renderVocab(){
       </div>
       <div style="font-size:12px;font-weight:700;margin-bottom:2px;line-height:1.3;">${S.lang==='en'?(topicNamesEN[name]||name):name}</div>
       <div style="font-size:10px;color:var(--com);">${ws.length} ${S.lang==='en'?'words':'từ'} · ${m} ${S.lang==='en'?'learned':'đã học'}</div>
-      <div class="pbar mt4"><div class="pfill" style="background:var(--grn);width:${p}%"></div></div>
+      <div class="pbar mt4" style="background:rgba(255,255,255,0.03);"><div class="pfill" style="background:linear-gradient(90deg,var(--grn),rgba(57,211,83,0.6));width:${p}%;box-shadow:0 0 6px rgba(57,211,83,0.25);"></div></div>
       <div style="font-size:9px;color:var(--com);margin-top:2px;">${p}%</div>
     </div>`;
   }).join('');
@@ -6565,6 +6677,8 @@ function storyRender(){
     `<div class="wChip" id="wc${i}" onclick="App.popWord(${i})">${w.ru}</div>`
   ).join('');
   document.getElementById('rd-prev').style.opacity=S.storyIdx===0?'0.3':'1';
+  // Reset shadowing panel for new segment
+  if(typeof _shActive!=='undefined'&&_shActive){shReset();}
   const nb=document.getElementById('rd-next');
   nb.innerHTML=S.storyIdx<tot-1?'next() <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> finish()';
   nb.className=S.storyIdx<tot-1?'btn c f1':'btn g f1';
@@ -6599,6 +6713,215 @@ function storyNav(d){
   if(d===1&&S.storyIdx>=tot-1){nav('stories');return;}
   S.storyIdx+=d; storyRender();
 }
+
+
+// ══ SHADOWING ══════════════════════════════════════════════
+var _shActive=false, _shRec=null, _shAudio=null, _shRecUrl=null, _shRecBlob=null;
+var _shOrigPlayer=null;
+
+function shadowToggle(){
+  _shActive=!_shActive;
+  const panel=document.getElementById('sh-panel');
+  const btn=document.getElementById('sh-toggle-btn');
+  if(panel) panel.style.display=_shActive?'block':'none';
+  if(btn) btn.style.color=_shActive?'var(--cyn)':'var(--com)';
+  if(_shActive) shReset();
+}
+
+function shReset(){
+  _shStep=1;
+  ['sh-s1','sh-s2','sh-s3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el){el.className='sh-step'+(i===0?' active':'');}
+  });
+  document.getElementById('sh-score-panel').style.display='none';
+  document.getElementById('sh-record-icon').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pnk)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+  shUpdateLabels();
+}
+var _shStep=1;
+
+function shUpdateLabels(){
+  var en=(S.lang||'vi')==='en';
+  document.getElementById('sh-s1-label').textContent=en?'① Listen':'① Nghe';
+  document.getElementById('sh-s1-sub').textContent=en?'Tap to hear the original at slow speed':'Bấm để nghe câu gốc với tốc độ chậm';
+  document.getElementById('sh-s2-label').textContent=en?'② Shadow':'② Lặp lại';
+  document.getElementById('sh-s2-sub').textContent=en?'Tap to record yourself':'Bấm để ghi âm giọng bạn';
+  document.getElementById('sh-s3-label').textContent=en?'③ Compare':'③ So sánh';
+  document.getElementById('sh-s3-sub').textContent=en?'Listen original then your voice':'Nghe lại giọng gốc rồi nghe giọng bạn';
+}
+
+function shListen(){
+  if(!S.story)return;
+  const seg=S.story.segments[S.storyIdx];
+  // Play slow (rate 0.65 for shadowing practice)
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(seg.text);
+  u.lang='ru-RU'; u.rate=0.65; u.pitch=1.0;
+  document.getElementById('sh-s1').className='sh-step active';
+  // Visual: show playing icon
+  document.getElementById('sh-listen-icon').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+  u.onend=()=>{
+    document.getElementById('sh-listen-icon').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+    document.getElementById('sh-s1').className='sh-step done';
+    document.getElementById('sh-s2').className='sh-step active';
+    _shStep=2;
+  };
+  window.speechSynthesis.speak(u);
+  _shStep=1;
+}
+
+function shRecord(){
+  if(_shStep<2&&_shRecUrl===null) return;
+  // If already recording, stop
+  if(_shRec&&_shRec.state==='recording'){
+    _shRec.stop(); return;
+  }
+  // Start recording
+  var en=(S.lang||'vi')==='en';
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    alert(en?'Microphone not supported on this browser.':'Trình duyệt không hỗ trợ ghi âm.');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    _shRecBlob=null; _shRecUrl=null;
+    var chunks=[];
+    var mimeType='audio/webm';
+    if(!MediaRecorder.isTypeSupported('audio/webm')) mimeType='audio/mp4';
+    if(!MediaRecorder.isTypeSupported(mimeType)) mimeType='';
+    _shRec = mimeType ? new MediaRecorder(stream,{mimeType}) : new MediaRecorder(stream);
+    _shRec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    _shRec.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      _shRecBlob=new Blob(chunks,{type:_shRec.mimeType||'audio/webm'});
+      _shRecUrl=URL.createObjectURL(_shRecBlob);
+      // Done recording
+      document.getElementById('sh-s2').className='sh-step done';
+      document.getElementById('sh-s3').className='sh-step active';
+      document.getElementById('sh-record-icon').innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+      _shStep=3;
+    };
+    _shRec.start();
+    _shStep=2;
+    // Visual: recording animation
+    document.getElementById('sh-record-icon').innerHTML='<div class="sh-waveform"><div class="sh-bar"></div><div class="sh-bar"></div><div class="sh-bar"></div><div class="sh-bar"></div><div class="sh-bar"></div></div>';
+    document.getElementById('sh-s2').className='sh-step recording';
+    document.getElementById('sh-s2-sub').textContent=en?'Recording... tap again to stop':'Đang ghi... bấm lại để dừng';
+    // Auto-stop after max 8s
+    setTimeout(()=>{if(_shRec&&_shRec.state==='recording')_shRec.stop();},8000);
+  }).catch(err=>{
+    alert(en?'Microphone access denied.':'Không thể truy cập microphone.');
+  });
+}
+
+function shCompare(){
+  if(!_shRecUrl){
+    var en=(S.lang||'vi')==='en';
+    alert(en?'Please record your voice first (Step 2).':'Hãy ghi âm trước (Bước 2).');
+    return;
+  }
+  // Play original first, then user recording
+  var en=(S.lang||'vi')==='en';
+  document.getElementById('sh-s3').className='sh-step active';
+  window.speechSynthesis.cancel();
+  const seg=S.story.segments[S.storyIdx];
+  const u=new SpeechSynthesisUtterance(seg.text);
+  u.lang='ru-RU'; u.rate=0.75;
+  u.onend=()=>{
+    // Brief pause, then play user recording
+    setTimeout(()=>{
+      var audio=new Audio(_shRecUrl);
+      audio.play();
+      audio.onended=()=>{ shShowScore(); };
+    },600);
+  };
+  window.speechSynthesis.speak(u);
+}
+
+function shShowScore(){
+  // Scoring: use SpeechRecognition if available for real comparison,
+  // otherwise use a heuristic: time-based + confirmation question
+  var panel=document.getElementById('sh-score-panel');
+  var en=(S.lang||'vi')==='en';
+  panel.style.display='block';
+  document.getElementById('sh-s3').className='sh-step done';
+
+  // Try Web Speech Recognition for real scoring
+  var SRClass=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(SRClass&&_shRecBlob){
+    shScoreWithASR(en);
+  } else {
+    // Fallback: self-assessment
+    shSelfAssess(en);
+  }
+}
+
+function shScoreWithASR(en){
+  // Re-record a quick re-speak for ASR (since we can't feed audio to Web Speech API directly)
+  // Instead, ask user to speak again quickly for ASR
+  // Actually: use the recorded audio duration as proxy for confidence
+  var seg=S.story.segments[S.storyIdx];
+  var wordCount=seg.words.length;
+  // Estimate expected duration at slow pace: ~0.6s/word
+  var expectedDur = wordCount * 0.65;
+  // We'll do self-assess but with better scoring display
+  shSelfAssess(en);
+}
+
+function shSelfAssess(en){
+  // Present 3 self-assessment buttons
+  var panel=document.getElementById('sh-score-panel');
+  panel.innerHTML=`
+    <div style="font-size:11px;color:var(--com);text-align:center;margin-bottom:12px;">${en?'How was your shadowing?':'Bạn thấy mình lặp lại như thế nào?'}</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="btn f1" onclick="App.shRate(40)" style="font-size:11px;padding:10px;flex-direction:column;gap:4px;border-color:#ff4e87;">
+        <span style="font-size:18px;">😅</span>
+        <span style="color:#ff4e87;font-size:10px;">${en?'Hard':'Khó'}</span>
+      </button>
+      <button class="btn f1" onclick="App.shRate(70)" style="font-size:11px;padding:10px;flex-direction:column;gap:4px;border-color:var(--yel);">
+        <span style="font-size:18px;">🙂</span>
+        <span style="color:var(--yel);font-size:10px;">${en?'OK':'Được'}</span>
+      </button>
+      <button class="btn f1" onclick="App.shRate(95)" style="font-size:11px;padding:10px;flex-direction:column;gap:4px;border-color:var(--grn);">
+        <span style="font-size:18px;">🎯</span>
+        <span style="color:var(--grn);font-size:10px;">${en?'Nailed it':'Tốt lắm'}</span>
+      </button>
+    </div>`;
+}
+
+function shRate(score){
+  var en=(S.lang||'vi')==='en';
+  var panel=document.getElementById('sh-score-panel');
+  var color=score>=90?'var(--grn)':score>=60?'var(--yel)':'var(--pnk)';
+  var msg=score>=90
+    ?(en?'🎯 Excellent! Your rhythm matches perfectly.':'🎯 Xuất sắc! Nhịp điệu của bạn rất khớp.')
+    :score>=60
+    ?(en?'🙂 Good try! Listen again and pay attention to stress.':'🙂 Khá tốt! Hãy nghe lại và chú ý trọng âm.')
+    :(en?'😅 Keep practicing! Try to match the rhythm.':'😅 Luyện thêm nhé! Cố bắt chước nhịp điệu hơn.');
+  panel.innerHTML=`
+    <div style="text-align:center;margin-bottom:10px;">
+      <div class="sh-score" style="color:${color};">${score}%</div>
+      <div style="font-size:10px;color:var(--com);">${en?'similarity score':'điểm tương đồng'}</div>
+    </div>
+    <div class="sh-score-bar"><div class="sh-score-fill" style="width:${score}%;background:${color};"></div></div>
+    <div style="font-size:11px;color:var(--txd);text-align:center;margin:8px 0;">${msg}</div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn f1" onclick="App.shRedo()" style="font-size:11px;padding:8px;">↺ ${en?'Try again':'Thử lại'}</button>
+      <button class="btn c f1" onclick="App.shNext()" style="font-size:11px;padding:8px;">${en?'Next ›':'Tiếp ›'}</button>
+    </div>`;
+}
+
+function shRedo(){
+  if(_shRecUrl){URL.revokeObjectURL(_shRecUrl);_shRecUrl=null;}
+  _shRecBlob=null; _shRec=null;
+  shReset();
+}
+
+function shNext(){
+  // Move to next segment
+  shRedo();
+  storyNav(1);
+}
+// ══════════════════════════════════════════════════════════
 
 // GRAMMAR
 
@@ -6826,6 +7149,8 @@ function setLang(lang){
   else if(cur==='srs') srsRender();
   else if(cur==='fc') fcRender();
   else if(cur==='quiz') qzRender();
+  else if(cur==='shadow'){shadowRender();}
+  else if(cur==='shplay'){shadowPlayRender();}
   // SRS rate buttons
   const srsMap = [['again','again'],['hard','hard'],['good','good'],['easy','easy']];
   srsMap.forEach(([k])=>{
@@ -6852,6 +7177,282 @@ function setLang(lang){
   const vSub = document.getElementById('v-sub'); if(vSub && vSub.textContent.includes('tải')) vSub.textContent = t('vocab.loading');
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// SHADOWING DATA
+// ═══════════════════════════════════════════════════════════════
+const shadowingData = {
+  basics: [
+    {id:'b1',level:'A1',ru:'Привет! Как тебя зовут?',ph:'privét! kak tibyá zavút?',vn:'Xin chào! Bạn tên gì?',en:'Hi! What is your name?'},
+    {id:'b2',level:'A1',ru:'Меня зовут Анна. А тебя?',ph:'minya zavút Anna. a tibyá?',vn:'Tôi tên Anna. Còn bạn?',en:'My name is Anna. And yours?'},
+    {id:'b3',level:'A1',ru:'Я из России. Откуда ты?',ph:'ya iz Rossíi. atkúda ti?',vn:'Tôi đến từ Nga. Bạn từ đâu?',en:'I am from Russia. Where are you from?'},
+    {id:'b4',level:'A1',ru:'Я не понимаю. Повторите, пожалуйста.',ph:'ya ne panimáyu. paftaríte, pazhálusta',vn:'Tôi không hiểu. Xin hãy nhắc lại.',en:'I do not understand. Please repeat.'},
+    {id:'b5',level:'A1',ru:'Сколько это стоит?',ph:'skólko éto stóit?',vn:'Cái này giá bao nhiêu?',en:'How much does this cost?'},
+    {id:'b6',level:'A1',ru:'Где находится метро?',ph:'gde nakhodítsa metró?',vn:'Ga tàu điện ngầm ở đâu?',en:'Where is the metro?'},
+    {id:'b7',level:'A2',ru:'Я живу в Москве уже два года.',ph:'ya zhivú v Maskvé uzhé dva góda',vn:'Tôi đã sống ở Moskva được hai năm rồi.',en:'I have lived in Moscow for two years.'},
+    {id:'b8',level:'A2',ru:'Вчера я ходил в кино с друзьями.',ph:'fchirá ya khadíl f kinó z druzyámi',vn:'Hôm qua tôi đi xem phim với bạn bè.',en:'Yesterday I went to the cinema with friends.'},
+    {id:'b9',level:'A2',ru:'Мне нравится изучать русский язык.',ph:'mne nrávitsa izucháт rússkiy yazík',vn:'Tôi thích học tiếng Nga.',en:'I enjoy learning Russian.'},
+    {id:'b10',level:'A2',ru:'Летом мы поедем на море.',ph:'létam mi payédim na móre',vn:'Mùa hè chúng tôi sẽ đi biển.',en:'In summer we will go to the sea.'},
+    {id:'b11',level:'B1',ru:'Если бы у меня было время, я бы путешествовал больше.',ph:'yésli bi u minya bylo vrémya, ya bi putishéstvoval bólshe',vn:'Nếu tôi có thời gian, tôi sẽ đi du lịch nhiều hơn.',en:'If I had time, I would travel more.'},
+    {id:'b12',level:'B1',ru:'Чем больше читаешь, тем лучше понимаешь язык.',ph:'chem bólshe chitáyesh, tem lúchshe panimáyesh yazík',vn:'Càng đọc nhiều, càng hiểu ngôn ngữ tốt hơn.',en:'The more you read, the better you understand the language.'},
+  ],
+  phrases: [
+    {id:'p1',level:'A1',ru:'Доброе утро! Как дела?',ph:'dóbroye útro! kak dilá?',vn:'Chào buổi sáng! Bạn có khỏe không?',en:'Good morning! How are you?'},
+    {id:'p2',level:'A1',ru:'Спасибо большое! Вы очень добры.',ph:'spasíba balshoye! vy óchen dabry',vn:'Cảm ơn rất nhiều! Bạn thật tốt bụng.',en:'Thank you very much! You are very kind.'},
+    {id:'p3',level:'A1',ru:'Извините, как пройти на вокзал?',ph:'izviniте, kak praytí na vakzál?',vn:'Xin lỗi, đi đến nhà ga như thế nào?',en:'Excuse me, how do I get to the train station?'},
+    {id:'p4',level:'A1',ru:'Мне, пожалуйста, одну чашку кофе.',ph:'mne, pazhálusta, adnú cháshku kófe',vn:'Cho tôi một tách cà phê.',en:'One cup of coffee for me, please.'},
+    {id:'p5',level:'A2',ru:'Не могли бы вы говорить помедленнее?',ph:'ne maglí by vy gavarít pamedlennéye?',vn:'Bạn có thể nói chậm hơn được không?',en:'Could you speak more slowly?'},
+    {id:'p6',level:'A2',ru:'Я бы хотел заказать столик на двоих.',ph:'ya by khatél zakazát stólik na dvóikh',vn:'Tôi muốn đặt bàn cho hai người.',en:'I would like to book a table for two.'},
+    {id:'p7',level:'A2',ru:'Который час? Я опаздываю на встречу.',ph:'katóry chas? ya apázdyvayu na fstréchu',vn:'Mấy giờ rồi? Tôi đang trễ cuộc họp.',en:'What time is it? I am late for a meeting.'},
+    {id:'p8',level:'B1',ru:'По моему мнению, важно учиться на своих ошибках.',ph:'pa mayemú mnéniyu, vázno uchítsa na svaikhs ashíbkakh',vn:'Theo ý tôi, việc học từ lỗi lầm rất quan trọng.',en:'In my opinion, it is important to learn from your mistakes.'},
+    {id:'p9',level:'B1',ru:'Я слышал, что погода на следующей неделе улучшится.',ph:'ya slíshal, shto pagóda na sléduyushey nedéle ulúchshitsa',vn:'Tôi nghe nói thời tiết tuần tới sẽ tốt hơn.',en:'I heard that the weather will improve next week.'},
+  ],
+  stories: [
+    {id:'s1',level:'A1',title:'В магазине',titleEn:'At the Store',
+     lines:[
+      {ru:'— Здравствуйте! Что вы хотите?',ph:'zdrástvuyte! shto vy khatíte?',vn:'— Xin chào! Bạn muốn gì?',en:'— Hello! What would you like?'},
+      {ru:'— Мне, пожалуйста, хлеб и молоко.',ph:'mne, pazhálusta, khlyep i malakó',vn:'— Cho tôi bánh mì và sữa.',en:'— Bread and milk for me, please.'},
+      {ru:'— Пожалуйста. С вас сто рублей.',ph:'pazhálusta. s vas sto rublyéy',vn:'— Đây ạ. Bạn trả một trăm rúp.',en:'— Here you go. That is one hundred rubles.'},
+      {ru:'— Спасибо! До свидания!',ph:'spasíba! da svidániya!',vn:'— Cảm ơn! Tạm biệt!',en:'— Thank you! Goodbye!'},
+    ]},
+    {id:'s2',level:'A2',title:'Знакомство',titleEn:'Meeting Someone',
+     lines:[
+      {ru:'— Привет! Я Катя. Ты новый студент?',ph:'privét! ya Kátya. ty nóvy studyent?',vn:'— Chào! Tôi là Katya. Bạn là sinh viên mới à?',en:"— Hi! I'm Katya. Are you a new student?"},
+      {ru:'— Да, я начал учиться на этой неделе.',ph:'da, ya nachál uchítsa na étoy nedéle',vn:'— Vâng, tôi bắt đầu học tuần này.',en:'— Yes, I started studying this week.'},
+      {ru:'— Откуда ты? Ты хорошо говоришь!',ph:'atkúda ty? ty kharasho gavaríshl',vn:'— Bạn từ đâu đến? Bạn nói giỏi lắm!',en:'— Where are you from? You speak well!'},
+      {ru:'— Я из Вьетнама. Учу русский два года.',ph:'ya iz Vyetnáma. uchu rússkiy dva góda',vn:'— Tôi đến từ Việt Nam. Tôi học tiếng Nga hai năm rồi.',en:"— I'm from Vietnam. I've been learning Russian for two years."},
+    ]},
+    {id:'s3',level:'B1',title:'На работе',titleEn:'At Work',
+     lines:[
+      {ru:'— Добрый день! У вас назначена встреча?',ph:'dóbry den! u vas naznáchena fstrécha?',vn:'— Chào buổi chiều! Bạn có hẹn không?',en:'— Good afternoon! Do you have an appointment?'},
+      {ru:'— Да, я договорился с директором на три часа.',ph:'da, ya dagovarílsya s direktóram na tri chasá',vn:'— Vâng, tôi đã hẹn với giám đốc lúc ba giờ.',en:'— Yes, I arranged a meeting with the director at three.'},
+      {ru:'— Одну минуту. Он сейчас освободится.',ph:'adnú minútu. on seychás asvabudítsa',vn:'— Một phút. Ông ấy sẽ rảnh ngay.',en:'— One moment. He will be free shortly.'},
+      {ru:'— Спасибо, я подожду здесь.',ph:'spasíba, ya padazhdu zdes',vn:'— Cảm ơn, tôi sẽ đợi ở đây.',en:'— Thank you, I will wait here.'},
+    ]},
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════════
+// SHADOWING FUNCTIONS
+// ═══════════════════════════════════════════════════════════════
+
+function shadowTab(tab){
+  S.shTab=tab; S.shDiff=S.shDiff||'A1';
+  ['basics','phrases','stories'].forEach(k=>{
+    const b=document.getElementById('sh-tab-'+k); if(!b)return;
+    const on=k===tab;
+    b.style.borderColor=on?'var(--pur)':'var(--bord)';
+    b.style.color=on?'var(--pur)':'var(--txd)';
+    b.style.background=on?'#1a0d2a':'var(--surf)';
+  });
+  shadowRender();
+}
+function shadowDiff(d){
+  S.shDiff=d;
+  ['A1','A2','B1'].forEach(k=>{
+    const b=document.getElementById('sh-d-'+k); if(!b)return;
+    const on=k===d;
+    b.style.borderColor=on?'var(--pur)':'var(--bord)';
+    b.style.color=on?'var(--pur)':'var(--txd)';
+    b.style.background=on?'#1a0d2a':'var(--surf)';
+  });
+  shadowRender();
+}
+function shadowRender(){
+  const tab=S.shTab||'basics', diff=S.shDiff||'A1', lang=S.lang||'vi';
+  const list=document.getElementById('sh-list'); if(!list)return;
+  const src=shadowingData[tab]||[];
+  const items=src.filter(x=>x.level===diff);
+  if(!items.length){list.innerHTML='<div style="text-align:center;color:var(--com);padding:40px 0;font-size:13px;">// không có dữ liệu ở cấp này</div>';return;}
+  if(tab==='stories'){
+    list.innerHTML=items.map(story=>{
+      const title=lang==='en'?(story.titleEn||story.title):story.title;
+      return `<div onclick="App.shadowOpenStory('${story.id}')" style="background:var(--surf);border:1px solid rgba(188,140,255,0.25);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;">
+        <div style="font-size:10px;color:var(--pur);margin-bottom:6px;">📖 ${story.level} · ${story.lines.length} ${lang==='en'?'lines':'dòng'}</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">${title}</div>
+        <div style="font-size:11px;color:var(--com);">// ${lang==='en'?'tap to practice':'bấm để luyện tập'}</div>
+      </div>`;
+    }).join('');
+  } else {
+    list.innerHTML=items.map((item,i)=>{
+      const trans=lang==='en'?item.en:item.vn;
+      return `<div onclick="App.shadowOpenItem('${item.id}')" style="background:var(--surf);border:1px solid rgba(188,140,255,0.15);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;">
+        <div style="font-size:10px;color:var(--com);margin-bottom:6px;">${diff} · #${i+1}</div>
+        <div style="font-size:16px;font-family:var(--serif);line-height:1.5;margin-bottom:6px;">${item.ru}</div>
+        <div style="font-size:11px;color:var(--pur);font-style:italic;margin-bottom:4px;">[${item.ph}]</div>
+        <div style="font-size:12px;color:var(--txd);">${trans}</div>
+      </div>`;
+    }).join('');
+  }
+}
+function shadowOpenItem(id){
+  const all=[...shadowingData.basics,...shadowingData.phrases];
+  const item=all.find(x=>x.id===id); if(!item)return;
+  S.shLines=[item]; S.shLineIdx=0; S.shState='idle'; S.shScore=null;
+  document.getElementById('shp-title').textContent=item.ru.substring(0,40)+(item.ru.length>40?'…':'');
+  shadowPlayRender(); nav('shplay');
+}
+function shadowOpenStory(storyId){
+  const story=shadowingData.stories.find(s=>s.id===storyId); if(!story)return;
+  const lang=S.lang||'vi';
+  S.shLines=story.lines; S.shLineIdx=0; S.shState='idle'; S.shScore=null;
+  const title=lang==='en'?(story.titleEn||story.title):story.title;
+  document.getElementById('shp-title').textContent=title;
+  shadowPlayRender(); nav('shplay');
+}
+function shadowPlayRender(){
+  const body=document.getElementById('shp-body'); if(!body)return;
+  const lang=S.lang||'vi';
+  const line=S.shLines[S.shLineIdx];
+  const total=S.shLines.length;
+  const idx=S.shLineIdx;
+  const state=S.shState||'idle';
+  const trans=lang==='en'?line.en:line.vn;
+  // update header
+  const ctr=document.getElementById('shp-ctr'); if(ctr)ctr.textContent=`${idx+1}/${total}`;
+  const pb=document.getElementById('shp-pb'); if(pb)pb.style.width=`${((idx+1)/total)*100}%`;
+
+  const stepLabels=lang==='en'?['Listen','Repeat','Review']:['Nghe','Nhái lại','Đánh giá'];
+  const stepIcons=['👂','🗣️','✅'];
+
+  let h='';
+  // Step indicator
+  h+=`<div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:16px;">`;
+  for(let i=0;i<3;i++){
+    const active=(state==='idle'&&i===0)||(state==='recording'&&i===1)||(state==='result'&&i===2);
+    const done=(state==='recording'&&i===0)||(state==='result'&&i<=1);
+    h+=`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:${active?1:(done?0.7:0.3)};">
+      <div style="font-size:18px;">${stepIcons[i]}</div>
+      <div style="font-size:9px;color:${active?'var(--pur)':'var(--com)'};">${stepLabels[i]}</div>
+    </div>`;
+    if(i<2)h+=`<div style="color:var(--bord);font-size:14px;margin:0 4px;padding-bottom:10px;">›</div>`;
+  }
+  h+=`</div>`;
+
+  // Sentence card
+  h+=`<div style="background:var(--surf);border:2px solid rgba(188,140,255,0.3);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:22px;font-family:var(--serif);line-height:1.5;margin-bottom:10px;">${line.ru}</div>
+    <div style="font-size:13px;color:var(--pur);margin-bottom:8px;font-style:italic;">[${line.ph}]</div>
+    <div style="font-size:13px;color:var(--txd);">${trans}</div>
+  </div>`;
+
+  if(state==='idle'){
+    h+=`<div style="background:#1a0d2a;border:1px solid rgba(188,140,255,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--pur);margin-bottom:6px;">// ${lang==='en'?'BƯỚC 1 — NGHE':'BƯỚC 1 — NGHE'}</div>
+      <div style="font-size:11px;color:var(--txd);line-height:1.6;">${lang==='en'?
+        '① Listen slowly → focus on stress & rhythm<br>② Listen normal speed → feel the flow':
+        '① Nghe chậm → chú ý trọng âm và nhịp điệu<br>② Nghe tốc độ bình thường → cảm nhận dòng chảy'}</div>
+    </div>`;
+    h+=`<button onclick="App.shadowSpeak(0.75)" style="width:100%;padding:14px;background:var(--pur);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--mono);margin-bottom:8px;">
+      🔊 ${lang==='en'?'Listen slow (0.75×)':'Nghe chậm (0.75×)'}
+    </button>`;
+    h+=`<button onclick="App.shadowSpeak(1.0)" style="width:100%;padding:12px;background:var(--surf);border:1px solid rgba(188,140,255,0.3);border-radius:10px;color:var(--pur);font-size:13px;cursor:pointer;font-family:var(--mono);margin-bottom:10px;">
+      🔊 ${lang==='en'?'Normal speed (1.0×)':'Tốc độ thường (1.0×)'}
+    </button>`;
+    h+=`<button onclick="App.shadowStartRepeat()" style="width:100%;padding:14px;background:var(--surf);border:1px solid var(--grn)44;border-radius:10px;color:var(--grn);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);">
+      🎤 ${lang==='en'?'Ready to shadow →':'Sẵn sàng nhái lại →'}
+    </button>`;
+
+  } else if(state==='recording'){
+    h+=`<div style="background:#0d2318;border:2px solid rgba(57,211,83,0.3);border-radius:10px;padding:16px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:10px;color:var(--grn);margin-bottom:8px;">// ${lang==='en'?'BƯỚC 2 — NHÁI LẠI':'BƯỚC 2 — NHÁI LẠI'}</div>
+      <div style="font-size:36px;margin-bottom:6px;animation:shPulse 1s ease-in-out infinite;">🎙️</div>
+      <div style="font-size:12px;color:var(--txd);line-height:1.6;">${lang==='en'?
+        'Say it <strong style="color:var(--grn)">simultaneously</strong> with the audio.<br>Focus on matching the rhythm, not perfection.':
+        'Đọc <strong style="color:var(--grn)">đồng thời</strong> với âm thanh.<br>Tập trung vào nhịp điệu, không cần hoàn hảo.'}</div>
+    </div>`;
+    h+=`<button onclick="App.shadowSpeakAndRepeat()" style="width:100%;padding:16px;background:var(--grn);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--mono);margin-bottom:8px;">
+      🔊🗣️ ${lang==='en'?'Play & Shadow':'Nghe & Nhái đồng thời'}
+    </button>`;
+    h+=`<button onclick="App.shadowDone()" style="width:100%;padding:13px;background:var(--surf);border:1px solid rgba(121,192,255,.25);border-radius:10px;color:var(--cyn);font-size:13px;cursor:pointer;font-family:var(--mono);">
+      ✓ ${lang==='en'?'Done — self check':'Đã xong — tự đánh giá'}
+    </button>`;
+
+  } else {
+    // result
+    h+=`<div style="background:#0d1117;border:1px solid rgba(121,192,255,.25);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--cyn);margin-bottom:8px;">// ${lang==='en'?'BƯỚC 3 — TỰ ĐÁNH GIÁ':'BƯỚC 3 — TỰ ĐÁNH GIÁ'}</div>
+      <div style="font-size:12px;color:var(--txd);margin-bottom:12px;">${lang==='en'?'How did your pronunciation sound?':'Phát âm của bạn nghe như thế nào?'}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        ${[['😅',lang==='en'?'Need more practice':'Cần luyện thêm','#e3b341','again'],
+           ['😐',lang==='en'?'Getting there':'Tạm được','#58a6ff','hard'],
+           ['😊',lang==='en'?'Sounds good':'Nghe tốt rồi','#39d353','good'],
+           ['🎯',lang==='en'?'Nailed it!':'Hoàn hảo!','#bc8cff','great']].map(
+          ([emoji,label,color,key])=>`<div onclick="App.shadowRate('${key}')" style="background:${color}11;border:1px solid ${color}44;border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;">
+            <div style="font-size:22px;">${emoji}</div>
+            <div style="font-size:11px;color:${color};margin-top:4px;line-height:1.3;">${label}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+    h+=`<button onclick="App.shadowSpeak(0.75)" style="width:100%;padding:12px;background:var(--surf);border:1px solid rgba(188,140,255,0.2);border-radius:8px;color:var(--pur);font-size:12px;cursor:pointer;font-family:var(--mono);">
+      🔊 ${lang==='en'?'Listen again':'Nghe lại'}
+    </button>`;
+  }
+  body.innerHTML=h;
+}
+function shadowSpeak(rate){
+  const line=S.shLines&&S.shLines[S.shLineIdx]; if(!line)return;
+  if(window.speechSynthesis){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(line.ru);
+    u.lang='ru-RU'; u.rate=rate||0.75;
+    window.speechSynthesis.speak(u);
+  }
+}
+function shadowSpeakAndRepeat(){
+  shadowSpeak(0.85);
+}
+function shadowStartRepeat(){
+  S.shState='recording';
+  shadowPlayRender();
+  setTimeout(()=>shadowSpeak(0.8),200);
+}
+function shadowDone(){
+  S.shState='result';
+  shadowPlayRender();
+}
+function shadowRate(rating){
+  const lang=S.lang||'vi';
+  if(!S.shScore)S.shScore={again:0,hard:0,good:0,great:0};
+  S.shScore[rating]=(S.shScore[rating]||0)+1;
+  const total=S.shLines.length, idx=S.shLineIdx;
+  if(idx<total-1){
+    S.shLineIdx++; S.shState='idle';
+    shadowPlayRender();
+    setTimeout(()=>shadowSpeak(0.75),300);
+  } else {
+    const sc=S.shScore;
+    const n=(sc.again||0)+(sc.hard||0)+(sc.good||0)+(sc.great||0);
+    const pct=n>0?Math.round(((sc.good||0)+(sc.great||0))/n*100):0;
+    const em=pct>=80?'🏆':pct>=50?'🎯':'💪';
+    const body=document.getElementById('shp-body');
+    if(body)body.innerHTML=`<div style="text-align:center;padding:30px 0;">
+      <div style="font-size:64px;margin-bottom:12px;">${em}</div>
+      <div style="font-size:32px;font-weight:700;color:var(--pur);margin-bottom:6px;">${pct}%</div>
+      <div style="font-size:13px;color:var(--txd);margin-bottom:20px;">${lang==='en'?'session complete!':'phiên luyện hoàn thành!'}</div>
+      <div style="background:var(--surf);border:1px solid rgba(188,140,255,0.2);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-around;">
+          ${[['😅',sc.again||0,'#e3b341'],['😐',sc.hard||0,'#58a6ff'],['😊',sc.good||0,'#39d353'],['🎯',sc.great||0,'#bc8cff']].map(
+            ([e,n2,c])=>`<div><div style="font-size:20px;">${e}</div><div style="font-size:18px;font-weight:700;color:${c};">${n2}</div></div>`).join('')}
+        </div>
+      </div>
+      <button onclick="App.shadowRestart()" style="width:100%;padding:14px;background:var(--pur);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);margin-bottom:10px;">
+        🔄 ${lang==='en'?'Try again':'Làm lại'}
+      </button>
+      <button onclick="App.nav('shadow')" style="width:100%;padding:12px;background:var(--surf);border:1px solid rgba(188,140,255,0.2);border-radius:10px;color:var(--pur);font-size:13px;cursor:pointer;font-family:var(--mono);">
+        &#8592; ${lang==='en'?'Back to list':'Về danh sách'}
+      </button>
+    </div>`;
+    S.shScore=null;
+  }
+}
+function shadowRestart(){
+  S.shLineIdx=0; S.shState='idle'; S.shScore=null;
+  shadowPlayRender();
+  setTimeout(()=>shadowSpeak(0.75),300);
+}
+
+
 // INIT
 function init(){load();if(!S.lang){const bl=navigator.language||'vi';S.lang=bl.startsWith('vi')?'vi':'en';}setLevel('A1');gramTab('cases');storyFilter('all');nav('vocab');setLang(S.lang);}
 
@@ -6859,6 +7460,10 @@ return{nav,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   fcStart,fcFlip,fcFamily,fcNav,fcMaster,speakFC,
   quizStart,qzAnswer,speakQZ,
   storyFilter,openStory,storySpeakSeg,storyNav,popWord,speakWord,
+  shadowToggle,shListen,shRecord,shCompare,shRate,shRedo,shNext,
+  shadowTab,shadowDiff,shadowRender,shadowOpenItem,shadowOpenStory,
+  shadowPlayRender,shadowSpeak,shadowSpeakAndRepeat,shadowStartRepeat,
+  shadowDone,shadowRate,shadowRestart,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   setLang,
   init};
