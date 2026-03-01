@@ -27,7 +27,7 @@
   /* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
 
 /* ── SHADOWING ── */
-.sh-panel{background:rgba(6,8,13,0.85);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:18px;border:1px solid rgba(255,255,255,0.08);padding:16px;margin-bottom:14px;}
+.sh-panel{background:rgba(4,5,10,0.6);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:18px;border:1px solid rgba(255,255,255,0.07);padding:16px;margin-bottom:14px;}
 .sh-step{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;background:rgba(255,255,255,0.02);cursor:pointer;transition:all .18s;}
 .sh-step.active{border-color:var(--cyn);background:rgba(121,192,255,0.08);}
 .sh-step.done{border-color:var(--grn);background:rgba(57,211,83,0.06);}
@@ -65,37 +65,37 @@
    Colors: Deep space navy/black with neon accent halos
    ═══════════════════════════════════════════════════════ */
 :root{
-  /* Base colors — deep space */
-  --bg:#06080d;
-  --bg2:#080c14;
+  /* Base colors — ink black, not navy */
+  --bg:#04050a;
+  --bg2:#06080f;
 
-  /* Glass surface layers */
-  --glass-1:rgba(255,255,255,0.04);
-  --glass-2:rgba(255,255,255,0.07);
-  --glass-3:rgba(255,255,255,0.11);
-  --glass-edge:rgba(255,255,255,0.12);
-  --glass-edge2:rgba(255,255,255,0.18);
+  /* Glass — more transparent, Apple-style */
+  --glass-1:rgba(255,255,255,0.03);
+  --glass-2:rgba(255,255,255,0.055);
+  --glass-3:rgba(255,255,255,0.09);
+  --glass-edge:rgba(255,255,255,0.10);
+  --glass-edge2:rgba(255,255,255,0.16);
 
   /* Text */
-  --tx:rgba(230,237,243,0.95);
-  --txd:rgba(139,148,158,0.85);
-  --com:rgba(110,118,129,0.7);
+  --tx:rgba(235,242,250,0.96);
+  --txd:rgba(148,158,170,0.82);
+  --com:rgba(100,110,124,0.65);
 
-  /* Accents — neon with glow */
+  /* Accents — same hues, slightly warmer */
   --grn:#3ddc5c;
-  --grn-glow:rgba(61,220,92,0.25);
+  --grn-glow:rgba(61,220,92,0.22);
   --cyn:#6ec6ff;
-  --cyn-glow:rgba(110,198,255,0.2);
+  --cyn-glow:rgba(110,198,255,0.18);
   --yel:#f0c040;
-  --yel-glow:rgba(240,192,64,0.2);
+  --yel-glow:rgba(240,192,64,0.18);
   --pnk:#ff6b6b;
-  --pnk-glow:rgba(255,107,107,0.2);
+  --pnk-glow:rgba(255,107,107,0.18);
   --pur:#c084fc;
-  --pur-glow:rgba(192,132,252,0.2);
+  --pur-glow:rgba(192,132,252,0.18);
 
-  /* Border */
-  --bord:rgba(255,255,255,0.08);
-  --bord2:rgba(255,255,255,0.13);
+  /* Border — more subtle */
+  --bord:rgba(255,255,255,0.07);
+  --bord2:rgba(255,255,255,0.12);
 
   /* Fonts */
   --mono:'Space Mono',monospace;
@@ -106,9 +106,9 @@
   --sat:env(safe-area-inset-top,0px);
   --sab:env(safe-area-inset-bottom,0px);
 
-  /* Glass blur */
-  --blur:blur(24px) saturate(1.8);
-  --blur-heavy:blur(40px) saturate(2);
+  /* Glass blur — heavier for frosted effect */
+  --blur:blur(28px) saturate(1.9);
+  --blur-heavy:blur(48px) saturate(2.2);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -121,15 +121,50 @@ html,body{
   text-rendering:optimizeLegibility;
 }
 
-/* ── Animated mesh background ── */
+/* ── Language glyphs canvas — Cyrillic + Latin + IPA drifting ── */
 body::before{
+  content:'А Б В Г Д Е Ж З И К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я\Aа б в г д е ж з и к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я\Aα β γ δ ε ζ η θ λ μ ν ξ π σ τ φ ψ ω\Aæ ø å ñ ü ö ä â ê î ô û ç ß\Aʃ ʒ ð θ ŋ ɪ ʊ ə ɑ ɒ ɔ ʌ ɜ eɪ aɪ ɔɪ';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  line-height:2.6;
+  letter-spacing:18px;
+  color:rgba(110,198,255,0.045);
+  word-break:break-all;
+  white-space:pre-wrap;
+  padding:24px;
+  overflow:hidden;
+  animation:glyphDrift 80s linear infinite;
+}
+
+/* ── Deep glow orbs behind everything ── */
+body::after{
   content:'';
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(61,220,92,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 85% 20%, rgba(110,198,255,0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 60% at 50% 90%, rgba(192,132,252,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 10% 70%, rgba(61,220,92,0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 55% 38% at 18% 12%, rgba(110,198,255,0.055) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 32% at 82% 8%,  rgba(192,132,252,0.045) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 85%, rgba(61,220,92,0.035) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 8%  72%, rgba(255,107,107,0.03) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 25% at 92% 60%, rgba(240,192,64,0.025) 0%, transparent 50%),
+    /* deep scanline vignette */
+    linear-gradient(180deg, rgba(4,5,10,0.4) 0%, transparent 30%, transparent 70%, rgba(4,5,10,0.5) 100%);
+  animation:orbPulse 18s ease-in-out infinite alternate;
+}
+
+@keyframes glyphDrift{
+  0%  { transform:translateY(0)    translateX(0); opacity:1; }
+  25% { transform:translateY(-4%)  translateX(1%); }
+  50% { transform:translateY(-8%)  translateX(-1%); opacity:0.85; }
+  75% { transform:translateY(-12%) translateX(2%); }
+  100%{ transform:translateY(-16%) translateX(0);  opacity:1; }
+}
+
+@keyframes orbPulse{
+  0%   { opacity:0.7; transform:scale(1); }
+  33%  { opacity:1;   transform:scale(1.04); }
+  66%  { opacity:0.8; transform:scale(0.97); }
+  100% { opacity:1;   transform:scale(1.02); }
 }
 
 #app{
@@ -190,10 +225,10 @@ body::before{
 
 /* ── Header ── */
 .hdr{
-  background:rgba(6,8,13,0.6);
+  background:rgba(4,5,10,0.45);
   backdrop-filter:var(--blur);
   -webkit-backdrop-filter:var(--blur);
-  border-bottom:1px solid var(--bord);
+  border-bottom:1px solid rgba(255,255,255,0.06);
   padding:12px 16px;
   display:flex;align-items:center;gap:10px;flex-shrink:0;
 }
@@ -243,25 +278,26 @@ body::before{
 
 /* ── Cards ── */
 .card{
-  background:var(--glass-1);
+  background:rgba(255,255,255,0.024);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid var(--bord);
+  border:1px solid rgba(255,255,255,0.07);
   border-radius:18px;
   padding:16px;margin-bottom:10px;
-  box-shadow:0 1px 0 rgba(255,255,255,0.05) inset;
+  box-shadow:0 1px 0 rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.25);
 }
 .fcard{
-  background:var(--glass-2);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
-  border:1px solid var(--glass-edge2);
-  border-radius:20px;
-  padding:26px 20px;margin-bottom:14px;cursor:pointer;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:22px;
+  padding:28px 22px;margin-bottom:14px;cursor:pointer;
   min-height:180px;display:flex;flex-direction:column;align-items:center;text-align:center;
   transition:transform .15s cubic-bezier(0.34,1.56,0.64,1), box-shadow .15s ease;
   transform:translateZ(0);-webkit-backface-visibility:hidden;
   box-shadow:
-    0 8px 32px rgba(0,0,0,0.3),
-    0 1px 0 rgba(255,255,255,0.08) inset;
+    0 12px 40px rgba(0,0,0,0.4),
+    0 1px 0 rgba(255,255,255,0.10) inset,
+    0 0 0 1px rgba(255,255,255,0.04);
 }
 .fcard:active{transform:scale3d(0.975,0.975,1);box-shadow:0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px var(--glass-edge2);}
 
@@ -328,16 +364,16 @@ body::before{
 }
 #bnav{
   display:flex;
-  background:rgba(6,8,13,0.4);
-  border:1px solid rgba(255,255,255,0.13);
+  background:rgba(4,5,10,0.35);
+  border:1px solid rgba(255,255,255,0.11);
   border-radius:21px;
   padding:5px 8px;gap:5px;
-  backdrop-filter:blur(40px) saturate(2) brightness(1.1);
-  -webkit-backdrop-filter:blur(40px) saturate(2) brightness(1.1);
+  backdrop-filter:blur(50px) saturate(2.2) brightness(1.15);
+  -webkit-backdrop-filter:blur(50px) saturate(2.2) brightness(1.15);
   box-shadow:
-    0 8px 34px rgba(0,0,0,0.4),
-    0 1px 0 rgba(255,255,255,0.1) inset,
-    0 -1px 0 rgba(0,0,0,0.3) inset;
+    0 8px 34px rgba(0,0,0,0.5),
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 -1px 0 rgba(0,0,0,0.4) inset;
   touch-action:manipulation;
 }
 .bBtn{
@@ -405,13 +441,13 @@ body::before{
 .lvlBtn.on{border-color:rgba(110,198,255,0.4);background:rgba(110,198,255,0.1);box-shadow:0 0 20px var(--cyn-glow) inset, 0 1px 0 rgba(255,255,255,0.08) inset;}
 
 .tCard{
-  border-radius:16px;border:1px solid var(--bord);
-  background:var(--glass-1);
+  border-radius:16px;border:1px solid rgba(255,255,255,0.065);
+  background:rgba(255,255,255,0.022);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   padding:13px 13px 10px;cursor:pointer;
   transition:transform .12s cubic-bezier(0.34,1.56,0.64,1), box-shadow .15s ease;
   transform:translateZ(0);
-  box-shadow:0 1px 0 rgba(255,255,255,0.05) inset;
+  box-shadow:0 1px 0 rgba(255,255,255,0.06) inset, 0 4px 16px rgba(0,0,0,0.2);
 }
 .tCard:active{transform:scale3d(0.96,0.96,1);box-shadow:0 0 0 1px var(--glass-edge2);}
 .tGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -462,12 +498,71 @@ body::before{
 .lt-btn{padding:5px 10px;font-family:var(--display);font-size:10px;font-weight:600;color:var(--com);cursor:pointer;transition:all .15s;border:none;background:transparent;letter-spacing:0.5px;}
 .lt-btn.on{background:rgba(110,198,255,0.2);color:var(--cyn);}
 
+/* ═══ FLOATING GLYPH COLUMNS — language waterfall ═══ */
+.glyph-col{
+  position:fixed;top:0;z-index:0;pointer-events:none;
+  display:flex;flex-direction:column;gap:28px;
+  font-family:'Space Mono',monospace;
+  font-size:13px;font-weight:400;
+  animation:glyphFall linear infinite;
+  will-change:transform;
+}
+@keyframes glyphFall{
+  from{transform:translateY(-120%);}
+  to  {transform:translateY(120vh);}
+}
+
+/* ═══ FILM GRAIN overlay ═══ */
+#app::after{
+  content:'';
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+  mix-blend-mode:overlay;
+}
+
 /* ═══ ADSENSE SLOT ═══ */
 .ad-slot{background:var(--glass-1);border:1px solid var(--bord);border-radius:13px;overflow:hidden;margin:10px 0;min-height:90px;display:flex;align-items:center;justify-content:center;}
 .ad-label{font-size:9px;color:var(--com);letter-spacing:1px;position:absolute;}
 </style>
 </head>
 <body>
+<!-- ═══ LANGUAGE GLYPH RAIN ═══ -->
+<div aria-hidden="true" id="glyph-bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;">
+  <!-- col 1 — Cyrillic uppercase -->
+  <div class="glyph-col" style="left:3%;color:rgba(110,198,255,0.055);animation-duration:28s;animation-delay:0s;">
+    А Б В Г Д Е Ж З И К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Э Ю Я
+  </div>
+  <!-- col 2 — Cyrillic lower -->
+  <div class="glyph-col" style="left:14%;color:rgba(192,132,252,0.04);animation-duration:36s;animation-delay:-12s;">
+    а б в г д е ж з и к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я
+  </div>
+  <!-- col 3 — IPA phonetics -->
+  <div class="glyph-col" style="left:26%;color:rgba(61,220,92,0.038);animation-duration:42s;animation-delay:-7s;">
+    ʃ ʒ ð θ ŋ ɪ ʊ ə ɑ ɒ ɔ ʌ ɜ eɪ aɪ ɔɪ aʊ
+  </div>
+  <!-- col 4 — Latin accented -->
+  <div class="glyph-col" style="left:38%;color:rgba(240,192,64,0.032);animation-duration:31s;animation-delay:-19s;">
+    à â ä è é ê ë î ï ô ù û ü ÿ ñ ç ß æ ø å
+  </div>
+  <!-- col 5 — Greek -->
+  <div class="glyph-col" style="left:52%;color:rgba(110,198,255,0.038);animation-duration:45s;animation-delay:-4s;">
+    α β γ δ ε ζ η θ ι κ λ μ ν ξ π ρ σ τ υ φ χ ψ ω
+  </div>
+  <!-- col 6 — Cyrillic mix -->
+  <div class="glyph-col" style="left:64%;color:rgba(255,107,107,0.03);animation-duration:38s;animation-delay:-24s;">
+    Б Г Д Ж З Й Л П Ф Х Ц Ч Ш Щ Ъ Ы Ь Э
+  </div>
+  <!-- col 7 — IPA/phonetics -->
+  <div class="glyph-col" style="left:76%;color:rgba(192,132,252,0.042);animation-duration:33s;animation-delay:-16s;">
+    ʧ ʤ ʦ ʣ ɾ ʀ ɬ ɮ ɸ β χ ɣ ħ ʕ ʔ ɰ
+  </div>
+  <!-- col 8 — Accented -->
+  <div class="glyph-col" style="left:88%;color:rgba(61,220,92,0.03);animation-duration:40s;animation-delay:-9s;">
+    ō ū ā ē ī ő ű ă ș ț ğ ı ş ž č š ć đ
+  </div>
+</div>
 <div id="app">
 
 <!-- LANG TOGGLE -->
