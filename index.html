@@ -57,9 +57,6 @@
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <!-- ═══ GOOGLE ADSENSE ═══════════════════════════════════════
   HƯỚNG DẪN: Thay "ca-pub-XXXXXXXXXXXXXXXXX" bằng Publisher ID thật của bạn
   Lấy tại: https://adsense.google.com → Tài khoản → Thông tin tài khoản
@@ -105,9 +102,9 @@
   --bord2:rgba(255,255,255,0.12);
 
   /* Fonts */
-  --mono:'Space Mono',monospace;
-  --display:'Geologica',sans-serif;
-  --serif:'Noto Serif',Georgia,serif;
+  --mono:ui-monospace,'SF Mono','Cascadia Code','Fira Code',monospace;
+  --display:-apple-system,BlinkMacSystemFont,'SF Pro Rounded','SF Pro Text',system-ui,sans-serif;
+  --serif:ui-serif,'New York',Georgia,serif;
 
   /* Safe area */
   --sat:env(safe-area-inset-top,0px);
@@ -192,15 +189,66 @@ body::after{
   -webkit-backface-visibility:hidden;backface-visibility:hidden;
   transform:translateZ(0);
 }
-.screen.active{display:flex;animation:screenIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);}
-.screen.slide-back{animation:screenBack .22s cubic-bezier(0.25,0.46,0.45,0.94) both;}
-
-@keyframes screenIn{from{opacity:0;transform:translateY(6px) scale(0.99);}to{opacity:1;transform:translateY(0) scale(1);}}
-  to{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
+/* ── iOS Screen Transitions ── */
+.screen{
+  /* Đặt trước để GPU biết đây là composited layer */
+  will-change:transform,opacity;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
 }
-@keyframes screenBack{
-  from{opacity:0;transform:translate3d(0,-8px,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+
+/* Forward: slide in từ phải (tab → detail) */
+.screen.active{
+  display:flex;
+  animation:iosSlideIn 0.36s cubic-bezier(0.32,0.72,0,1) both;
+}
+
+/* Back: slide in từ trái (back button) */
+.screen.slide-back{
+  animation:iosSlideBack 0.30s cubic-bezier(0.32,0.72,0,1) both;
+}
+
+/* Tab switch (nav bar): fade + scale nhẹ, không slide */
+.screen.tab-switch{
+  animation:iosTabIn 0.26s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+/* === Keyframes === */
+
+/* Forward navigation — slide từ phải vào */
+@keyframes iosSlideIn{
+  from{
+    opacity:0;
+    transform:translate3d(28px,0,0) scale3d(0.97,0.97,1);
+  }
+  to{
+    opacity:1;
+    transform:translate3d(0,0,0) scale3d(1,1,1);
+  }
+}
+
+/* Back navigation — slide từ trái vào */
+@keyframes iosSlideBack{
+  from{
+    opacity:0;
+    transform:translate3d(-20px,0,0) scale3d(0.98,0.98,1);
+  }
+  to{
+    opacity:1;
+    transform:translate3d(0,0,0) scale3d(1,1,1);
+  }
+}
+
+/* Tab switch — fade + rise nhẹ, không gây chóng mặt */
+@keyframes iosTabIn{
+  from{
+    opacity:0;
+    transform:translate3d(0,6px,0) scale3d(0.992,0.992,1);
+  }
+  to{
+    opacity:1;
+    transform:translate3d(0,0,0) scale3d(1,1,1);
+  }
 }
 
 /* ── Scroll ── */
@@ -371,27 +419,34 @@ body::after{
 }
 #bnav{
   display:flex;
-  background:rgba(4,5,10,0.35);
-  border:1px solid rgba(255,255,255,0.11);
-  border-radius:21px;
-  padding:5px 8px;gap:5px;
-  backdrop-filter:blur(50px) saturate(2.2) brightness(1.15);
-  -webkit-backdrop-filter:blur(50px) saturate(2.2) brightness(1.15);
+  background:rgba(8,10,18,0.74);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:24px;
+  padding:5px 5px;gap:2px;
+  backdrop-filter:blur(28px) saturate(1.8);
+  -webkit-backdrop-filter:blur(28px) saturate(1.8);
   box-shadow:
-    0 8px 34px rgba(0,0,0,0.5),
-    0 1px 0 rgba(255,255,255,0.12) inset,
-    0 -1px 0 rgba(0,0,0,0.4) inset;
+    0 1px 0 rgba(255,255,255,0.16) inset,
+    0 -1px 0 rgba(0,0,0,0.30) inset,
+    0 8px 32px rgba(0,0,0,0.60);
   touch-action:manipulation;
+  will-change:transform;
+  transform:translate3d(0,0,0);
 }
 .bBtn{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:8px 5px;cursor:pointer;min-height:55px;
-  border:none;background:transparent;border-radius:16px;
-  transition:transform .14s cubic-bezier(0.34,1.56,0.64,1), background .15s ease;
-  transform:translateZ(0);touch-action:manipulation;
+  gap:4px;padding:8px 4px;cursor:pointer;min-height:58px;
+  border:none;background:transparent;border-radius:19px;
+  transition:transform .12s cubic-bezier(0.34,1.56,0.64,1),background .14s ease;
+  transform:translate3d(0,0,0);
+  -webkit-transform:translate3d(0,0,0);
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  position:relative;overflow:hidden;
+  will-change:transform;
 }
-.bBtn:active{transform:scale3d(0.82,0.82,1);background:rgba(255,255,255,0.07);}
-.bBtn.on{background:rgba(61,220,92,0.12);}
+.bBtn:active{transform:scale3d(0.84,0.84,1) translate3d(0,0,0);}
+.bBtn.on{background:rgba(255,255,255,0.10);}
 .bIcon{
   font-size:21px;
   width:26px;height:26px;
@@ -404,12 +459,26 @@ body::after{
   transition:color .15s ease;
   stroke:currentColor;
 }
-.bBtn.on .bIcon svg{ color:var(--grn); }
-.bLbl{font-family:var(--display);font-size:8px;font-weight:500;color:rgba(139,148,158,0.75);transition:color .15s ease;letter-spacing:0.8px;text-transform:uppercase;}
-.bBtn.on .bLbl{color:var(--grn);}
-.bBtn.on .bIcon{filter:drop-shadow(0 0 8px var(--grn));animation:iconPulse .3s cubic-bezier(0.34,1.56,0.64,1);}
-.bBtn.on .bIcon svg{color:var(--grn);filter:drop-shadow(0 0 6px var(--grn-glow));}
-@keyframes iconPulse{from{transform:scale3d(0.72,0.72,1)}to{transform:scale3d(1,1,1)}}
+.bIcon svg{color:rgba(148,160,178,0.54);transition:color .14s ease;fill:none;}
+.bLbl{
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
+  font-size:9px;font-weight:500;color:rgba(148,160,178,0.50);
+  transition:color .14s ease;letter-spacing:0.1px;line-height:1;
+}
+#bn-vocab.on  {background:rgba(110,198,255,0.16)!important;box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(110,198,255,0.12) inset!important;}
+#bn-srs.on    {background:rgba(240,192,64,0.15)!important; box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(240,192,64,0.12)  inset!important;}
+#bn-grammar.on{background:rgba(192,132,252,0.15)!important;box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(192,132,252,0.12) inset!important;}
+#bn-lookup.on {background:rgba(61,220,92,0.14)!important;  box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(61,220,92,0.12)   inset!important;}
+#bn-vocab.on   .bIcon svg,#bn-vocab.on   .bLbl{color:var(--cyn);}
+#bn-srs.on     .bIcon svg,#bn-srs.on     .bLbl{color:var(--yel);}
+#bn-grammar.on .bIcon svg,#bn-grammar.on .bLbl{color:var(--pur);}
+#bn-lookup.on  .bIcon svg,#bn-lookup.on  .bLbl{color:var(--grn);}
+#bn-vocab.on   .bIcon{filter:drop-shadow(0 0 7px rgba(110,198,255,0.72));}
+#bn-srs.on     .bIcon{filter:drop-shadow(0 0 7px rgba(240,192,64,0.72));}
+#bn-grammar.on .bIcon{filter:drop-shadow(0 0 7px rgba(192,132,252,0.72));}
+#bn-lookup.on  .bIcon{filter:drop-shadow(0 0 7px rgba(61,220,92,0.72));}
+.bBtn.on .bIcon{animation:iconPop .28s cubic-bezier(0.34,1.56,0.64,1) both;}
+@keyframes iconPop{0%{transform:scale3d(0.65,0.65,1);}65%{transform:scale3d(1.12,1.12,1);}100%{transform:scale3d(1,1,1);}}
 
 /* ── Case rows ── */
 .caseRow{
@@ -6201,7 +6270,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'TỪ VỰNG', 'nav.review': 'ÔN TẬP', 'nav.grammar': 'NGỮ PHÁP', 'nav.read': 'ĐỌC',
+    'nav.vocab': 'TỪ VỰNG', 'nav.review': 'ÔN TẬP', 'nav.grammar': 'NGỮ PHÁP', 'nav.read': 'ĐỌC', 'nav.lookup': 'TRA TỪ',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -6244,7 +6313,7 @@ var i18n = {
     'gram.wf.noun2': 'Danh từ', 'gram.wf.verb2': 'Động từ', 'gram.wf.adj2': 'Tính từ', 'gram.wf.adv2': 'Trạng từ',
   },
   en: {
-    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ',
+    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH',
     'vocab.loading': '// loading...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
     'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
@@ -6306,32 +6375,59 @@ function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.c
 // NAV
 const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case'];
 const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab'};
+// Nav depth hierarchy — dùng để detect forward / back / tab-switch
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1};
+
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
-  // Use rAF to sync with display refresh (60fps on iOS)
+  const prevDepth = NAV_DEPTH[prev] ?? 0;
+  const nextDepth = NAV_DEPTH[name] ?? 0;
+
+  // Tab-level screens = depth 0: vocab, grammar, lookup, srs, srsdone
+  const isTabRoot = nextDepth === 0;
+  // Back = going shallower
+  const isBack = nextDepth < prevDepth;
+  // Tab switch = both screens are root level (tapping nav bar)
+  const isTabSwitch = isTabRoot && (prev == null || prevDepth === 0);
+
   requestAnimationFrame(()=>{
-    SCREENS.forEach(s=>document.getElementById('s-'+s)?.classList.remove('active'));
+    SCREENS.forEach(s=>{
+      const el = document.getElementById('s-'+s);
+      if(el){
+        el.classList.remove('active','slide-back','tab-switch');
+      }
+    });
+
     const el = document.getElementById('s-'+name);
     if(el){
-      // Detect back navigation for reverse animation
-      const backScreens = ['vocab','grammar','lookup'];
-      const isBack = backScreens.includes(name) && prev && !backScreens.includes(prev);
-      if(isBack) el.classList.add('slide-back');
-      else el.classList.remove('slide-back');
-      // Force reflow then activate (prevents animation skip on iOS)
+      // Force reflow — ngăn iOS skip animation khi class thay đổi liên tiếp
       void el.offsetWidth;
+
+      if(isTabSwitch)      el.classList.add('tab-switch');
+      else if(isBack)      el.classList.add('slide-back');
+      // else: default iosSlideIn (forward)
+
       el.classList.add('active');
     }
+
+    // Update nav active state
     document.querySelectorAll('.bBtn').forEach(b=>b.classList.remove('on'));
-    document.getElementById(NAVMAP[name]||'bn-vocab')?.classList.add('on');
-    S.screen=name; save();
-    // Reset shadowing when leaving read screen
-    if(name!=='read'&&typeof _shActive!=='undefined'&&_shActive){
-      if(window.speechSynthesis) window.speechSynthesis.cancel();
-      if(_shRec&&_shRec.state==='recording'){try{_shRec.stop();}catch(e){}}
+    const activeBtn = document.getElementById(NAVMAP[name]||'bn-vocab');
+    if(activeBtn){
+      activeBtn.classList.add('on');
+      // Re-trigger icon pop animation
+      const icon = activeBtn.querySelector('.bIcon');
+      if(icon){
+        icon.style.animation='none';
+        void icon.offsetWidth;
+        icon.style.animation='';
+      }
     }
-    // iOS Haptic feedback (works on Safari iOS 13+)
-    if(window.navigator?.vibrate) navigator.vibrate(8);
+
+    S.screen=name; save();
+
+    // iOS Haptic (Safari 13+)
+    if(window.navigator?.vibrate) navigator.vibrate(6);
   });
 }
 
@@ -6843,7 +6939,7 @@ function setLang(lang){
   document.getElementById('bn-vocab-lbl').textContent = t('nav.vocab');
   document.getElementById('bn-srs-lbl').textContent = t('nav.review');
   const bnG = document.getElementById('bn-grammar-lbl'); if(bnG) bnG.textContent = t('nav.grammar');
-  const bnLk = document.getElementById('bn-lookup-lbl'); if(bnLk) bnLk.textContent = 'TRA TỪ';
+  const bnLk = document.getElementById('bn-lookup-lbl'); if(bnLk) bnLk.textContent = t('nav.lookup');
   // Update static text nodes via data-i18n attributes
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     el.textContent = t(el.getAttribute('data-i18n'));
