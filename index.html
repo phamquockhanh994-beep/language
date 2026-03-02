@@ -54,6 +54,54 @@
 #lk-input:focus{border-color:rgba(110,198,255,0.4);box-shadow:0 0 0 3px rgba(110,198,255,0.08);}
 #lk-input::placeholder{color:rgba(255,255,255,0.22);}
 #lk-input::-webkit-search-cancel-button{display:none;}
+
+/* ── iOS Swipe Back ── */
+
+/* Screen wrapper có thể slide */
+.screen{
+  transition:none; /* JS sẽ control transform trực tiếp */
+}
+
+/* Swipe progress indicator: edge glow ở bên trái */
+#swipe-edge{
+  position:fixed;
+  left:0;top:0;bottom:0;
+  width:4px;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    rgba(110,198,255,0.6) 30%,
+    rgba(110,198,255,0.9) 50%,
+    rgba(110,198,255,0.6) 70%,
+    transparent 100%);
+  opacity:0;
+  pointer-events:none;
+  z-index:999;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:opacity .1s ease;
+  border-radius:0 3px 3px 0;
+  box-shadow:0 0 16px rgba(110,198,255,0.5);
+}
+#swipe-edge.visible{opacity:1;}
+
+/* Swipe back hint arrow */
+#swipe-arrow{
+  position:fixed;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%) translateX(-24px);
+  opacity:0;
+  pointer-events:none;
+  z-index:1000;
+  transition:opacity .15s ease, transform .15s ease;
+  color:rgba(110,198,255,0.9);
+  filter:drop-shadow(0 0 8px rgba(110,198,255,0.7));
+}
+#swipe-arrow.visible{
+  opacity:1;
+  transform:translateY(-50%) translateX(0);
+}
+#swipe-arrow svg{width:28px;height:28px;}
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
@@ -640,6 +688,15 @@ body::after{
   </div>
 </div>
 <div id="app">
+
+<!-- Swipe back elements -->
+<div id="swipe-edge"></div>
+<div id="swipe-arrow">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>
+</div>
+
 
 <!-- LANG TOGGLE -->
 <div id="lang-toggle">
@@ -7149,6 +7206,215 @@ return{nav,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   setLang,init};
 })();
 document.addEventListener('DOMContentLoaded',App.init);
+
+
+// ═══════════════════════════════════════════════════
+// iOS-STYLE SWIPE BACK GESTURE
+// Vuốt từ cạnh trái (30px) sang phải để quay lại
+// ═══════════════════════════════════════════════════
+(function(){
+  // Back target map: mỗi screen → screen cha
+  const BACK_TARGET = {
+    topic:   'vocab',
+    fc:      'topic',
+    quiz:    'topic',
+    qzdone:  'topic',
+    srs:     'vocab',
+    srsdone: 'vocab',
+    case:    'grammar',
+    ag:      'grammar',
+    hd:      'grammar',
+    gd:      'grammar',
+    ez:      'grammar',
+  };
+
+  // Screens không có back (root tabs)
+  const ROOT_SCREENS = new Set(['vocab','grammar','lookup']);
+
+  const EDGE_ZONE   = 30;   // px từ cạnh trái kích hoạt gesture
+  const THRESHOLD   = 120;  // px cần vuốt để confirm back
+  const VELOCITY_OK = 0.4;  // px/ms velocity đủ nhanh
+
+  let touchId = null;
+  let startX = 0, startY = 0;
+  let curX = 0;
+  let startTime = 0;
+  let tracking = false;
+  let committed = false;
+
+  const edge  = document.getElementById('swipe-edge');
+  const arrow = document.getElementById('swipe-arrow');
+
+  function getCurrentScreen(){
+    const screens = ['vocab','topic','fc','quiz','qzdone','srs','srsdone',
+                     'lookup','grammar','case','ag','hd','gd','ez'];
+    return screens.find(s => {
+      const el = document.getElementById('s-'+s);
+      return el && el.classList.contains('active');
+    });
+  }
+
+  function canGoBack(screen){
+    return screen && BACK_TARGET[screen] !== undefined;
+  }
+
+  function doBack(screen){
+    const target = BACK_TARGET[screen];
+    if(target) App.nav(target);
+    // Haptic
+    if(navigator.vibrate) navigator.vibrate([6, 30, 4]);
+  }
+
+  // Lấy screen element đang active để slide
+  function getActiveEl(screen){
+    return document.getElementById('s-' + screen);
+  }
+
+  function resetUI(el){
+    if(el){
+      el.style.transition = '';
+      el.style.transform  = '';
+      el.style.opacity    = '';
+    }
+    edge.classList.remove('visible');
+    arrow.classList.remove('visible');
+    edge.style.height = '';
+    edge.style.top    = '';
+  }
+
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;
+    const t = e.touches[0];
+    // Chỉ kích hoạt nếu bắt đầu từ edge zone
+    if(t.clientX > EDGE_ZONE) return;
+
+    const screen = getCurrentScreen();
+    if(!canGoBack(screen)) return;
+
+    touchId   = t.identifier;
+    startX    = t.clientX;
+    startY    = t.clientY;
+    curX      = t.clientX;
+    startTime = Date.now();
+    tracking  = true;
+    committed = false;
+  }, {passive: true});
+
+  document.addEventListener('touchmove', function(e){
+    if(!tracking) return;
+    // Find our touch
+    let touch = null;
+    for(let i = 0; i < e.touches.length; i++){
+      if(e.touches[i].identifier === touchId){ touch = e.touches[i]; break; }
+    }
+    if(!touch) return;
+
+    curX = touch.clientX;
+    const dx = curX - startX;
+    const dy = touch.clientY - startY;
+
+    // Nếu vuốt dọc nhiều hơn ngang → bỏ qua
+    if(Math.abs(dy) > Math.abs(dx) * 1.4 && dx < 30){
+      tracking = false;
+      return;
+    }
+
+    if(dx <= 0) return;
+
+    // Prevent default để tránh scroll
+    e.preventDefault();
+
+    const screen = getCurrentScreen();
+    const el = getActiveEl(screen);
+    if(!el) return;
+
+    // Progress 0→1
+    const progress = Math.min(dx / THRESHOLD, 1);
+
+    // Slide screen theo ngón tay
+    const slideX = Math.min(dx * 0.55, window.innerWidth * 0.38);
+    el.style.transition = 'none';
+    el.style.transform  = `translate3d(${slideX}px, 0, 0)`;
+    el.style.opacity    = String(1 - progress * 0.15);
+
+    // Edge glow theo progress
+    edge.classList.add('visible');
+    edge.style.transform = `scaleX(${Math.min(progress * 3, 1)})`;
+    edge.style.boxShadow = `0 0 ${8 + progress * 20}px rgba(110,198,255,${0.3 + progress * 0.5})`;
+
+    // Arrow khi đã vuốt đủ 40px
+    if(dx > 40){
+      arrow.classList.add('visible');
+      arrow.style.left = Math.min(16 + dx * 0.2, 48) + 'px';
+    }
+
+    // Pre-commit: đổi màu arrow khi đủ threshold
+    if(progress >= 1 && !committed){
+      committed = true;
+      arrow.style.color = 'rgba(61,220,92,0.95)';
+      arrow.style.filter = 'drop-shadow(0 0 10px rgba(61,220,92,0.8))';
+      if(navigator.vibrate) navigator.vibrate(8);
+    } else if(progress < 1 && committed){
+      committed = false;
+      arrow.style.color = 'rgba(110,198,255,0.9)';
+      arrow.style.filter = 'drop-shadow(0 0 8px rgba(110,198,255,0.7))';
+    }
+  }, {passive: false});
+
+  function onTouchEnd(e){
+    if(!tracking) return;
+    tracking = false;
+
+    const dx       = curX - startX;
+    const elapsed  = Date.now() - startTime;
+    const velocity = elapsed > 0 ? dx / elapsed : 0;
+
+    const screen = getCurrentScreen();
+    const el     = getActiveEl(screen);
+
+    // Confirm back nếu: đủ distance HOẶC đủ nhanh
+    const shouldBack = (dx >= THRESHOLD) || (dx >= 60 && velocity >= VELOCITY_OK);
+
+    if(shouldBack && screen){
+      // Animate screen ra khỏi màn hình
+      if(el){
+        el.style.transition = 'transform .28s cubic-bezier(0.32,0.72,0,1), opacity .28s ease';
+        el.style.transform  = 'translate3d(100%, 0, 0)';
+        el.style.opacity    = '0';
+        setTimeout(() => {
+          resetUI(el);
+          doBack(screen);
+        }, 260);
+      } else {
+        resetUI(el);
+        doBack(screen);
+      }
+    } else {
+      // Snap back với spring animation
+      if(el){
+        el.style.transition = 'transform .32s cubic-bezier(0.34,1.56,0.64,1), opacity .22s ease';
+        el.style.transform  = 'translate3d(0, 0, 0)';
+        el.style.opacity    = '1';
+        setTimeout(() => resetUI(el), 340);
+      }
+      edge.classList.remove('visible');
+      arrow.classList.remove('visible');
+    }
+  }
+
+  document.addEventListener('touchend',    onTouchEnd, {passive: true});
+  document.addEventListener('touchcancel', function(){
+    if(!tracking) return;
+    tracking = false;
+    const screen = getCurrentScreen();
+    const el = getActiveEl(screen);
+    if(el){ el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }
+    edge.classList.remove('visible');
+    arrow.classList.remove('visible');
+  }, {passive: true});
+
+  console.log('[SwipeBack] initialized');
+})();
 
 </script>
 </body>
