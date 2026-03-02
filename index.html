@@ -3,28 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<!-- iOS PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="РУССКИЙ">
+<meta name="apple-touch-fullscreen" content="yes">
+<!-- iOS 26: Dynamic Island -->
+<meta name="apple-mobile-web-app-orientation" content="portrait">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#06080d">
-<!-- iOS performance: disable callout, selection, zoom -->
-<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#04050a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#04050a">
+<!-- iOS: disable callout, selection, zoom, date detection -->
+<meta name="format-detection" content="telephone=no,address=no,date=no,email=no">
 <style>
-  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
-  /* iOS PWA fullscreen: fill entire screen including notch area */
-  html{height:100%;height:-webkit-fill-available;}
-  body{
-    min-height:100%;
-    min-height:-webkit-fill-available;
-    overscroll-behavior:none;
-  }
-  /* iOS standalone: remove status bar gap */
-  @media (display-mode:standalone){
-    html,body{height:100%;background:#06080d;}
-  }
-  #app,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
-  /* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
+/* ════════════════════════════════════════
+   iOS 26 BASE OPTIMIZATIONS
+   ════════════════════════════════════════ */
+
+/* 1. Text size & font rendering */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  font-smoothing:antialiased;
+}
+
+/* 2. iOS PWA fullscreen */
+html{height:100%;height:-webkit-fill-available;height:100svh;}
+body{
+  min-height:100%;
+  min-height:-webkit-fill-available;
+  min-height:100svh;
+  overscroll-behavior:none;
+  /* iOS 26: prevent pull-to-refresh & bounce on root */
+  overscroll-behavior-y:none;
+}
+/* Standalone PWA mode */
+@media (display-mode:standalone){
+  html,body{height:100%;background:#04050a;}
+}
+
+/* 3. Disable iOS callout & selection on UI elements */
+button,a,.btn,.iBtn,.bBtn,.fcard,.qOpt,.srsBtn,.wChip,.tCard,.lvlBtn,.caseRow,.spkBtn,.caseNum{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+/* Allow selection on text content */
+p,span,.sWord{-webkit-user-select:text;user-select:text;}
+
+/* 4. iOS 26 tap highlight: fully suppress */
+*{-webkit-tap-highlight-color:transparent;}
+
+/* 5. GPU compositing layers */
+#app,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
+/* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
+
+/* 6. iOS 26 scroll: native momentum everywhere */
+*{-webkit-overflow-scrolling:touch;}
+
+/* 7. Input zoom prevention (font-size >= 16px on inputs) */
+input,textarea,select{font-size:16px!important;}
+#lk-input{font-size:16px!important;}
+
+/* 8. Scrollbar hide globally */
+::-webkit-scrollbar{display:none;}
+*{scrollbar-width:none;-ms-overflow-style:none;}
 
 /* ── SHADOWING ── */
 .sh-panel{background:rgba(4,5,10,0.6);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:18px;border:1px solid rgba(255,255,255,0.07);padding:16px;margin-bottom:14px;}
@@ -50,10 +94,8 @@
 
 .lk-chip{padding:6px 14px;border-radius:20px;font-family:var(--display);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;border:1px solid rgba(255,255,255,0.09);background:rgba(255,255,255,0.04);color:var(--com);transition:all .15s;}
 .lk-chip.on{border-color:rgba(110,198,255,0.45);background:rgba(110,198,255,0.10);color:var(--cyn);}
-#lk-input{width:100%;box-sizing:border-box;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:11px 44px 11px 40px;font-size:15px;color:var(--tx);font-family:var(--display);outline:none;-webkit-appearance:none;appearance:none;}
-#lk-input:focus{border-color:rgba(110,198,255,0.4);box-shadow:0 0 0 3px rgba(110,198,255,0.08);}
-#lk-input::placeholder{color:rgba(255,255,255,0.22);}
-#lk-input::-webkit-search-cancel-button{display:none;}
+
+
 
 /* ── Swipe Back ── */
 #swipe-zone{
@@ -98,55 +140,73 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
 /* ═══════════════════════════════════════════════════════
-   iOS 26 LIQUID GLASS — Full Redesign
-   Aesthetic: Dark cosmic base + translucent glass layers
-   Colors: Deep space navy/black with neon accent halos
+   iOS 26 LIQUID GLASS — Dark Cosmic
    ═══════════════════════════════════════════════════════ */
 :root{
-  /* Base colors — ink black, not navy */
+  /* Base — true ink black */
   --bg:#04050a;
   --bg2:#06080f;
 
-  /* Glass — more transparent, Apple-style */
-  --glass-1:rgba(255,255,255,0.03);
-  --glass-2:rgba(255,255,255,0.055);
+  /* iOS 26 Liquid Glass — real Apple values */
+  --glass-1:rgba(255,255,255,0.028);
+  --glass-2:rgba(255,255,255,0.052);
   --glass-3:rgba(255,255,255,0.09);
-  --glass-edge:rgba(255,255,255,0.10);
-  --glass-edge2:rgba(255,255,255,0.16);
+  --glass-edge:rgba(255,255,255,0.11);
+  --glass-edge2:rgba(255,255,255,0.18);
+  /* specular highlight on top edge */
+  --glass-spec:rgba(255,255,255,0.14);
 
-  /* Text */
-  --tx:rgba(235,242,250,0.96);
-  --txd:rgba(148,158,170,0.82);
-  --com:rgba(100,110,124,0.65);
+  /* Text — iOS 26 label colors */
+  --tx:rgba(238,244,252,0.97);         /* label */
+  --txd:rgba(152,162,174,0.84);        /* secondaryLabel */
+  --com:rgba(104,114,128,0.68);        /* tertiaryLabel */
 
-  /* Accents — same hues, slightly warmer */
-  --grn:#3ddc5c;
-  --grn-glow:rgba(61,220,92,0.22);
-  --cyn:#6ec6ff;
-  --cyn-glow:rgba(110,198,255,0.18);
-  --yel:#f0c040;
-  --yel-glow:rgba(240,192,64,0.18);
-  --pnk:#ff6b6b;
-  --pnk-glow:rgba(255,107,107,0.18);
-  --pur:#c084fc;
-  --pur-glow:rgba(192,132,252,0.18);
+  /* Accents */
+  --grn:#34c759;   /* systemGreen */
+  --grn-glow:rgba(52,199,89,0.22);
+  --cyn:#5ac8fa;   /* systemTeal */
+  --cyn-glow:rgba(90,200,250,0.20);
+  --yel:#ffd60a;   /* systemYellow */
+  --yel-glow:rgba(255,214,10,0.18);
+  --pnk:#ff375f;   /* systemRed */
+  --pnk-glow:rgba(255,55,95,0.20);
+  --pur:#bf5af2;   /* systemPurple */
+  --pur-glow:rgba(191,90,242,0.20);
+  --org:#ff9f0a;   /* systemOrange */
 
-  /* Border — more subtle */
+  /* Borders */
   --bord:rgba(255,255,255,0.07);
   --bord2:rgba(255,255,255,0.12);
 
-  /* Fonts */
-  --mono:ui-monospace,'SF Mono','Cascadia Code','Fira Code',monospace;
-  --display:-apple-system,BlinkMacSystemFont,'SF Pro Rounded','SF Pro Text',system-ui,sans-serif;
-  --serif:ui-serif,'New York',Georgia,serif;
+  /* ── iOS 26 FONTS ──────────────────────────────────────
+     SF Pro Rounded — UI buttons, labels (bouncy, friendly)
+     SF Pro Text    — body reading (optimized 6–19pt)
+     SF Pro Display — headers (optimized 20pt+)
+     SF Mono        — code, phonetics
+     New York       — serif (Cyrillic content, flashcards)
+     ──────────────────────────────────────────────────── */
+  --display:'SF Pro Rounded',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
+  --body:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
+  --hdisplay:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
+  --mono:'SF Mono',ui-monospace,'Cascadia Code','Fira Code',monospace;
+  --serif:'New York',ui-serif,'Georgia Pro',Georgia,serif;
 
   /* Safe area */
   --sat:env(safe-area-inset-top,0px);
   --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px);
+  --sar:env(safe-area-inset-right,0px);
 
-  /* Glass blur — heavier for frosted effect */
-  --blur:blur(28px) saturate(1.9);
-  --blur-heavy:blur(48px) saturate(2.2);
+  /* iOS 26 Liquid Glass blur — multi-stage */
+  --blur:blur(24px) saturate(180%) brightness(105%);
+  --blur-heavy:blur(40px) saturate(200%) brightness(108%);
+  --blur-light:blur(16px) saturate(160%);
+
+  /* iOS 26 spring animation curves */
+  --spring:cubic-bezier(0.34,1.56,0.64,1);  /* bounce */
+  --ease-out:cubic-bezier(0.25,0.46,0.45,0.94); /* standard decel */
+  --ease-ios:cubic-bezier(0.32,0.72,0,1);   /* navigation */
+  --ease-in:cubic-bezier(0.55,0,1,0.45);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -154,9 +214,14 @@ button,a,.btn,.iBtn,.bBtn,.fcard,.qOpt,.srsBtn,.wChip,.tCard,.lvlBtn,.caseRow,.s
 
 html,body{
   width:100%;height:100%;
-  background:var(--bg);color:var(--tx);font-family:var(--mono);
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  background:var(--bg);color:var(--tx);
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
+  font-optical-sizing:auto;
+  font-feature-settings:"kern" 1,"liga" 1,"calt" 1;
+  font-synthesis:none;
 }
 
 /* ── Language glyphs canvas — Cyrillic + Latin + IPA drifting ── */
@@ -223,79 +288,26 @@ body::after{
   -webkit-backface-visibility:hidden;backface-visibility:hidden;
   transform:translateZ(0);
 }
-/* ── iOS Screen Transitions ── */
-.screen{
-  /* Đặt trước để GPU biết đây là composited layer */
-  will-change:transform,opacity;
-  -webkit-backface-visibility:hidden;
-  backface-visibility:hidden;
-}
+/* ── iOS Screen Transitions — defined in iOS 26 block ── */
 
-/* Forward: slide in từ phải (tab → detail) */
-.screen.active{
-  display:flex;
-  animation:iosSlideIn 0.36s cubic-bezier(0.32,0.72,0,1) both;
-}
+/* ── Screen transitions — defined in iOS 26 block below ── */
 
-/* Back: slide in từ trái (back button) */
-.screen.slide-back{
-  animation:iosSlideBack 0.30s cubic-bezier(0.32,0.72,0,1) both;
-}
-
-/* Tab switch (nav bar): fade + scale nhẹ, không slide */
-.screen.tab-switch{
-  animation:iosTabIn 0.26s cubic-bezier(0.16,1,0.3,1) both;
-}
-
-/* === Keyframes === */
-
-/* Forward navigation — slide từ phải vào */
-@keyframes iosSlideIn{
-  from{
-    opacity:0;
-    transform:translate3d(28px,0,0) scale3d(0.97,0.97,1);
-  }
-  to{
-    opacity:1;
-    transform:translate3d(0,0,0) scale3d(1,1,1);
-  }
-}
-
-/* Back navigation — slide từ trái vào */
-@keyframes iosSlideBack{
-  from{
-    opacity:0;
-    transform:translate3d(-20px,0,0) scale3d(0.98,0.98,1);
-  }
-  to{
-    opacity:1;
-    transform:translate3d(0,0,0) scale3d(1,1,1);
-  }
-}
-
-/* Tab switch — fade + rise nhẹ, không gây chóng mặt */
-@keyframes iosTabIn{
-  from{
-    opacity:0;
-    transform:translate3d(0,6px,0) scale3d(0.992,0.992,1);
-  }
-  to{
-    opacity:1;
-    transform:translate3d(0,0,0) scale3d(1,1,1);
-  }
-}
-
-/* ── Scroll ── */
+/* ── Scroll — iOS 26 native momentum ── */
 .scrl{
   flex:1;min-height:0;
   overflow-y:scroll;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-y:contain;
   touch-action:pan-y;
+  scroll-behavior:smooth;
   padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
   transform:translateZ(0);
   -webkit-backface-visibility:hidden;
+  /* hide scrollbar */
+  scrollbar-width:none;
+  -ms-overflow-style:none;
 }
+.scrl::-webkit-scrollbar{display:none;}
 #app > .screen > .scrl{ padding-bottom:calc(env(safe-area-inset-bottom,0px) + 89px) !important; }
 
 /* ── Glass mixin helper classes ── */
@@ -314,50 +326,57 @@ body::after{
 
 /* ── Header ── */
 .hdr{
-  background:rgba(4,5,10,0.45);
+  background:rgba(4,5,10,0.50);
   backdrop-filter:var(--blur);
   -webkit-backdrop-filter:var(--blur);
   border-bottom:1px solid rgba(255,255,255,0.06);
   padding:12px 16px;
   display:flex;align-items:center;gap:10px;flex-shrink:0;
 }
-.hdr-title{font-weight:700;font-size:15px;flex:1;color:var(--tx);font-family:var(--display);letter-spacing:-0.2px;}
-.hdr-sub{font-size:10px;color:var(--com);margin-top:2px;}
+.hdr-title{
+  font-weight:700;font-size:17px;flex:1;color:var(--tx);
+  font-family:var(--hdisplay);letter-spacing:-0.4px;
+}
+.hdr-sub{font-size:11px;color:var(--com);margin-top:2px;font-family:var(--body);}
 
-/* ── Buttons ── */
+/* ── Buttons — iOS 26 SF Pro Rounded ── */
 /* SVG in buttons */
 .btn svg, .spkBtn svg{ flex-shrink:0; }
 .btn{
   display:flex;align-items:center;justify-content:center;gap:6px;
-  border-radius:13px;
+  border-radius:14px;
   border:1px solid var(--bord2);
   background:var(--glass-2);
-  backdrop-filter:var(--blur);
-  -webkit-backdrop-filter:var(--blur);
-  color:var(--txd);font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:0.1px;
+  backdrop-filter:var(--blur-light);
+  -webkit-backdrop-filter:var(--blur-light);
+  color:var(--txd);
+  font-family:var(--display);
+  font-size:13px;font-weight:600;letter-spacing:0px;
   padding:11px 16px;cursor:pointer;
-  transition:transform .12s cubic-bezier(0.34,1.56,0.64,1), opacity .1s ease, background .15s ease;
+  transition:transform .14s var(--spring), opacity .12s var(--ease-out), background .16s ease;
   user-select:none;min-height:44px;width:100%;
   -webkit-backface-visibility:hidden;transform:translateZ(0);
-  box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;
+  /* iOS 26 glass specular top highlight */
+  box-shadow:
+    0 1px 0 var(--glass-spec) inset,
+    0 0 0 0.5px rgba(255,255,255,0.08) inset;
 }
-.btn{-webkit-tap-highlight-color:transparent;will-change:transform;transform:translateZ(0);}
-.btn:active{transform:scale3d(0.96,0.96,1);opacity:.75;background:var(--glass-3);}
+.btn:active{transform:scale3d(0.96,0.96,1);opacity:.72;background:var(--glass-3);}
 
 .iBtn{
-  width:40px;height:40px;border-radius:12px;
+  width:44px;height:44px;border-radius:14px;
   border:1px solid var(--bord);
   background:var(--glass-1);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);
   -webkit-tap-highlight-color:transparent;
   will-change:transform;
   transform:translateZ(0);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;flex-shrink:0;
-  transition:transform .12s cubic-bezier(0.34,1.56,0.64,1), opacity .1s ease;
-  transform:translateZ(0);
+  transition:transform .14s var(--spring), opacity .1s ease;
+  box-shadow:0 1px 0 var(--glass-spec) inset;
 }
-.iBtn:active{transform:scale3d(0.88,0.88,1);opacity:.6;}
+.iBtn:active{transform:scale3d(0.88,0.88,1);opacity:.55;}
 
 /* ── Color variants — glass tint ── */
 .g{border-color:rgba(61,220,92,0.35)!important;background:rgba(61,220,92,0.08)!important;color:var(--grn)!important;box-shadow:0 0 20px var(--grn-glow) inset, 0 1px 0 rgba(255,255,255,0.06) inset!important;}
@@ -374,26 +393,27 @@ body::after{
   background:rgba(255,255,255,0.024);
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   border:1px solid rgba(255,255,255,0.07);
-  border-radius:18px;
+  border-radius:20px;
   padding:16px;margin-bottom:10px;
-  box-shadow:0 1px 0 rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.25);
+  box-shadow:
+    0 1px 0 var(--glass-spec) inset,
+    0 4px 24px rgba(0,0,0,0.25);
 }
 .fcard{
   background:rgba(255,255,255,0.04);
   backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);
   border:1px solid rgba(255,255,255,0.11);
-  border-radius:22px;
+  border-radius:26px;
   padding:28px 22px;margin-bottom:14px;cursor:pointer;
   min-height:180px;display:flex;flex-direction:column;align-items:center;text-align:center;
-  transition:transform .15s cubic-bezier(0.34,1.56,0.64,1), box-shadow .15s ease;
+  transition:transform .16s var(--spring), box-shadow .16s ease;
   transform:translateZ(0);-webkit-backface-visibility:hidden;
   box-shadow:
-    0 12px 40px rgba(0,0,0,0.4),
-    0 1px 0 rgba(255,255,255,0.10) inset,
-    0 0 0 1px rgba(255,255,255,0.04);
+    0 16px 48px rgba(0,0,0,0.45),
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 0 0 0.5px rgba(255,255,255,0.05);
 }
-.fcard{-webkit-tap-highlight-color:transparent;will-change:transform;}
-.fcard:active{transform:scale3d(0.975,0.975,1);box-shadow:0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px var(--glass-edge2);}
+.fcard:active{transform:scale3d(0.972,0.972,1);box-shadow:0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px var(--glass-edge2);}
 
 /* ── Misc ── */
 .srsBdg{border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;margin-bottom:14px;align-self:flex-start;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);}
@@ -451,26 +471,28 @@ body::after{
   to{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
 }
 
-/* ── Floating Pill Nav ── */
+/* ── Floating Pill Nav — iOS 26 ── */
 #bnav-wrap{
   position:fixed;
-  bottom:calc(env(safe-area-inset-bottom,0px) + 2px);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 6px);
   left:50%;transform:translateX(-50%);
   z-index:200;
-  width:calc(100% - 42px);max-width:400px;
+  width:calc(100% - 32px);max-width:400px;
 }
 #bnav{
   display:flex;
-  background:rgba(8,10,18,0.74);
-  border:1px solid rgba(255,255,255,0.13);
-  border-radius:24px;
-  padding:5px 5px;gap:2px;
-  backdrop-filter:blur(28px) saturate(1.8);
-  -webkit-backdrop-filter:blur(28px) saturate(1.8);
+  background:rgba(8,10,20,0.78);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:28px;
+  padding:6px 6px;gap:2px;
+  backdrop-filter:blur(32px) saturate(180%) brightness(110%);
+  -webkit-backdrop-filter:blur(32px) saturate(180%) brightness(110%);
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.16) inset,
-    0 -1px 0 rgba(0,0,0,0.30) inset,
-    0 8px 32px rgba(0,0,0,0.60);
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    0 -1px 0 rgba(0,0,0,0.25) inset,
+    0 0 0 0.5px rgba(255,255,255,0.06) inset,
+    0 10px 40px rgba(0,0,0,0.65),
+    0 2px 8px rgba(0,0,0,0.4);
   touch-action:manipulation;
   will-change:transform;
   transform:translate3d(0,0,0);
@@ -478,8 +500,8 @@ body::after{
 .bBtn{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:4px;padding:8px 4px;cursor:pointer;min-height:58px;
-  border:none;background:transparent;border-radius:19px;
-  transition:transform .12s cubic-bezier(0.34,1.56,0.64,1),background .14s ease;
+  border:none;background:transparent;border-radius:22px;
+  transition:transform .14s var(--spring),background .15s var(--ease-out);
   transform:translate3d(0,0,0);
   -webkit-transform:translate3d(0,0,0);
   touch-action:manipulation;
@@ -487,40 +509,42 @@ body::after{
   position:relative;overflow:hidden;
   will-change:transform;
 }
-.bBtn:active{transform:scale3d(0.84,0.84,1) translate3d(0,0,0);}
+.bBtn:active{transform:scale3d(0.82,0.82,1) translate3d(0,0,0);}
 .bBtn.on{background:rgba(255,255,255,0.10);}
 .bIcon{
   font-size:21px;
-  width:26px;height:26px;
+  width:28px;height:28px;
   display:flex;align-items:center;justify-content:center;
-  transition:filter .2s ease, transform .2s cubic-bezier(0.34,1.56,0.64,1);
+  transition:filter .2s ease, transform .22s var(--spring);
 }
 .bIcon svg{
   width:22px;height:22px;
-  color:rgba(139,148,158,0.7);
-  transition:color .15s ease;
+  color:rgba(148,160,178,0.54);
+  transition:color .15s ease;fill:none;
   stroke:currentColor;
 }
-.bIcon svg{color:rgba(148,160,178,0.54);transition:color .14s ease;fill:none;}
 .bLbl{
-  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
-  font-size:9px;font-weight:500;color:rgba(148,160,178,0.50);
-  transition:color .14s ease;letter-spacing:0.1px;line-height:1;
+  /* iOS 26: SF Pro Rounded at Tab bar size */
+  font-family:var(--display);
+  font-size:10px;font-weight:500;
+  color:rgba(148,160,178,0.50);
+  transition:color .14s ease;
+  letter-spacing:0.1px;line-height:1;
 }
-#bn-vocab.on  {background:rgba(110,198,255,0.16)!important;box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(110,198,255,0.12) inset!important;}
-#bn-srs.on    {background:rgba(240,192,64,0.15)!important; box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(240,192,64,0.12)  inset!important;}
-#bn-grammar.on{background:rgba(192,132,252,0.15)!important;box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(192,132,252,0.12) inset!important;}
-#bn-lookup.on {background:rgba(61,220,92,0.14)!important;  box-shadow:0 1px 0 rgba(255,255,255,0.20) inset,0 0 20px rgba(61,220,92,0.12)   inset!important;}
+#bn-vocab.on  {background:rgba(90,200,250,0.14)!important;box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 0 22px rgba(90,200,250,0.10) inset!important;}
+#bn-srs.on    {background:rgba(255,214,10,0.13)!important; box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 0 22px rgba(255,214,10,0.10) inset!important;}
+#bn-grammar.on{background:rgba(191,90,242,0.13)!important; box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 0 22px rgba(191,90,242,0.10) inset!important;}
+#bn-lookup.on {background:rgba(52,199,89,0.12)!important;  box-shadow:0 1px 0 rgba(255,255,255,0.18) inset,0 0 22px rgba(52,199,89,0.10)  inset!important;}
 #bn-vocab.on   .bIcon svg,#bn-vocab.on   .bLbl{color:var(--cyn);}
 #bn-srs.on     .bIcon svg,#bn-srs.on     .bLbl{color:var(--yel);}
 #bn-grammar.on .bIcon svg,#bn-grammar.on .bLbl{color:var(--pur);}
 #bn-lookup.on  .bIcon svg,#bn-lookup.on  .bLbl{color:var(--grn);}
-#bn-vocab.on   .bIcon{filter:drop-shadow(0 0 7px rgba(110,198,255,0.72));}
-#bn-srs.on     .bIcon{filter:drop-shadow(0 0 7px rgba(240,192,64,0.72));}
-#bn-grammar.on .bIcon{filter:drop-shadow(0 0 7px rgba(192,132,252,0.72));}
-#bn-lookup.on  .bIcon{filter:drop-shadow(0 0 7px rgba(61,220,92,0.72));}
-.bBtn.on .bIcon{animation:iconPop .28s cubic-bezier(0.34,1.56,0.64,1) both;}
-@keyframes iconPop{0%{transform:scale3d(0.65,0.65,1);}65%{transform:scale3d(1.12,1.12,1);}100%{transform:scale3d(1,1,1);}}
+#bn-vocab.on   .bIcon{filter:drop-shadow(0 0 7px rgba(90,200,250,0.75));}
+#bn-srs.on     .bIcon{filter:drop-shadow(0 0 7px rgba(255,214,10,0.75));}
+#bn-grammar.on .bIcon{filter:drop-shadow(0 0 7px rgba(191,90,242,0.75));}
+#bn-lookup.on  .bIcon{filter:drop-shadow(0 0 7px rgba(52,199,89,0.75));}
+.bBtn.on .bIcon{animation:iconPop .30s var(--spring) both;}
+@keyframes iconPop{0%{transform:scale3d(0.60,0.60,1);}65%{transform:scale3d(1.16,1.16,1);}100%{transform:scale3d(1,1,1);}}
 
 /* ── Case rows ── */
 .caseRow{
@@ -593,17 +617,136 @@ body::after{
 /* ── Toast ── */
 #toast{
   position:fixed;top:calc(env(safe-area-inset-top,0px) + 56px);left:50%;
-  transform:translateX(-50%) translateY(-8px);
-  background:rgba(6,8,13,0.7);
+  transform:translateX(-50%) translateY(-10px);
+  background:rgba(6,8,13,0.72);
   backdrop-filter:var(--blur-heavy);-webkit-backdrop-filter:var(--blur-heavy);
-  border:1px solid rgba(61,220,92,0.3);
-  border-radius:20px;padding:8px 18px;font-size:12px;font-weight:700;color:var(--grn);
+  border:1px solid rgba(52,199,89,0.32);
+  border-radius:22px;padding:9px 20px;font-size:13px;font-weight:700;
+  font-family:var(--display);
+  color:var(--grn);
   z-index:999;pointer-events:none;opacity:0;
-  transition:opacity .2s ease, transform .2s ease;
+  transition:opacity .2s var(--ease-out), transform .22s var(--spring);
   white-space:nowrap;
-  box-shadow:0 0 20px var(--grn-glow);
+  box-shadow:0 0 24px rgba(52,199,89,0.22),0 1px 0 var(--glass-spec) inset;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ════════════════════════════════════════════════════════
+   iOS 26 EXTRA OPTIMIZATIONS — Typography & Interactions
+   ════════════════════════════════════════════════════════ */
+
+/* Font rendering for Cyrillic — use geometric precision */
+.fcard,.card,.case-body,#case-body,#gram-body{
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* SF Pro Display for large headers (20pt+) */
+#s-grammar [style*="font-size:22px"],
+#s-grammar [style*="font-size:20px"],
+[style*="font-size:23px"],
+[style*="font-size:36px"],
+[style*="font-size:40px"]{
+  font-family:var(--hdisplay) !important;
+  font-feature-settings:"ss01" 1; /* SF Pro alternate forms */
+}
+
+/* SF Pro Rounded for all buttons and nav labels */
+.bLbl,.btn,#lang-toggle,.lt-btn,.lk-chip{font-family:var(--display) !important;}
+
+/* New York for all Russian/Cyrillic content */
+.fcard .serif-content,
+[style*="font-family:var(--serif)"],
+.eTable{font-family:var(--serif) !important;}
+
+/* SF Mono for phonetics, codes, monospace */
+[style*="font-family:var(--mono)"]{font-family:var(--mono) !important;}
+
+/* Tabular numbers — consistent width */
+.sh-score,[style*="font-size:20px"],[style*="font-size:36px"]{
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+
+/* iOS 26: content-visibility for off-screen optimization */
+#s-vocab,#s-srs,#s-lookup{content-visibility:auto;contain-intrinsic-size:0 800px;}
+
+/* Grammar tab bar scroll — hide scrollbar */
+#gram-tabs{
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  scroll-snap-type:x proximity;
+  padding-bottom:2px;
+}
+#gram-tabs::-webkit-scrollbar{display:none;}
+#gram-tabs .btn{scroll-snap-align:start;}
+
+/* iOS 26: SRS buttons — bigger tap targets */
+.srsBtn{min-height:56px;border-radius:16px;}
+.srsBtn:active{transform:scale3d(0.91,0.91,1);opacity:.68;}
+
+/* Touch callout disable on UI */
+.hdr,.card,.fcard,.btn,.iBtn,.bBtn,.caseRow,.tCard,.wChip,.qOpt{
+  -webkit-touch-callout:none;
+}
+
+/* iOS 26: Smooth color transitions on accent changes */
+.btn,.iBtn,.bBtn,.srsBtn,.qOpt,.caseRow{
+  transition:
+    transform .14s var(--spring),
+    opacity .12s var(--ease-out),
+    background .16s var(--ease-out),
+    border-color .16s var(--ease-out),
+    box-shadow .16s ease;
+}
+
+/* iOS 26: Keyboard safe area for input screens */
+#s-lookup{padding-bottom:env(keyboard-inset-height,0px);}
+
+/* Tables — better typography */
+.eTable th{
+  font-family:var(--display);
+  font-size:11px;letter-spacing:0.3px;
+  font-weight:600;
+}
+.eTable td{
+  font-family:var(--body);
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* wPopup — iOS 26 spring entry */
+.wPopup{
+  animation:popIn .28s var(--spring) both;
+}
+@keyframes popIn{
+  from{opacity:0;transform:translate3d(0,18px,0) scale3d(0.94,0.94,1);}
+  to  {opacity:1;transform:translate3d(0,0,0)   scale3d(1,1,1);}
+}
+
+/* Screen transition — iOS 26 navigation feel */
+@keyframes iosSlideIn{
+  from{opacity:0;transform:translate3d(30px,0,0) scale3d(0.97,0.97,1);}
+  to  {opacity:1;transform:translate3d(0,0,0)    scale3d(1,1,1);}
+}
+@keyframes iosSlideBack{
+  from{opacity:0;transform:translate3d(-22px,0,0) scale3d(0.98,0.98,1);}
+  to  {opacity:1;transform:translate3d(0,0,0)     scale3d(1,1,1);}
+}
+@keyframes iosTabIn{
+  from{opacity:0;transform:translate3d(0,7px,0) scale3d(0.990,0.990,1);}
+  to  {opacity:1;transform:translate3d(0,0,0)   scale3d(1,1,1);}
+}
+.screen.active{
+  display:flex;
+  animation:iosSlideIn 0.34s var(--ease-ios) both;
+}
+.screen.slide-back{
+  animation:iosSlideBack 0.28s var(--ease-ios) both;
+}
+.screen.tab-switch{
+  animation:iosTabIn 0.24s var(--ease-out) both;
+}
 
 .row{display:flex;align-items:center;gap:8px;}
 .rowSB{display:flex;align-items:center;justify-content:space-between;}
@@ -614,18 +757,40 @@ body::after{
 
 #offline-badge{display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));right:12px;background:rgba(240,192,64,0.1);backdrop-filter:var(--blur);border:1px solid rgba(240,192,64,0.3);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--yel);z-index:100;}
 
-/* ═══ LANG TOGGLE ═══ */
+/* ═══ LANG TOGGLE — iOS 26 glass pill ═══ */
 #lang-toggle{
   position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:12px;z-index:200;
-  background:rgba(6,8,13,0.5);
-  backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);
+  background:rgba(6,8,13,0.55);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
   border:1px solid var(--bord2);border-radius:20px;display:flex;overflow:hidden;
-  box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;
+  box-shadow:0 1px 0 var(--glass-spec) inset,0 4px 16px rgba(0,0,0,0.3);
 }
-.lt-btn{padding:5px 10px;font-family:var(--display);font-size:10px;font-weight:600;color:var(--com);cursor:pointer;transition:all .15s;border:none;background:transparent;letter-spacing:0.5px;}
-.lt-btn.on{background:rgba(110,198,255,0.2);color:var(--cyn);}
+.lt-btn{
+  padding:6px 12px;
+  font-family:var(--display);font-size:11px;font-weight:600;
+  color:var(--com);cursor:pointer;transition:all .15s var(--ease-out);
+  border:none;background:transparent;letter-spacing:0.3px;
+  min-height:32px;min-width:40px;
+}
+.lt-btn.on{background:rgba(90,200,250,0.2);color:var(--cyn);}
 
-/* ═══ FLOATING GLYPH COLUMNS — language waterfall ═══ */
+#lk-input{
+  width:100%;box-sizing:border-box;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:16px;
+  padding:12px 44px 12px 40px;
+  font-size:16px;  /* prevent iOS zoom */
+  color:var(--tx);font-family:var(--body);
+  outline:none;-webkit-appearance:none;appearance:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+#lk-input:focus{
+  border-color:rgba(90,200,250,0.4);
+  box-shadow:0 0 0 3px rgba(90,200,250,0.10);
+}
+#lk-input::placeholder{color:rgba(255,255,255,0.22);}
+#lk-input::-webkit-search-cancel-button{display:none;}/* ═══ FLOATING GLYPH COLUMNS — language waterfall ═══ */
 .glyph-col{
   position:fixed;top:0;z-index:0;pointer-events:none;
   display:flex;flex-direction:column;gap:28px;
@@ -926,13 +1091,15 @@ body::after{
 
 <div id="s-grammar" class="screen">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
-    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">NGỮ PHÁP TIẾNG NGA</div>
+    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;font-family:var(--mono);">&gt; grammar.exe --lang=ru</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">NGỮ PHÁP TIẾNG NGA</div>
   </div>
-  <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;">
-    <button class="btn" id="gt-cases" style="font-size:11px;" onclick="App.gramTab('cases')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/><circle cx="7" cy="14" r="2"/><circle cx="17" cy="14" r="2"/><line x1="5" y1="14" x2="2" y2="19"/><line x1="19" y1="14" x2="22" y2="19"/></svg> 6 Cách</button>
-    <button class="btn" id="gt-form" style="font-size:11px;" onclick="App.gramTab('formation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Từ loại</button>
-    <button class="btn" id="gt-quiz" style="font-size:11px;" onclick="App.gramTab('quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Quiz</button>
+  <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;" id="gram-tabs">
+    <button class="btn" id="gt-cases" style="font-size:11px;white-space:nowrap;flex-shrink:0;" onclick="App.gramTab('cases')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/><circle cx="7" cy="14" r="2"/><circle cx="17" cy="14" r="2"/><line x1="5" y1="14" x2="2" y2="19"/><line x1="19" y1="14" x2="22" y2="19"/></svg> 6 Cách</button>
+    <button class="btn" id="gt-form" style="font-size:11px;white-space:nowrap;flex-shrink:0;" onclick="App.gramTab('formation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Từ loại</button>
+    <button class="btn" id="gt-conditional" style="font-size:11px;white-space:nowrap;flex-shrink:0;" onclick="App.gramTab('conditional')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg> Điều kiện</button>
+    <button class="btn" id="gt-passive" style="font-size:11px;white-space:nowrap;flex-shrink:0;" onclick="App.gramTab('passive')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> Bị động</button>
+    <button class="btn" id="gt-quiz" style="font-size:11px;white-space:nowrap;flex-shrink:0;" onclick="App.gramTab('quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Quiz</button>
   </div>
   <div class="scrl" style="padding-top:12px;" id="gram-body"></div>
 </div>
@@ -6839,10 +7006,10 @@ function trGramQ(s){
 
 function gramTab(t){
   S.gramTab=t;
-  const cols={cases:'var(--yel)',formation:'var(--pur)',quiz:'var(--pnk)'};
-  const glows={cases:'rgba(240,192,64,0.12)',formation:'rgba(192,132,252,0.12)',quiz:'rgba(255,107,107,0.12)'};
-  const borders={cases:'rgba(240,192,64,0.4)',formation:'rgba(192,132,252,0.4)',quiz:'rgba(255,107,107,0.4)'};
-  ['cases','form','quiz'].forEach(k=>{
+  const cols={cases:'var(--yel)',formation:'var(--pur)',quiz:'var(--pnk)',conditional:'var(--cyn)',passive:'var(--grn)'};
+  const glows={cases:'rgba(240,192,64,0.12)',formation:'rgba(192,132,252,0.12)',quiz:'rgba(255,107,107,0.12)',conditional:'rgba(110,198,255,0.12)',passive:'rgba(61,220,92,0.12)'};
+  const borders={cases:'rgba(240,192,64,0.4)',formation:'rgba(192,132,252,0.4)',quiz:'rgba(255,107,107,0.4)',conditional:'rgba(110,198,255,0.4)',passive:'rgba(61,220,92,0.4)'};
+  ['cases','form','quiz','conditional','passive'].forEach(k=>{
     const key=k==='form'?'formation':k;
     const b=document.getElementById('gt-'+k); if(!b)return;
     b.style.borderColor=key===t?borders[t]:'rgba(255,255,255,0.08)';
@@ -6852,6 +7019,8 @@ function gramTab(t){
   });
   if(t==='cases')renderCases();
   else if(t==='formation')renderFormation();
+  else if(t==='conditional')renderConditional();
+  else if(t==='passive')renderPassive();
   else renderGQ();
 }
 function renderCases(){
@@ -6918,7 +7087,264 @@ function renderFormation(){
   document.getElementById('gram-body').innerHTML=h;
 }
 
-// GRAMMAR QUIZ
+// CONDITIONAL SENTENCES
+function renderConditional(){
+  const isEN=(S.lang||'vi')==='en';
+  const title=isEN?'// CONDITIONAL SENTENCES':'// CÂU ĐIỀU KIỆN';
+  const accentColor='var(--cyn)';
+  const accentRgb='rgba(110,198,255,';
+
+  const types=[
+    {
+      type: isEN?'Type 1 — Real / Possible':'Loại 1 — Thực tế / Có thể xảy ra',
+      icon:'1️⃣',
+      color:'#6ec6ff',
+      colorA:accentRgb,
+      desc: isEN?'Expresses a real or likely situation. If + present tense → future tense.':'Diễn tả điều kiện thực tế hoặc có thể xảy ra. Nếu + hiện tại → tương lai.',
+      structure: isEN?'ЕСЛИ + present → future (fut.)':'ЕСЛИ + hiện tại → tương lai',
+      keyword:'ЕСЛИ',
+      examples:[
+        {ru:'Если ты позвонишь, я отвечу.',hi:'позвонишь',vn:'Nếu bạn gọi, tôi sẽ trả lời.',en:'If you call, I will answer.'},
+        {ru:'Если будет дождь, мы останемся дома.',hi:'будет дождь',vn:'Nếu trời mưa, chúng tôi sẽ ở nhà.',en:'If it rains, we will stay home.'},
+        {ru:'Если он придёт, скажи ему.',hi:'придёт',vn:'Nếu anh ấy đến, hãy nói với anh ấy.',en:'If he comes, tell him.'},
+      ],
+      tips: isEN?[
+        '💡 Use future tense (буду, будешь...) or perfective verb in the ЕСЛИ clause.',
+        '💡 The main clause uses the future tense.',
+      ]:[
+        '💡 Mệnh đề ЕСЛИ dùng động từ hoàn thành ở tương lai hoặc hiện tại.',
+        '💡 Mệnh đề chính dùng thì tương lai.',
+      ]
+    },
+    {
+      type: isEN?'Type 2 — Unreal / Hypothetical (present)':'Loại 2 — Không thực / Giả định (hiện tại/tương lai)',
+      icon:'2️⃣',
+      color:'#c084fc',
+      colorA:'rgba(192,132,252,',
+      desc: isEN?'Expresses an unreal or hypothetical situation in the present or future. If + past tense + бы → past tense + бы.':'Diễn tả điều kiện không thực tế ở hiện tại/tương lai. Nếu + quá khứ + бы → quá khứ + бы.',
+      structure: isEN?'ЕСЛИ БЫ + past → past + БЫ':'ЕСЛИ БЫ + quá khứ → quá khứ + БЫ',
+      keyword:'ЕСЛИ БЫ',
+      examples:[
+        {ru:'Если бы я знал, я бы сказал.',hi:'знал',vn:'Nếu tôi biết, tôi đã nói rồi.',en:'If I knew, I would tell you.'},
+        {ru:'Если бы она пришла, мы были бы рады.',hi:'пришла',vn:'Nếu cô ấy đến, chúng tôi sẽ vui.',en:'If she came, we would be glad.'},
+        {ru:'Если бы у меня было время, я бы помог.',hi:'было время',vn:'Nếu tôi có thời gian, tôi đã giúp.',en:'If I had time, I would help.'},
+      ],
+      tips: isEN?[
+        '💡 Both clauses use the past tense + бы. Word order of бы is flexible.',
+        '💡 This type equals "would + verb" in English.',
+      ]:[
+        '💡 Cả hai mệnh đề dùng quá khứ + бы. Vị trí của бы linh hoạt.',
+        '💡 Loại này tương đương "would + động từ" trong tiếng Anh.',
+      ]
+    },
+    {
+      type: isEN?'Type 3 — Unreal / Counterfactual (past)':'Loại 3 — Không thực / Trái thực tế (quá khứ)',
+      icon:'3️⃣',
+      color:'#f0c040',
+      colorA:'rgba(240,192,64,',
+      desc: isEN?'Expresses a situation contrary to past reality. Same structure as Type 2 but refers to the past.':'Diễn tả điều kiện trái với thực tế trong quá khứ. Cấu trúc giống Loại 2 nhưng chỉ quá khứ.',
+      structure: isEN?'ЕСЛИ БЫ + past → past + БЫ (past context)':'ЕСЛИ БЫ + quá khứ → quá khứ + БЫ (ngữ cảnh quá khứ)',
+      keyword:'ЕСЛИ БЫ',
+      examples:[
+        {ru:'Если бы он учился, он бы сдал экзамен.',hi:'учился',vn:'Nếu anh ấy đã học, anh ấy đã đỗ kỳ thi.',en:'If he had studied, he would have passed.'},
+        {ru:'Если бы я не опоздал, я бы успел.',hi:'не опоздал',vn:'Nếu tôi không đến muộn, tôi đã kịp.',en:'If I hadn\'t been late, I would have made it.'},
+      ],
+      tips: isEN?[
+        '💡 In Russian, Types 2 and 3 share the same grammatical structure (past + бы).',
+        '💡 Context or time adverbs (вчера, тогда) clarify whether it is present or past.',
+      ]:[
+        '💡 Tiếng Nga dùng chung cấu trúc cho Loại 2 và 3 (quá khứ + бы).',
+        '💡 Ngữ cảnh hoặc trạng từ thời gian (вчера, тогда) làm rõ thì.',
+      ]
+    },
+    {
+      type: isEN?'Concessive / Even if':'Dù / Dù rằng — Nhượng bộ',
+      icon:'🔀',
+      color:'#ff6b6b',
+      colorA:'rgba(255,107,107,',
+      desc: isEN?'Expresses "even if" or "regardless". Uses ДАЖЕ ЕСЛИ or ХОТЯ.':'Diễn tả "dù có" hoặc "mặc dù". Dùng ДАЖЕ ЕСЛИ hoặc ХОТЯ.',
+      structure:'ДАЖЕ ЕСЛИ / ХОТЯ',
+      keyword:'ДАЖЕ ЕСЛИ',
+      examples:[
+        {ru:'Даже если он придёт, это не изменится.',hi:'Даже если',vn:'Dù anh ấy có đến, điều đó cũng không thay đổi.',en:'Even if he comes, it won\'t change.'},
+        {ru:'Хотя я устал, я продолжу работу.',hi:'Хотя',vn:'Mặc dù tôi mệt, tôi sẽ tiếp tục làm việc.',en:'Although I\'m tired, I will continue working.'},
+      ],
+      tips: isEN?[
+        '💡 ДАЖЕ ЕСЛИ = "even if", ХОТЯ = "although/though".',
+        '💡 ХОТЯ is concessive but does not imply a conditional.',
+      ]:[
+        '💡 ДАЖЕ ЕСЛИ = "dù có", ХОТЯ = "mặc dù/dù rằng".',
+        '💡 ХОТЯ mang nghĩa nhượng bộ chứ không hẳn là điều kiện.',
+      ]
+    },
+  ];
+
+  let h=`<div style="background:rgba(110,198,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(110,198,255,0.2);border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;">
+    <div style="font-size:10px;color:var(--cyn);font-weight:700;letter-spacing:1.5px;font-family:var(--display);margin-bottom:4px;">${title}</div>
+    <div style="font-size:13px;color:var(--txd);line-height:1.6;">${isEN?'Russian uses <b style="color:var(--cyn)">ЕСЛИ</b> (if) for real conditions and <b style="color:var(--pur)">ЕСЛИ БЫ</b> + past tense for hypothetical / unreal conditions. No separate "would" word — <b style="color:var(--yel)">бы</b> carries this meaning.':'Tiếng Nga dùng <b style="color:var(--cyn)">ЕСЛИ</b> (nếu) cho điều kiện thực tế, và <b style="color:var(--pur)">ЕСЛИ БЫ</b> + quá khứ cho điều kiện giả định. Không có từ "would" riêng — <b style="color:var(--yel)">бы</b> mang nghĩa đó.'}</div>
+  </div>`;
+
+  types.forEach(tp=>{
+    h+=`<div style="background:${tp.colorA}0.05);backdrop-filter:blur(20px);border:1px solid ${tp.colorA}0.25);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="font-size:22px;">${tp.icon}</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:${tp.color};">${tp.type}</div>
+          <div style="font-size:11px;color:var(--com);margin-top:2px;">${tp.desc}</div>
+        </div>
+      </div>
+      <div style="background:${tp.colorA}0.1);border:1px solid ${tp.colorA}0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-family:var(--mono);font-size:12px;color:${tp.color};">
+        <span style="color:var(--com);font-size:10px;">${isEN?'STRUCTURE: ':'CẤU TRÚC: '}</span> ${tp.structure}
+      </div>`;
+    tp.examples.forEach(ex=>{
+      const highlighted=ex.ru.replace(ex.hi,`<span style="color:${tp.color};font-weight:700;">${ex.hi}</span>`);
+      h+=`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;margin-bottom:6px;">
+        <div style="font-size:15px;font-family:var(--serif);line-height:1.5;margin-bottom:4px;">${highlighted}</div>
+        <div style="font-size:12px;color:var(--txd);">${isEN?(ex.en||ex.vn):ex.vn}</div>
+      </div>`;
+    });
+    tp.tips.forEach(tip=>{
+      h+=`<div style="display:flex;gap:8px;margin-top:6px;padding:8px 10px;background:rgba(240,192,64,0.05);border:1px solid rgba(240,192,64,0.15);border-radius:10px;align-items:flex-start;">
+        <span style="font-size:13px;flex-shrink:0;">${tip.split(' ')[0]}</span>
+        <span style="font-size:11px;color:var(--txd);line-height:1.6;">${tip.slice(tip.indexOf(' ')+1)}</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  });
+
+  document.getElementById('gram-body').innerHTML=h;
+}
+
+// PASSIVE VOICE
+function renderPassive(){
+  const isEN=(S.lang||'vi')==='en';
+  const title=isEN?'// PASSIVE VOICE':'// CÂU BỊ ĐỘNG';
+
+  const sections=[
+    {
+      id:'short',
+      heading: isEN?'1. Short-form Passive Participle (most common)':'1. Phân từ ngắn bị động (phổ biến nhất)',
+      color:'#6ec6ff',
+      colorA:'rgba(110,198,255,',
+      desc: isEN?'Formed from the short form of a passive participle. Agrees with the subject in gender and number.':'Dùng dạng rút gọn của phân từ bị động. Biến đổi theo giới tính và số của chủ ngữ.',
+      rows:[
+        {label:isEN?'Masc. singular':'Đực số ít', suffix:'-ан / -ен / -т', ex:'Письмо написано.', exVn: isEN?'The letter is written.':'Bức thư được viết.'},
+        {label:isEN?'Fem. singular':'Cái số ít', suffix:'-ана / -ена / -та', ex:'Книга написана.', exVn: isEN?'The book is written.':'Cuốn sách được viết.'},
+        {label:isEN?'Neut. singular':'Trung số ít', suffix:'-ано / -ено / -то', ex:'Окно открыто.', exVn: isEN?'The window is open.':'Cửa sổ được mở.'},
+        {label:isEN?'Plural':'Số nhiều', suffix:'-аны / -ены / -ты', ex:'Двери закрыты.', exVn: isEN?'The doors are closed.':'Các cánh cửa được đóng.'},
+      ],
+      agent: isEN?'Agent (by whom): use Instrumental case — Книга написана студентом. (The book was written by a student.)':'Chủ thể hành động dùng Cách 5 (Творительный): Книга написана студентом. (Cuốn sách được sinh viên viết.)',
+      tips: isEN?[
+        '💡 Very common in written Russian for stating facts or results.',
+        '💡 Agent is optional. When included, use the Instrumental (Cách 5).',
+      ]:[
+        '💡 Rất phổ biến trong văn viết tiếng Nga để nêu kết quả, sự kiện.',
+        '💡 Chủ thể có thể bỏ qua. Khi có, dùng Cách 5 (Творительный).',
+      ]
+    },
+    {
+      id:'reflexive',
+      heading: isEN?'2. Reflexive -СЯ passive (imperfective verbs)':'2. Bị động phản thân -СЯ (động từ không hoàn thành)',
+      color:'#c084fc',
+      colorA:'rgba(192,132,252,',
+      desc: isEN?'Add -ся to a verb to form an impersonal passive. Common for ongoing processes.':'Thêm -ся vào động từ để tạo bị động vô ngôi. Dùng cho quá trình đang diễn ra.',
+      examples:[
+        {ru:'Дом строится рабочими.',hi:'строится',vn:isEN?'The house is being built by workers.':'Ngôi nhà đang được công nhân xây dựng.'},
+        {ru:'Документы подписываются директором.',hi:'подписываются',vn:isEN?'The documents are being signed by the director.':'Các tài liệu đang được giám đốc ký.'},
+        {ru:'Задача решается постепенно.',hi:'решается',vn:isEN?'The problem is being solved gradually.':'Vấn đề đang được giải quyết dần dần.'},
+      ],
+      tips: isEN?[
+        '💡 -ся passive is used for ongoing, habitual, or general actions.',
+        '💡 The verb conjugates normally; -ся is just added at the end (сь after vowels).',
+      ]:[
+        '💡 Dạng -ся dùng cho hành động đang tiếp diễn, thói quen, hoặc tổng quát.',
+        '💡 Động từ chia bình thường, chỉ thêm -ся ở cuối (сь sau nguyên âm).',
+      ]
+    },
+    {
+      id:'compare',
+      heading: isEN?'3. Active vs Passive — comparison':'3. So sánh câu chủ động và bị động',
+      color:'#f0c040',
+      colorA:'rgba(240,192,64,',
+      desc:'',
+      pairs:[
+        {active:'Студент написал письмо.',passive:'Письмо написано студентом.',activeVn:isEN?'The student wrote the letter.':'Sinh viên đã viết bức thư.',passiveVn:isEN?'The letter was written by the student.':'Bức thư được sinh viên viết.'},
+        {active:'Рабочие строят дом.',passive:'Дом строится рабочими.',activeVn:isEN?'Workers are building the house.':'Công nhân đang xây ngôi nhà.',passiveVn:isEN?'The house is being built by workers.':'Ngôi nhà đang được công nhân xây.'},
+        {active:'Врач осмотрел пациента.',passive:'Пациент был осмотрен врачом.',activeVn:isEN?'The doctor examined the patient.':'Bác sĩ đã khám bệnh nhân.',passiveVn:isEN?'The patient was examined by the doctor.':'Bệnh nhân đã được bác sĩ khám.'},
+      ],
+      tips: isEN?[
+        '💡 For perfective past passive, you can also use был/была/было + short participle.',
+        '💡 Russian often prefers the active voice or reflexive construction over explicit passive.',
+      ]:[
+        '💡 Với quá khứ bị động hoàn thành, dùng был/была/было + phân từ ngắn.',
+        '💡 Tiếng Nga thường ưa câu chủ động hoặc dạng -ся hơn bị động tường minh.',
+      ]
+    },
+  ];
+
+  let h=`<div style="background:rgba(61,220,92,0.06);backdrop-filter:blur(20px);border:1px solid rgba(61,220,92,0.2);border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;">
+    <div style="font-size:10px;color:var(--grn);font-weight:700;letter-spacing:1.5px;font-family:var(--display);margin-bottom:4px;">${title}</div>
+    <div style="font-size:13px;color:var(--txd);line-height:1.6;">${isEN?'Russian passive is formed in two main ways: (1) <b style="color:var(--cyn)">short-form participle</b> (written result) and (2) <b style="color:var(--pur)">-ся reflexive</b> (ongoing process). The agent (doer) always uses the <b style="color:var(--yel)">Instrumental case (Cách 5)</b>.':'Tiếng Nga có hai cách tạo bị động chính: (1) <b style="color:var(--cyn)">phân từ ngắn</b> (kết quả đã hoàn thành) và (2) <b style="color:var(--pur)">phản thân -ся</b> (quá trình đang diễn ra). Chủ thể hành động luôn dùng <b style="color:var(--yel)">Cách 5 (Творительный)</b>.'}</div>
+  </div>`;
+
+  sections.forEach(sec=>{
+    h+=`<div style="background:${sec.colorA}0.05);backdrop-filter:blur(20px);border:1px solid ${sec.colorA}0.25);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;">
+      <div style="font-size:13px;font-weight:700;color:${sec.color};margin-bottom:6px;">${sec.heading}</div>
+      ${sec.desc?`<div style="font-size:11px;color:var(--com);margin-bottom:10px;line-height:1.6;">${sec.desc}</div>`:''}`;
+
+    if(sec.rows){
+      h+=`<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;margin-bottom:10px;"><table class="eTable"><tr><th>${isEN?'Gender/Number':'Giới/Số'}</th><th>${isEN?'Ending':'Đuôi'}</th><th>${isEN?'Example':'Ví dụ'}</th></tr>`;
+      sec.rows.forEach(r=>{
+        h+=`<tr><td style="color:var(--com);font-size:11px;">${r.label}</td><td style="font-weight:700;color:${sec.color};font-family:var(--mono);">${r.suffix}</td><td style="font-family:var(--serif);font-size:13px;">${r.ex}<br><span style="font-size:10px;color:var(--txd);">${r.exVn}</span></td></tr>`;
+      });
+      h+=`</table></div>`;
+      if(sec.agent){
+        h+=`<div style="padding:10px 12px;background:${sec.colorA}0.08);border:1px solid ${sec.colorA}0.25);border-radius:10px;font-size:11px;color:var(--txd);line-height:1.6;margin-bottom:8px;">🎯 ${sec.agent}</div>`;
+      }
+    }
+
+    if(sec.examples){
+      sec.examples.forEach(ex=>{
+        const highlighted=ex.ru.replace(ex.hi,`<span style="color:${sec.color};font-weight:700;">${ex.hi}</span>`);
+        h+=`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;margin-bottom:6px;">
+          <div style="font-size:15px;font-family:var(--serif);line-height:1.5;margin-bottom:4px;">${highlighted}</div>
+          <div style="font-size:12px;color:var(--txd);">${ex.vn}</div>
+        </div>`;
+      });
+    }
+
+    if(sec.pairs){
+      sec.pairs.forEach(p=>{
+        h+=`<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-bottom:8px;">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <span style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid rgba(61,220,92,0.4);background:rgba(61,220,92,0.08);color:var(--grn);font-family:var(--display);font-weight:700;">${isEN?'ACTIVE':'CHỦ ĐỘNG'}</span>
+          </div>
+          <div style="font-size:14px;font-family:var(--serif);margin-bottom:2px;">${p.active}</div>
+          <div style="font-size:11px;color:var(--txd);margin-bottom:8px;">${p.activeVn}</div>
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <span style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid rgba(110,198,255,0.4);background:rgba(110,198,255,0.08);color:var(--cyn);font-family:var(--display);font-weight:700;">${isEN?'PASSIVE':'BỊ ĐỘNG'}</span>
+          </div>
+          <div style="font-size:14px;font-family:var(--serif);color:${sec.color};margin-bottom:2px;">${p.passive}</div>
+          <div style="font-size:11px;color:var(--txd);">${p.passiveVn}</div>
+        </div>`;
+      });
+    }
+
+    if(sec.tips){
+      sec.tips.forEach(tip=>{
+        h+=`<div style="display:flex;gap:8px;margin-top:6px;padding:8px 10px;background:rgba(240,192,64,0.05);border:1px solid rgba(240,192,64,0.15);border-radius:10px;align-items:flex-start;">
+          <span style="font-size:13px;flex-shrink:0;">${tip.split(' ')[0]}</span>
+          <span style="font-size:11px;color:var(--txd);line-height:1.6;">${tip.slice(tip.indexOf(' ')+1)}</span>
+        </div>`;
+      });
+    }
+    h+=`</div>`;
+  });
+
+  document.getElementById('gram-body').innerHTML=h;
+}
+
+
 function gqReset(type){
   const t=type||S.gqType;
   const src=t==='cases'?grammarQuizData.cases:grammarQuizData.formation;
