@@ -54,6 +54,52 @@
 #lk-input:focus{border-color:rgba(110,198,255,0.4);box-shadow:0 0 0 3px rgba(110,198,255,0.08);}
 #lk-input::placeholder{color:rgba(255,255,255,0.22);}
 #lk-input::-webkit-search-cancel-button{display:none;}
+
+/* ═══ Telegram live-drag nav bar ═══ */
+
+/* #bnav needs relative for absolute pill */
+#bnav{ position:relative !important; }
+
+/* Remove per-btn .on background — pill handles it */
+#bn-vocab.on,
+#bn-srs.on,
+#bn-grammar.on,
+#bn-lookup.on{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+/* The floating pill */
+#bnav-pill{
+  position:absolute;
+  top:5px; bottom:5px;
+  border-radius:19px;
+  pointer-events:none;
+  z-index:0;
+  /* JS drives left + width via CSS vars for GPU perf */
+  transform:translateZ(0);
+  will-change:left,width,background;
+}
+/* Snap transition — only when JS adds .snapping */
+#bnav-pill.snapping{
+  transition:
+    left    .36s cubic-bezier(0.34,1.56,0.64,1),
+    width   .30s cubic-bezier(0.34,1.56,0.64,1),
+    background .20s ease;
+}
+
+/* Buttons sit above pill */
+.bBtn{ position:relative; z-index:1; }
+
+/* Icon/label use CSS var for live cross-fade */
+.bIcon svg, .bLbl{
+  transition: color .12s ease, opacity .12s ease;
+}
+.bBtn.on .bIcon svg,
+.bBtn.on .bLbl{
+  /* Active color set per-tab below — keep as-is */
+}
+
 </style>
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
@@ -897,6 +943,7 @@ body::after{
 <!-- BOTTOM NAV: outside #app so position:fixed works correctly on iOS -->
 <div id="bnav-wrap">
 <div id="bnav">
+  <div id="bnav-pill"></div>
   <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 4.5C4 3.67 4.67 3 5.5 3H11V13L8.5 11.5L6 13V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -7151,203 +7198,388 @@ return{nav,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
 document.addEventListener('DOMContentLoaded',App.init);
 
 
-// ═══════════════════════════════════════════════════════
-// SWIPE TABS — vuốt ngang để chuyển tab
-// Hoạt động trên root screens (vocab, srs, grammar, lookup)
-// ═══════════════════════════════════════════════════════
-(function initSwipeTabs(){
+// ═══════════════════════════════════════════════════════════
+//  TELEGRAM-STYLE LIVE NAV DRAG
+//  Indicator + screens follow finger real-time on #bnav
+// ═══════════════════════════════════════════════════════════
+(function(){
+  'use strict';
 
-  // Thứ tự tab trên nav bar
-  const TAB_ORDER = ['vocab', 'srs', 'grammar', 'lookup'];
+  // ── Config ──────────────────────────────────────────────
+  const TABS = [
+    { id:'bn-vocab',   screen:'vocab',   activate:()=>App.nav('vocab'),
+      bg:'rgba(110,198,255,0.18)', glow:'rgba(110,198,255,0.14)',
+      color:'var(--cyn)' },
+    { id:'bn-srs',     screen:'srs',     activate:()=>App.srsStart(),
+      bg:'rgba(240,192,64,0.16)',  glow:'rgba(240,192,64,0.12)',
+      color:'var(--yel)' },
+    { id:'bn-grammar', screen:'grammar', activate:()=>App.nav('grammar'),
+      bg:'rgba(192,132,252,0.16)', glow:'rgba(192,132,252,0.12)',
+      color:'var(--pur)' },
+    { id:'bn-lookup',  screen:'lookup',  activate:()=>App.nav('lookup'),
+      bg:'rgba(61,220,92,0.15)',   glow:'rgba(61,220,92,0.11)',
+      color:'var(--grn)' },
+  ];
 
-  // Map tab name → nav action
-  function goTab(name){
-    if(name === 'srs') App.srsStart();
-    else App.nav(name);
+  const SNAP_THRESHOLD = 0.38; // fraction to commit
+  const DRAG_RESIST    = 0.30; // resistance past edges
+
+  // ── State ───────────────────────────────────────────────
+  let activeIdx = 0;           // current committed tab
+  let dragProgress = 0;        // -1..+1 (–=left, +=right)
+  let isDragging = false;
+  let startX = 0, touchId = null;
+  let tabRects = [];           // cached getBoundingClientRect per btn
+
+  const pill  = document.getElementById('bnav-pill');
+  const bnav  = document.getElementById('bnav');
+
+  // ── Tab rect cache (recalc on resize) ───────────────────
+  function cacheRects(){
+    tabRects = TABS.map(t => document.getElementById(t.id).getBoundingClientRect());
   }
 
-  // Lấy tab đang active (chỉ root-level)
-  function getCurrentTab(){
-    return TAB_ORDER.find(t => {
-      // srs tab = đang ở 's-srs' hoặc 's-srsdone'
-      if(t === 'srs'){
-        const srs = document.getElementById('s-srs');
-        const srd = document.getElementById('s-srsdone');
-        return (srs && srs.classList.contains('active')) ||
-               (srd && srd.classList.contains('active'));
-      }
-      const el = document.getElementById('s-'+t);
-      return el && el.classList.contains('active');
-    });
-  }
+  // ── Lerp ────────────────────────────────────────────────
+  function lerp(a, b, t){ return a + (b - a) * t; }
 
-  // Kiểm tra có đang ở root tab không (không phải sub-screen)
-  function isAtRootLevel(){
-    const SUB_SCREENS = ['topic','fc','quiz','qzdone','case','ag','hd','gd','ez'];
-    return !SUB_SCREENS.some(s => {
-      const el = document.getElementById('s-'+s);
-      return el && el.classList.contains('active');
-    });
-  }
+  // ── Interpolate pill between two tab rects ───────────────
+  // progress: 0=at fromIdx, 1=at toIdx, can be clamped or slightly beyond
+  function movePill(fromIdx, toIdx, progress, instant){
+    if(!pill || !bnav) return;
+    const navRect = bnav.getBoundingClientRect();
+    const a = tabRects[fromIdx];
+    const b = tabRects[toIdx];
+    if(!a || !b) return;
 
-  const EDGE_IGNORE = 32;  // px: bỏ qua edge trái (swipe back zone)
-  const THRESHOLD   = 80;  // px để confirm chuyển tab
-  const MIN_VEL     = 0.28; // px/ms
-  const MAX_VERT    = 1.2;  // ratio dy/dx tối đa
+    const left  = lerp(a.left  - navRect.left, b.left  - navRect.left, progress);
+    const width = lerp(a.width, b.width, progress);
 
-  let touchId=null, startX=0, startY=0, curX=0, startTime=0;
-  let tracking=false, animating=false;
+    const bgA = TABS[fromIdx].bg, bgB = TABS[toIdx].bg;
 
-  // Lấy element đang active để slide
-  function getActiveEl(){
-    const cur = getCurrentTab();
-    if(!cur) return null;
-    if(cur === 'srs'){
-      const srs = document.getElementById('s-srs');
-      const srd = document.getElementById('s-srsdone');
-      if(srs && srs.classList.contains('active')) return srs;
-      if(srd && srd.classList.contains('active')) return srd;
+    if(instant){
+      pill.classList.remove('snapping');
     }
-    return document.getElementById('s-'+cur);
+
+    pill.style.left       = left  + 'px';
+    pill.style.width      = width + 'px';
+    // Background: interpolate by just showing target color at mid-point
+    // (can't lerp CSS colors without canvas — use opacity trick)
+    pill.style.background = progress < 0.5 ? bgA : bgB;
+    pill.style.boxShadow  = `0 1px 0 rgba(255,255,255,0.20) inset, 0 0 22px ${progress < 0.5 ? TABS[fromIdx].glow : TABS[toIdx].glow} inset`;
   }
 
-  const appEl = document.getElementById('app');
-  if(!appEl) return;
+  // ── Cross-fade icon/label color ──────────────────────────
+  function updateColors(fromIdx, toIdx, progress){
+    TABS.forEach((tab, i) => {
+      const btn = document.getElementById(tab.id);
+      if(!btn) return;
+      const icon = btn.querySelector('.bIcon svg');
+      const lbl  = btn.querySelector('.bLbl');
 
-  appEl.addEventListener('touchstart', e => {
+      let brightness;
+      if(i === fromIdx)      brightness = 1 - progress;
+      else if(i === toIdx)   brightness = progress;
+      else                   brightness = 0;
+
+      // Active = full color, inactive = dim grey
+      const activeColor = tab.color;
+      const inactiveColor = 'rgba(148,160,178,0.50)';
+
+      // Use opacity to cross-fade: colored layer on top of grey
+      if(icon) icon.style.color = brightness > 0.5 ? activeColor : inactiveColor;
+      if(lbl)  lbl.style.color  = brightness > 0.5 ? activeColor : inactiveColor;
+
+      // Scale icon slightly
+      const scale = i === fromIdx ? lerp(1.0, 0.90, progress)
+                  : i === toIdx   ? lerp(0.90, 1.0, progress)
+                  : 0.90;
+      const iconEl = btn.querySelector('.bIcon');
+      if(iconEl){
+        iconEl.style.transform = `scale(${scale}) translateZ(0)`;
+        iconEl.style.transition = isDragging ? 'none' : 'transform .28s cubic-bezier(0.34,1.56,0.64,1)';
+      }
+    });
+  }
+
+  // ── Slide screens ────────────────────────────────────────
+  // Screen slides proportionally with drag
+  function slideScreens(fromIdx, toIdx, progress){
+    const dir = toIdx > fromIdx ? 1 : -1; // 1=going right→left, -1=going left→right
+    // fromScreen slides out
+    const fromEl = getScreenEl(fromIdx);
+    const toEl   = getScreenEl(toIdx);
+    if(fromEl){
+      const tx = -dir * progress * 100;
+      fromEl.style.transform  = `translate3d(${tx}%, 0, 0)`;
+      fromEl.style.opacity    = String(1 - progress * 0.10);
+      fromEl.style.transition = isDragging ? 'none' : 'transform .34s cubic-bezier(0.34,1.56,0.64,1), opacity .28s ease';
+    }
+    if(toEl){
+      // ensure it's visible during drag preview
+      toEl.style.display      = 'flex';
+      toEl.style.position     = 'absolute';
+      toEl.style.inset        = '0';
+      toEl.style.zIndex       = '0';
+      const tx = dir * (1 - progress) * 100;
+      toEl.style.transform    = `translate3d(${tx}%, 0, 0)`;
+      toEl.style.opacity      = String(0.20 + progress * 0.80);
+      toEl.style.transition   = isDragging ? 'none' : 'transform .34s cubic-bezier(0.34,1.56,0.64,1), opacity .28s ease';
+    }
+  }
+
+  function resetScreenStyles(){
+    TABS.forEach((t,i) => {
+      const el = getScreenEl(i);
+      if(el){
+        el.style.transform  = '';
+        el.style.opacity    = '';
+        el.style.transition = '';
+        el.style.position   = '';
+        el.style.inset      = '';
+        el.style.zIndex     = '';
+        if(i !== activeIdx){
+          // re-hide non-active screens
+          el.style.display = '';
+        }
+      }
+    });
+  }
+
+  function getScreenEl(idx){
+    const name = TABS[idx].screen;
+    return document.getElementById('s-' + name);
+  }
+
+  // ── Commit to a tab ──────────────────────────────────────
+  function commitTab(idx){
+    const old = activeIdx;
+    activeIdx = idx;
+
+    // Update .on classes
+    document.querySelectorAll('.bBtn').forEach(b => b.classList.remove('on'));
+    const activeBtn = document.getElementById(TABS[idx].id);
+    if(activeBtn) activeBtn.classList.add('on');
+
+    // Snap pill with spring
+    pill.classList.add('snapping');
+    movePill(idx, idx, 0, false);
+    setTimeout(() => pill.classList.remove('snapping'), 400);
+
+    // Reset icon scales/colors
+    updateColors(idx, idx, 0);
+    TABS.forEach((t,i)=>{
+      const btn = document.getElementById(t.id);
+      if(!btn) return;
+      const iconEl = btn.querySelector('.bIcon');
+      if(iconEl){
+        iconEl.style.transform  = i === idx ? 'scale(1) translateZ(0)' : 'scale(0.90) translateZ(0)';
+        iconEl.style.transition = 'transform .28s cubic-bezier(0.34,1.56,0.64,1)';
+      }
+      const ico = btn.querySelector('.bIcon svg');
+      const lbl = btn.querySelector('.bLbl');
+      if(ico) ico.style.color = i===idx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+      if(lbl) lbl.style.color = i===idx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+    });
+
+    // Navigate if changed
+    if(idx !== old){
+      resetScreenStyles();
+      TABS[idx].activate();
+    } else {
+      resetScreenStyles();
+    }
+
+    // Haptic
+    if(navigator.vibrate) navigator.vibrate(6);
+  }
+
+  // ── Init pill position ───────────────────────────────────
+  function initPill(){
+    cacheRects();
+    // Find currently active tab
+    activeIdx = TABS.findIndex(t => {
+      const b = document.getElementById(t.id);
+      return b && b.classList.contains('on');
+    });
+    if(activeIdx < 0) activeIdx = 0;
+    pill.classList.remove('snapping');
+    movePill(activeIdx, activeIdx, 0, true);
+    updateColors(activeIdx, activeIdx, 0);
+    // Fix active icon scale
+    TABS.forEach((t,i)=>{
+      const btn = document.getElementById(t.id);
+      if(!btn) return;
+      const ico = btn.querySelector('.bIcon svg');
+      const lbl = btn.querySelector('.bLbl');
+      const iconEl = btn.querySelector('.bIcon');
+      if(ico) ico.style.color = i===activeIdx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+      if(lbl) lbl.style.color = i===activeIdx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+      if(iconEl) iconEl.style.transform = i===activeIdx ? 'scale(1) translateZ(0)' : 'scale(0.90) translateZ(0)';
+    });
+  }
+
+  // ── Intercept App.nav / App.srsStart ────────────────────
+  // Update pill when nav happens via tap/code (not drag)
+  const origNav = App.nav.bind(App);
+  App.nav = function(name){
+    origNav(name);
+    const newIdx = TABS.findIndex(t => t.screen === name);
+    if(newIdx >= 0 && newIdx !== activeIdx && !isDragging){
+      activeIdx = newIdx;
+      requestAnimationFrame(()=>{
+        cacheRects();
+        pill.classList.add('snapping');
+        movePill(activeIdx, activeIdx, 0, false);
+        setTimeout(()=>pill.classList.remove('snapping'), 400);
+        updateColors(activeIdx, activeIdx, 0);
+        TABS.forEach((t,i)=>{
+          const b = document.getElementById(t.id);
+          if(!b) return;
+          const ico = b.querySelector('.bIcon svg');
+          const lbl = b.querySelector('.bLbl');
+          const iel = b.querySelector('.bIcon');
+          if(ico) ico.style.color = i===activeIdx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+          if(lbl) lbl.style.color = i===activeIdx ? TABS[i].color : 'rgba(148,160,178,0.50)';
+          if(iel){iel.style.transform=i===activeIdx?'scale(1) translateZ(0)':'scale(0.90) translateZ(0)';iel.style.transition='transform .28s cubic-bezier(0.34,1.56,0.64,1)';}
+        });
+      });
+    }
+  };
+  const origSrs = App.srsStart.bind(App);
+  App.srsStart = function(){
+    origSrs();
+    if(!isDragging){
+      activeIdx = 1; // srs is tab 1
+      requestAnimationFrame(()=>{
+        cacheRects();
+        pill.classList.add('snapping');
+        movePill(1, 1, 0, false);
+        setTimeout(()=>pill.classList.remove('snapping'), 400);
+        updateColors(1, 1, 0);
+        TABS.forEach((t,i)=>{
+          const b=document.getElementById(t.id);if(!b)return;
+          const ico=b.querySelector('.bIcon svg'),lbl=b.querySelector('.bLbl'),iel=b.querySelector('.bIcon');
+          if(ico)ico.style.color=i===1?TABS[i].color:'rgba(148,160,178,0.50)';
+          if(lbl)lbl.style.color=i===1?TABS[i].color:'rgba(148,160,178,0.50)';
+          if(iel){iel.style.transform=i===1?'scale(1) translateZ(0)':'scale(0.90) translateZ(0)';iel.style.transition='transform .28s cubic-bezier(0.34,1.56,0.64,1)';}
+        });
+      });
+    }
+  };
+
+  // ── Touch handling on #bnav ──────────────────────────────
+  if(!bnav) return;
+
+  bnav.addEventListener('touchstart', e => {
     if(e.touches.length !== 1) return;
-    if(animating) return;
-    // Không activate nếu đang ở sub-screen
-    if(!isAtRootLevel()) return;
+    cacheRects();
     const t = e.touches[0];
-    // Bỏ qua edge trái (dành cho swipe-back)
-    if(t.clientX < EDGE_IGNORE) return;
-    touchId=t.identifier; startX=t.clientX; startY=t.clientY;
-    curX=t.clientX; startTime=Date.now();
-    tracking=true;
+    touchId  = t.identifier;
+    startX   = t.clientX;
+    isDragging = false;
   }, {passive:true});
 
-  appEl.addEventListener('touchmove', e => {
-    if(!tracking) return;
-    let touch=null;
-    for(let i=0;i<e.touches.length;i++){
-      if(e.touches[i].identifier===touchId){touch=e.touches[i];break;}
+  bnav.addEventListener('touchmove', e => {
+    let touch = null;
+    for(let i=0;i<e.changedTouches.length;i++){
+      if(e.changedTouches[i].identifier===touchId){ touch=e.changedTouches[i]; break; }
     }
     if(!touch) return;
 
-    curX = touch.clientX;
-    const dx = curX - startX;
-    const dy = touch.clientY - startY;
+    const dx = touch.clientX - startX;
+    if(Math.abs(dx) < 4) return; // dead zone
 
-    // Nếu đang scroll dọc → bỏ qua
-    if(Math.abs(dy) > Math.abs(dx) * MAX_VERT && Math.abs(dx) < 20){
-      tracking=false; return;
+    if(!isDragging){
+      isDragging = true;
+      pill.classList.remove('snapping');
     }
-    if(Math.abs(dx) < 8) return; // dead zone nhỏ
 
-    // Chỉ kéo theo chiều đang di chuyển
-    const cur = getCurrentTab();
-    const idx = TAB_ORDER.indexOf(cur);
-    const goingLeft  = dx < 0; // vuốt trái = tab tiếp theo
-    const goingRight = dx > 0; // vuốt phải = tab trước
-    // Cản nếu đã ở đầu/cuối
-    if(goingRight && idx === 0) return;
-    if(goingLeft  && idx === TAB_ORDER.length-1) return;
+    // Which direction, which neighbor
+    const dir  = dx > 0 ? -1 : 1; // -1=prev tab, +1=next tab
+    const toIdx = activeIdx + dir;
 
-    // Kéo screen hiện tại theo ngón
-    const el = getActiveEl();
-    if(!el) return;
-    // Resistance: càng kéo càng khó
-    const drag = dx * 0.72;
-    el.style.transition = 'none';
-    el.style.transform  = `translate3d(${drag}px,0,0)`;
-
-    // Opacity nhẹ để thấy sắp chuyển
-    const progress = Math.min(Math.abs(dx)/THRESHOLD, 1);
-    el.style.opacity = String(1 - progress*0.12);
-  }, {passive:true});
-
-  function onTouchEnd(){
-    if(!tracking) return;
-    tracking=false;
-
-    const dx  = curX - startX;
-    const elapsed = Math.max(Date.now()-startTime, 1);
-    const vel = dx/elapsed; // + = phải, - = trái
-
-    const cur = getCurrentTab();
-    const idx = TAB_ORDER.indexOf(cur);
-    const el  = getActiveEl();
-
-    const goNext = dx < -THRESHOLD || (dx < -40 && vel < -MIN_VEL);
-    const goPrev = dx >  THRESHOLD || (dx >  40 && vel >  MIN_VEL);
-
-    if(goNext && idx < TAB_ORDER.length-1){
-      // Vuốt trái → tab tiếp theo
-      commitSwipe(el, 'left', TAB_ORDER[idx+1]);
-    } else if(goPrev && idx > 0){
-      // Vuốt phải → tab trước
-      commitSwipe(el, 'right', TAB_ORDER[idx-1]);
-    } else {
-      // Không đủ → snap back
+    let rawProgress;
+    if(toIdx < 0 || toIdx >= TABS.length){
+      // Edge resistance
+      rawProgress = Math.abs(dx) / 120 * DRAG_RESIST;
+      movePill(activeIdx, activeIdx, 0, true); // pill stays
+      updateColors(activeIdx, activeIdx, 0);
+      // Slight screen resistance
+      const el = getScreenEl(activeIdx);
       if(el){
-        el.style.transition = 'transform .32s cubic-bezier(0.34,1.56,0.64,1), opacity .22s ease';
-        el.style.transform  = '';
-        el.style.opacity    = '';
-        setTimeout(()=>{ el.style.transition=''; }, 340);
+        el.style.transition = 'none';
+        el.style.transform  = `translate3d(${dx * 0.08}px, 0, 0)`;
       }
-    }
-  }
-
-  function commitSwipe(el, direction, nextTab){
-    animating=true;
-    const outX = direction==='left' ? '-100%' : '100%';
-
-    if(el){
-      // Slide current screen out
-      el.style.transition = 'transform .28s cubic-bezier(0.32,0.72,0,1), opacity .22s ease';
-      el.style.transform  = `translate3d(${outX},0,0)`;
-      el.style.opacity    = '0';
+      return;
     }
 
-    setTimeout(()=>{
-      if(el){ el.style.cssText=''; }
-      animating=false;
+    // Calculate distance between tab centers for normalized progress
+    const fromRect = tabRects[activeIdx];
+    const toRect   = tabRects[toIdx];
+    const tabDist  = Math.abs(toRect.left - fromRect.left);
+    rawProgress = Math.min(Math.abs(dx) / tabDist, 1.15); // allow slight overshoot
 
-      // Navigate: sử dụng custom animation (từ bên cạnh vào)
-      const fromRight = direction==='left';
+    // Clamp for pill
+    const pillP = Math.min(rawProgress, 1);
+    movePill(activeIdx, toIdx, pillP, true);
+    updateColors(activeIdx, toIdx, Math.min(rawProgress, 1));
+    slideScreens(activeIdx, toIdx, Math.min(rawProgress, 1));
 
-      // Tạm thời override animation class
-      goTab(nextTab);
-
-      // Điều chỉnh animation sau khi nav() kích hoạt
-      requestAnimationFrame(()=>{
-        const nextScreenName = nextTab==='srs' ? 's-srs' : 's-'+nextTab;
-        const nextEl = document.getElementById(nextScreenName);
-        if(nextEl){
-          // Override animation để slide từ đúng hướng
-          nextEl.style.animation='none';
-          nextEl.getBoundingClientRect(); // force reflow
-          nextEl.style.animation='';
-          nextEl.style.transform = `translate3d(${fromRight ? '100%' : '-100%'},0,0)`;
-          nextEl.style.opacity   = '0';
-          nextEl.getBoundingClientRect();
-          nextEl.style.transition = 'transform .32s cubic-bezier(0.16,1,0.3,1), opacity .25s ease';
-          nextEl.style.transform  = '';
-          nextEl.style.opacity    = '';
-          setTimeout(()=>{ nextEl.style.transition=''; nextEl.style.transform=''; nextEl.style.opacity=''; }, 340);
-        }
-      });
-    }, 240);
-  }
-
-  appEl.addEventListener('touchend',    onTouchEnd, {passive:true});
-  appEl.addEventListener('touchcancel', ()=>{
-    if(!tracking) return;
-    tracking=false;
-    const el = getActiveEl();
-    if(el){ el.style.transition=''; el.style.transform=''; el.style.opacity=''; }
   }, {passive:true});
+
+  function onEnd(e){
+    if(!isDragging){
+      // Was a tap — let normal onclick handle it, just re-init pill
+      setTimeout(()=>{ cacheRects(); initPill(); }, 80);
+      return;
+    }
+    isDragging = false;
+
+    let touch = null;
+    for(let i=0;i<e.changedTouches.length;i++){
+      if(e.changedTouches[i].identifier===touchId){ touch=e.changedTouches[i]; break; }
+    }
+    const dx = touch ? touch.clientX - startX : 0;
+
+    const dir   = dx > 0 ? -1 : 1;
+    const toIdx = activeIdx + dir;
+
+    if(toIdx < 0 || toIdx >= TABS.length){
+      // Bounce back from edge
+      resetScreenStyles();
+      pill.classList.add('snapping');
+      movePill(activeIdx, activeIdx, 0, false);
+      setTimeout(()=>pill.classList.remove('snapping'), 400);
+      updateColors(activeIdx, activeIdx, 0);
+      const el = getScreenEl(activeIdx);
+      if(el){ el.style.transition='transform .36s cubic-bezier(0.34,1.56,0.64,1)'; el.style.transform=''; setTimeout(()=>{el.style.transition='';el.style.transform='';},380); }
+      return;
+    }
+
+    const fromRect = tabRects[activeIdx];
+    const toRect   = tabRects[toIdx];
+    const tabDist  = Math.abs(toRect.left - fromRect.left);
+    const progress = Math.abs(dx) / tabDist;
+
+    if(progress >= SNAP_THRESHOLD){
+      commitTab(toIdx);
+    } else {
+      // Snap back
+      pill.classList.add('snapping');
+      movePill(activeIdx, activeIdx, 0, false);
+      setTimeout(()=>pill.classList.remove('snapping'), 400);
+      updateColors(activeIdx, activeIdx, 0);
+      resetScreenStyles();
+    }
+    touchId = null;
+  }
+
+  bnav.addEventListener('touchend',    onEnd, {passive:true});
+  bnav.addEventListener('touchcancel', onEnd, {passive:true});
+
+  // ── Init ─────────────────────────────────────────────────
+  requestAnimationFrame(initPill);
+  window.addEventListener('resize', ()=>{ cacheRects(); initPill(); });
 
 })();
 
