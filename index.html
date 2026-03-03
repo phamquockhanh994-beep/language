@@ -185,9 +185,9 @@ input,textarea,select{font-size:16px!important;}
      SF Mono        — code, phonetics
      New York       — serif (Cyrillic content, flashcards)
      ──────────────────────────────────────────────────── */
-  --display:'SF Pro Rounded',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
-  --body:'SF Pro Text',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
-  --hdisplay:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Helvetica Neue',system-ui,sans-serif;
+  --display:system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --body:system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --hdisplay:system-ui,-apple-system,'Helvetica Neue',sans-serif;
   --mono:'SF Mono',ui-monospace,'Cascadia Code','Fira Code',monospace;
   --serif:'New York',ui-serif,'Georgia Pro',Georgia,serif;
 
@@ -222,6 +222,7 @@ html,body{
   font-optical-sizing:auto;
   font-feature-settings:"kern" 1,"liga" 1,"calt" 1;
   font-synthesis:none;
+  line-height:1.5;
 }
 
 /* ── Language glyphs canvas — Cyrillic + Latin + IPA drifting ── */
@@ -502,18 +503,18 @@ body::after{
 /* Telegram-style sliding indicator */
 #bnav-indicator{
   position:absolute;
+  left:0;
   top:6px;bottom:6px;
+  width:10px;          /* non-zero so it's visible; JS overrides */
   border-radius:22px;
-  background:rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.11);
+  box-shadow:0 1px 0 rgba(255,255,255,0.18) inset;
   pointer-events:none;
   z-index:0;
-  /* NO transition here — JS controls it directly for real-time feel */
-  will-change:transform,width;
-  transform:translateZ(0);
-}
-#bnav-indicator.snapping{
-  transition:transform .38s cubic-bezier(0.34,1.20,0.64,1),
-             width .38s cubic-bezier(0.34,1.20,0.64,1);
+  /* CSS transition always on — JS controls value changes */
+  transition:transform 0.001ms linear, width 0.001ms linear;
+  -webkit-transform:translate3d(0,0,0);
+  transform:translate3d(0,0,0);
 }
 
 .bBtn{
@@ -684,7 +685,7 @@ body::after{
 }
 
 /* iOS 26: content-visibility for off-screen optimization */
-#s-vocab,#s-srs,#s-lookup{content-visibility:auto;contain-intrinsic-size:0 800px;}
+#s-vocab,#s-lookup{content-visibility:auto;contain-intrinsic-size:0 800px;}
 
 /* Grammar tab bar scroll — hide scrollbar */
 #gram-tabs{
@@ -937,7 +938,7 @@ body::after{
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--grn);margin-bottom:2px;">&gt; русский_словарь.exe</div>
     <div style="font-size:24px;font-weight:900;letter-spacing:-1px;font-family:var(--display);">LEARN RUSSIAN</div>
-    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="v-sub">// đang tải...</div>
+    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="v-sub">// загрузка...</div>
   </div>
   <div style="display:flex;gap:6px;padding:12px 16px 0;flex-shrink:0;">
     <div class="lvlBtn on" id="lb-A1" onclick="App.setLevel('A1')"><div style="font-size:14px;font-weight:700;color:var(--cyn);">A1</div><div style="font-size:9px;color:var(--com);">beginner</div></div>
@@ -987,9 +988,9 @@ body::after{
   <div class="scrl">
     <div class="card mt8" style="display:flex;flex-direction:column;gap:10px;">
       <button class="btn g" onclick="App.fcStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 2H8L6 6H18L16 2Z"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="12" y1="10" x2="12" y2="16"/></svg> flashcard()</button>
-      <div style="font-size:10px;color:var(--com);text-align:center;">// lật thẻ · xem họ từ</div>
+      <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.flashcard.sub">// lật thẻ · xem họ từ</div>
       <button class="btn p" onclick="App.quizStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> quiz()</button>
-      <div style="font-size:10px;color:var(--com);text-align:center;">// kiểm tra kiến thức</div>
+      <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.quiz.sub">// kiểm tra kiến thức</div>
     </div>
   </div>
 </div>
@@ -1121,17 +1122,17 @@ body::after{
 </div>
 
 
-<!-- TRA TỪ -->
+<!-- ПОИСК -->
 <div id="s-lookup" class="screen">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">TRA TỪ</div>
-    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// đang tải...</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">ПОИСК</div>
+    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// загрузка...</div>
   </div>
   <div style="padding:12px 16px 0;flex-shrink:0;">
     <div style="position:relative;">
       <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:0.35;">🔍</span>
-      <input id="lk-input" type="search" placeholder="Gõ tiếng Nga hoặc tiếng Việt..."
+      <input id="lk-input" type="search" placeholder="Введите слово на русском или вьетнамском..."
         autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
         oninput="App.lkSearch(this.value)"
         onkeydown="if(event.key==='Escape')App.lkClear();">
@@ -1139,7 +1140,7 @@ body::after{
         style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
-      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Tất cả</button>
+      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Все</button>
       <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
       <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
       <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
@@ -1149,8 +1150,8 @@ body::after{
   <div class="scrl" style="padding-top:12px;" id="lk-results">
     <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
       <div style="font-size:40px;margin-bottom:14px;">📖</div>
-      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>
-      <div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div>
+      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Введите слово для поиска</div>
+      <div style="font-size:11px;">// поддержка: рус · вьет · транскрипция</div>
     </div>
   </div>
 </div>
@@ -1159,7 +1160,7 @@ body::after{
   <!-- Header fixed -->
   <div style="background:rgba(6,8,13,0.70);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 76px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--yel);margin-bottom:2px;font-family:var(--mono);letter-spacing:0.5px;">&gt; grammar.exe --lang=ru</div>
-    <div id="gram-title" style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">NGỮ PHÁP TIẾNG NGA</div>
+    <div id="gram-title" style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">ГРАММАТИКА</div>
   </div>
 
   <!-- Tab pill bar — swipeable like Telegram -->
@@ -1201,7 +1202,7 @@ body::after{
       <path d="M4 4.5C4 3.67 4.67 3 5.5 3H11V13L8.5 11.5L6 13V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M11 3H18.5C19.33 3 20 3.67 20 4.5V18.5C20 19.88 18.88 21 17.5 21H6.5C5.12 21 4 19.88 4 18.5V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <text x="13" y="17.5" font-size="6" font-weight="700" fill="currentColor" font-family="serif" text-anchor="middle">Я</text>
-    </svg></span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
+    </svg></span><span class="bLbl" id="bn-vocab-lbl">СЛОВАРЬ</span>
   </button>
   <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1209,7 +1210,7 @@ body::after{
       <rect x="8" y="9" width="13" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
       <path d="M17.5 5.5L20 8L17.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M20 8H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-srs-lbl">ÔN TẬP</span>
+    </svg></span><span class="bLbl" id="bn-srs-lbl">ПОВТОР</span>
   </button>
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1219,7 +1220,7 @@ body::after{
       <line x1="7" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <circle cx="15" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
       <line x1="13" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-grammar-lbl">NGỮ PHÁP</span>
+    </svg></span><span class="bLbl" id="bn-grammar-lbl">ГРАММАТИКА</span>
   </button>
   <button class="bBtn" id="bn-lookup" onclick="App.nav('lookup')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1227,7 +1228,7 @@ body::after{
       <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-lookup-lbl">TRA TỪ</span>
+    </svg></span><span class="bLbl" id="bn-lookup-lbl">ПОИСК</span>
   </button>
 </div>
 </div>
@@ -6043,7 +6044,7 @@ const wordFamilies = {
 
 
 // ══════════════════════════════════════════════════════════════════════
-// TRẮC NGHIỆM NGỮ PHÁP — 6 CÁCH BIẾN CÁCH & CHUYỂN ĐỔI TỪ LOẠI
+// TRẮC NGHIỆM ГРАММАТИКА — 6 CÁCH BIẾN CÁCH & CHUYỂN ĐỔI TỪ LOẠI
 // ══════════════════════════════════════════════════════════════════════
 
 const grammarQuizData = {
@@ -6111,7 +6112,7 @@ const grammarQuizData = {
     { q: '"В ИНТЕРНЕТЕ нашли информацию." Từ ИНТЕРНЕТ ở cách mấy?', a: 'Cách 6', opts: ['Cách 1','Cách 2','Cách 4','Cách 6'], exp: 'В + С6 = ở trong. ИНТЕРНЕТ → ИНТЕРНЕТЕ (Cách 6).' },
     { q: 'Cách 6 không thể dùng ĐỘC LẬP mà luôn phải có gì?', a: 'Giới từ (В, НА, О, ПРИ)', opts: ['Giới từ (В, НА, О, ПРИ)','Danh từ bổ ngữ','Động từ','Tính từ'], exp: 'Cách 6 (Предложный = "nói sau giới từ") luôn đi sau giới từ. Không dùng một mình.' },
 
-    // ─── ÔN TẬP TỔNG HỢP ───────────────────────────────────────────
+    // ─── ПОВТОР TỔNG HỢP ───────────────────────────────────────────
     { q: '"Мы поедем В ПЕТЕРБУРГ." Từ ПЕТЕРБУРГ ở cách mấy?', a: 'Cách 4 — chuyển động đến', opts: ['Cách 3','Cách 4 — chuyển động đến','Cách 5','Cách 6'], exp: 'В + C4 = chuyển động ĐẾN. В ПЕТЕРБУРГЕ (C6) = đang ở Petersburg.' },
     { q: '"МЕЖДУ НАМИ говоря..." Từ НАС ở cách mấy?', a: 'Cách 5 — sau МЕЖДУ', opts: ['Cách 2','Cách 3','Cách 4','Cách 5 — sau МЕЖДУ'], exp: 'МЕЖДУ + C5: между нами (giữa chúng ta). МЫ → НАС (C2/4), НАМ (C3), НАМИ (C5).' },
     { q: '"Подарок ДЛЯ ДРУГА." Từ ДРУГ ở cách mấy?', a: 'Cách 2 — sau ДЛЯ', opts: ['Cách 2 — sau ДЛЯ','Cách 3','Cách 4','Cách 5'], exp: 'ДЛЯ (dành cho) + Cách 2: для друга, для мамы, для учёбы.' },
@@ -6157,7 +6158,7 @@ const grammarQuizData = {
 };
 
 // ══════════════════════════════════════════════════════════════════════
-// NGỮ PHÁP — 6 CÁCH BIẾN CÁCH TIẾNG NGA (ПАДЕЖИ)
+// ГРАММАТИКА — 6 CÁCH BIẾN CÁCH TIẾNG NGA (ПАДЕЖИ)
 // ══════════════════════════════════════════════════════════════════════
 
 const caseData = [
@@ -6569,7 +6570,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'TỪ VỰNG', 'nav.review': 'ÔN TẬP', 'nav.grammar': 'NGỮ PHÁP', 'nav.read': 'ĐỌC', 'nav.lookup': 'TRA TỪ',
+    'nav.vocab': 'СЛОВАРЬ', 'nav.review': 'ПОВТОР', 'nav.grammar': 'ГРАММАТИКА', 'nav.read': 'ĐỌC', 'nav.lookup': 'ПОИСК',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -6596,14 +6597,14 @@ var i18n = {
     'stories.all': 'Tất cả', 'stories.tales': '🧚 Truyện', 'stories.news': '📰 Tin',
     'stories.words': '// TỪ TRONG ĐOẠN NÀY',
     // Grammar
-    'gram.title': 'NGỮ PHÁP TIẾNG NGA', 'gram.cases': '⚖️ 6 Cách',
-    'gram.formation': '🔄 Từ loại', 'gram.quiz': '🎯 Quiz',
+    'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cách',
+    'gram.formation': 'Từ loại', 'gram.quiz': 'Quiz',
     // Donate
     'donate.label': '☕ Ủng hộ / Support dev',
     // FC word family
     'fc.wf.label': 'Danh từ', 'fc.wf.verb': 'Động từ', 'fc.wf.adj': 'Tính từ', 'fc.wf.adv': 'Trạng từ',
     'srs.due': 'từ cần ôn tập', 'srs.none': 'Không có từ cần ôn',
-    'srs.nav': 'ÔN TẬP', 'srs.nav.due': 'ÔN',
+    'srs.nav': 'ПОВТОР', 'srs.nav.due': 'ÔN',
     'vocab.sub': 'đã học',
     'topic.words': 'từ',
     'wf.see': '🌿 // xem họ từ', 'wf.hide': '🌿 // ẩn họ từ',
@@ -6631,8 +6632,8 @@ var i18n = {
     'stories.title': 'READ RUSSIAN', 'stories.sub': "// Children's stories · News articles",
     'stories.all': 'All', 'stories.tales': '🧚 Stories', 'stories.news': '📰 News',
     'stories.words': '// WORDS IN THIS PASSAGE',
-    'gram.title': 'RUSSIAN GRAMMAR', 'gram.cases': '⚖️ 6 Cases',
-    'gram.formation': '🔄 Word types', 'gram.quiz': '🎯 Quiz',
+    'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cases',
+    'gram.formation': 'Word types', 'gram.quiz': 'Quiz',
     'donate.label': '☕ Support dev',
     'fc.wf.label': 'Nouns', 'fc.wf.verb': 'Verbs', 'fc.wf.adj': 'Adjectives', 'fc.wf.adv': 'Adverbs',
     'srs.due': 'words due for review', 'srs.none': 'Nothing to review',
@@ -6856,7 +6857,7 @@ function fcNav(d){
   if(d===1&&S.fcIdx>=ws.length-1){
     // All cards done — show celebration then go back
     const allSeen=ws.every((_,j)=>S.mastered[`${S.level}-${S.topic}-${j}`]);
-    showToast(allSeen?'🏆 Xong! Đã thuộc hết '+ws.length+' từ':'✓ Hết bài · quay lại','grn');
+    showToast(allSeen?(S.lang==='en'?'🏆 Done! '+ws.length+' words':'🏆 Xong! '+ws.length+' từ'):(S.lang==='en'?'✓ Done · going back':'✓ Hết bài · quay lại'),'grn');
     setTimeout(()=>nav('topic'),900);
     return;
   }
@@ -6976,7 +6977,7 @@ function srsReveal(){
 function toggleSrsWF(btn){
   const p=document.getElementById('srs-wfp');
   const cur=S.srsDeck[S.srsIdx];
-  if(p.innerHTML){p.innerHTML='';btn.textContent='🌿 // xem họ từ';}
+  if(p.innerHTML){p.innerHTML='';btn.textContent=t('wf.see');}
   else{p.innerHTML=wfHtml(cur.word.ru);btn.textContent=t('wf.hide');}
 }
 function srsRate(q){
@@ -7568,13 +7569,20 @@ function setLang(lang){
 
   // Vocab screen sub
   const vSub = document.getElementById('v-sub'); if(vSub && vSub.textContent.includes('tải')) vSub.textContent = t('vocab.loading');
+  lkInit(); lkClear();
+  var lkInp=document.getElementById('lk-input');
+  if(lkInp) lkInp.placeholder=lang==='en'?'Enter a word in Russian or Vietnamese...':'Введите слово на русском или вьетнамском...';
+  var lkAll=document.getElementById('lk-f-all');
+  if(lkAll) lkAll.textContent=lang==='en'?'All':'Все';
+  if(S.topic){var tEl=document.getElementById('t-title');if(tEl)tEl.textContent=lang==='en'?(topicNamesEN[S.topic]||S.topic):S.topic;}
+  renderVocab();
 }
 
 
 // ═══════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════
-// TRA TỪ — từ điển nội bộ offline, tìm cả Nga + Việt + phiên âm
+// ПОИСК — từ điển nội bộ offline, tìm cả Nga + Việt + phiên âm
 // ══════════════════════════════════════════════════════════
 
 var _lkFilter = 'all';  // 'all' | 'A1' | 'A2' | 'B1' | 'B2'
@@ -7589,7 +7597,7 @@ function lkInit() {
       n += vocabularyDatabase[lvl][t].length;
   _lkTotal = n;
   const el = document.getElementById('lk-count');
-  if (el) el.textContent = `// ${n.toLocaleString()} từ · A1–B2`;
+  if (el) el.textContent = `// ${n.toLocaleString()} ${(S.lang||'vi')==='en'?'words':'từ'} · A1–B2`;
 }
 
 function lkFilter(lvl) {
@@ -7611,8 +7619,8 @@ function lkClear() {
   document.getElementById('lk-results').innerHTML =
     '<div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">' +
     '<div style="font-size:40px;margin-bottom:14px;">📖</div>' +
-    '<div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>' +
-    '<div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div></div>';
+    '<div style="font-size:13px;color:var(--txd);margin-bottom:6px;">' + ((S.lang||'vi')==='en'?'Enter a word to search':'Введите слово для поиска') + '</div>' +
+    '<div style="font-size:11px;">' + ((S.lang||'vi')==='en'?'// Russian · Vietnamese · phonetics':'// поддержка: рус · вьет · транскрипция') + '</div></div>';
 }
 
 function lkSearch(val) {
@@ -7674,8 +7682,8 @@ function _lkRender(q, hits) {
     el.innerHTML =
       '<div style="text-align:center;padding:40px 20px;">' +
       '<div style="font-size:32px;margin-bottom:12px;">🤷</div>' +
-      '<div style="font-size:13px;color:var(--txd);margin-bottom:4px;">Không tìm thấy <b>"' + q + '"</b></div>' +
-      '<div style="font-size:11px;color:var(--com);">// Thử gõ theo phiên âm hoặc tiếng Việt</div></div>';
+      '<div style="font-size:13px;color:var(--txd);margin-bottom:4px;">' + ((S.lang||'vi')==='en'?'No results for':'Không tìm thấy') + ' <b>"' + q + '"</b></div>' +
+      '<div style="font-size:11px;color:var(--com);">' + ((S.lang||'vi')==='en'?'// Try Russian, English or phonetics':'// Thử phiên âm hoặc tiếng Việt') + '</div></div>';
     return;
   }
 
@@ -7690,7 +7698,7 @@ function _lkRender(q, hits) {
   const header =
     '<div style="font-size:10px;color:var(--com);margin-bottom:10px;letter-spacing:0.5px;">' +
     '// <b style="color:var(--txd);">' + hits.length + '</b>' +
-    (hits.length === 24 ? '+' : '') + ' kết quả cho "' + q + '"</div>';
+    (hits.length === 24 ? '+' : '') + ' ' + ((S.lang||'vi')==='en'?'results for':'kết quả cho') + ' "' + q + '"</div>';
 
   const cards = hits.map(({ w, topic, lvl }) => {
     const col = lvlCol[lvl] || 'var(--com)';
@@ -7717,10 +7725,12 @@ function _lkRender(q, hits) {
         '<div style="font-size:12px;color:var(--com);font-family:var(--mono);margin-bottom:9px;">/' + hi(w.ph) + '/</div>' +
 
         // Nghĩa Việt
-        '<div style="font-size:16px;font-weight:600;color:var(--cyn);margin-bottom:3px;">' + hi(w.vn) + '</div>' +
+        '<div style="font-size:16px;font-weight:600;color:var(--cyn);margin-bottom:3px;">' + ((S.lang||'vi')==='en'?hi(w.en||w.vn):hi(w.vn)) + '</div>' +
 
-        // Nghĩa Anh (nếu có)
-        (w.en ? '<div style="font-size:12px;color:var(--txd);">' + hi(w.en) + '</div>' : '') +
+        // Secondary meaning
+        ((S.lang||'vi')==='en'
+          ? (w.vn ? '<div style="font-size:12px;color:var(--txd);">' + hi(w.vn) + '</div>' : '')
+          : (w.en ? '<div style="font-size:12px;color:var(--txd);">' + hi(w.en) + '</div>' : '')) +
 
         // Chủ đề
         '<div style="font-size:10px;color:var(--com);margin-top:8px;' +
@@ -7737,7 +7747,16 @@ function _lkRender(q, hits) {
 // INIT
 function init(){load();if(!S.lang){const bl=navigator.language||'vi';S.lang=bl.startsWith('vi')?'vi':'en';}setLevel('A1');gramTab('cases');nav('vocab');setLang(S.lang);lkInit();}
 
-return{nav,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
+// navSilent: update state + side-effects, NO DOM screen transition
+function navSilent(name){
+  S.screen=name; save();
+  const NM={vocab:'bn-vocab',srs:'bn-srs',grammar:'bn-grammar',lookup:'bn-lookup'};
+  document.querySelectorAll('.bBtn').forEach(b=>b.classList.remove('on'));
+  const ab=document.getElementById(NM[name]); if(ab) ab.classList.add('on');
+  if(name==='grammar') gramTab(S.gramTab||'cases');
+}
+
+return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   fcStart,fcFlip,fcFamily,fcNav,fcMaster,speakFC,
   quizStart,qzAnswer,speakQZ,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
@@ -7884,340 +7903,280 @@ document.addEventListener('DOMContentLoaded',App.init);
 })();
 
 // ══════════════════════════════════════════════════════════════
-//  TELEGRAM-STYLE TAB SWIPE ENGINE
-//  - Real-time screen translate theo ngón tay
-//  - Indicator pill trượt mượt như giọt nước
-//  - Snap với spring animation khi thả
+//  TELEGRAM-STYLE TAB SWIPE ENGINE — v5
 // ══════════════════════════════════════════════════════════════
 (function(){
-  // 4 tab gốc theo thứ tự ngang
-  const TABS = ['vocab','srs','grammar','lookup'];
-  const TAB_BTN = {vocab:'bn-vocab',srs:'bn-srs',grammar:'bn-grammar',lookup:'bn-lookup'};
-  const TAB_COLORS = {
-    vocab:  {svg:'var(--cyn)', glow:'rgba(90,200,250,0.75)'},
-    srs:    {svg:'var(--yel)', glow:'rgba(255,214,10,0.75)'},
-    grammar:{svg:'var(--pur)', glow:'rgba(191,90,242,0.75)'},
-    lookup: {svg:'var(--grn)', glow:'rgba(52,199,89,0.75)'},
+  var TABS    = ['vocab','srs','grammar','lookup'];
+  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup'];
+  var COLORS  = [
+    {fg:'var(--cyn)', glow:'rgba(90,200,250,0.80)'},
+    {fg:'var(--yel)', glow:'rgba(255,214,10,0.80)'},
+    {fg:'var(--pur)', glow:'rgba(191,90,242,0.80)'},
+    {fg:'var(--grn)', glow:'rgba(52,199,89,0.80)'},
+  ];
+
+  var bnav      = document.getElementById('bnav');
+  var indicator = document.getElementById('bnav-indicator');
+  var SPRING    = 'transform .38s cubic-bezier(0.34,1.20,0.64,1),width .38s cubic-bezier(0.34,1.20,0.64,1)';
+  var INSTANT   = 'transform 0.001ms linear,width 0.001ms linear';
+
+  // ── Indicator ─────────────────────────────────────────────────
+  function geom(i){
+    var btn = document.getElementById(BTN_IDS[i]);
+    if(!btn || !bnav) return null;
+    var nb = bnav.getBoundingClientRect();
+    var bb = btn.getBoundingClientRect();
+    return { x: bb.left - nb.left, w: bb.width };
+  }
+
+  // Move instantly (during drag — no animation)
+  function indDrag(x, w){
+    indicator.style.transition = INSTANT;
+    indicator.style.transform  = 'translate3d('+x+'px,0,0)';
+    indicator.style.width      = w+'px';
+  }
+
+  // Snap with spring (on tap or release)
+  function indSnap(x, w){
+    // Step 1: ensure instant transition is applied
+    indicator.style.transition = INSTANT;
+    // Step 2: force browser to register current state
+    indicator.getBoundingClientRect();
+    // Step 3: set spring transition + new position in next frame
+    requestAnimationFrame(function(){
+      indicator.style.transition = SPRING;
+      indicator.style.transform  = 'translate3d('+x+'px,0,0)';
+      indicator.style.width      = w+'px';
+    });
+  }
+
+  function snapTo(i, animate){
+    var g = geom(i);
+    if(!g || g.w <= 0) {
+      // Retry once after a frame if layout not ready
+      requestAnimationFrame(function(){
+        var g2 = geom(i);
+        if(g2 && g2.w > 0) animate ? indSnap(g2.x, g2.w) : indDrag(g2.x, g2.w);
+      });
+      return;
+    }
+    animate ? indSnap(g.x, g.w) : indDrag(g.x, g.w);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  function initIndicator(){
+    var i = TABS.findIndex(function(t){
+      var s = document.getElementById('s-'+t);
+      return s && s.classList.contains('active');
+    });
+    if(i < 0) i = 0;
+    snapTo(i, false);
+  }
+  // Try multiple times to handle slow layouts
+  setTimeout(initIndicator, 80);
+  setTimeout(initIndicator, 200);
+  setTimeout(initIndicator, 500);
+
+  window.addEventListener('resize', function(){
+    setTimeout(initIndicator, 80);
+  });
+
+  // ── Hook App.nav AND all bBtn clicks for tap sync ──────────────
+  var _origNav = App.nav;
+  App.nav = function(name){
+    _origNav.call(App, name);
+    var ni = TABS.indexOf(name);
+    if(ni >= 0) setTimeout(function(){ snapTo(ni, true); }, 50);
   };
 
-  const bnav = document.getElementById('bnav');
-  const indicator = document.getElementById('bnav-indicator');
-
-  // ── Indicator geometry ─────────────────────────────────────
-  function getBtnRect(tabId){
-    const btn = document.getElementById(TAB_BTN[tabId]);
-    if(!btn) return null;
-    const br = bnav.getBoundingClientRect();
-    const r  = btn.getBoundingClientRect();
-    return { left: r.left - br.left, width: r.width };
+  // srsStart calls nav('srs') as local fn (not App.nav), so hook it too
+  if(App.srsStart){
+    var _origSrs = App.srsStart;
+    App.srsStart = function(){
+      _origSrs.call(App);
+      setTimeout(function(){ snapTo(1, true); }, 50); // index 1 = 'srs'
+    };
   }
 
-  function moveIndicator(left, width, animate){
-    if(animate){
-      indicator.classList.add('snapping');
-    } else {
-      indicator.classList.remove('snapping');
-    }
-    indicator.style.transform = `translate3d(${left}px,0,0)`;
-    indicator.style.width = width + 'px';
-  }
-
-  function snapIndicatorTo(tabId, animate){
-    const r = getBtnRect(tabId);
-    if(!r) return;
-    moveIndicator(r.left, r.width, animate);
-    // Remove snapping class after transition ends
-    if(animate){
-      indicator.addEventListener('transitionend', ()=>{
-        indicator.classList.remove('snapping');
-      }, {once:true});
-    }
-  }
-
-  // Init indicator on load
-  setTimeout(()=>{
-    const cur = TABS.find(t=>{
-      const btn = document.getElementById(TAB_BTN[t]);
-      return btn && btn.classList.contains('on');
-    }) || 'vocab';
-    snapIndicatorTo(cur, false);
-  }, 80);
-
-  // ── Update nav colors during drag ────────────────────────────
-  function updateNavColors(fromIdx, toIdx, progress){
-    TABS.forEach((tab, i)=>{
-      const btn = document.getElementById(TAB_BTN[tab]);
+  // Catch-all: any bBtn click syncs indicator by button position
+  var bnavEl = document.getElementById('bnav');
+  if(bnavEl){
+    bnavEl.addEventListener('click', function(e){
+      var btn = e.target.closest('.bBtn');
       if(!btn) return;
-      const svg  = btn.querySelector('.bIcon svg');
-      const lbl  = btn.querySelector('.bLbl');
-      let opacity = 0.54;
-      let lblOpacity = 0.50;
-      let glow = '';
-
-      if(i === fromIdx){
-        opacity    = 0.54 + (1 - progress) * 0.44;
-        lblOpacity = 0.50 + (1 - progress) * 0.47;
-        glow       = progress < 0.5 ? `drop-shadow(0 0 7px ${TAB_COLORS[tab].glow})` : '';
-      } else if(i === toIdx){
-        opacity    = 0.54 + progress * 0.44;
-        lblOpacity = 0.50 + progress * 0.47;
-        glow       = progress > 0.5 ? `drop-shadow(0 0 7px ${TAB_COLORS[tab].glow})` : '';
-      }
-
-      if(svg){
-        svg.style.color   = (i===fromIdx||i===toIdx) ? TAB_COLORS[tab].svg : '';
-        svg.style.opacity = opacity;
-        svg.style.filter  = glow;
-      }
-      if(lbl){
-        lbl.style.color   = (i===fromIdx||i===toIdx) ? TAB_COLORS[tab].svg : '';
-        lbl.style.opacity = lblOpacity;
-      }
+      var idx = BTN_IDS.indexOf(btn.id);
+      if(idx >= 0) setTimeout(function(){ snapTo(idx, true); }, 55);
     });
   }
 
-  function resetNavColors(activeTab){
-    TABS.forEach(tab=>{
-      const btn = document.getElementById(TAB_BTN[tab]);
-      if(!btn) return;
-      const svg = btn.querySelector('.bIcon svg');
-      const lbl = btn.querySelector('.bLbl');
-      const isActive = tab === activeTab;
+  // ── Colors ────────────────────────────────────────────────────
+  function lerpColors(fi, ti, t){
+    BTN_IDS.forEach(function(id, i){
+      var btn = document.getElementById(id); if(!btn) return;
+      var svg = btn.querySelector('.bIcon svg');
+      var lbl = btn.querySelector('.bLbl');
+      var op = 0.54, lo = 0.50, col = '', filt = '';
+      if(i === fi){
+        op = 0.54+(1-t)*0.44; lo = 0.50+(1-t)*0.48;
+        col = COLORS[i].fg;
+        filt = (1-t) > 0.35 ? 'drop-shadow(0 0 7px '+COLORS[i].glow+')' : 'none';
+      } else if(i === ti){
+        op = 0.54+t*0.44; lo = 0.50+t*0.48;
+        col = COLORS[i].fg;
+        filt = t > 0.35 ? 'drop-shadow(0 0 7px '+COLORS[i].glow+')' : 'none';
+      }
+      if(svg){ svg.style.color = col; svg.style.opacity = op; svg.style.filter = filt; }
+      if(lbl){ lbl.style.color = col; lbl.style.opacity = lo; }
+    });
+  }
+  function finalizeColors(i){
+    BTN_IDS.forEach(function(id, j){
+      var btn = document.getElementById(id); if(!btn) return;
+      var svg = btn.querySelector('.bIcon svg');
+      var lbl = btn.querySelector('.bLbl');
       if(svg){ svg.style.color=''; svg.style.opacity=''; svg.style.filter=''; }
       if(lbl){ lbl.style.color=''; lbl.style.opacity=''; }
-      btn.classList.toggle('on', isActive);
+      btn.classList.toggle('on', j === i);
     });
-    // Re-trigger icon pop
-    const activeBtn = document.getElementById(TAB_BTN[activeTab]);
-    if(activeBtn){
-      const icon = activeBtn.querySelector('.bIcon');
-      if(icon){ icon.style.animation='none'; void icon.offsetWidth; icon.style.animation=''; }
-    }
+    var ab = document.getElementById(BTN_IDS[i]);
+    if(ab){ var ic = ab.querySelector('.bIcon'); if(ic){ ic.style.animation='none'; void ic.offsetWidth; ic.style.animation=''; } }
   }
 
-  // ── Swipe state ───────────────────────────────────────────────
-  let active = false;
-  let startX = 0, startY = 0, lastX = 0, lastT = 0;
-  let fromIdx = -1, toIdx = -1;
-  let fromEl = null, toEl = null;
-  let fromRect = null, toRect = null;
-  let dirLocked = false, isHoriz = false;
-  const W = ()=> window.innerWidth;
-  const EDGE_GUARD = 32; // px from left edge reserved for swipe-back (don't steal)
+  // ── Gesture ───────────────────────────────────────────────────
+  var go=false, locked=false, horiz=false;
+  var sx=0, sy=0, lx=0, lt=0;
+  var fi=-1, ti=-1, fEl=null, tEl=null, fg=null, tg=null;
+  var GUARD = 36;
+  function W(){ return window.innerWidth; }
 
-  function curTabIdx(){
-    return TABS.findIndex(t=>{
-      const s = document.getElementById('s-'+t);
+  function curIdx(){
+    return TABS.findIndex(function(t){
+      var s = document.getElementById('s-'+t);
       return s && s.classList.contains('active');
     });
   }
 
-  function prepareEl(el){
-    if(!el) return;
-    el.classList.add('swiping');
-    el.style.willChange = 'transform';
-  }
-
-  function restoreEl(el){
-    if(!el) return;
-    el.classList.remove('swiping');
-    el.style.transform = '';
-    el.style.opacity   = '';
-    el.style.willChange = '';
-  }
-
-  function applyPositions(progress, dir){
-    // dir: -1 = going left (to higher idx), 1 = going right (to lower idx)
-    // fromEl: current screen sliding out
-    // toEl: next screen sliding in
-    if(!fromEl || !toEl) return;
-
-    const offset = progress * W();
-    // fromEl slides out in direction of swipe
-    fromEl.style.transform = `translate3d(${-dir * offset}px,0,0)`;
-    fromEl.style.opacity = String(Math.max(0.6, 1 - progress * 0.35));
-    // toEl comes in from the opposite side
-    toEl.style.transform = `translate3d(${dir * (W() - offset)}px,0,0)`;
-    toEl.style.opacity = String(0.65 + progress * 0.35);
-  }
-
   document.addEventListener('touchstart', function(e){
     if(e.touches.length !== 1) return;
-    const touch = e.touches[0];
-
-    // Don't interfere with existing swipe-back zone from left edge
-    if(touch.clientX < EDGE_GUARD) return;
-
-    const ci = curTabIdx();
-    if(ci < 0) return;
-
-    startX = lastX = touch.clientX;
-    startY = touch.clientY;
-    lastT  = Date.now();
-    active = false;
-    dirLocked = false;
-    isHoriz = false;
-    fromIdx = ci;
-    toIdx = -1;
-    fromEl = toEl = null;
-
-  }, {passive:true});
+    var tc = e.touches[0];
+    if(tc.clientX < GUARD) return;
+    var ci = curIdx(); if(ci < 0) return;
+    sx = lx = tc.clientX; sy = tc.clientY; lt = Date.now();
+    locked = false; horiz = false; go = false;
+    fi = ci; ti = -1; fEl = tEl = fg = tg = null;
+  }, {passive: true});
 
   document.addEventListener('touchmove', function(e){
-    if(e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
-    lastX = touch.clientX;
+    if(fi < 0 || e.touches.length !== 1) return;
+    var tc = e.touches[0];
+    var dx = tc.clientX - sx;
+    var dy = tc.clientY - sy;
+    lx = tc.clientX;
 
-    // Direction lock — decide horizontal vs vertical
-    if(!dirLocked && (Math.abs(dx) > 6 || Math.abs(dy) > 6)){
-      isHoriz  = Math.abs(dx) > Math.abs(dy) * 1.4;
-      dirLocked = true;
+    if(!locked && (Math.abs(dx) > 7 || Math.abs(dy) > 7)){
+      horiz  = Math.abs(dx) > Math.abs(dy) * 1.4;
+      locked = true;
     }
-    if(!dirLocked || !isHoriz) return;
+    if(!locked || !horiz) return;
 
-    const dir = dx > 0 ? 1 : -1; // 1=swipe right (go prev), -1=swipe left (go next)
-    const nextIdx = fromIdx - dir; // swipe right → prev tab (lower idx)
+    // dx>0 = swipe right = go to prev tab (lower index)
+    var dir = dx > 0 ? -1 : 1;  // direction fEl moves
+    var ni  = fi + dir;
+    if(ni < 0 || ni >= TABS.length) return;
 
-    if(nextIdx < 0 || nextIdx >= TABS.length) return;
+    if(!go){
+      ti  = ni;
+      fEl = document.getElementById('s-' + TABS[fi]);
+      tEl = document.getElementById('s-' + TABS[ti]);
+      if(!fEl || !tEl) return;
 
-    // Setup on first horizontal move
-    if(!active){
-      toIdx = nextIdx;
-      fromEl = document.getElementById('s-' + TABS[fromIdx]);
-      toEl   = document.getElementById('s-' + TABS[toIdx]);
-      if(!toEl) return;
-
-      // Make toEl visible but positioned off-screen
-      toEl.classList.remove('active','slide-back','tab-switch');
-      toEl.classList.add('active','swiping');
-      toEl.style.display = 'flex';
-      toEl.style.transform = `translate3d(${-dir * W()}px,0,0)`;
-      toEl.style.opacity = '0.65';
-
-      prepareEl(fromEl);
-
-      fromRect = getBtnRect(TABS[fromIdx]);
-      toRect   = getBtnRect(TABS[toIdx]);
-
-      active = true;
-      e.preventDefault();
+      fEl.classList.add('swiping');
+      tEl.setAttribute('style',
+        'display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;'+
+        'will-change:transform,opacity;-webkit-backface-visibility:hidden;backface-visibility:hidden;'+
+        'animation:none!important;transition:none!important;'+
+        'transform:translate3d('+(-dir * W())+'px,0,0);opacity:0.65;'
+      );
+      fg = geom(fi); tg = geom(ti);
+      go = true;
     }
-
-    if(!active) return;
+    if(!go) return;
     e.preventDefault();
 
-    const rawProgress = Math.abs(dx) / W();
-    // Rubber-band when over-swiping
-    const progress = rawProgress > 1 ? 1 + (rawProgress-1)*0.2 : rawProgress;
-    const clampedP = Math.min(progress, 1);
+    var raw = Math.abs(dx) / W();
+    var cp  = Math.min(raw > 1 ? 1 + (raw-1)*0.15 : raw, 1);
+    var off = cp * W();
 
-    applyPositions(clampedP, dir);
+    fEl.style.transform = 'translate3d('+(dir*off)+'px,0,0)';
+    fEl.style.opacity   = String(Math.max(0.55, 1-cp*0.38));
+    tEl.style.transform = 'translate3d('+(-dir*(W()-off))+'px,0,0)';
+    tEl.style.opacity   = String(0.65 + cp*0.35);
 
-    // Slide indicator between fromRect and toRect
-    if(fromRect && toRect){
-      const l = fromRect.left + (toRect.left - fromRect.left) * clampedP;
-      const w = fromRect.width + (toRect.width - fromRect.width) * clampedP;
-      moveIndicator(l, w, false);
-    }
+    if(fg && tg) indDrag(fg.x+(tg.x-fg.x)*cp, fg.w+(tg.w-fg.w)*cp);
+    lerpColors(fi, ti, cp);
 
-    updateNavColors(fromIdx, toIdx, clampedP);
+  }, {passive: false});
 
-  }, {passive:false});
+  function release(){
+    if(!go) return;
+    go = false;
 
-  function onEnd(e){
-    if(!active) return;
-    active = false;
+    var dx     = lx - sx;
+    var vel    = Math.abs(dx) / Math.max(1, Date.now() - lt);
+    var prog   = Math.abs(dx) / W();
+    var dir    = dx > 0 ? -1 : 1;
+    var easeO  = 'cubic-bezier(0.25,0.46,0.45,0.94)';
+    var spr    = 'cubic-bezier(0.34,1.20,0.64,1)';
+    var commit = prog > 0.28 || (prog > 0.08 && vel > 0.50);
 
-    const dx   = lastX - startX;
-    const dt   = Math.max(1, Date.now() - lastT + 1);
-    const vel  = Math.abs(dx) / dt; // px/ms
-    const prog = Math.abs(dx) / W();
-    const dir  = dx > 0 ? 1 : -1;
-
-    const shouldCommit = prog > 0.30 || (prog > 0.08 && vel > 0.55);
-
-    if(shouldCommit && toIdx >= 0 && toIdx < TABS.length){
-      // Commit: slide both screens to final positions
-      const dur = Math.max(180, Math.min(340, 280 - vel * 60));
-      const ease = 'cubic-bezier(0.25,0.46,0.45,0.94)';
-
-      fromEl.style.transition = `transform ${dur}ms ${ease}, opacity ${dur}ms ease`;
-      toEl.style.transition   = `transform ${dur}ms ${ease}, opacity ${dur}ms ease`;
-
-      fromEl.style.transform = `translate3d(${dir * W()}px,0,0)`;
-      fromEl.style.opacity   = '0';
-      toEl.style.transform   = 'translate3d(0,0,0)';
-      toEl.style.opacity     = '1';
-
-      snapIndicatorTo(TABS[toIdx], true);
-      resetNavColors(TABS[toIdx]);
-
+    if(commit){
+      var dur = Math.max(160, Math.min(300, 250 - vel*60));
+      var tr  = 'transform '+dur+'ms '+easeO+',opacity '+dur+'ms ease';
+      fEl.style.transition = tr; tEl.style.transition = tr;
+      fEl.style.transform  = 'translate3d('+(dir*W())+'px,0,0)';
+      fEl.style.opacity    = '0';
+      tEl.style.transform  = 'translate3d(0,0,0)';
+      tEl.style.opacity    = '1';
+      if(tg) indSnap(tg.x, tg.w);
+      finalizeColors(ti);
       if(navigator.vibrate) navigator.vibrate(6);
-
-      setTimeout(()=>{
-        // Clean up: hide fromEl, make toEl fully active
-        fromEl.classList.remove('active','swiping');
-        fromEl.style.cssText = '';
-        toEl.classList.remove('swiping');
-        toEl.style.cssText = '';
-        // Ensure toEl is active
-        toEl.classList.add('active');
-        // Run any nav side effects
-        App.nav(TABS[toIdx]);
-        // Re-snap indicator cleanly
-        snapIndicatorTo(TABS[toIdx], false);
+      var _fi=fi, _ti=ti, _fEl=fEl, _tEl=tEl;
+      setTimeout(function(){
+        _fEl.classList.remove('active','swiping');
+        _fEl.style.transform='';_fEl.style.opacity='';_fEl.style.transition='';
+        _tEl.style.transform='';_tEl.style.opacity='';_tEl.style.transition='';
+        void _tEl.offsetHeight;
+        _tEl.classList.add('active');
+        S.screen = TABS[_ti]; save();
+        if(TABS[_ti] === 'grammar' && typeof gramTab === 'function') gramTab(S.gramTab || 'cases');
+        if(TABS[_ti] === 'srs' && typeof srsStart === 'function') srsStart();
+        setTimeout(function(){ snapTo(_ti, false); }, 20);
       }, dur + 20);
-
     } else {
-      // Cancel: spring back
-      const ease = 'cubic-bezier(0.34,1.20,0.64,1)';
-      fromEl.style.transition = `transform 0.34s ${ease}, opacity 0.28s ease`;
-      toEl.style.transition   = `transform 0.34s ${ease}, opacity 0.28s ease`;
-      fromEl.style.transform  = 'translate3d(0,0,0)';
-      fromEl.style.opacity    = '1';
-      toEl.style.transform    = `translate3d(${-dir * W()}px,0,0)`;
-      toEl.style.opacity      = '0';
-
-      snapIndicatorTo(TABS[fromIdx], true);
-      resetNavColors(TABS[fromIdx]);
-
-      setTimeout(()=>{
-        toEl.classList.remove('active','swiping');
-        toEl.style.cssText = '';
-        fromEl.classList.remove('swiping');
-        fromEl.style.cssText = '';
-        fromEl.classList.add('active');
-        snapIndicatorTo(TABS[fromIdx], false);
-      }, 360);
+      var spr2 = 'cubic-bezier(0.34,1.20,0.64,1)';
+      var tr2  = 'transform 0.32s '+spr2+',opacity 0.26s ease';
+      fEl.style.transition = tr2; tEl.style.transition = tr2;
+      fEl.style.transform  = 'translate3d(0,0,0)';
+      fEl.style.opacity    = '1';
+      tEl.style.transform  = 'translate3d('+(-dir*W())+'px,0,0)';
+      tEl.style.opacity    = '0';
+      if(fg) indSnap(fg.x, fg.w);
+      finalizeColors(fi);
+      var _fEl2=fEl, _tEl2=tEl, _fi2=fi;
+      setTimeout(function(){
+        _tEl2.classList.remove('active');
+        _tEl2.style.transform='';_tEl2.style.opacity='';_tEl2.style.transition='';
+        _fEl2.classList.remove('swiping');
+        _fEl2.style.transform='';_fEl2.style.opacity='';_fEl2.style.transition='';
+        setTimeout(function(){ snapTo(_fi2, false); }, 20);
+      }, 340);
     }
+    fi=ti=-1; fEl=tEl=fg=tg=null;
   }
 
-  document.addEventListener('touchend',    onEnd, {passive:true});
-  document.addEventListener('touchcancel', onEnd, {passive:true});
-
-  // Also update indicator when nav() is called programmatically
-  const _origNav = App.nav.bind(App);
-  App.nav = function(name){
-    _origNav(name);
-    const tabName = TABS.includes(name) ? name : null;
-    if(tabName){
-      setTimeout(()=> snapIndicatorTo(tabName, true), 40);
-    }
-  };
-
-  // Re-init on orientation change
-  window.addEventListener('resize', ()=>{
-    const cur = TABS.find(t=>{
-      const btn = document.getElementById(TAB_BTN[t]);
-      return btn && btn.classList.contains('on');
-    }) || 'vocab';
-    setTimeout(()=> snapIndicatorTo(cur, false), 100);
-  });
-
+  document.addEventListener('touchend',    release, {passive:true});
+  document.addEventListener('touchcancel', release, {passive:true});
 })();
-
 </script>
 </body>
 </html>
