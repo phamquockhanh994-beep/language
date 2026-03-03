@@ -605,8 +605,9 @@ body::after{
 .lvlBtn.on{border-color:rgba(110,198,255,0.4);background:rgba(110,198,255,0.1);box-shadow:0 0 20px var(--cyn-glow) inset, 0 1px 0 rgba(255,255,255,0.08) inset;}
 
 .tCard{
-  border-radius:16px;border:1px solid rgba(255,255,255,0.065);
-  background:rgba(255,255,255,0.022);
+  border-radius:16px;border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.018);
+  transition:border-color .2s ease,background .2s ease;
   backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
   padding:13px 13px 10px;cursor:pointer;
   -webkit-tap-highlight-color:transparent;
@@ -937,7 +938,7 @@ body::after{
 <div id="s-vocab" class="screen active">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--grn);margin-bottom:2px;">&gt; русский_словарь.exe</div>
-    <div style="font-size:24px;font-weight:900;letter-spacing:-1px;font-family:var(--display);">LEARN RUSSIAN</div>
+    <div style="font-size:24px;font-weight:900;letter-spacing:-1px;font-family:var(--display);" id="vocab-main-title">УЧИМ РУССКИЙ</div>
     <div style="font-size:10px;color:var(--com);margin-top:2px;" id="v-sub">// загрузка...</div>
   </div>
   <div style="display:flex;gap:6px;padding:12px 16px 0;flex-shrink:0;">
@@ -1174,7 +1175,7 @@ body::after{
       <button id="gt-form"        onclick="App.gramTab('formation')"   class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
       <button id="gt-conditional" onclick="App.gramTab('conditional')" class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
       <button id="gt-passive"     onclick="App.gramTab('passive')"     class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
-      <button id="gt-quiz"        onclick="App.gramTab('quiz')"        class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Quiz</span></button>
+      <button id="gt-quiz"        onclick="App.gramTab('quiz')"        class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Đố vui</span></button>
     </div>
   </div>
 
@@ -6598,7 +6599,7 @@ var i18n = {
     'stories.words': '// TỪ TRONG ĐOẠN NÀY',
     // Grammar
     'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cách',
-    'gram.formation': 'Từ loại', 'gram.quiz': 'Quiz',
+    'gram.formation': 'Từ loại', 'gram.conditional': 'Điều kiện', 'gram.passive': 'Bị động', 'gram.quiz': 'Đố vui',
     // Donate
     'donate.label': '☕ Ủng hộ / Support dev',
     // FC word family
@@ -6633,7 +6634,7 @@ var i18n = {
     'stories.all': 'All', 'stories.tales': '🧚 Stories', 'stories.news': '📰 News',
     'stories.words': '// WORDS IN THIS PASSAGE',
     'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cases',
-    'gram.formation': 'Word types', 'gram.quiz': 'Quiz',
+    'gram.formation': 'Word types', 'gram.conditional': 'Conditional', 'gram.passive': 'Passive', 'gram.quiz': 'Quiz',
     'donate.label': '☕ Support dev',
     'fc.wf.label': 'Nouns', 'fc.wf.verb': 'Verbs', 'fc.wf.adj': 'Adjectives', 'fc.wf.adv': 'Adverbs',
     'srs.due': 'words due for review', 'srs.none': 'Nothing to review',
@@ -6732,6 +6733,117 @@ function nav(name){
 }
 
 // VOCAB MENU
+
+// ── Custom topic icon set ──────────────────────────────────
+var _CARD_PAL=['#5ac8fa','#34c759','#ffd60a','#bf5af2','#ff9f0a','#ff375f','#64d2ff','#30d158','#a8b4ff','#5ee7c8','#ffb340','#ff6b8a'];
+var _ICON_MAP={
+  '🙋':'<path d="M8 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-1 8a5 5 0 0 0-4 3" stroke-linecap="round"/><path d="M12 11h4m-2-2v4" stroke-linecap="round"/>',
+  '👨':'<circle cx="5" cy="4.5" r="2.5"/><circle cx="11" cy="5.5" r="1.8"/><path d="M1 13a4 4 0 0 1 8 0M13 12a3 3 0 0 1 3 2" stroke-linecap="round"/>',
+  '👩':'<circle cx="5" cy="4.5" r="2.5"/><circle cx="11" cy="5.5" r="1.8"/><path d="M1 13a4 4 0 0 1 8 0M13 12a3 3 0 0 1 3 2" stroke-linecap="round"/>',
+  '🔢':'<rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><text x="10" y="15" font-size="7" font-family="serif" fill="currentColor" stroke="none" font-weight="700">Я</text>',
+  '🍎':'<path d="M8 14c-3 0-5-2.5-5-5.5S5 3 8 3s5 2.5 5 5.5S11 14 8 14z"/><path d="M8 3V1m0 0c0-1 2-1 2 0" stroke-linecap="round"/>',
+  '☕':'<path d="M3 6h9v5.5A3 3 0 0 1 9 14.5H6A3 3 0 0 1 3 11.5V6z"/><path d="M12 8h2a1.5 1.5 0 0 1 0 3h-2" stroke-linecap="round"/><path d="M5.5 3.5c0-1 1-2 1-3m3 3c0-1 1-2 1-3" stroke-linecap="round"/>',
+  '☕':'<path d="M3 6h9v5.5A3 3 0 0 1 9 14.5H6A3 3 0 0 1 3 11.5V6z"/><path d="M12 8h2a1.5 1.5 0 0 1 0 3h-2" stroke-linecap="round"/>',
+  '🎨':'<circle cx="8" cy="8" r="6"/><circle cx="5.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="10.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="5" cy="9.5" r=".8" fill="currentColor" stroke="none"/><circle cx="11" cy="9.5" r=".8" fill="currentColor" stroke="none"/>',
+  '🌈':'<path d="M2 13a6 6 0 0 1 12 0" stroke-linecap="round"/><path d="M4.5 13a3.5 3.5 0 0 1 7 0" stroke-linecap="round"/><path d="M7 13a1 1 0 0 1 2 0" stroke-linecap="round"/>',
+  '🏠':'<path d="M2 8L8 2l6 6v6H2V8z" stroke-linejoin="round"/><rect x="6" y="10" width="4" height="4"/>',
+  '🏡':'<path d="M2 8L8 2l6 6v6H2V8z" stroke-linejoin="round"/><rect x="6" y="10" width="4" height="4"/><path d="M12 5v1" stroke-linecap="round"/>',
+  '📅':'<rect x="2" y="3" width="12" height="12" rx="1.5"/><path d="M2 7h12M5 1v4m6-4v4" stroke-linecap="round"/><circle cx="5.5" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="10.5" cy="11" r=".9" fill="currentColor" stroke="none"/>',
+  '📆':'<rect x="2" y="3" width="12" height="12" rx="1.5"/><path d="M2 7h12M5 1v4m6-4v4" stroke-linecap="round"/><circle cx="5.5" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="11" r=".9" fill="currentColor" stroke="none"/>',
+  '⏰':'<circle cx="8" cy="8" r="6"/><path d="M8 5v3l2.5 2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 2.5l1 1.5m7-1.5l-1 1.5" stroke-linecap="round"/>',
+  '🌦':'<path d="M5 10a4 4 0 0 1 7-2.7A3 3 0 1 1 11 14H5a3 3 0 0 1 0-6" stroke-linecap="round"/><path d="M4.5 16l.5-1.5m3 1.5l.5-1.5m3 1.5l.5-1.5" stroke-linecap="round"/>',
+  '🌤':'<circle cx="6" cy="7" r="3"/><path d="M9 9a5 5 0 0 1 5 0" stroke-linecap="round"/><path d="M4 14a5 5 0 0 1 10 0H4z"/>',
+  '🚌':'<rect x="1" y="4" width="14" height="9" rx="2"/><circle cx="4" cy="13" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="13" r="1.5" fill="currentColor" stroke="none"/><path d="M1 8h14M8 4v9" stroke-linecap="round"/>',
+  '🚗':'<rect x="1" y="7" width="14" height="7" rx="2"/><path d="M3 7l2-4h6l2 4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4.5" cy="14" r="1.5" fill="currentColor" stroke="none"/><circle cx="11.5" cy="14" r="1.5" fill="currentColor" stroke="none"/><path d="M11 4h1" stroke-linecap="round"/>',
+  '👕':'<path d="M2 5l3.5-2h1.5l1 2 1-2h1.5L14 5l-2 3-1.5-1V15H5.5V7L4 8 2 5z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🧍':'<circle cx="8" cy="3.5" r="2.5"/><path d="M8 6v5.5M6 15l2-3.5 2 3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9h5" stroke-linecap="round"/>',
+  '🏋':'<circle cx="8" cy="3" r="2.5"/><path d="M5 8h6M8 6v7M6 13l-1 3m4-3l1 3" stroke-linecap="round"/>',
+  '💼':'<rect x="4" y="6" width="8" height="8" rx="1.5"/><path d="M6 6V4.5A2 2 0 0 1 10 4.5V6"/><path d="M1 10h14" stroke-linecap="round"/>',
+  '🐶':'<circle cx="5.5" cy="9.5" r="1.2"/><circle cx="10.5" cy="9.5" r="1.2"/><circle cx="8" cy="12" r="1.2"/><ellipse cx="4.5" cy="7" rx="1.2" ry="1.8" fill="currentColor" stroke="none"/><ellipse cx="11.5" cy="7" rx="1.2" ry="1.8" fill="currentColor" stroke="none"/>',
+  '🐾':'<circle cx="5.5" cy="10" r="1.2"/><circle cx="10.5" cy="10" r="1.2"/><circle cx="8" cy="12.5" r="1.2"/><ellipse cx="4.5" cy="6.5" rx="1.2" ry="1.8" fill="currentColor" stroke="none"/><ellipse cx="11.5" cy="6.5" rx="1.2" ry="1.8" fill="currentColor" stroke="none"/>',
+  '📍':'<path d="M8 1a5 5 0 0 1 5 5c0 4-5 9-5 9S3 10 3 6a5 5 0 0 1 5-5z"/><circle cx="8" cy="6" r="1.8" fill="currentColor" stroke="none"/>',
+  '🌍':'<circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9 9 0 0 0 0 12M8 2a9 9 0 0 1 0 12" stroke-linecap="round"/>',
+  '🌐':'<circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9 9 0 0 0 0 12M8 2a9 9 0 0 1 0 12" stroke-linecap="round"/>',
+  '🌏':'<circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9 9 0 0 0 0 12M8 2a9 9 0 0 1 0 12" stroke-linecap="round"/>',
+  '🔤':'<text x="1" y="12" font-size="9" font-family="serif" fill="currentColor" stroke="none" font-weight="700">Я</text><text x="8.5" y="12" font-size="9" font-family="serif" fill="currentColor" stroke="none">а</text>',
+  '❓':'<circle cx="8" cy="8" r="6"/><path d="M6.5 6.5a1.5 1.5 0 0 1 3 .5c0 1.5-1.5 2-1.5 3" stroke-linecap="round"/><circle cx="8" cy="12.5" r=".8" fill="currentColor" stroke="none"/>',
+  '💪':'<path d="M3 11l3-4 2.5 2.5 3-6 2.5 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 13h14" stroke-linecap="round"/>',
+  '📝':'<path d="M3 11.5l8-8 2 2-8 8H3v-2z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🎒':'<path d="M5 5a3 3 0 0 1 6 0v1H5V5z"/><rect x="2" y="6" width="12" height="9" rx="2"/><path d="M6 10h4" stroke-linecap="round"/>',
+  '🛒':'<path d="M1 2h2l2.5 8.5h7L14 5H5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="14" r="1.5"/><circle cx="12" cy="14" r="1.5"/>',
+  '🏥':'<rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M8 5.5v5M5.5 8h5" stroke-linecap="round"/>',
+  '✈️':'<path d="M15 8H1M8 1v14M4 5l4 3 4-3M4 11l4-3 4 3" stroke-linecap="round" stroke-linejoin="round"/>',
+  '✈':'<path d="M15 8H1M8 1v14M4 5l4 3 4-3M4 11l4-3 4 3" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🍽️':'<path d="M5 1v7a2 2 0 0 0 4 0V1M7 8v7" stroke-linecap="round"/><path d="M12 1v14" stroke-linecap="round"/><path d="M10 5.5c0-2 4-2 4 0v2h-4V5.5z"/>',
+  '🍽':'<path d="M5 1v7a2 2 0 0 0 4 0V1M7 8v7" stroke-linecap="round"/><path d="M12 1v14" stroke-linecap="round"/>',
+  '📞':'<circle cx="8" cy="8" r="2"/><circle cx="8" cy="8" r="4.5" stroke-dasharray="2 1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="7" stroke-dasharray="2 1.5" stroke-linecap="round"/>',
+  '📱':'<rect x="4" y="1" width="8" height="14" rx="2"/><circle cx="8" cy="13" r=".9" fill="currentColor" stroke="none"/><path d="M6 3.5h4" stroke-linecap="round"/>',
+  '🏫':'<rect x="2" y="6" width="12" height="9" rx="1"/><path d="M8 2L2 6h12L8 2z" stroke-linejoin="round"/><rect x="6.5" y="10" width="3" height="5"/><path d="M4.5 9h2m3 0h2" stroke-linecap="round"/>',
+  '🎭':'<circle cx="6" cy="7.5" r="4.5" stroke-linecap="round"/><circle cx="10.5" cy="9.5" r="4.5" stroke-linecap="round"/>',
+  '🌿':'<path d="M3 14c2-4 6-9 11-10-1 5-5 9-11 10z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14c0-4 1-7 3-10" stroke-linecap="round"/>',
+  '🌱':'<path d="M8 14V7m0 0C8 3 4 2 2 3c1 3 4 5 6 4zm0 0c0-4 4-5 6-4-1 3-4 5-6 4" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🌾':'<path d="M8 14V4" stroke-linecap="round"/><path d="M8 7c-2-1.5-3.5-.5-3.5-.5s.5 2 2 2.5L8 7zm0 0c2-1.5 3.5-.5 3.5-.5s-.5 2-2 2.5L8 7zM8 11c-2-1.5-3.5-.5-3.5-.5s.5 2 2 2.5L8 11zm0 0c2-1.5 3.5-.5 3.5-.5s-.5 2-2 2.5L8 11z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🌺':'<circle cx="8" cy="8" r="2.5"/><path d="M8 1.5v2m0 9v2M1.5 8h2m9 0h2M4 4l1.5 1.5m5 5L12 12M4 12l1.5-1.5m5-5L12 4" stroke-linecap="round"/>',
+  '🗣️':'<circle cx="6.5" cy="7" r="4"/><path d="M10 9.5a5 5 0 0 0 4.5 1.5M4.5 11l-2 3.5" stroke-linecap="round"/>',
+  '🗣':'<circle cx="6.5" cy="7" r="4"/><path d="M10 9.5a5 5 0 0 0 4.5 1.5M4.5 11l-2 3.5" stroke-linecap="round"/>',
+  '🔗':'<path d="M5.5 10.5a3 3 0 0 0 4.2.3l2.2-2.2a3 3 0 0 0-4.2-4.2L6.3 5.8" stroke-linecap="round"/><path d="M10.5 5.5a3 3 0 0 0-4.2-.3L4.1 7.4a3 3 0 0 0 4.2 4.2l1.4-1.4" stroke-linecap="round"/>',
+  '📐':'<path d="M2 14L14 2M2 14h12M2 14V2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 14V8M14 8H8" stroke-linecap="round"/>',
+  '⚙️':'<circle cx="8" cy="8" r="3"/><path d="M8 1v2m0 10v2M1 8h2m10 0h2M3.5 3.5l1.4 1.4m5.6 5.6 1.4 1.4M3.5 12.5l1.4-1.4m5.6-5.6 1.4-1.4" stroke-linecap="round"/>',
+  '⚙':'<circle cx="8" cy="8" r="3"/><path d="M8 1v2m0 10v2M1 8h2m10 0h2M3.5 3.5l1.4 1.4m5.6 5.6 1.4 1.4M3.5 12.5l1.4-1.4m5.6-5.6 1.4-1.4" stroke-linecap="round"/>',
+  '📊':'<path d="M1 14h14M3 14V7h2.5V14M7 14V4.5h2V14M11 14V9h2.5V14" stroke-linecap="round" stroke-linejoin="round"/>',
+  '📈':'<path d="M1 13l4-4 3 3 5-7" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 15h14M1 1v14" stroke-linecap="round"/>',
+  '📉':'<path d="M1 5l4 4 3-3 5 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 15h14M1 1v14" stroke-linecap="round"/>',
+  '💰':'<circle cx="8" cy="8" r="6"/><text x="4.5" y="12" font-size="9" font-family="serif" fill="currentColor" stroke="none" font-weight="700">₽</text>',
+  '💵':'<rect x="1" y="4.5" width="14" height="7" rx="1.5"/><circle cx="8" cy="8" r="2"/><path d="M3 4.5v7m10-7v7" stroke-linecap="round"/>',
+  '🏦':'<rect x="1" y="7" width="14" height="8" rx="1"/><path d="M8 1L1 7h14L8 1z"/><path d="M3 7v8m4-8v8m4-8v8" stroke-linecap="round"/>',
+  '🤝':'<path d="M1 9l3-3 2.5 2.5L8 8l2-2 2.5 2.5L15 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 6.5v6h9V8" stroke-linecap="round"/>',
+  '💬':'<path d="M2 2h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6l-4 3V3a1 1 0 0 1 1-1z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="7" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="7" r=".9" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7" r=".9" fill="currentColor" stroke="none"/>',
+  '🔬':'<path d="M6 3v7M3 10h7" stroke-linecap="round"/><ellipse cx="7" cy="12.5" rx="5" ry="2.5"/><path d="M4 7l5-1" stroke-linecap="round"/>',
+  '🎓':'<path d="M8 3L2 6l6 3 6-3-6-3z" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5V11a6 3 0 0 0 6 0V7.5" stroke-linecap="round"/><path d="M14 6v4" stroke-linecap="round"/>',
+  '🚀':'<path d="M8 1s-4 4-4 8h8c0-4-4-8-4-8z" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9c-1.5 1-2 3.5-2 5.5l2.5-.5" stroke-linecap="round"/><path d="M12 9c1.5 1 2 3.5 2 5.5L11.5 14" stroke-linecap="round"/><circle cx="8" cy="7" r="1.5"/>',
+  '🏙️':'<rect x="1" y="5" width="4" height="10"/><rect x="6" y="7" width="4" height="8"/><rect x="11" y="3" width="4" height="12"/><path d="M1 15h14" stroke-linecap="round"/>',
+  '🏙':'<rect x="1" y="5" width="4" height="10"/><rect x="6" y="7" width="4" height="8"/><rect x="11" y="3" width="4" height="12"/>',
+  '💻':'<rect x="2" y="3" width="12" height="9" rx="1.5"/><path d="M1 14.5h14M5 12l-2 2.5m10-2.5l2 2.5" stroke-linecap="round"/>',
+  '❤️':'<path d="M8 14S2 10 2 5.5A3.5 3.5 0 0 1 8 3.5 3.5 3.5 0 0 1 14 5.5C14 10 8 14 8 14z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '❤':'<path d="M8 14S2 10 2 5.5A3.5 3.5 0 0 1 8 3.5 3.5 3.5 0 0 1 14 5.5C14 10 8 14 8 14z"/>',
+  '😊':'<circle cx="8" cy="8" r="6"/><path d="M5.5 9.5a3 3 0 0 0 5 0" stroke-linecap="round"/><circle cx="6" cy="7" r=".9" fill="currentColor" stroke="none"/><circle cx="10" cy="7" r=".9" fill="currentColor" stroke="none"/>',
+  '🏃':'<circle cx="9.5" cy="3" r="2"/><path d="M9.5 5l-3 4-3 1.5M9.5 5l2 2-1 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 13l-1.5-4 1.5-1m3.5-2l3 1" stroke-linecap="round"/>',
+  '🎵':'<path d="M6 13V3l8-2v10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4.5" cy="13" r="1.5"/><circle cx="12.5" cy="11" r="1.5"/>',
+  '🍳':'<ellipse cx="8" cy="9" rx="5.5" ry="4"/><path d="M2.5 9h11" stroke-linecap="round"/><path d="M8 4V2M11 5l1.5-2M5 5L3.5 3" stroke-linecap="round"/><circle cx="6.5" cy="9.5" r="1.5" fill="currentColor" stroke="none"/>',
+  '💊':'<rect x="2" y="6.5" width="12" height="3" rx="1.5"/><path d="M8 6.5v3" stroke-linecap="round" opacity=".5"/>',
+  '🎯':'<circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/>',
+  '🧠':'<path d="M8 2C5 2 3 4 3 7c0 1 .5 2 1.5 2.5C4 11 5 12.5 5.5 13h5c.5-.5 1.5-2 1.5-3.5C13 9 13.5 8 13.5 7c0-3-2-5-5.5-5z" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13v2.5M6 7c0-1.5.8-3 2-3" stroke-linecap="round"/>',
+  '🏛️':'<path d="M1 14.5h14M8 3L1 7.5h14L8 3z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7.5v7m4-7v7m4-7v7" stroke-linecap="round"/>',
+  '🏛':'<path d="M1 14.5h14M8 3L1 7.5h14L8 3z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7.5v7m4-7v7m4-7v7" stroke-linecap="round"/>',
+  '🔑':'<circle cx="5.5" cy="9.5" r="4"/><path d="M9 6.5l5.5 5.5M11 8.5l2 2" stroke-linecap="round"/><circle cx="5.5" cy="9.5" r="1.5" fill="currentColor" stroke="none"/>',
+  '🏗️':'<path d="M3 1v14M6 5h7M6 10h7M10 5v9" stroke-linecap="round"/><path d="M3 5l3 3M3 10l4-3" stroke-linecap="round"/>',
+  '🏗':'<path d="M3 1v14M6 5h7M6 10h7M10 5v9" stroke-linecap="round"/>',
+  '📜':'<path d="M5 2.5h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"/><path d="M6 6.5h4M6 9.5h3" stroke-linecap="round"/><path d="M3 6c-1.5 0-1.5 4 0 4" stroke-linecap="round"/>',
+  '⚖️':'<path d="M8 2.5v11M5 13.5h6" stroke-linecap="round"/><path d="M3 8h10M2 8l2 3.5h4L6 8H2zm10 0l-2 3.5h4l-2-3.5h0z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '⚖':'<path d="M8 2.5v11M5 13.5h6" stroke-linecap="round"/><path d="M3 8h10M2 8l2 3.5h4L6 8H2zm10 0l-2 3.5h4l-2-3.5h0z" stroke-linecap="round" stroke-linejoin="round"/>',
+  '📚':'<rect x="1.5" y="2" width="4" height="12" rx="1"/><rect x="6.5" y="4" width="4" height="10" rx="1"/><rect x="11.5" y="1" width="3.5" height="13" rx="1"/>',
+  '🧬':'<path d="M5 2c4 3 4 9 0 12M11 2c-4 3-4 9 0 12" stroke-linecap="round"/><path d="M6.5 5.5h3M5.5 8h5M6.5 10.5h3" stroke-linecap="round"/>',
+  '🌱':'<path d="M8 14V7m0 0C8 3.5 4 2.5 2 3.5c1 3 4 4.5 6 3.5zm0 0c0-3.5 4-4.5 6-3.5-1 3-4 4.5-6 3.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  '🛂':'<circle cx="7" cy="6" r="4"/><path d="M2 15a5 5 0 0 1 10 0"/><path d="M13 8l2 2m-2 0l2-2" stroke-linecap="round"/>',
+  '📢':'<path d="M2 6.5h3l5-3.5v11l-5-3.5H2v-4z" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6a5 5 0 0 1 0 5" stroke-linecap="round"/>',
+  '🧘':'<circle cx="8" cy="3.5" r="2.5"/><path d="M8 6v5m-4 4a4 4 0 0 1 8 0" stroke-linecap="round"/><path d="M4.5 9.5l3.5 1.5 3.5-1.5" stroke-linecap="round"/>',
+  '🌆':'<rect x="1" y="8" width="5" height="7"/><rect x="7" y="6" width="4" height="9"/><rect x="12" y="4" width="3.5" height="11"/>',
+  '🎲':'<rect x="2" y="2" width="12" height="12" rx="2.5"/><circle cx="5.5" cy="5.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="5.5" r="1" fill="currentColor" stroke="none"/><circle cx="5.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>',
+  '🎲':'<rect x="2" y="2" width="12" height="12" rx="2.5"/><circle cx="5.5" cy="5.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>',
+};
+var _ICON_FALLBACK='<text x="2" y="12" font-size="10" font-family="serif" fill="currentColor" stroke="none" font-weight="700">Я</text>';
+function _topicIcon(name,col){
+  var e=[...name][0];
+  var paths=_ICON_MAP[e]||_ICON_FALLBACK;
+  return'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="'+col+'" stroke-width="1.4">'+paths+'</svg>';
+}
+function _topicName(name,lang){
+  // strip leading emoji (1-2 chars)
+  var s=name.replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\uFE0F\u200D][\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\uFE0F\u200D]*/u,'').trim();
+  if(lang==='en') s=(topicNamesEN[name]||s).replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\uFE0F\u200D][\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\uFE0F\u200D]*/u,'').trim();
+  return s;
+}
+
 function setLevel(lv){
   S.level=lv;
   ['A1','A2','B1','B2'].forEach(l=>{
@@ -6769,15 +6881,20 @@ function renderVocab(){
     const d=ws.filter((_,j)=>isDue(S.srsData[`${S.level}-${name}-${j}`])).length;
     const p=ws.length>0?Math.round(m/ws.length*100):0;
     const done=m===ws.length;
-    return`<div class="tCard" style="${done?'border-color:var(--grn);':''}" data-idx="${i}" onclick="App.selectTopic(${i})">
-      <div class="rowSB mb4">
-        <span style="font-size:10px;color:var(--com);">0${String(i+1).padStart(2,'0')} ›</span>
-        ${d>0?`<span style="background:#0d2318;border-radius:10px;padding:2px 7px;font-size:9px;color:var(--grn);font-weight:700;">${d}</span>`:''}
+    const _col=done?'#34c759':_CARD_PAL[i%_CARD_PAL.length];
+    const _hexA=_col+'28'; const _hexB=_col+'18';
+    return`<div class="tCard" style="border-color:${_col}30;background:rgba(255,255,255,0.018);" data-idx="${i}" onclick="App.selectTopic(${i})">
+      <div class="rowSB mb4" style="align-items:center;">
+        <div style="background:${_hexB};border:1px solid ${_col}44;border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:${_col};">${_topicIcon(name,_col)}</div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          ${d>0?`<span style="background:rgba(52,199,89,0.12);border:1px solid rgba(52,199,89,0.35);border-radius:8px;padding:1px 6px;font-size:9px;color:var(--grn);font-weight:700;">${d}</span>`:''}
+          <span style="font-size:9px;color:${_col};opacity:.7;font-weight:700;">${String(i+1).padStart(2,'0')}</span>
+        </div>
       </div>
-      <div style="font-size:12px;font-weight:700;margin-bottom:2px;line-height:1.3;">${S.lang==='en'?(topicNamesEN[name]||name):name}</div>
-      <div style="font-size:10px;color:var(--com);">${ws.length} ${S.lang==='en'?'words':'từ'} · ${m} ${S.lang==='en'?'learned':'đã học'}</div>
-      <div class="pbar mt4" style="background:rgba(255,255,255,0.03);"><div class="pfill" style="background:linear-gradient(90deg,var(--grn),rgba(57,211,83,0.6));width:${p}%;box-shadow:0 0 6px rgba(57,211,83,0.25);"></div></div>
-      <div style="font-size:9px;color:var(--com);margin-top:2px;">${p}%</div>
+      <div style="font-size:11.5px;font-weight:700;margin:6px 0 2px;line-height:1.35;color:var(--tx);">${_topicName(name,S.lang)}</div>
+      <div style="font-size:9.5px;color:var(--com);">${ws.length} ${S.lang==='en'?'words':'từ'} · <span style="color:${done?'var(--grn)':'var(--com)'};">${m} ${S.lang==='en'?'learned':'học rồi'}</span></div>
+      <div class="pbar mt4" style="background:rgba(255,255,255,0.04);"><div class="pfill" style="background:linear-gradient(90deg,${_col},${_col}88);width:${p}%;box-shadow:0 0 8px ${_col}40;"></div></div>
+      <div style="font-size:9px;color:${_col};margin-top:3px;font-weight:600;">${p}%</div>
     </div>`;
   }).join('');
 }
@@ -7562,9 +7679,19 @@ function setLang(lang){
   const grEl = document.querySelector('#s-grammar [style*="font-size:20px"]');
   if(grEl) grEl.textContent = t('gram.title');
   // Grammar tabs
-  const gtC = document.getElementById('gt-cases'); if(gtC) gtC.textContent = t('gram.cases');
-  const gtF = document.getElementById('gt-form'); if(gtF) gtF.textContent = t('gram.formation');
-  const gtQ = document.getElementById('gt-quiz'); if(gtQ) gtQ.textContent = t('gram.quiz');
+  // Grammar tabs – update <span> inside each button
+  (function(){
+    var _tabs=[['gt-cases','gram.cases'],['gt-form','gram.formation'],
+               ['gt-conditional','gram.conditional'],['gt-passive','gram.passive'],
+               ['gt-quiz','gram.quiz']];
+    _tabs.forEach(function(p){
+      var b=document.getElementById(p[0]);
+      if(b){var s=b.querySelector('span');if(s)s.textContent=t(p[1]);}
+    });
+  })();
+  // Vocab main title
+  var _vt=document.getElementById('vocab-main-title');
+  if(_vt) _vt.textContent=lang==='en'?'LEARN RUSSIAN':'УЧИМ РУССКИЙ';
   // Story filters
 
   // Vocab screen sub
