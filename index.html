@@ -131,6 +131,9 @@ input,textarea,select{font-size:16px!important;}
 #swipe-arrow svg{width:26px;height:26px;}
 
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogItCg0KPQodCh0JrQmNCZIMK3IEjhu41jIHRp4bq/bmcgTmdhIiwgInNob3J0X25hbWUiOiAi0KDQo9Ch0KHQmtCY0JkiLCAiZGVzY3JpcHRpb24iOiAiSOG7jWMgdGnhur9uZyBOZ2EgduG7m2kgU1JTLCB0cnV54buHbiwgbmfhu68gcGjDoXAiLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiIzBkMTExNyIsICJ0aGVtZV9jb2xvciI6ICIjMGQxMTE3IiwgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyBmaWxsPSclMjMwZDExMTcnIHJ4PScyMCcvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nODAnIHg9JzEwJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
 <title>РУССКИЙ · Learn Russian / Học tiếng Nga</title>
 <!-- ═══ GOOGLE ADSENSE ═══════════════════════════════════════
@@ -185,9 +188,9 @@ input,textarea,select{font-size:16px!important;}
      SF Mono        — code, phonetics
      New York       — serif (Cyrillic content, flashcards)
      ──────────────────────────────────────────────────── */
-  --display:system-ui,-apple-system,'Helvetica Neue',sans-serif;
-  --body:system-ui,-apple-system,'Helvetica Neue',sans-serif;
-  --hdisplay:system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --display:'Be Vietnam Pro',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --body:'Be Vietnam Pro',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --hdisplay:'Be Vietnam Pro',system-ui,-apple-system,'Helvetica Neue',sans-serif;
   --mono:'SF Mono',ui-monospace,'Cascadia Code','Fira Code',monospace;
   --serif:'New York',ui-serif,'Georgia Pro',Georgia,serif;
 
@@ -555,10 +558,12 @@ body::after{
 #bn-srs.on     .bIcon svg,#bn-srs.on     .bLbl{color:var(--yel);}
 #bn-grammar.on .bIcon svg,#bn-grammar.on .bLbl{color:var(--pur);}
 #bn-lookup.on  .bIcon svg,#bn-lookup.on  .bLbl{color:var(--grn);}
+#bn-road.on    .bIcon svg,#bn-road.on    .bLbl{color:var(--org);}
 #bn-vocab.on   .bIcon{filter:drop-shadow(0 0 7px rgba(90,200,250,0.75));}
 #bn-srs.on     .bIcon{filter:drop-shadow(0 0 7px rgba(255,214,10,0.75));}
 #bn-grammar.on .bIcon{filter:drop-shadow(0 0 7px rgba(191,90,242,0.75));}
 #bn-lookup.on  .bIcon{filter:drop-shadow(0 0 7px rgba(52,199,89,0.75));}
+#bn-road.on    .bIcon{filter:drop-shadow(0 0 7px rgba(255,159,10,0.75));}
 .bBtn.on .bIcon{animation:iconPop .30s var(--spring) both;}
 @keyframes iconPop{0%{transform:scale3d(0.60,0.60,1);}65%{transform:scale3d(1.16,1.16,1);}100%{transform:scale3d(1,1,1);}}
 
@@ -1157,6 +1162,19 @@ body::after{
   </div>
 </div>
 
+<div id="s-road" class="screen">
+  <div class="hdr" style="padding:14px 16px;">
+    <div>
+      <div style="font-size:10px;color:var(--org);margin-bottom:2px;font-family:var(--mono);letter-spacing:0.5px;">&gt; roadmap.exe --level=auto</div>
+      <div class="hdr-title" style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">LỘ TRÌNH HỌC</div>
+      <div class="hdr-sub">Lộ trình từ A1 → C1 · 6 giai đoạn</div>
+    </div>
+  </div>
+  <div class="scrl" id="road-scrl">
+    <div id="road-content"></div>
+  </div>
+</div>
+
 <div id="s-grammar" class="screen">
   <!-- Header fixed -->
   <div style="background:rgba(6,8,13,0.70);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 76px 14px 16px;flex-shrink:0;">
@@ -1203,7 +1221,7 @@ body::after{
       <path d="M4 4.5C4 3.67 4.67 3 5.5 3H11V13L8.5 11.5L6 13V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M11 3H18.5C19.33 3 20 3.67 20 4.5V18.5C20 19.88 18.88 21 17.5 21H6.5C5.12 21 4 19.88 4 18.5V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <text x="13" y="17.5" font-size="6" font-weight="700" fill="currentColor" font-family="serif" text-anchor="middle">Я</text>
-    </svg></span><span class="bLbl" id="bn-vocab-lbl">СЛОВАРЬ</span>
+    </svg></span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
   </button>
   <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1211,7 +1229,7 @@ body::after{
       <rect x="8" y="9" width="13" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
       <path d="M17.5 5.5L20 8L17.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M20 8H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-srs-lbl">ПОВТОР</span>
+    </svg></span><span class="bLbl" id="bn-srs-lbl">ÔN TẬP</span>
   </button>
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1221,7 +1239,7 @@ body::after{
       <line x1="7" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <circle cx="15" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
       <line x1="13" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-grammar-lbl">ГРАММАТИКА</span>
+    </svg></span><span class="bLbl" id="bn-grammar-lbl">NGỮ PHÁP</span>
   </button>
   <button class="bBtn" id="bn-lookup" onclick="App.nav('lookup')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1229,7 +1247,13 @@ body::after{
       <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-lookup-lbl">ПОИСК</span>
+    </svg></span><span class="bLbl" id="bn-lookup-lbl">TRA TỪ</span>
+  </button>
+  <button class="bBtn" id="bn-road" onclick="App.nav('road')">
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 20L8 4M16 4L21 20M8 4H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="6" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+    </svg></span><span class="bLbl" id="bn-road-lbl">LỘ TRÌNH</span>
   </button>
 </div>
 </div>
@@ -6571,7 +6595,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'СЛОВАРЬ', 'nav.review': 'ПОВТОР', 'nav.grammar': 'ГРАММАТИКА', 'nav.read': 'ĐỌC', 'nav.lookup': 'ПОИСК',
+    'nav.vocab': 'TỪ VỰNG', 'nav.review': 'ÔN TẬP', 'nav.grammar': 'NGỮ PHÁP', 'nav.read': 'ĐỌC', 'nav.lookup': 'TRA TỪ', 'nav.road': 'LỘ TRÌNH',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -6614,7 +6638,7 @@ var i18n = {
     'gram.wf.noun2': 'Danh từ', 'gram.wf.verb2': 'Động từ', 'gram.wf.adj2': 'Tính từ', 'gram.wf.adv2': 'Trạng từ',
   },
   en: {
-    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH',
+    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH', 'nav.road': 'ROADMAP',
     'vocab.loading': '// loading...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
     'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
@@ -6674,10 +6698,10 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
-const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1};
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0};
 
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
@@ -6729,6 +6753,9 @@ function nav(name){
 
     // iOS Haptic (Safari 13+)
     if(window.navigator?.vibrate) navigator.vibrate(6);
+
+    // Render road when navigating to it
+    if(name === 'road') setTimeout(renderRoad, 40);
   });
 }
 
@@ -7654,6 +7681,7 @@ function setLang(lang){
   document.getElementById('bn-srs-lbl').textContent = t('nav.review');
   const bnG = document.getElementById('bn-grammar-lbl'); if(bnG) bnG.textContent = t('nav.grammar');
   const bnLk = document.getElementById('bn-lookup-lbl'); if(bnLk) bnLk.textContent = t('nav.lookup');
+  const bnRd = document.getElementById('bn-road-lbl'); if(bnRd) bnRd.textContent = t('nav.road');
   // Update static text nodes via data-i18n attributes
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     el.textContent = t(el.getAttribute('data-i18n'));
@@ -7715,6 +7743,171 @@ function setLang(lang){
 var _lkFilter = 'all';  // 'all' | 'A1' | 'A2' | 'B1' | 'B2'
 var _lkTimer  = null;
 var _lkTotal  = 0;
+
+// ═══ ROADMAP ════════════════════════════════════════════════
+function renderRoad(){
+  var el = document.getElementById('road-content'); if(!el) return;
+  var isEN = (S.lang||'vi')==='en';
+  var stages = [
+    {
+      level:'A1', color:'var(--cyn)', glow:'rgba(90,200,250,0.18)', icon:'🔤',
+      title: isEN ? 'Alphabet & Basics' : 'Bảng chữ cái & Cơ bản',
+      weeks: isEN ? '2–3 weeks' : '2–3 tuần',
+      goals: isEN
+        ? ['Learn Cyrillic alphabet (33 letters)','Master basic pronunciation & stress','Learn 100–150 core words','Greetings, numbers, colors, family']
+        : ['Học bảng chữ Cyrillic (33 ký tự)','Nắm phát âm & trọng âm cơ bản','Học 100–150 từ vựng lõi','Chào hỏi, số đếm, màu sắc, gia đình'],
+      features: isEN
+        ? ['📚 Vocab: A1 topics','🃏 Flashcard mode','🔊 Pronunciation guide']
+        : ['📚 Từ vựng: Chủ đề A1','🃏 Lật thẻ flashcard','🔊 Hướng dẫn phát âm'],
+      tip: isEN ? '🎯 Focus: Reading every Cyrillic letter fluently before moving on.' : '🎯 Mục tiêu: Đọc được mọi ký tự Cyrillic trơn tru trước khi tiến lên.'
+    },
+    {
+      level:'A2', color:'var(--grn)', glow:'rgba(52,199,89,0.15)', icon:'💬',
+      title: isEN ? 'Survival Russian' : 'Tiếng Nga sinh tồn',
+      weeks: isEN ? '4–6 weeks' : '4–6 tuần',
+      goals: isEN
+        ? ['300–500 total words','Present tense verbs (conjugation)','Nominative & Accusative cases','Simple sentences & daily phrases']
+        : ['300–500 từ vựng tổng cộng','Động từ hiện tại (biến cách)','Cách 1 (Nominative) & Cách 4 (Accusative)','Câu đơn giản & cụm từ hàng ngày'],
+      features: isEN
+        ? ['📚 Vocab: A2 topics','🔄 SRS review (daily 10 min)','📝 Grammar: Cases intro']
+        : ['📚 Từ vựng: Chủ đề A2','🔄 Ôn SRS (10 phút/ngày)','📝 Ngữ pháp: Giới thiệu các Cách'],
+      tip: isEN ? '🎯 Focus: 10 min SRS every day — consistency beats intensity.' : '🎯 Mục tiêu: 10 phút SRS mỗi ngày — đều đặn hơn cường độ.'
+    },
+    {
+      level:'B1', color:'var(--yel)', glow:'rgba(255,214,10,0.13)', icon:'⚡',
+      title: isEN ? 'Building Fluency' : 'Xây dựng sự thông thạo',
+      weeks: isEN ? '8–12 weeks' : '8–12 tuần',
+      goals: isEN
+        ? ['1000+ words in active use','All 6 cases with key prepositions','Past & Future tense','Can hold basic conversations']
+        : ['1000+ từ dùng chủ động','Cả 6 Cách với giới từ chính','Thì quá khứ & tương lai','Có thể giữ cuộc hội thoại cơ bản'],
+      features: isEN
+        ? ['📚 Vocab: B1 topics','⚖️ Grammar: All 6 cases','🔄 SRS review (15 min/day)','🎮 Grammar quiz']
+        : ['📚 Từ vựng: Chủ đề B1','⚖️ Ngữ pháp: Cả 6 Cách','🔄 Ôn SRS (15 phút/ngày)','🎮 Quiz ngữ pháp'],
+      tip: isEN ? '🎯 Focus: Master the 6 cases — they unlock 80% of Russian grammar.' : '🎯 Mục tiêu: Thành thạo 6 Cách — chúng mở khóa 80% ngữ pháp tiếng Nga.'
+    },
+    {
+      level:'B2', color:'var(--pur)', glow:'rgba(191,90,242,0.13)', icon:'🚀',
+      title: isEN ? 'Upper Intermediate' : 'Trung cấp cao',
+      weeks: isEN ? '12–16 weeks' : '12–16 tuần',
+      goals: isEN
+        ? ['2000+ words','Aspect pairs (perfective/imperfective)','Complex sentence structures','Read simple texts & articles']
+        : ['2000+ từ vựng','Cặp dạng thức (hoàn thành/chưa hoàn thành)','Cấu trúc câu phức tạp','Đọc văn bản & bài báo đơn giản'],
+      features: isEN
+        ? ['📚 Vocab: B2 & AWL topics','🔄 SRS review (20 min/day)','📖 Word family explorer','🎮 Advanced grammar quiz']
+        : ['📚 Từ vựng: Chủ đề B2 & học thuật','🔄 Ôn SRS (20 phút/ngày)','📖 Khám phá họ từ','🎮 Quiz ngữ pháp nâng cao'],
+      tip: isEN ? '🎯 Focus: Aspect pairs are the hardest part — practice with examples daily.' : '🎯 Mục tiêu: Cặp dạng thức là phần khó nhất — luyện với ví dụ mỗi ngày.'
+    },
+    {
+      level:'C1', color:'var(--org)', glow:'rgba(255,159,10,0.13)', icon:'🏆',
+      title: isEN ? 'Advanced Mastery' : 'Thành thạo nâng cao',
+      weeks: isEN ? '16+ weeks' : '16+ tuần',
+      goals: isEN
+        ? ['3500+ words','Natural speech patterns & idioms','Read literature & news fluently','Write essays & formal texts']
+        : ['3500+ từ vựng','Mẫu câu tự nhiên & thành ngữ','Đọc văn học & tin tức trơn tru','Viết luận & văn bản trang trọng'],
+      features: isEN
+        ? ['📚 Full vocabulary database','🔄 SRS: all levels','🔍 Dictionary lookup','📖 Literature reading']
+        : ['📚 Toàn bộ database từ vựng','🔄 SRS: tất cả cấp độ','🔍 Tra từ điển','📖 Đọc văn học'],
+      tip: isEN ? '🎯 Focus: Immersion — Russian films, podcasts, native content daily.' : '🎯 Mục tiêu: Ngâm mình — phim Nga, podcast, nội dung thực tế mỗi ngày.'
+    }
+  ];
+
+  // Compute progress per level from mastered words
+  function levelProgress(lvl){
+    var keys = Object.keys(vocabularyDatabase).filter(k=>k.startsWith(lvl+'_')||k.startsWith(lvl+' '));
+    var total = 0, done = 0;
+    keys.forEach(function(k){
+      var ws = vocabularyDatabase[k]||[];
+      total += ws.length;
+      ws.forEach(function(w){ if(S.mastered[w.ru]) done++; });
+    });
+    return {total:total, done:done, pct: total>0 ? Math.round(done/total*100) : 0};
+  }
+
+  var curLvl = (S.level||'A1');
+  var html = '';
+
+  // Daily plan card
+  html += '<div style="background:linear-gradient(135deg,rgba(255,159,10,0.12),rgba(255,107,107,0.08));border:1px solid rgba(255,159,10,0.3);border-radius:20px;padding:16px;margin-bottom:16px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">';
+  html += '<div style="font-size:10px;color:var(--org);font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// KẾ HOẠCH HỌC MỖI NGÀY</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  var daily = [
+    {icon:'🃏', time:'10 phút', label: isEN ? 'New words\n(Flashcard)' : 'Từ mới\n(Flashcard)', color:'var(--cyn)', onclick:"App.nav('vocab')"},
+    {icon:'🔄', time:'10 phút', label: isEN ? 'SRS Review\n(Spaced)' : 'Ôn SRS\n(Cách quãng)', color:'var(--yel)', onclick:"App.srsStart()"},
+    {icon:'⚖️', time:'5 phút', label: isEN ? 'Grammar\n(Cases)' : 'Ngữ pháp\n(Các Cách)', color:'var(--pur)', onclick:"App.nav('grammar')"},
+    {icon:'🔍', time:'5 phút', label: isEN ? 'Look up\n(Dictionary)' : 'Tra từ\n(Từ điển)', color:'var(--grn)', onclick:"App.nav('lookup')"}
+  ];
+  daily.forEach(function(d){
+    html += '<div onclick="'+d.onclick+'" style="cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 10px;text-align:center;transition:transform .12s;">';
+    html += '<div style="font-size:22px;margin-bottom:4px;">'+d.icon+'</div>';
+    html += '<div style="font-size:10px;color:'+d.color+';font-weight:700;margin-bottom:2px;">'+d.time+'</div>';
+    html += '<div style="font-size:10px;color:var(--txd);line-height:1.35;white-space:pre-line;">'+d.label+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:10px;font-size:11px;color:var(--com);">⏱ '+(isEN ? 'Total: ~30 min/day · Best time: morning or evening' : 'Tổng: ~30 phút/ngày · Thời điểm tốt nhất: buổi sáng hoặc tối')+'</div>';
+  html += '</div>';
+
+  // Stage cards
+  stages.forEach(function(st, i){
+    var pr = levelProgress(st.level);
+    var isCur = st.level === curLvl;
+    var isDone = pr.pct >= 70;
+    var isLocked = !isDone && !isCur && i > stages.findIndex(function(s){ return s.level===curLvl; });
+    var borderAlpha = isCur ? '0.45' : isDone ? '0.3' : '0.10';
+    var borderColor = isCur ? st.color : isDone ? st.color : 'rgba(255,255,255,0.1)';
+
+    html += '<div style="background:'+st.glow+';border:1px solid '+borderColor.replace(')',','+borderAlpha+')')+';border-radius:20px;padding:16px;margin-bottom:12px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden;'+(isLocked?'opacity:0.55;':'')+(isCur?'box-shadow:0 0 24px '+st.glow+';':'')+';">';
+
+    // Badge
+    if(isCur) html += '<div style="position:absolute;top:12px;right:12px;background:'+st.color+';color:#000;border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;font-family:var(--mono);">'+(isEN ? 'CURRENT' : 'HIỆN TẠI')+'</div>';
+    else if(isDone) html += '<div style="position:absolute;top:12px;right:12px;background:rgba(52,199,89,0.2);border:1px solid var(--grn);color:var(--grn);border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;">✓ '+(isEN?'DONE':'XONG')+'</div>';
+    else if(isLocked) html += '<div style="position:absolute;top:12px;right:12px;color:var(--com);font-size:14px;">🔒</div>';
+
+    // Header
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+    html += '<div style="background:'+st.color+'22;border:1px solid '+st.color+';border-radius:12px;padding:6px 12px;font-size:18px;font-weight:900;color:'+st.color+';font-family:var(--mono);">'+st.level+'</div>';
+    html += '<div><div style="font-size:15px;font-weight:700;">'+st.icon+' '+st.title+'</div><div style="font-size:11px;color:var(--com);">⏳ '+st.weeks+'</div></div>';
+    html += '</div>';
+
+    // Progress bar
+    if(pr.total > 0){
+      html += '<div style="margin-bottom:12px;">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--com);margin-bottom:4px;"><span>'+(isEN?'Words learned':'Từ đã học')+'</span><span style="color:'+st.color+';">'+pr.done+'/'+pr.total+' ('+pr.pct+'%)</span></div>';
+      html += '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">';
+      html += '<div style="height:100%;width:'+pr.pct+'%;background:'+st.color+';border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1);"></div>';
+      html += '</div></div>';
+    }
+
+    // Goals
+    html += '<div style="margin-bottom:10px;">';
+    html += '<div style="font-size:10px;color:'+st.color+';font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// '+(isEN?'GOALS':'MỤC TIÊU')+'</div>';
+    st.goals.forEach(function(g){
+      html += '<div style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--txd);margin-bottom:4px;line-height:1.45;"><span style="color:'+st.color+';flex-shrink:0;">›</span>'+g+'</div>';
+    });
+    html += '</div>';
+
+    // Features (how to use app)
+    html += '<div style="margin-bottom:10px;">';
+    html += '<div style="font-size:10px;color:var(--com);font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// '+(isEN?'USE THIS APP':'DÙNG APP NÀY')+'</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+    st.features.forEach(function(f){
+      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--txd);">'+f+'</div>';
+    });
+    html += '</div></div>';
+
+    // Tip
+    html += '<div style="background:rgba(255,255,255,0.04);border-left:3px solid '+st.color+';border-radius:0 10px 10px 0;padding:8px 12px;font-size:11px;color:var(--com);line-height:1.5;">'+st.tip+'</div>';
+
+    // CTA button for current level
+    if(isCur){
+      html += '<button onclick="App.nav(\'vocab\')" style="width:100%;margin-top:12px;padding:12px;background:'+st.color+'22;border:1px solid '+st.color+';border-radius:14px;color:'+st.color+';font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">▶ '+(isEN?'Continue '+st.level+' →':'Tiếp tục '+st.level+' →')+'</button>';
+    }
+
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
 
 function lkInit() {
   // Đếm tổng số từ để hiển thị
@@ -7888,7 +8081,7 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   quizStart,qzAnswer,speakQZ,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   lkSearch,lkFilter,lkClear,
-  setLang,init};
+  setLang,init,renderRoad};
 })();
 document.addEventListener('DOMContentLoaded',App.init);
 
@@ -8033,13 +8226,14 @@ document.addEventListener('DOMContentLoaded',App.init);
 //  TELEGRAM-STYLE TAB SWIPE ENGINE — v5
 // ══════════════════════════════════════════════════════════════
 (function(){
-  var TABS    = ['vocab','srs','grammar','lookup'];
-  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup'];
+  var TABS    = ['vocab','srs','grammar','lookup','road'];
+  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup','bn-road'];
   var COLORS  = [
     {fg:'var(--cyn)', glow:'rgba(90,200,250,0.80)'},
     {fg:'var(--yel)', glow:'rgba(255,214,10,0.80)'},
     {fg:'var(--pur)', glow:'rgba(191,90,242,0.80)'},
     {fg:'var(--grn)', glow:'rgba(52,199,89,0.80)'},
+    {fg:'var(--org)', glow:'rgba(255,159,10,0.80)'},
   ];
 
   var bnav      = document.getElementById('bnav');
@@ -8270,8 +8464,8 @@ document.addEventListener('DOMContentLoaded',App.init);
       var _fi=fi, _ti=ti, _fEl=fEl, _tEl=tEl;
       setTimeout(function(){
         _fEl.classList.remove('active','swiping');
-        _fEl.style.transform='';_fEl.style.opacity='';_fEl.style.transition='';
-        _tEl.style.transform='';_tEl.style.opacity='';_tEl.style.transition='';
+        _fEl.removeAttribute('style');
+        _tEl.removeAttribute('style');
         void _tEl.offsetHeight;
         _tEl.classList.add('active');
         S.screen = TABS[_ti]; save();
@@ -8292,6 +8486,7 @@ document.addEventListener('DOMContentLoaded',App.init);
       var _fEl2=fEl, _tEl2=tEl, _fi2=fi;
       setTimeout(function(){
         _tEl2.classList.remove('active');
+        _tEl2.removeAttribute('style');
         _tEl2.style.transform='';_tEl2.style.opacity='';_tEl2.style.transition='';
         _fEl2.classList.remove('swiping');
         _fEl2.style.transform='';_fEl2.style.opacity='';_fEl2.style.transition='';
