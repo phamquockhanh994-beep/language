@@ -1189,6 +1189,7 @@ body::after{
       gap:5px;
       padding:10px 16px 9px;
     ">
+      <button id="gt-motion" onclick="App.gramTab('motion')" class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
       <button id="gt-cases"       onclick="App.gramTab('cases')"       class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/></svg><span>6 Cách</span></button>
       <button id="gt-form"        onclick="App.gramTab('formation')"   class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
       <button id="gt-conditional" onclick="App.gramTab('conditional')" class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
@@ -1246,8 +1247,55 @@ body::after{
     <div style="font-size:14px;color:var(--txd);text-align:center;line-height:1.6;" id="dld-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-top:8px;" id="dld-stats"></div>
     <div style="width:100%;max-width:320px;background:rgba(255,159,10,0.08);border:1px solid rgba(255,159,10,0.3);border-radius:16px;padding:14px 16px;" id="dld-words"></div>
-    <button class="btn g" style="max-width:320px;" onclick="App.nav('vocab')">↩ Về trang chính</button>
+    <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;">
+      <button class="btn" style="background:rgba(52,199,89,.12);border-color:rgba(52,199,89,.3);color:var(--grn);" onclick="App.srsStart()">📚 Ôn tập SRS ngay</button>
+      <button class="btn g" onclick="App.nav('vocab')">↩ Về trang chính</button>
+    </div>
   </div>
+</div>
+
+
+<!-- READ SCREEN -->
+<div id="s-read" class="screen">
+  <div class="hdr">
+    <div class="f1">
+      <div style="font-size:10px;color:var(--pnk);font-family:var(--mono);letter-spacing:.5px;">// đọc hiểu tiếng Nga</div>
+      <div class="hdr-title">Đọc hiểu</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div id="rd-level-badge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;background:rgba(255,55,95,.15);color:var(--pnk);border:1px solid rgba(255,55,95,.3);font-family:var(--mono);"></div>
+      <button class="iBtn" onclick="App.rdRefresh()" id="rd-refresh-btn" title="Tải bài mới">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
+    </div>
+  </div>
+  <div style="padding:6px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:10px;">
+    <div style="font-size:10px;color:var(--com);flex:1;">
+      👆 Nhấn từ để xem nghĩa &nbsp;·&nbsp;
+      <span style="color:rgba(255,159,10,.8);border-bottom:1px solid rgba(255,159,10,.5);">gạch chân</span> = từ mới &nbsp;·&nbsp;
+      <span style="color:var(--tx);">bình thường</span> = đã biết
+    </div>
+    <div style="font-size:10px;color:var(--com);font-family:var(--mono);white-space:nowrap;" id="rd-date"></div>
+  </div>
+  <div class="scrl" id="rd-scrl" style="padding:8px 16px 80px;">
+    <div id="rd-content">
+      <div class="rd-load-state"><div class="rd-spinner"></div>Đang tải bài đọc...</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORD POPUP -->
+<div id="rd-popup-backdrop" onclick="App.rdClosePopup()"></div>
+<div id="rd-popup">
+  <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;">
+    <div style="flex:1;">
+      <div style="font-size:28px;font-weight:900;font-family:var(--serif);color:var(--tx);letter-spacing:-.5px;" id="rdp-word"></div>
+      <div style="font-size:12px;color:var(--com);font-family:var(--mono);margin-top:2px;" id="rdp-ph"></div>
+    </div>
+    <button onclick="App.rdSpeak()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 12px;color:var(--cyn);font-size:18px;">🔊</button>
+    <button onclick="App.rdClosePopup()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 12px;color:var(--com);font-size:14px;">✕</button>
+  </div>
+  <div id="rdp-body"></div>
 </div>
 
 </div><!-- end #app -->
@@ -1263,14 +1311,7 @@ body::after{
       <text x="13" y="17.5" font-size="6" font-weight="700" fill="currentColor" font-family="serif" text-anchor="middle">Я</text>
     </svg></span><span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
   </button>
-  <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="6" width="13" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
-      <rect x="8" y="9" width="13" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M17.5 5.5L20 8L17.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M20 8H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-srs-lbl">Ôn tập</span>
-  </button>
+
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
@@ -1289,12 +1330,24 @@ body::after{
       <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     </svg></span><span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
   </button>
-  <button class="bBtn" id="bn-daily" onclick="App.dailyStart()">
+  <button class="bBtn" id="bn-read" onclick="App.nav('read')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 6C2 4.9 2.9 4 4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6z" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="6" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="6" y1="13" x2="15" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="6" y1="17" x2="12" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg></span><span class="bLbl" id="bn-read-lbl">Đọc</span>
+  </button>
+  <button class="bBtn" id="bn-daily" onclick="App.dailyStart()" style="position:relative;">
+    <span class="bIcon" style="position:relative;display:inline-block;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
       <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M8 3.5L12 1.5L16 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg></span><span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
+    </svg>
+      <span id="daily-nav-badge" style="display:none;position:absolute;top:-4px;right:-6px;background:#ff9f0a;color:#000;font-size:9px;font-weight:800;border-radius:8px;padding:1px 4px;font-family:var(--mono);min-width:14px;text-align:center;line-height:14px;"></span>
+    </span>
+    <span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
   </button>
   <button class="bBtn" id="bn-road" onclick="App.nav('road')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1936,6 +1989,30 @@ const vocabularyDatabase = {
       { ru: 'Этаж', vn: 'Tầng', en: 'Floor / Story', ph: 'etázh' },
       { ru: 'Квартира', vn: 'Căn hộ', en: 'Apartment / Flat', ph: 'kvartíra' },
     ],
+
+    "💬 Hội thoại thông thường — Công nghệ & Cuộc sống": [
+      { ru: 'Сейчас', vn: 'Bây giờ / Hiện tại', en: 'Now / Currently', ph: 'seychas' },
+      { ru: 'Пока', vn: 'Tạm biệt / Trong khi đó', en: 'Bye / Meanwhile', ph: 'poká' },
+      { ru: 'Ладно', vn: 'Được rồi / Thôi được', en: 'Alright / Okay', ph: 'ládno' },
+      { ru: 'Типа', vn: 'Kiểu như / Như là (thông tục)', en: 'Like / Sort of (colloquial)', ph: 'típa' },
+      { ru: 'Цена', vn: 'Giá cả', en: 'Price', ph: 'tsená' },
+      { ru: 'Поднять', vn: 'Nâng lên / Tăng (giá)', en: 'To raise / increase', ph: 'podnyat\'' },
+      { ru: 'Сильно', vn: 'Mạnh / Nhiều / Rất', en: 'Strongly / A lot', ph: 'silno' },
+      { ru: 'Проблема', vn: 'Vấn đề / Sự cố', en: 'Problem', ph: 'probléma' },
+      { ru: 'Канал', vn: 'Kênh (TV, YouTube)', en: 'Channel', ph: 'kanal' },
+      { ru: 'Удалить', vn: 'Xóa / Xóa bỏ', en: 'To delete / remove', ph: 'udalít\'' },
+      { ru: 'Экран', vn: 'Màn hình', en: 'Screen', ph: 'ekrán' },
+      { ru: 'Монитор', vn: 'Màn hình máy tính', en: 'Monitor', ph: 'monitor' },
+      { ru: 'Компьютер', vn: 'Máy tính', en: 'Computer', ph: 'komp\'yúter' },
+      { ru: 'Нравиться', vn: 'Thích / Ưa thích', en: 'To like / to please', ph: 'nrávitsya' },
+      { ru: 'Нормальный', vn: 'Bình thường / Ổn', en: 'Normal / Decent', ph: 'normálnyy' },
+      { ru: 'Полуживой', vn: 'Nửa sống / Gần chết (thông tục)', en: 'Half-alive / barely functioning', ph: 'poluzivóy' },
+      { ru: 'Школа', vn: 'Trường học', en: 'School', ph: 'shkóla' },
+      { ru: 'Переводить', vn: 'Dịch thuật / Chuyển đổi', en: 'To translate / transfer', ph: 'perevodít\'' },
+      { ru: 'Больше', vn: 'Hơn / Nhiều hơn / Không nữa', en: 'More / No longer', ph: 'ból\'she' },
+      { ru: 'Спасибо', vn: 'Cảm ơn', en: 'Thank you', ph: 'spasibo' },
+    ],
+
   A2: {
     "🛒 Mua sắm & Tiền bạc": [
       { ru: 'Деньги', vn: 'Tiền', en: 'Tiền', en: 'Money', ph: 'dyéngi' },
@@ -4372,6 +4449,168 @@ const vocabularyDatabase = {
       { ru: 'Ответственность', vn: 'Trách nhiệm', en: 'Responsibility', ph: 'otvetstvennost\'' },
       { ru: 'Эффективность', vn: 'Hiệu quả', en: 'Effectiveness / Efficiency', ph: 'effektivnost\'' },
     ],
+
+    "🏰 Lịch sử Nga — Смутное время": [
+      { ru: 'Династия', vn: 'Triều đại', en: 'Dynasty', ph: 'dinástiya' },
+      { ru: 'Царь', vn: 'Sa hoàng / Vua', en: 'Tsar / King', ph: 'tsar\'' },
+      { ru: 'Правитель', vn: 'Người cai trị', en: 'Ruler', ph: 'právitel\'' },
+      { ru: 'Регент', vn: 'Nhiếp chính', en: 'Regent', ph: 'regent' },
+      { ru: 'Патриарх', vn: 'Thượng phụ (Giáo chủ)', en: 'Patriarch', ph: 'patriarkh' },
+      { ru: 'Митрополит', vn: 'Tổng Giám mục', en: 'Metropolitan', ph: 'mitropolit' },
+      { ru: 'Православие', vn: 'Chính Thống giáo', en: 'Orthodoxy', ph: 'pravosláviye' },
+      { ru: 'Католицизм', vn: 'Công giáo', en: 'Catholicism', ph: 'katolitsizm' },
+      { ru: 'Церковь', vn: 'Nhà thờ / Giáo hội', en: 'Church', ph: 'tserkov\'' },
+      { ru: 'Независимый', vn: 'Độc lập', en: 'Independent', ph: 'nezavisimyy' },
+      { ru: 'Смутное время', vn: 'Thời kỳ Loạn lạc', en: 'Time of Troubles', ph: 'smútnoe vrémya' },
+      { ru: 'Внешняя политика', vn: 'Chính sách đối ngoại', en: 'Foreign policy', ph: 'vnéshnaya polítika' },
+      { ru: 'Внутренняя политика', vn: 'Chính sách đối nội', en: 'Domestic policy', ph: 'vnútrennaya polítika' },
+      { ru: 'Крепость', vn: 'Pháo đài / Thành lũy', en: 'Fortress', ph: 'krepóst\'' },
+      { ru: 'Торговля', vn: 'Thương mại / Buôn bán', en: 'Trade', ph: 'torgovlya' },
+      { ru: 'Мир', vn: 'Hòa bình / Thế giới', en: 'Peace / World', ph: 'mir' },
+      { ru: 'Война', vn: 'Chiến tranh', en: 'War', ph: 'voyna' },
+      { ru: 'Доступ', vn: 'Quyền tiếp cận / Lối vào', en: 'Access', ph: 'dostup' },
+      { ru: 'Территория', vn: 'Lãnh thổ', en: 'Territory', ph: 'territoriya' },
+      { ru: 'Экономика', vn: 'Kinh tế', en: 'Economy', ph: 'ekonomika' },
+      { ru: 'Колония', vn: 'Thuộc địa', en: 'Colony', ph: 'kolóniya' },
+      { ru: 'Империя', vn: 'Đế quốc', en: 'Empire', ph: 'impériya' },
+      { ru: 'Эпидемия', vn: 'Dịch bệnh', en: 'Epidemic', ph: 'epidemiya' },
+      { ru: 'Пандемия', vn: 'Đại dịch', en: 'Pandemic', ph: 'pandemiya' },
+      { ru: 'Голод', vn: 'Nạn đói', en: 'Famine / Hunger', ph: 'gólod' },
+      { ru: 'Умирать', vn: 'Chết / Qua đời', en: 'To die', ph: 'umirat\'' },
+      { ru: 'Болеть', vn: 'Bị bệnh / Đau', en: 'To be sick', ph: 'bolet\'' },
+      { ru: 'Хлеб', vn: 'Bánh mì', en: 'Bread', ph: 'khleb' },
+      { ru: 'Снижать', vn: 'Giảm / Hạ xuống', en: 'To reduce / lower', ph: 'snizhat\'' },
+      { ru: 'Цена', vn: 'Giá cả', en: 'Price', ph: 'tsena' },
+      { ru: 'Лидер', vn: 'Người lãnh đạo', en: 'Leader', ph: 'lider' },
+      { ru: 'Политик', vn: 'Chính khách', en: 'Politician', ph: 'politik' },
+      { ru: 'Умный', vn: 'Thông minh', en: 'Smart / Clever', ph: 'umnyy' },
+      { ru: 'Образование', vn: 'Giáo dục', en: 'Education', ph: 'obrazovaniye' },
+      { ru: 'Неграмотный', vn: 'Mù chữ / Thất học', en: 'Illiterate', ph: 'negramotnyy' },
+      { ru: 'Опера', vn: 'Opera / Nhạc kịch', en: 'Opera', ph: 'opera' },
+      { ru: 'Ложный', vn: 'Giả mạo / Không có thật', en: 'False / Fake', ph: 'lózhnyy' },
+      { ru: 'Смутный', vn: 'Mơ hồ / Bất ổn', en: 'Vague / Troubled', ph: 'smutnyy' },
+      { ru: 'Сметана', vn: 'Kem chua (sour cream)', en: 'Sour cream', ph: 'smetana' },
+      { ru: 'Царевич', vn: 'Hoàng tử (con trai Sa hoàng)', en: 'Tsarevich / Prince', ph: 'tsarevich' },
+    ],
+
+    "📜 Lịch sử Nga — Киевская Русь & феодализм": [
+      { ru: 'Процветание', vn: 'Sự thịnh vượng', en: 'Prosperity', ph: 'protsvetániye' },
+      { ru: 'Расцвет', vn: 'Sự hưng thịnh / Thời hoàng kim', en: 'Flourishing / Heyday', ph: 'rastsvet' },
+      { ru: 'Стабильность', vn: 'Sự ổn định', en: 'Stability', ph: 'stabílnost\'' },
+      { ru: 'Форма правления', vn: 'Hình thức chính quyền', en: 'Form of government', ph: 'forma pravleniya' },
+      { ru: 'Земля', vn: 'Đất đai / Trái Đất', en: 'Land / Earth', ph: 'zemlya' },
+      { ru: 'Управлять', vn: 'Cai trị / Quản lý', en: 'To rule / manage', ph: 'upravlyat\'' },
+      { ru: 'Феодал', vn: 'Lãnh chúa phong kiến', en: 'Feudal lord', ph: 'feodál' },
+      { ru: 'Феодальный', vn: 'Thuộc phong kiến', en: 'Feudal', ph: 'feodálnyy' },
+      { ru: 'Раздробленность', vn: 'Sự phân mảnh / Chia cắt', en: 'Fragmentation', ph: 'razdróblennost\'' },
+      { ru: 'Крестьянин', vn: 'Nông dân', en: 'Peasant', ph: 'krest\'yanin' },
+      { ru: 'Князь', vn: 'Hoàng tử / Lãnh chúa', en: 'Prince', ph: 'knyaz\'' },
+      { ru: 'Боярин', vn: 'Quý tộc (Boyar)', en: 'Boyar / Nobleman', ph: 'boyárin' },
+      { ru: 'Мудрый', vn: 'Khôn ngoan / Thông thái', en: 'Wise', ph: 'múdryy' },
+      { ru: 'Талантливый', vn: 'Tài năng', en: 'Talented', ph: 'talantlivyy' },
+      { ru: 'Образованный', vn: 'Có học thức', en: 'Educated', ph: 'obrazovannyy' },
+      { ru: 'Прозвище', vn: 'Biệt danh', en: 'Nickname', ph: 'prózvishche' },
+      { ru: 'Основать', vn: 'Thành lập / Sáng lập', en: 'To found / establish', ph: 'osnovat\'' },
+      { ru: 'Библиотека', vn: 'Thư viện', en: 'Library', ph: 'bibliotéka' },
+      { ru: 'Свод законов', vn: 'Bộ luật', en: 'Code of laws', ph: 'svod zakónov' },
+      { ru: 'Русская правда', vn: 'Sự thật Nga (bộ luật đầu tiên)', en: 'Russian Truth (first law code)', ph: 'rússkaya právda' },
+      { ru: 'Летопись', vn: 'Biên niên sử', en: 'Chronicle', ph: 'létopis\'' },
+      { ru: 'Монах', vn: 'Tu sĩ / Nhà sư', en: 'Monk', ph: 'monákh' },
+      { ru: 'Монастырь', vn: 'Tu viện', en: 'Monastery', ph: 'monastyr\'' },
+      { ru: 'Грамотный', vn: 'Biết chữ / Có học', en: 'Literate', ph: 'gramotnyy' },
+      { ru: 'Неграмотный', vn: 'Mù chữ', en: 'Illiterate', ph: 'negramotnyy' },
+      { ru: 'Княжество', vn: 'Công quốc', en: 'Principality', ph: 'knyazhestvo' },
+      { ru: 'Объединение', vn: 'Sự thống nhất', en: 'Unification', ph: 'ob\'yedinéniye' },
+      { ru: 'Объединять', vn: 'Thống nhất / Hợp nhất', en: 'To unite', ph: 'ob\'yedinyat\'' },
+      { ru: 'Завоевать', vn: 'Chinh phục / Xâm chiếm', en: 'To conquer', ph: 'zavoevat\'' },
+      { ru: 'Войско', vn: 'Đội quân / Lực lượng', en: 'Army / Forces', ph: 'voysko' },
+      { ru: 'Дань', vn: 'Cống nạp / Thuế (thời cổ)', en: 'Tribute', ph: 'dan\'' },
+      { ru: 'Освобождение', vn: 'Sự giải phóng', en: 'Liberation', ph: 'osvobozhdéniye' },
+      { ru: 'Битва', vn: 'Trận chiến', en: 'Battle', ph: 'bítva' },
+      { ru: 'Архитектура', vn: 'Kiến trúc', en: 'Architecture', ph: 'arkhitektura' },
+      { ru: 'Герб', vn: 'Quốc huy / Huy hiệu', en: 'Coat of arms', ph: 'gerb' },
+      { ru: 'Двуглавый орёл', vn: 'Đại bàng hai đầu', en: 'Double-headed eagle', ph: 'dvuglavyy oryol' },
+      { ru: 'Многонациональный', vn: 'Đa dân tộc / Đa quốc gia', en: 'Multi-ethnic', ph: 'mnogonatsional\'nyy' },
+      { ru: 'Набожный', vn: 'Sùng đạo / Mộ đạo', en: 'Pious / Religious', ph: 'nabózhnyy' },
+      { ru: 'Вече', vn: 'Hội đồng dân chúng (thời cổ)', en: 'Popular assembly (veche)', ph: 'véche' },
+      { ru: 'Памятник', vn: 'Di tích / Tượng đài', en: 'Monument / Landmark', ph: 'pamyatnik' },
+    ],
+
+    "🗣️ Hội thoại thường ngày & Đại học": [
+      { ru: 'Давно не виделись', vn: 'Lâu rồi không gặp', en: 'Long time no see', ph: 'davnó ne vidélis\'' },
+      { ru: 'Давно', vn: 'Đã lâu / Từ lâu', en: 'For a long time / Long ago', ph: 'davnó' },
+      { ru: 'Недавно', vn: 'Gần đây / Mới đây', en: 'Recently', ph: 'nedávno' },
+      { ru: 'Как прошёл день?', vn: 'Ngày hôm nay của bạn thế nào?', en: 'How was your day?', ph: 'kak proshyol dyen\'' },
+      { ru: 'Что ты делал?', vn: 'Bạn đã làm gì?', en: 'What did you do?', ph: 'chto ty délal' },
+      { ru: 'За последнее время', vn: 'Trong thời gian vừa qua', en: 'In recent times', ph: 'za posléedneye vrémya' },
+      { ru: 'Прошедшее время', vn: 'Thì quá khứ', en: 'Past tense', ph: 'proshedshéye vrémya' },
+      { ru: 'Библиотека', vn: 'Thư viện', en: 'Library', ph: 'bibliotéka' },
+      { ru: 'Научная библиотека', vn: 'Thư viện khoa học', en: 'Scientific library', ph: 'naúchnaya bibliotéka' },
+      { ru: 'Читательский билет', vn: 'Thẻ thư viện', en: 'Library card', ph: 'chitátelskiy bilét' },
+      { ru: 'Читальный зал', vn: 'Phòng đọc sách', en: 'Reading room', ph: 'chitálnyy zal' },
+      { ru: 'Абзац', vn: 'Đoạn văn', en: 'Paragraph', ph: 'abzáts' },
+      { ru: 'Красная строка', vn: 'Dòng thụt đầu đoạn', en: 'Indented line / New paragraph', ph: 'krásnaya stroká' },
+      { ru: 'Сноска', vn: 'Chú thích cuối trang', en: 'Footnote', ph: 'snóska' },
+      { ru: 'Шрифт', vn: 'Phông chữ', en: 'Font', ph: 'shrift' },
+      { ru: 'Цитата', vn: 'Trích dẫn / Câu trích', en: 'Quote / Citation', ph: 'tsitáta' },
+      { ru: 'Выставка', vn: 'Triển lãm', en: 'Exhibition', ph: 'výstavka' },
+      { ru: 'Музей', vn: 'Bảo tàng', en: 'Museum', ph: 'muzéy' },
+      { ru: 'Тренажёрный зал', vn: 'Phòng tập thể dục', en: 'Gym / Fitness center', ph: 'trenazhornyy zal' },
+      { ru: 'Кинотеатр', vn: 'Rạp chiếu phim', en: 'Cinema / Movie theater', ph: 'kinoteatr' },
+      { ru: 'Метро', vn: 'Tàu điện ngầm', en: 'Metro / Subway', ph: 'metró' },
+      { ru: 'Пара', vn: 'Tiết học (đại học)', en: 'Class period (university)', ph: 'pára' },
+      { ru: 'Занятие', vn: 'Buổi học / Lớp học', en: 'Class / Lesson', ph: 'zanyátiye' },
+      { ru: 'Прогулка', vn: 'Buổi đi dạo', en: 'Walk / Stroll', ph: 'progúlka' },
+      { ru: 'Гулять', vn: 'Đi dạo / Ra ngoài chơi', en: 'To walk / go out', ph: 'gulyat\'' },
+      { ru: 'Социология', vn: 'Xã hội học', en: 'Sociology', ph: 'sotsiológiya' },
+      { ru: 'Психология', vn: 'Tâm lý học', en: 'Psychology', ph: 'psikhológiya' },
+      { ru: 'Философия', vn: 'Triết học', en: 'Philosophy', ph: 'filosófiya' },
+      { ru: 'Политология', vn: 'Khoa học chính trị', en: 'Political science', ph: 'politológiya' },
+      { ru: 'Культурология', vn: 'Nghiên cứu văn hóa', en: 'Cultural studies', ph: 'kul\'turologiya' },
+      { ru: 'Юриспруденция', vn: 'Luật học', en: 'Jurisprudence / Law', ph: 'yurisprudéntsiya' },
+      { ru: 'Абонемент', vn: 'Thẻ đăng ký (thư viện/gym)', en: 'Subscription card / Pass', ph: 'abonymént' },
+      { ru: 'Реконструкция', vn: 'Sự trùng tu / Cải tạo', en: 'Reconstruction / Renovation', ph: 'rekonstruktsiya' },
+      { ru: 'Пресс-конференция', vn: 'Họp báo', en: 'Press conference', ph: 'press-konferentsiya' },
+      { ru: 'Интервью', vn: 'Phỏng vấn', en: 'Interview', ph: 'intervyu' },
+    ],
+
+    "📊 Kinh tế học — Обмен & Специализация": [
+      { ru: 'Конспект', vn: 'Bài ghi chép / Tóm tắt bài giảng', en: 'Lecture notes', ph: 'konspékt' },
+      { ru: 'Лекция', vn: 'Bài giảng', en: 'Lecture', ph: 'léktsiya' },
+      { ru: 'Задание', vn: 'Bài tập / Nhiệm vụ', en: 'Task / Assignment', ph: 'zadániye' },
+      { ru: 'Тетрадь', vn: 'Vở / Quyển tập', en: 'Notebook', ph: 'tetrad\'' },
+      { ru: 'Профессор', vn: 'Giáo sư', en: 'Professor', ph: 'proféssor' },
+      { ru: 'Производство', vn: 'Sản xuất', en: 'Production', ph: 'proizvodstvo' },
+      { ru: 'Производить', vn: 'Sản xuất / Tạo ra', en: 'To produce / manufacture', ph: 'proizvodit\'' },
+      { ru: 'Производитель', vn: 'Nhà sản xuất', en: 'Producer / Manufacturer', ph: 'proizvodítel\'' },
+      { ru: 'Произвести', vn: 'Sản xuất (hoàn thành)', en: 'To produce (perfective)', ph: 'proizvesti' },
+      { ru: 'Обмен', vn: 'Sự trao đổi', en: 'Exchange', ph: 'obmén' },
+      { ru: 'Обмениваться', vn: 'Trao đổi (với nhau)', en: 'To exchange (with each other)', ph: 'obmenyivatsya' },
+      { ru: 'Специализироваться', vn: 'Chuyên môn hóa', en: 'To specialize', ph: 'spetsializírovat\'sya' },
+      { ru: 'Специализация', vn: 'Chuyên môn / Lĩnh vực chuyên sâu', en: 'Specialization', ph: 'spetsializátsiya' },
+      { ru: 'Специальность', vn: 'Ngành học / Nghề chuyên môn', en: 'Specialty / Major', ph: 'spetsialnost\'' },
+      { ru: 'Сфера', vn: 'Lĩnh vực', en: 'Sphere / Field', ph: 'sféra' },
+      { ru: 'Область', vn: 'Lĩnh vực / Vùng', en: 'Field / Region', ph: 'óblast\'' },
+      { ru: 'Экономическая деятельность', vn: 'Hoạt động kinh tế', en: 'Economic activity', ph: 'ekonomícheskaya deyátelnost\'' },
+      { ru: 'Вид', vn: 'Loại / Dạng', en: 'Type / Kind', ph: 'vid' },
+      { ru: 'Продукт', vn: 'Sản phẩm', en: 'Product', ph: 'prodúkt' },
+      { ru: 'Услуга', vn: 'Dịch vụ', en: 'Service', ph: 'uslúga' },
+      { ru: 'Ресурс', vn: 'Nguồn lực / Tài nguyên', en: 'Resource', ph: 'resúrs' },
+      { ru: 'Возможность', vn: 'Khả năng / Cơ hội', en: 'Possibility / Opportunity', ph: 'vozmózhnost\'' },
+      { ru: 'Общество', vn: 'Xã hội', en: 'Society', ph: 'óbshchestvo' },
+      { ru: 'Получать', vn: 'Nhận / Được', en: 'To receive / get', ph: 'poluchat\'' },
+      { ru: 'Получить', vn: 'Nhận được (hoàn thành)', en: 'To receive (perfective)', ph: 'poluchit\'' },
+      { ru: 'Относиться', vn: 'Thuộc về / Liên quan đến', en: 'To relate to / belong to', ph: 'otnositsa' },
+      { ru: 'Определённый', vn: 'Nhất định / Cụ thể', en: 'Certain / Specific', ph: 'opredelyonnyy' },
+      { ru: 'Завод', vn: 'Nhà máy', en: 'Factory / Plant', ph: 'zavód' },
+      { ru: 'Кондитер', vn: 'Thợ làm bánh', en: 'Confectioner / Pastry chef', ph: 'kondíter' },
+      { ru: 'Сектор', vn: 'Lĩnh vực / Ngành', en: 'Sector', ph: 'séktor' },
+      { ru: 'Банковские услуги', vn: 'Dịch vụ ngân hàng', en: 'Banking services', ph: 'bánkovskiye uslúgi' },
+      { ru: 'Расшифровывать', vn: 'Giải mã / Viết đầy đủ', en: 'To decode / expand abbreviation', ph: 'rasshifrovyvat\'' },
+      { ru: 'Синоним', vn: 'Từ đồng nghĩa', en: 'Synonym', ph: 'sinonim' },
+      { ru: 'Анализировать', vn: 'Phân tích', en: 'To analyze', ph: 'analizirovat\'' },
+      { ru: 'Перерыв', vn: 'Giờ nghỉ / Giải lao', en: 'Break', ph: 'pereryv' },
+    ],
   },
 
   // ════════════════════════════════════════════════════════════════
@@ -5392,6 +5631,49 @@ const vocabularyDatabase = {
       { ru: 'Ментор', vn: 'Người cố vấn', en: 'Người cố vấn', en: 'Mentor', ph: 'mentor' },
       { ru: 'Жизненные ценности', vn: 'Giá trị sống', en: 'Giá trị sống', en: 'Life values', ph: 'zhiznennyye tsennosti' },
     ],
+    "🎓 Giáo dục & Công nghệ số": [
+      { ru: 'Презентация', vn: 'Bài thuyết trình', en: 'Presentation', ph: 'prezentátsiya' },
+      { ru: 'Учебник', vn: 'Sách giáo khoa', en: 'Textbook', ph: 'uchébnik' },
+      { ru: 'Издательство', vn: 'Nhà xuất bản', en: 'Publishing house', ph: 'izdátelstvo' },
+      { ru: 'Иностранный', vn: 'Nước ngoài / Ngoại quốc', en: 'Foreign', ph: 'inostránnyy' },
+      { ru: 'Иностранец', vn: 'Người nước ngoài', en: 'Foreigner', ph: 'inostrányets' },
+      { ru: 'Высшее образование', vn: 'Giáo dục đại học', en: 'Higher education', ph: 'vyssheye obrazovaniye' },
+      { ru: 'Университет', vn: 'Trường đại học', en: 'University', ph: 'univyersityet' },
+      { ru: 'Филиал', vn: 'Chi nhánh', en: 'Branch', ph: 'filial' },
+      { ru: 'Факультет', vn: 'Khoa (đại học)', en: 'Faculty / Department', ph: 'fakul\'tét' },
+      { ru: 'Подготовительный', vn: 'Dự bị / Chuẩn bị', en: 'Preparatory', ph: 'podgotovítelnyy' },
+      { ru: 'Поступление', vn: 'Việc tuyển sinh / Nhập học', en: 'Enrollment / Admission', ph: 'postupleniye' },
+      { ru: 'Зачисление', vn: 'Tiếp nhận / Đăng ký', en: 'Enrollment', ph: 'zachisleniye' },
+      { ru: 'Сертификат', vn: 'Chứng chỉ', en: 'Certificate', ph: 'sertifikat' },
+      { ru: 'Уровень', vn: 'Trình độ / Cấp độ', en: 'Level', ph: 'úroven\'' },
+      { ru: 'Владение языком', vn: 'Khả năng sử dụng ngôn ngữ', en: 'Language proficiency', ph: 'vladéniye yazýkom' },
+      { ru: 'Мотивация', vn: 'Động lực', en: 'Motivation', ph: 'motivátsiya' },
+      { ru: 'Качество', vn: 'Chất lượng', en: 'Quality', ph: 'káchestvo' },
+      { ru: 'Количество', vn: 'Số lượng', en: 'Quantity', ph: 'kolichyestvo' },
+      { ru: 'Цифровой', vn: 'Kỹ thuật số / Số hóa', en: 'Digital', ph: 'tsifrovóy' },
+      { ru: 'Платформа', vn: 'Nền tảng', en: 'Platform', ph: 'platforma' },
+      { ru: 'Личный кабинет', vn: 'Tài khoản cá nhân', en: 'Personal account', ph: 'líchnyi kabinét' },
+      { ru: 'Дистанционный', vn: 'Từ xa / Trực tuyến', en: 'Distance / Remote', ph: 'distantsionnyy' },
+      { ru: 'Онлайн', vn: 'Trực tuyến', en: 'Online', ph: 'onlayn' },
+      { ru: 'Вебинар', vn: 'Hội thảo trực tuyến', en: 'Webinar', ph: 'vebinár' },
+      { ru: 'Международный', vn: 'Quốc tế', en: 'International', ph: 'mezhdunaródnyy' },
+      { ru: 'Сотрудничество', vn: 'Sự hợp tác', en: 'Cooperation', ph: 'sotrudnichestvo' },
+      { ru: 'Партнёр', vn: 'Đối tác', en: 'Partner', ph: 'partner' },
+      { ru: 'Проект', vn: 'Dự án', en: 'Project', ph: 'proékt' },
+      { ru: 'Внеурочная деятельность', vn: 'Hoạt động ngoại khóa', en: 'Extracurricular activity', ph: 'vneuróchnaya deyátelnost\'' },
+      { ru: 'Посольство', vn: 'Đại sứ quán', en: 'Embassy', ph: 'posólstvo' },
+      { ru: 'Стипендия', vn: 'Học bổng', en: 'Scholarship / Stipend', ph: 'stipéndiya' },
+      { ru: 'Переводчик', vn: 'Phiên dịch viên', en: 'Interpreter / Translator', ph: 'perevodchik' },
+      { ru: 'Грамотность', vn: 'Khả năng đọc viết / Kỹ năng', en: 'Literacy', ph: 'gramotnost\'' },
+      { ru: 'Преподаватель', vn: 'Giảng viên', en: 'Teacher / Lecturer', ph: 'prepodavatel\'' },
+      { ru: 'Методика', vn: 'Phương pháp giảng dạy', en: 'Teaching methodology', ph: 'metódika' },
+      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo (AI)', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
+      { ru: 'Электронный', vn: 'Điện tử / Kỹ thuật số', en: 'Electronic', ph: 'elektrónnyi' },
+      { ru: 'Инфраструктура', vn: 'Cơ sở hạ tầng', en: 'Infrastructure', ph: 'infrastruktura' },
+      { ru: 'Межкультурный', vn: 'Liên văn hóa', en: 'Intercultural', ph: 'mezhkul\'turnyy' },
+      { ru: 'Распространение', vn: 'Sự phổ biến / Lan tỏa', en: 'Spread / Distribution', ph: 'rasprostranéniye' },
+    ],
+
     "🧬 Công nghệ sinh học & Khoa học tương lai B2": [
       { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
       { ru: 'Алгоритм', vn: 'Thuật toán', en: 'Algorithm', ph: 'algorítm' },
@@ -6892,7 +7174,7 @@ var i18n = {
     'stories.words': '// TỪ TRONG ĐOẠN NÀY',
     // Grammar
     'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cách',
-    'gram.formation': 'Từ loại', 'gram.conditional': 'Điều kiện', 'gram.passive': 'Bị động', 'gram.quiz': 'Đố vui',
+    'gram.formation': 'Từ loại', 'gram.conditional': 'Điều kiện', 'gram.passive': 'Bị động', 'gram.quiz': 'Đố vui', 'gram.motion': 'Đ.từ CĐ',
     // Donate
     'donate.label': '☕ Ủng hộ / Support dev',
     // FC word family
@@ -6967,10 +7249,10 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road','daily','daily-done'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road',daily:'bn-daily','daily-done':'bn-daily'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road','daily','daily-done','read'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
-const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0,daily:0,'daily-done':1};
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0,daily:0,'daily-done':1,read:0};
 
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
@@ -7026,6 +7308,7 @@ function nav(name){
     // Re-render screens khi quay lại để cập nhật tiến độ
     if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
     if(name === 'daily') setTimeout(function(){ if(typeof dlRender==='function') dlRender(); }, 30);
+    if(name === 'read') setTimeout(rdInit, 30);
     if(name === 'road') setTimeout(renderRoad, 40);
   });
 }
@@ -7160,6 +7443,7 @@ function renderVocab(){
   document.getElementById('v-sub').textContent=`// CEFR ${S.level} · ${total} ${t('topic.words')} · ${mCount} ${t('vocab.sub')}`;
   document.getElementById('v-prog-t').textContent=`${mCount}/${total}`;
   document.getElementById('v-prog-b').style.width=pct+'%';
+
   const hero=document.getElementById('srs-hero');
   const ht=document.getElementById('srs-hero-t');
   const hn=document.getElementById('srs-hero-n');
@@ -7365,6 +7649,7 @@ function speakQZ(){const w=vocabularyDatabase[S.level][S.topic][S.qzIdx];if(w)sp
 function srsStart(){
   const all=[];
   Object.entries(vocabularyDatabase[S.level]).forEach(([t,ws])=>{
+    if(!Array.isArray(ws)) return;
     ws.forEach((w,i)=>all.push({key:`${S.level}-${t}-${i}`,word:w,topicName:t}));
   });
   const due=all.filter(e=>isDue(S.srsData[e.key]));
@@ -7532,22 +7817,22 @@ function gramTab(t){
   // Accent colors per tab (for gram-tab.active tint)
   const accentColor={
     cases:'var(--yel)',formation:'var(--pur)',
-    conditional:'var(--cyn)',passive:'var(--grn)',quiz:'var(--pnk)'
+    conditional:'var(--cyn)',passive:'var(--grn)',quiz:'var(--pnk)',motion:'#ff9f0a'
   };
   const accentBorder={
     cases:'rgba(255,214,10,0.35)',formation:'rgba(191,90,242,0.35)',
-    conditional:'rgba(90,200,250,0.35)',passive:'rgba(52,199,89,0.35)',quiz:'rgba(255,55,95,0.35)'
+    conditional:'rgba(90,200,250,0.35)',passive:'rgba(52,199,89,0.35)',quiz:'rgba(255,55,95,0.35)',motion:'rgba(255,159,10,0.35)'
   };
   const accentBg={
     cases:'rgba(255,214,10,0.08)',formation:'rgba(191,90,242,0.08)',
-    conditional:'rgba(90,200,250,0.08)',passive:'rgba(52,199,89,0.08)',quiz:'rgba(255,55,95,0.08)'
+    conditional:'rgba(90,200,250,0.08)',passive:'rgba(52,199,89,0.08)',quiz:'rgba(255,55,95,0.08)',motion:'rgba(255,159,10,0.08)'
   };
   const accentGlow={
     cases:'rgba(255,214,10,0.10)',formation:'rgba(191,90,242,0.10)',
-    conditional:'rgba(90,200,250,0.10)',passive:'rgba(52,199,89,0.10)',quiz:'rgba(255,55,95,0.10)'
+    conditional:'rgba(90,200,250,0.10)',passive:'rgba(52,199,89,0.10)',quiz:'rgba(255,55,95,0.10)',motion:'rgba(255,159,10,0.10)'
   };
-  const keyMap={cases:'cases',form:'formation',conditional:'conditional',passive:'passive',quiz:'quiz'};
-  ['cases','form','conditional','passive','quiz'].forEach(k=>{
+  const keyMap={cases:'cases',form:'formation',conditional:'conditional',passive:'passive',quiz:'quiz',motion:'motion'};
+  ['cases','form','conditional','passive','quiz','motion'].forEach(k=>{
     const key=keyMap[k];
     const b=document.getElementById('gt-'+k); if(!b)return;
     const isActive=key===t;
@@ -7569,6 +7854,7 @@ function gramTab(t){
   else if(t==='formation')renderFormation();
   else if(t==='conditional')renderConditional();
   else if(t==='passive')renderPassive();
+  else if(t==='motion')renderMotion();
   else renderGQ();
 }
 function renderCases(){
@@ -7899,6 +8185,350 @@ function gqReset(type){
   S.gqShuffled=[...src].sort(()=>Math.random()-.5);
   S.gqIdx=0; S.gqSel=null; S.gqScore={c:0,t:0};
 }
+// ══════════════════════════════════════════════════════════
+// ĐỘNG TỪ CHUYỂN ĐỘNG — renderMotion()
+// ══════════════════════════════════════════════════════════
+var motionState = { section:'theory', ex: 0, answered: false, score: 0, total: 0, wrong: [], shuffled: [] };
+
+var motionData = {
+  // ── Lý thuyết ────────────────────────────────────────────
+  theory: [
+    {
+      title: '🚶 ĐI: идти / ходить',
+      color: '#ff9f0a',
+      rows: [
+        { label: 'идти (НСВ, 1 chiều)', desc: 'Đang đi, một hướng cụ thể', ex: 'Я иду в магазин. (Tôi đang đi đến cửa hàng.)' },
+        { label: 'ходить (НСВ, nhiều chiều)', desc: 'Đi nhiều lần / đi lại thường xuyên', ex: 'Я хожу в школу каждый день. (Tôi đi học mỗi ngày.)' },
+        { label: 'пойти (СВ)', desc: 'Sẽ đi / bắt đầu đi', ex: 'Завтра я пойду в музей. (Mai tôi sẽ đi bảo tàng.)' },
+        { label: 'прийти (СВ)', desc: 'Đến nơi (đã hoàn thành)', ex: 'Она пришла домой в 6 часов. (Cô ấy về nhà lúc 6 giờ.)' },
+        { label: 'уйти (СВ)', desc: 'Rời đi (hoàn thành)', ex: 'Он ушёл из офиса. (Anh ấy rời văn phòng rồi.)' },
+      ]
+    },
+    {
+      title: '🚗 ĐI (xe): ехать / ездить',
+      color: '#5ac8fa',
+      rows: [
+        { label: 'ехать (НСВ, 1 chiều)', desc: 'Đang đi (bằng phương tiện), một chiều', ex: 'Мы едем на поезде в Москву. (Chúng tôi đang đi tàu đến Moscow.)' },
+        { label: 'ездить (НСВ, nhiều chiều)', desc: 'Hay đi lại bằng phương tiện', ex: 'Он ездит на работу на метро. (Anh ấy hay đi làm bằng tàu điện ngầm.)' },
+        { label: 'поехать (СВ)', desc: 'Bắt đầu đi / sẽ đi bằng phương tiện', ex: 'Мы поедем в отпуск в июле. (Chúng tôi sẽ đi nghỉ vào tháng 7.)' },
+        { label: 'приехать (СВ)', desc: 'Đến nơi bằng phương tiện', ex: 'Они приехали из Вьетнама. (Họ đến từ Việt Nam.)' },
+        { label: 'уехать (СВ)', desc: 'Rời đi bằng phương tiện', ex: 'Она уехала в Европу. (Cô ấy đã đi châu Âu rồi.)' },
+      ]
+    },
+    {
+      title: '✈️ BAY: лететь / летать',
+      color: '#34c759',
+      rows: [
+        { label: 'лететь (НСВ, 1 chiều)', desc: 'Đang bay (chuyến cụ thể)', ex: 'Самолёт летит в Ханой. (Máy bay đang bay đến Hà Nội.)' },
+        { label: 'летать (НСВ, nhiều chiều)', desc: 'Hay bay / bay thường xuyên', ex: 'Он летает по работе. (Anh ấy hay bay vì công việc.)' },
+        { label: 'полететь (СВ)', desc: 'Bắt đầu bay / sẽ bay', ex: 'Мы полетим в отпуск. (Chúng tôi sẽ đi nghỉ bằng máy bay.)' },
+      ]
+    },
+    {
+      title: '🏃 CHẠY: бежать / бегать',
+      color: '#bf5af2',
+      rows: [
+        { label: 'бежать (НСВ, 1 chiều)', desc: 'Đang chạy, hướng cụ thể', ex: 'Он бежит на стадион. (Anh ấy đang chạy đến sân vận động.)' },
+        { label: 'бегать (НСВ, nhiều chiều)', desc: 'Chạy thường xuyên / chạy lại', ex: 'Я бегаю по утрам. (Tôi chạy bộ vào buổi sáng.)' },
+      ]
+    },
+    {
+      title: '🏊 BƠI: плыть / плавать',
+      color: '#5ac8fa',
+      rows: [
+        { label: 'плыть (НСВ, 1 chiều)', desc: 'Đang bơi / đang trôi, hướng cụ thể', ex: 'Лодка плывёт по реке. (Thuyền đang trôi trên sông.)' },
+        { label: 'плавать (НСВ, nhiều chiều)', desc: 'Hay bơi / biết bơi', ex: 'Она хорошо плавает. (Cô ấy bơi giỏi.)' },
+      ]
+    },
+    {
+      title: '📦 VỀ TIỀN TỐ: При- / У- / Вы- / В-',
+      color: '#ff375f',
+      rows: [
+        { label: 'при- (приехать, прийти)', desc: 'Đến nơi (arrival)', ex: 'Он пришёл. / Она приехала.' },
+        { label: 'у- (уехать, уйти)', desc: 'Rời đi (departure)', ex: 'Он ушёл. / Она уехала.' },
+        { label: 'вы- (выйти, выехать)', desc: 'Đi ra ngoài (exit)', ex: 'Выйди из комнаты! (Hãy ra khỏi phòng!)' },
+        { label: 'в- (войти, въехать)', desc: 'Đi vào bên trong (enter)', ex: 'Войдите! (Mời vào!)' },
+        { label: 'пере- (перейти, переехать)', desc: 'Sang/qua bên kia (cross)', ex: 'Перейдите улицу. (Hãy qua đường.)' },
+        { label: 'до- (дойти, доехать)', desc: 'Đến nơi (reach destination)', ex: 'Дойдите до угла. (Đi đến góc phố.)' },
+      ]
+    },
+  ],
+
+  // ── Bài tập ───────────────────────────────────────────────
+  exercises: [
+    // Type: fill — chọn đúng động từ
+    { type:'choose', q:'Каждое утро я ___ в университет пешком.',
+      opts:['иду','хожу','пойду','прийти'], ans:1,
+      exp:'«Ходить» — động từ nhiều chiều, dùng cho hành động lặp lại (каждое утро).' },
+    { type:'choose', q:'Осторожно! Ты ___ прямо в лужу!',
+      opts:['ходишь','идёшь','пойдёшь','приходишь'], ans:1,
+      exp:'«Идти» — 1 chiều, hành động đang xảy ra ngay lúc này.' },
+    { type:'choose', q:'Мы ___ в Дананг на самолёте на следующей неделе.',
+      opts:['летим','летаем','полетим','прилетим'], ans:2,
+      exp:'«Полететь» (СВ) — hành động trong tương lai, một lần, hoàn thành.' },
+    { type:'choose', q:'Он каждый день ___ на работу на метро.',
+      opts:['едет','ездит','поедет','приедет'], ans:1,
+      exp:'«Ездить» — nhiều chiều, diễn đạt thói quen (каждый день).' },
+    { type:'choose', q:'— Где Аня? — Она только что ___ из офиса.',
+      opts:['уходила','ушла','уйдёт','выходила'], ans:1,
+      exp:'«Ушла» (СВ, прош. время) — hành động hoàn thành trong quá khứ gần.' },
+    { type:'choose', q:'Смотри! Лодка ___ по реке.',
+      opts:['плывёт','плавает','поплыла','приплыла'], ans:0,
+      exp:'«Плыть» — 1 chiều, nhìn thấy ngay lúc đó (Смотри!).' },
+    { type:'choose', q:'Туристы ___ по городу целый день.',
+      opts:['шли','ходили','пошли','приходили'], ans:1,
+      exp:'«Ходить» — nhiều chiều, di chuyển không theo hướng cụ thể, suốt cả ngày.' },
+    { type:'choose', q:'Дети любят ___ в бассейне каждое лето.',
+      opts:['плыть','плавать','поплыть','приплыть'], ans:1,
+      exp:'«Плавать» — nhiều chiều, thói quen (каждое лето), cũng nghĩa là "biết bơi".' },
+    { type:'choose', q:'Мама сейчас ___ домой с работы.',
+      opts:['идёт','ходит','пойдёт','приходит'], ans:0,
+      exp:'«Идти» — đang đi về nhà ngay lúc này, một hướng cụ thể.' },
+    { type:'choose', q:'— Давай ___ в кино сегодня вечером?',
+      opts:['идём','ходим','пойдём','приходим'], ans:2,
+      exp:'«Пойти» (СВ) — dùng trong lời rủ, đề nghị làm gì (lần này).' },
+    { type:'choose', q:'Он опытный пилот — ___ уже 20 лет.',
+      opts:['летит','летел','летает','полетел'], ans:2,
+      exp:'«Летать» — nhiều chiều, diễn đạt nghề nghiệp / kinh nghiệm tích lũy.' },
+    { type:'choose', q:'Когда ты ___ в последний раз в Россию?',
+      opts:['ехал','ездил','поехал','приехал'], ans:1,
+      exp:'«Ездить» — nhiều chiều, dùng khi hỏi về kinh nghiệm đi lại trong quá khứ.' },
+    // Prefix exercises
+    { type:'choose', q:'Гости уже ___. Открой дверь!',
+      opts:['приехали','уехали','выехали','переехали'], ans:0,
+      exp:'При- = đến nơi. Гости приехали — khách đã đến.' },
+    { type:'choose', q:'Он ___ из комнаты и закрыл дверь.',
+      opts:['вышел','пришёл','ушёл','зашёл'], ans:0,
+      exp:'Вы- = ra ngoài. Вышел из комнаты — đi ra khỏi phòng.' },
+    { type:'choose', q:'Пожалуйста, ___ в кабинет доктора.',
+      opts:['зайдите','выйдите','уйдите','дойдите'], ans:0,
+      exp:'За- (зайти) = bước vào. Зайдите в кабинет — mời vào phòng khám.' },
+    { type:'choose', q:'Мы ___ до станции метро за 10 минут.',
+      opts:['доехали','приехали','выехали','уехали'], ans:0,
+      exp:'До- = đến nơi đích (destination reached). Доехали до станции.' },
+    { type:'choose', q:'Нам нужно ___ через реку.',
+      opts:['перейти','войти','выйти','дойти'], ans:0,
+      exp:'Пере- = sang/qua bên kia. Перейти через реку — đi qua sông.' },
+  
+    { type:'choose', q:'Каждые выходные мы ___ за город на машине.',
+      opts:['едем','ездим','поедем','приедем'], ans:1,
+      exp:'«Ездить» — nhiều chiều, thói quen (каждые выходные). «Ехать» là đang đi ngay lúc này.' },
+    { type:'choose', q:'Птицы ___ на юг каждую осень.',
+      opts:['летят','летают','полетят','прилетят'], ans:1,
+      exp:'«Летать» — nhiều chiều, thói quen theo mùa. «Лететь» dùng khi đang bay ngay lúc đó.' },
+    { type:'choose', q:'Я слышу: кто-то ___ по лестнице.',
+      opts:['идёт','ходит','пойдёт','приходит'], ans:0,
+      exp:'«Идти» — nghe thấy ngay lúc đó, một hướng cụ thể, không phải thói quen.' },
+    { type:'choose', q:'Врач сказал мне ___ больше пешком.',
+      opts:['идти','ходить','пойти','прийти'], ans:1,
+      exp:'«Ходить» dùng trong ý nghĩa chung/lời khuyên (đi bộ nói chung). «Идти» chỉ 1 hướng cụ thể.' },
+    { type:'choose', q:'Он ___ из Москвы во Вьетнам прямым рейсом.',
+      opts:['летит','летает','полетит','прилетит'], ans:0,
+      exp:'«Лететь» — đang bay ngay bây giờ, chuyến bay một chiều cụ thể.' },
+    { type:'choose', q:'Мы ___ через лес, когда начался дождь.',
+      opts:['шли','ходили','пошли','приходили'], ans:0,
+      exp:'«Шли» (прош. время от «идти») — đang đi theo một hướng thì mưa bắt đầu rơi.' },
+    { type:'choose', q:'Этот автобус ___ до центра города?',
+      opts:['идёт','едет','ходит','ездит'], ans:2,
+      exp:'«Ходить» (о транспорте) — dùng cho phương tiện đi theo tuyến cố định, nhiều lần.' },
+    { type:'choose', q:'Катя умеет ___ на велосипеде с пяти лет.',
+      opts:['ехать','ездить','поехать','приехать'], ans:1,
+      exp:'«Ездить» có nghĩa là "biết đi" (kỹ năng), tương tự «плавать» = biết bơi, «летать» = biết bay.' },
+    { type:'choose', q:'— Куда ___ этот поезд? — В Санкт-Петербург.',
+      opts:['идёт','ходит','едет','ездит'], ans:2,
+      exp:'«Ехать» — phương tiện đang đi ngay lúc đó, một hướng cụ thể. «Ездить» dùng cho tuyến thường xuyên.' },
+    { type:'choose', q:'После перерыва студенты ___ в аудиторию.',
+      opts:['пошли','шли','ходили','уходили'], ans:0,
+      exp:'«Пошли» (СВ) — bắt đầu đi, hành động hoàn thành, mốc thời gian rõ ràng.' },
+    { type:'choose', q:'Бабушка медленно ___ по парку каждое утро.',
+      opts:['идёт','ходит','пойдёт','уходит'], ans:1,
+      exp:'«Ходить» — thói quen hàng ngày (каждое утро), không có hướng cụ thể, đi dạo.' },
+    { type:'choose', q:'Самолёт ___ над облаками уже три часа.',
+      opts:['летит','летает','полетит','перелетел'], ans:0,
+      exp:'«Лететь» — đang bay ngay lúc đó, liên tục (уже три часа), theo một hướng.' },
+    { type:'choose', q:'Когда ты ___ ко мне в гости?',
+      opts:['идёшь','ходишь','придёшь','приходишь'], ans:2,
+      exp:'«Придти/Прийти» (СВ) — hỏi về một lần đến cụ thể trong tương lai. «Прийти» = đến (nơi của người nói).' },
+    { type:'choose', q:'Корабль медленно ___ в порт.',
+      opts:['плывёт','плавает','поплыл','приплыл'], ans:0,
+      exp:'«Плыть» — đang di chuyển ngay lúc đó, một hướng cụ thể về phía cảng.' },
+    { type:'choose', q:'Дети ___ из школы домой разными дорогами.',
+      opts:['уходят','выходят','уходили','выходили'], ans:0,
+      exp:'«Уходить» — rời khỏi nơi nào đó (trường học). «Выходить» — đi ra ngoài khỏi không gian kín.' },
+    // ── Nhóm 5: Câu dịch từ tiếng Việt ─────────────────────
+    { type:'choose', q:'«Tôi đang bơi trong hồ bơi.» → Я ___',
+      opts:['плыву в бассейне','плаваю в бассейне','поплыл в бассейне','приплыл в бассейне'], ans:1,
+      exp:'«Плавать» — nhiều chiều, mô tả hoạt động đang diễn ra ở nơi nhất định (bể bơi).' },
+    { type:'choose', q:'«Chúng tôi sẽ lái xe đến biển vào mùa hè.» →',
+      opts:['Мы едем на море летом.','Мы ездили на море летом.','Мы поедем на море летом.','Мы приедем на море летом.'], ans:2,
+      exp:'«Поехать» (СВ) — kế hoạch trong tương lai, một lần.' },
+    { type:'choose', q:'«Chị ấy thường xuyên bay đến Tokyo vì công việc.»',
+      opts:['Она летит в Токио по работе.','Она летает в Токио по работе.','Она полетела в Токио.','Она прилетела в Токио.'], ans:1,
+      exp:'«Летать» — nhiều chiều, diễn đạt thói quen bay đi bay lại.' },
+    { type:'choose', q:'«Hãy vào trong! Trời lạnh lắm.» →',
+      opts:['Выходи!','Уходи!','Заходи!','Приходи!'], ans:2,
+      exp:'«Заходи» — tiền tố за- = bước vào bên trong. Đây là lời mời vào nhà.' },
+    { type:'choose', q:'«Bố đã về nhà rồi.» →',
+      opts:['Папа пришёл домой.','Папа ушёл домой.','Папа шёл домой.','Папа уходил домой.'], ans:0,
+      exp:'«Прийти» (СВ, при-) — đến nơi, hoàn thành. «Уйти» là rời đi.' },
+
+    // ── Nhóm 6: Lỗi hay gặp ─────────────────────────────────
+    { type:'choose', q:'[LỖI HAY GẶP] Сейчас я ___ в аптеку. (1 lần, đang đi)',
+      opts:['хожу','иду','пойду','приду'], ans:1,
+      exp:'«Идти» — 1 chiều, đang diễn ra ngay lúc nói. Không dùng «ходить» cho hành động đang xảy ra theo hướng cụ thể.' },
+    { type:'choose', q:'[LỖI HAY GẶP] Вчера мы ___ в театр и нам очень понравилось.',
+      opts:['шли','ходили','идём','пойдём'], ans:1,
+      exp:'«Ходить» (прош.) — đi và về trong quá khứ (roundtrip). «Шли» chỉ đi một hướng.' },
+    { type:'choose', q:'[LỖI HAY GẶP] Куда ты ___? — В библиотеку.',
+      opts:['ходишь','идёшь','пойдёшь','приходишь'], ans:1,
+      exp:'«Куда ты идёшь?» — hỏi về hành động đang diễn ra ngay lúc nói (1 chiều).' },
+    { type:'choose', q:'[LỖI HAY GẶP] Мой брат хорошо ___ на велосипеде.',
+      opts:['едет','ездит','поехал','приехал'], ans:1,
+      exp:'«Ездить» — diễn đạt kỹ năng / khả năng. Tương tự: «плавать» (biết bơi), «летать» (biết bay).' },
+    { type:'choose', q:'[LỖI HAY GẶP] Поезд уже ___. Мы опоздали!',
+      opts:['уходит','ушёл','уехал','переехал'], ans:2,
+      exp:'Tàu hỏa dùng «ехать/ездить». «Уехал» = tàu đã đi rồi. «Ушёл» dành cho người đi bộ.' },
+
+    // ── Nhóm 7: Ngữ cảnh nâng cao (B1-B2) ───────────────────
+    { type:'choose', q:'После встречи все участники ___ по домам.',
+      opts:['ушли','пришли','зашли','вышли'], ans:0,
+      exp:'«Разойтись / уйти» — rời đi về nhà (по домам). Từng người rời khỏi địa điểm họp.' },
+    { type:'choose', q:'Корабль медленно ___ из порта в открытое море.',
+      opts:['плыл','плавал','выплыл','поплыл'], ans:3,
+      exp:'«Поплыть» (СВ) — bắt đầu di chuyển, rời cảng. Nhấn mạnh điểm bắt đầu chuyển động.' },
+    { type:'choose', q:'Мы ___ в Россию на учёбу три года назад.',
+      opts:['приехали','поехали','ехали','переехали'], ans:0,
+      exp:'«Приехать» — đã đến nơi (kết quả). «Поехать» — bắt đầu đi. Tình huống này nhấn mạnh kết quả.' },
+    { type:'choose', q:'Он никогда не ___ за границу.',
+      opts:['ездил','ехал','поехал','приехал'], ans:0,
+      exp:'«Ездить» — dùng trong câu phủ định «никогда не» để nói về kinh nghiệm.' },
+    { type:'choose', q:'Все студенты ___ в аудиторию до начала лекции.',
+      opts:['зашли','вошли','пришли','выходили'], ans:2,
+      exp:'«Прийти» — đến địa điểm (auditorium). «Войти» — đi vào bên trong. Cả hai đúng ngữ nghĩa nhưng «пришли» tự nhiên hơn.' },
+    { type:'choose', q:'Такси ___ к гостинице ровно в полночь.',
+      opts:['подъехало','приехало','уехало','переехало'], ans:0,
+      exp:'«Подъехать» (под-) — đến gần, dừng lại. «Приехать» cũng đúng nhưng «подъехать» nhấn mạnh dừng lại trước cửa.' },
+    { type:'choose', q:'Перестань бегать по комнате! (Nghĩa của câu này là...)',
+      opts:['Ngừng chạy về phía phòng!','Ngừng chạy loanh quanh trong phòng!','Ngừng chạy ra khỏi phòng!','Ngừng chạy vào phòng!'], ans:1,
+      exp:'«Бегать по + dative» — chạy đi chạy lại trong không gian. По = di chuyển trong / khắp nơi.' },
+    { type:'choose', q:'Ребята, ___ за мной! Я знаю дорогу.',
+      opts:['ходите','идите','пойдите','приходите'], ans:1,
+      exp:'«Идите за мной» — mệnh lệnh thức, đang đi theo hướng cụ thể ngay bây giờ. «Пойдёмте» cũng dùng được.' },
+
+]
+};
+
+function renderMotion(){
+  var el = document.getElementById('gram-body'); if(!el) return;
+  var tab = motionState.ex >= 0 ? 'theory' : 'exercises';
+  var topH = '<div style="display:flex;gap:8px;margin-bottom:18px;">'
+    + '<button onclick="App.motionSection(\'theory\')" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section!=='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section!=='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section!=='ex'?'#ff9f0a':'var(--com)')+';">📖 Lý thuyết</button>'
+    + '<button onclick="App.motionSection(\'ex\')" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section==='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section==='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section==='ex'?'#ff9f0a':'var(--com)')+';">✏️ Bài tập</button>'
+    + '</div>';
+
+  if(motionState.section !== 'ex'){
+    // ── THEORY ──
+    var h = topH;
+    motionData.theory.forEach(function(sect){
+      h += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;margin-bottom:14px;">'
+        + '<div style="font-size:14px;font-weight:800;margin-bottom:12px;color:'+sect.color+';">'+sect.title+'</div>';
+      sect.rows.forEach(function(row){
+        h += '<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:10px;border-left:3px solid '+sect.color+';">'
+          + '<div style="font-size:13px;font-weight:700;font-family:var(--serif);color:var(--tx);">'+row.label+'</div>'
+          + '<div style="font-size:11px;color:var(--com);margin:3px 0;">'+row.desc+'</div>'
+          + '<div style="font-size:12px;color:rgba(255,255,255,.5);font-style:italic;">'+row.ex+'</div>'
+          + '</div>';
+      });
+      h += '</div>';
+    });
+    el.innerHTML = h;
+  } else {
+    // ── EXERCISES ──
+    var exs = motionState.shuffled && motionState.shuffled.length ? motionState.shuffled : motionData.exercises;
+    var idx = motionState.ex;
+    if(idx >= exs.length){
+      // Done screen
+      var pct = Math.round(motionState.score/exs.length*100);
+      var em  = pct>=90?'🏆':pct>=70?'🥈':'💪';
+      el.innerHTML = topH
+        + '<div style="text-align:center;padding:32px 0;">'
+        + '<div style="font-size:64px;">'+em+'</div>'
+        + '<div style="font-size:22px;font-weight:900;color:#ff9f0a;margin:10px 0;">'+motionState.score+'/'+exs.length+' đúng</div>'
+        + '<div style="font-size:13px;color:var(--com);margin-bottom:20px;">'+pct+'% chính xác</div>'
+        + (motionState.wrong.length?'<div style="background:rgba(255,55,95,.08);border:1px solid rgba(255,55,95,.2);border-radius:14px;padding:14px;text-align:left;margin-bottom:16px;">'
+            +'<div style="font-size:11px;color:var(--pnk);margin-bottom:8px;font-family:var(--mono);">// Cần ôn lại:</div>'
+            +motionState.wrong.map(function(w){return '<div style="font-size:12px;color:var(--txd);padding:4px 0;">• '+w+'</div>';}).join('')
+            +'</div>':'')
+        + '<button class="btn" style="background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.4);color:#ff9f0a;" onclick="App.motionReset()">🔄 Làm lại</button>'
+        + '</div>';
+      return;
+    }
+    var q = exs[idx];
+    var pct2 = Math.round(idx/exs.length*100);
+    el.innerHTML = topH
+      + '<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:14px;">'
+      + '<div style="height:3px;background:#ff9f0a;border-radius:2px;width:'+pct2+'%;transition:width .3s;"></div></div>'
+      + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);margin-bottom:10px;">Câu '+(idx+1)+'/'+exs.length+' · ✓ '+motionState.score+'</div>'
+      + '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;margin-bottom:14px;">'
+      + '<div style="font-size:15px;font-weight:600;line-height:1.5;color:var(--tx);">'+q.q+'</div>'
+      + '</div>'
+      + '<div id="mot-opts">'
+      + q.opts.map(function(o,i){
+          return '<div class="mot-opt dl-choice" id="mot-'+i+'" onclick="App.motionAnswer('+i+')" style="font-family:var(--serif);font-size:16px;font-weight:700;">'
+            +'<div class="dl-word-badge" style="background:rgba(255,255,255,.15);"></div>'
+            +o+'</div>';
+        }).join('')
+      + '</div>'
+      + '<div id="mot-exp" style="display:none;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.2);border-radius:12px;padding:12px;margin-top:12px;font-size:12px;color:var(--txd);line-height:1.6;"></div>';
+  }
+}
+
+function App_motionSection(s){
+  motionState.section = s;
+  if(s==='ex'){
+    motionState.ex=0; motionState.score=0; motionState.wrong=[];
+    // Shuffle exercises for variety
+    var arr = motionData.exercises.slice();
+    for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+    motionState.shuffled = arr;
+  }
+  renderMotion();
+}
+function App_motionReset(){
+  motionState.ex=0; motionState.score=0; motionState.wrong=[]; motionState.answered=false;
+  // Re-shuffle
+  var arr = motionData.exercises.slice();
+  for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+  motionState.shuffled = arr;
+  renderMotion();
+}
+function App_motionAnswer(i){
+  if(motionState.answered) return;
+  motionState.answered = true;
+  var exs = motionData.exercises;
+  var q   = exs[motionState.ex];
+  var correct = (i === q.ans);
+  if(correct) motionState.score++;
+  else motionState.wrong.push(q.opts[i] + ' (đúng: ' + q.opts[q.ans] + ')');
+  // Style buttons
+  q.opts.forEach(function(_,j){
+    var el=document.getElementById('mot-'+j);
+    if(!el) return;
+    el.classList.add(j===q.ans?'correct':'wrong');
+  });
+  // Show explanation
+  var exp=document.getElementById('mot-exp');
+  if(exp){exp.style.display='block';exp.innerHTML='💡 '+q.exp;}
+  if(navigator.vibrate) navigator.vibrate(correct?[6,30,6]:[80]);
+  // Auto-advance
+  setTimeout(function(){
+    motionState.ex++;
+    motionState.answered=false;
+    renderMotion();
+  }, 1400);
+}
+
+
 function renderGQ(){
   const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?grammarQuizData.cases:grammarQuizData.formation);
   const done=S.gqIdx>=allQ.length;
@@ -7965,11 +8595,11 @@ function setLang(lang){
   document.getElementById('lt-en').classList.toggle('on', lang==='en');
   // Update bottom nav labels
   document.getElementById('bn-vocab-lbl').textContent = t('nav.vocab');
-  document.getElementById('bn-srs-lbl').textContent = t('nav.review');
   const bnG = document.getElementById('bn-grammar-lbl'); if(bnG) bnG.textContent = t('nav.grammar');
   const bnLk = document.getElementById('bn-lookup-lbl'); if(bnLk) bnLk.textContent = t('nav.lookup');
   const bnRd = document.getElementById('bn-road-lbl'); if(bnRd) bnRd.textContent = t('nav.road');
   const bnDl = document.getElementById('bn-daily-lbl'); if(bnDl) bnDl.textContent = t('nav.daily');
+  const bnRd2 = document.getElementById('bn-read-lbl'); if(bnRd2) bnRd2.textContent = t('nav.read');
   // Update static text nodes via data-i18n attributes
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     el.textContent = t(el.getAttribute('data-i18n'));
@@ -7977,7 +8607,7 @@ function setLang(lang){
   // Re-render current screen
   const cur = S.screen||'vocab';
   if(cur==='vocab') setLevel(S.level||'A1');
-  else if(cur==='grammar') gramTab(S.gramTab||'cases');
+  else if(cur==='grammar') gramTab(S.gramTab||'motion');
   else if(cur==='srs') srsRender();
   else if(cur==='fc') fcRender();
   else if(cur==='quiz') qzRender();
@@ -7999,7 +8629,8 @@ function setLang(lang){
   (function(){
     var _tabs=[['gt-cases','gram.cases'],['gt-form','gram.formation'],
                ['gt-conditional','gram.conditional'],['gt-passive','gram.passive'],
-               ['gt-quiz','gram.quiz']];
+               ['gt-quiz','gram.quiz'],
+               ['gt-motion','gram.motion']];
     _tabs.forEach(function(p){
       var b=document.getElementById(p[0]);
       if(b){var s=b.querySelector('span');if(s)s.textContent=t(p[1]);}
@@ -8037,409 +8668,778 @@ var _lkTotal  = 0;
 // DAILY LEARN — 7 từ/ngày, 3 vòng học chắc
 // ═══════════════════════════════════════════════════════════════
 var DL = {
-  words: [],        // 7 từ được chọn hôm nay
-  wordIdx: 0,       // từ đang học (0-6)
-  phase: 1,         // vòng 1=xem, 2=nghe→chọn nghĩa, 3=nhìn nghĩa→chọn nga
-  phaseStep: 0,     // bước trong phase hiện tại
-  correct: [],      // kết quả từng từ [true/false/...]
-  locked: [],       // từ đã học chắc (qua cả 3 vòng)
+  words: [],         // 7 từ hôm nay
+  wordIdx: 0,        // index vòng 1
+  phase: 1,          // 1=xem, 2=chọn nghĩa, 3=chọn nga
+  phaseStep: 0,      // 0=chưa lật, 1=đã lật (vòng 1)
   answered: false,
   todayKey: '',
+  lockedKeys: [],    // key của từ đã học chắc (dùng key, không dùng index)
+  q2: [],            // queue vòng 2 (copy của words, xáo)
+  q3: [],            // queue vòng 3 (copy của words, xáo)
+  _opts2: null,
+  _opts3: null,
 };
 
 function dlTodayKey(){
-  var d = new Date();
-  return 'dl-' + S.level + '-' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  var d=new Date();
+  return 'dl-'+S.level+'-'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
 }
 
 function dlLoadOrPick(){
-  var key = dlTodayKey();
-  DL.todayKey = key;
-  try {
-    var saved = localStorage.getItem(key);
-    if(saved) {
-      var data = JSON.parse(saved);
-      DL.words = data.words;
-      DL.locked = data.locked || [];
-      return;
-    }
-  } catch(e){}
-
-  // Chọn 7 từ chưa học chắc, ưu tiên từ SRS chưa có
-  var all = [];
-  Object.entries(vocabularyDatabase[S.level]).forEach(function([topic, ws]){
-    ws.forEach(function(w, i){
-      var k = S.level+'-'+topic+'-'+i;
-      if(!S.mastered[k]) all.push({w:w, key:k, topic:topic});
+  var key=dlTodayKey();
+  // If same day key and words already loaded, keep them
+  if(DL.todayKey===key && DL.words && DL.words.length>0) return;
+  DL.todayKey=key;
+  try{
+    var saved=localStorage.getItem(key);
+    if(saved){var data=JSON.parse(saved);
+      DL.words=data.words; DL.lockedKeys=data.lockedKeys||[]; return;}
+  }catch(e){}
+  // Chọn 7 từ chưa mastered
+  var all=[];
+  Object.entries(vocabularyDatabase[S.level]).forEach(function(e){
+    var topic=e[0],ws=e[1];
+    if(!Array.isArray(ws)) return;
+    ws.forEach(function(w,i){
+      var k=S.level+'-'+topic+'-'+i;
+      if(!S.mastered[k]) all.push({w:w,key:k});
     });
   });
-
-  // shuffle
-  for(var i=all.length-1;i>0;i--){
-    var j=Math.floor(Math.random()*(i+1));
-    var tmp=all[i]; all[i]=all[j]; all[j]=tmp;
-  }
-
-  DL.words = all.slice(0, 7);
-  DL.locked = [];
+  for(var i=all.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=all[i];all[i]=all[j];all[j]=tmp;}
+  DL.words=all.slice(0,7);
+  DL.lockedKeys=[];
   dlSave();
 }
 
 function dlSave(){
-  try {
-    localStorage.setItem(DL.todayKey, JSON.stringify({words: DL.words, locked: DL.locked}));
-  } catch(e){}
+  try{localStorage.setItem(DL.todayKey,JSON.stringify({words:DL.words,lockedKeys:DL.lockedKeys}));}catch(e){}
+  // Update daily nav badge
+  var b=document.getElementById('daily-nav-badge');
+  if(b){
+    var done=DL.lockedKeys?DL.lockedKeys.length:0;
+    var total=DL.words?DL.words.length:7;
+    if(done>0&&done<total){b.textContent=done+'/'+total;b.style.display='inline-block';}
+    else if(done>=total){b.textContent='✓';b.style.display='inline-block';}
+    else{b.style.display='none';}
+  }
 }
 
 function App_dailyStart(){
   dlLoadOrPick();
-  if(DL.words.length === 0){
-    showToast('🎉 Bạn đã học hết từ ở cấp độ này!', 'grn');
-    return;
+  if(!DL.words||DL.words.length===0){showToast('🎉 Bạn đã học hết từ ở cấp này!','grn');return;}
+  // Nếu đang học dở (q2/q3 còn từ) → tiếp tục, không reset
+  var inProgress = (DL.phase===2&&DL.q2&&DL.q2.length>0)
+                || (DL.phase===3&&DL.q3&&DL.q3.length>0)
+                || (DL.phase===1&&DL.wordIdx>0&&DL.wordIdx<DL.words.length);
+  if(!inProgress){
+    DL.phase=1; DL.wordIdx=0; DL.phaseStep=0; DL.answered=false;
+    DL.q2=[]; DL.q3=[];
   }
-  DL.wordIdx = 0;
-  DL.phase = 1;
-  DL.phaseStep = 0;
-  DL.answered = false;
-  DL.correct = [];
   nav('daily');
 }
 
 function dlRender(){
-  if(!DL.words || DL.words.length === 0){ dlLoadOrPick(); }
-  dlUpdateHeader();
-  dlUpdateDots();
-
-  // Nếu đã xong tất cả từ ở phase hiện tại
-  if(DL.words.length === 0){ nav('vocab'); return; }
-  if(DL.wordIdx >= DL.words.length){
-    if(DL.phase === 1){ DL.phase=2; DL.wordIdx=0; showToast('✓ Xong vòng 1! Bắt đầu vòng 2 →','cyn'); }
-    else if(DL.phase === 2){ DL.phase=3; DL.wordIdx=0; showToast('✓ Xong vòng 2! Bắt đầu vòng 3 →','yel'); }
-    else { dlFinish(); return; }
-  }
-
-  var body = document.getElementById('dl-body');
-  if(!body) return;
-
-  if(DL.phase === 1){
-    dlRenderPhase1(body);
-  } else if(DL.phase === 2){
-    dlRenderPhase2(body);
-  } else if(DL.phase === 3){
-    dlRenderPhase3(body);
-  }
+  if(!DL.words||DL.words.length===0){dlLoadOrPick();}
+  dlUpdateHeader(); dlUpdateDots();
+  var body=document.getElementById('dl-body'); if(!body) return;
+  if(DL.phase===1) dlRenderPhase1(body);
+  else if(DL.phase===2) dlRenderPhase2(body);
+  else if(DL.phase===3) dlRenderPhase3(body);
 }
 
 function dlUpdateHeader(){
-  var locked = DL.locked.length;
-  var el = document.getElementById('dl-score-num');
-  if(el) el.textContent = locked + '/7';
-  var ph = document.getElementById('dl-phase-lbl');
-  var phNames = ['','Vòng 1: Xem','Vòng 2: Nhớ','Vòng 3: Chắc'];
-  if(ph) ph.textContent = phNames[DL.phase] || 'Xong!';
+  var locked=DL.lockedKeys?DL.lockedKeys.length:0;
+  var el=document.getElementById('dl-score-num'); if(el) el.textContent=locked+'/7';
+  var ph=document.getElementById('dl-phase-lbl');
+  var names=['','Vòng 1: Xem & nhớ','Vòng 2: Chọn nghĩa','Vòng 3: Chọn tiếng Nga'];
+  if(ph) ph.textContent=names[DL.phase]||'';
 }
 
 function dlUpdateDots(){
-  var el = document.getElementById('dl-dots');
-  if(!el) return;
-  var h = '';
-  for(var i=0; i<DL.words.length; i++){
-    var cls = 'dl-step-dot';
-    if(DL.locked.indexOf(i) >= 0) cls += ' done';
-    else if(i === DL.wordIdx) cls += ' active';
-    h += '<div class="'+cls+'"></div>';
-  }
-  el.innerHTML = h;
+  var el=document.getElementById('dl-dots'); if(!el) return;
+  var h='';
+  DL.words.forEach(function(e,i){
+    var cls='dl-step-dot';
+    if(DL.lockedKeys&&DL.lockedKeys.indexOf(e.key)>=0) cls+=' done';
+    else if(DL.phase===1&&i===DL.wordIdx) cls+=' active';
+    h+='<div class="'+cls+'"></div>';
+  });
+  el.innerHTML=h;
 }
 
-// ── Vòng 1: Hiển thị từ, lật để xem nghĩa ──────────────────────
+/* ── VÒNG 1: lật thẻ xem nghĩa ──────────────────────────── */
 function dlRenderPhase1(body){
-  var entry = DL.words[DL.wordIdx];
-  if(!entry){ dlNextWord(); return; }
-  var w = entry.w;
-  var shown = DL.phaseStep > 0;
-
-  body.innerHTML = '<div style="padding:0 0 24px;">' +
-    '<div style="text-align:center;margin-bottom:8px;">' +
-    '<span class="dl-phase-badge" style="background:rgba(90,200,250,0.12);color:var(--cyn);border:1px solid rgba(90,200,250,0.3);">👁 Vòng 1 — Xem & ghi nhớ</span>' +
-    '</div>' +
-
-    '<div class="dl-card" onclick="App.dlFlip()" style="cursor:pointer;margin-bottom:14px;">' +
-    '<div style="font-size:36px;font-weight:900;font-family:var(--serif);color:var(--tx);margin-bottom:6px;letter-spacing:-0.5px;">'+w.ru+'</div>' +
-    '<div style="font-size:13px;color:var(--com);font-family:var(--mono);margin-bottom:'+(shown?'16px':'4px')+';">/ '+w.ph+' /</div>' +
-    (shown
-      ? '<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:14px;margin-top:2px;">' +
-        '<div style="font-size:20px;font-weight:700;color:var(--tx);margin-bottom:4px;">'+w.vn+'</div>' +
-        (w.en ? '<div style="font-size:12px;color:var(--com);">'+w.en+'</div>' : '') +
-        '</div>'
-      : '<div style="font-size:13px;color:rgba(255,255,255,0.25);padding:10px 0;">👆 Nhấn để xem nghĩa</div>'
-    ) +
-    '</div>' +
-
-    (shown
-      ? '<button class="btn" style="background:rgba(255,159,10,0.12);border-color:rgba(255,159,10,0.4);color:#ff9f0a;" onclick="App.dlPhase1Next()">Đã nhớ → Tiếp theo</button>'
-      : '<div style="text-align:center;font-size:11px;color:var(--com);">Từ '+(DL.wordIdx+1)+' / '+DL.words.length+'</div>'
-    ) +
-    '</div>';
+  if(DL.wordIdx>=DL.words.length){
+    // Xong vòng 1 → build q2 gồm tất cả 7 từ theo thứ tự ngẫu nhiên
+    DL.q2=DL.words.slice().sort(function(){return Math.random()-.5;});
+    DL.phase=2; DL.answered=false;
+    showToast('✓ Xong vòng 1 — bắt đầu vòng 2!','cyn');
+    dlRender(); return;
+  }
+  var entry=DL.words[DL.wordIdx]; var w=entry.w;
+  var shown=DL.phaseStep>0;
+  var p1pct=DL.words.length>0?Math.round((DL.wordIdx/DL.words.length)*100):0;
+  body.innerHTML='<div style="padding:0 0 24px;">'
+    +'<div style="text-align:center;margin-bottom:10px;"><span class="dl-phase-badge" style="background:rgba(90,200,250,.12);color:var(--cyn);border:1px solid rgba(90,200,250,.3);">👁 Vòng 1 — Xem & ghi nhớ ('+(DL.wordIdx+1)+'/'+DL.words.length+')</span></div>'
+    +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 14px;"><div style="height:3px;background:var(--cyn);border-radius:2px;width:'+p1pct+'%;transition:width .3s;"></div></div>'
+    +'<div class="dl-card" onclick="App.dlFlip()" style="cursor:pointer;margin-bottom:14px;">'
+    +'<div style="font-size:36px;font-weight:900;font-family:var(--serif);letter-spacing:-.5px;">'+w.ru+'</div>'
+    +'<div style="font-size:13px;color:var(--com);font-family:var(--mono);margin:4px 0;">/ '+w.ph+' /</div>'
+    +(shown
+      ?'<div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;margin-top:8px;"><div style="font-size:20px;font-weight:700;color:var(--tx);">'+w.vn+'</div>'
+       +(w.en?'<div style="font-size:12px;color:var(--com);margin-top:4px;">'+w.en+'</div>':'')+'</div>'
+      :'<div style="font-size:13px;color:rgba(255,255,255,.25);padding:10px 0;">👆 Nhấn để xem nghĩa</div>')
+    +'</div>'
+    +(shown
+      ?'<button class="btn" style="background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.4);color:#ff9f0a;" onclick="App.dlPhase1Next()">Đã nhớ → Từ tiếp theo ›</button>'
+      :'<div style="text-align:center;font-size:11px;color:var(--com);">Từ '+(DL.wordIdx+1)+' / '+DL.words.length+'</div>')
+    +'</div>';
 }
 
-function App_dlFlip(){
-  DL.phaseStep = 1;
-  dlRender();
-  if(DL.words[DL.wordIdx]) speak(DL.words[DL.wordIdx].w.ru);
-}
+function App_dlFlip(){DL.phaseStep=1;dlRender();if(DL.words[DL.wordIdx])speak(DL.words[DL.wordIdx].w.ru);}
+function App_dlPhase1Next(){DL.wordIdx++;DL.phaseStep=0;dlRender();}
 
-function App_dlPhase1Next(){
-  DL.wordIdx++;
-  DL.phaseStep = 0;
-  DL.answered = false;
-  dlRender();
-}
-
-// ── Vòng 2: Thấy tiếng Nga → chọn nghĩa tiếng Việt ──────────────
+/* ── VÒNG 2: thấy tiếng Nga → chọn nghĩa Việt ───────────── */
 function dlRenderPhase2(body){
-  var entry = DL.words[DL.wordIdx];
-  if(!entry){ dlRender(); return; }
-  var w = entry.w;
-
-  // Generate 4 options (1 đúng + 3 sai)
-  var opts = dlGenOpts(DL.wordIdx, 'vn');
-
-  body.innerHTML = '<div style="padding:0 0 24px;">' +
-    '<div style="text-align:center;margin-bottom:8px;">' +
-    '<span class="dl-phase-badge" style="background:rgba(255,214,10,0.10);color:var(--yel);border:1px solid rgba(255,214,10,0.3);">🧠 Vòng 2 — Tiếng Nga → Nghĩa</span>' +
-    '</div>' +
-
-    '<div class="dl-card" style="margin-bottom:16px;cursor:pointer;" onclick="App.dlSpeak2()">' +
-    '<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// đây là từ gì?</div>' +
-    '<div style="font-size:38px;font-weight:900;font-family:var(--serif);color:var(--tx);letter-spacing:-0.5px;">'+w.ru+'</div>' +
-    '<div style="font-size:12px;color:var(--com);margin-top:6px;">/ '+w.ph+' / &nbsp;🔊</div>' +
-    '</div>' +
-
-    '<div id="dl-opts2">' +
-    opts.map(function(o,i){
-      return '<div class="dl-choice" id="dl2-opt'+i+'" onclick="App.dlAnswer2('+i+')">' +
-        '<div class="dl-word-badge" style="background:rgba(255,255,255,0.2);"></div>' +
-        '<span style="font-size:14px;font-weight:600;">'+o.text+'</span>' +
-        '</div>';
-    }).join('') +
-    '</div></div>';
-
-  DL._opts2 = opts;
-  DL.answered = false;
+  if(!DL.q2||DL.q2.length===0){
+    // Xong vòng 2 → build q3
+    DL.q3=DL.words.slice().sort(function(){return Math.random()-.5;});
+    DL.phase=3; DL.answered=false;
+    showToast('✓ Xong vòng 2 — bắt đầu vòng 3!','yel');
+    dlRender(); return;
+  }
+  var entry=DL.q2[0]; var w=entry.w;
+  DL._opts2=dlGenOpts4(entry,'vn');
+  var p2total=DL.words?DL.words.length:7;
+  var p2done=p2total-DL.q2.length;
+  var p2pct=p2total>0?Math.round(p2done/p2total*100):0;
+  body.innerHTML='<div style="padding:0 0 24px;">'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(255,214,10,.10);color:var(--yel);border:1px solid rgba(255,214,10,.3);">🧠 Vòng 2 — Tiếng Nga → Nghĩa (còn '+DL.q2.length+' từ)</span></div>'
+    +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--yel);border-radius:2px;width:'+p2pct+'%;transition:width .3s;"></div></div>'
+    +'<div class="dl-card" style="margin-bottom:16px;cursor:pointer;" onclick="App.dlSpeak2()">'
+    +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// đây là từ gì?</div>'
+    +'<div style="font-size:38px;font-weight:900;font-family:var(--serif);">'+w.ru+'</div>'
+    +'<div style="font-size:12px;color:var(--com);margin-top:6px;">/ '+w.ph+' / &nbsp;🔊</div>'
+    +'</div>'
+    +'<div id="dl-opts2">'
+    +DL._opts2.map(function(o,i){
+      return '<div class="dl-choice" id="dl2-opt'+i+'" onclick="App.dlAnswer2('+i+')">'
+        +'<div class="dl-word-badge" style="background:rgba(255,255,255,.2);"></div>'
+        +'<span style="font-size:14px;font-weight:600;">'+o.text+'</span></div>';
+    }).join('')
+    +'</div></div>';
+  DL.answered=false;
 }
 
-function App_dlSpeak2(){
-  if(DL.words[DL.wordIdx]) speak(DL.words[DL.wordIdx].w.ru);
-}
+function App_dlSpeak2(){if(DL.q2&&DL.q2[0])speak(DL.q2[0].w.ru);}
 
 function App_dlAnswer2(i){
-  if(DL.answered) return;
-  DL.answered = true;
-  var correct = DL._opts2 && DL._opts2[i] && DL._opts2[i].correct;
-  var el = document.getElementById('dl2-opt'+i);
+  if(DL.answered)return; DL.answered=true;
+  var correct=DL._opts2&&DL._opts2[i]&&DL._opts2[i].correct;
+  var el=document.getElementById('dl2-opt'+i);
   if(correct){
-    if(el){ el.classList.add('correct'); el.querySelector('.dl-word-badge').style.background='var(--grn)'; }
-    if(navigator.vibrate) navigator.vibrate([6,30,6]);
-    setTimeout(function(){
-      DL.wordIdx++;
-      DL.answered = false;
-      if(DL.wordIdx >= DL.words.length){
-        DL.wordIdx = 0;
-        DL.phase = 3;
-        showToast('✓ Xong vòng 2! Bắt đầu vòng 3 →', 'yel');
-      }
-      dlRender();
-    }, 600);
+    if(el){el.classList.add('correct');el.querySelector('.dl-word-badge').style.background='var(--grn)';}
+    if(navigator.vibrate)navigator.vibrate([6,30,6]);
+    setTimeout(function(){DL.q2.shift();DL.answered=false;dlRender();},600);
   } else {
-    if(el){ el.classList.add('wrong'); el.querySelector('.dl-word-badge').style.background='var(--pnk)'; }
-    if(navigator.vibrate) navigator.vibrate([80]);
-    // Highlight correct answer
-    if(DL._opts2) DL._opts2.forEach(function(o,j){
-      if(o.correct){ var ce=document.getElementById('dl2-opt'+j); if(ce) ce.classList.add('correct'); }
-    });
-    // Move this word to end to retry
+    if(el){el.classList.add('wrong');el.querySelector('.dl-word-badge').style.background='var(--pnk)';}
+    // highlight correct
+    DL._opts2.forEach(function(o,j){if(o.correct){var ce=document.getElementById('dl2-opt'+j);if(ce)ce.classList.add('correct');}});
+    if(navigator.vibrate)navigator.vibrate([80]);
     setTimeout(function(){
-      // Xáo từ sai lên sau 2 vị trí
-      var entry = DL.words.splice(DL.wordIdx, 1)[0];
-      var insertAt = Math.min(DL.wordIdx + 2, DL.words.length);
-      DL.words.splice(insertAt, 0, entry);
-      DL.answered = false;
-      dlRender();
-    }, 900);
+      var bad=DL.q2.shift(); // lấy ra
+      DL.q2.splice(Math.min(2,DL.q2.length),0,bad); // chèn lại sau 2 vị trí
+      DL.answered=false; dlRender();
+    },900);
   }
 }
 
-// ── Vòng 3: Thấy nghĩa tiếng Việt → chọn tiếng Nga ─────────────
+/* ── VÒNG 3: thấy nghĩa Việt → chọn tiếng Nga ───────────── */
 function dlRenderPhase3(body){
-  var entry = DL.words[DL.wordIdx];
-  if(!entry){ dlFinish(); return; }
-  var w = entry.w;
-
-  var opts = dlGenOpts(DL.wordIdx, 'ru');
-
-  body.innerHTML = '<div style="padding:0 0 24px;">' +
-    '<div style="text-align:center;margin-bottom:8px;">' +
-    '<span class="dl-phase-badge" style="background:rgba(52,199,89,0.10);color:var(--grn);border:1px solid rgba(52,199,89,0.3);">💪 Vòng 3 — Nghĩa → Tiếng Nga</span>' +
-    '</div>' +
-
-    '<div class="dl-card" style="margin-bottom:16px;">' +
-    '<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// chọn tiếng Nga đúng:</div>' +
-    '<div style="font-size:26px;font-weight:700;color:var(--tx);line-height:1.3;">'+w.vn+'</div>' +
-    (w.en ? '<div style="font-size:12px;color:var(--com);margin-top:6px;">'+w.en+'</div>' : '') +
-    '</div>' +
-
-    '<div id="dl-opts3">' +
-    opts.map(function(o,i){
-      return '<div class="dl-choice" id="dl3-opt'+i+'" onclick="App.dlAnswer3('+i+')">' +
-        '<div class="dl-word-badge" style="background:rgba(255,255,255,0.2);"></div>' +
-        '<span style="font-size:17px;font-weight:700;font-family:var(--serif);">'+o.text+'</span>' +
-        '</div>';
-    }).join('') +
-    '</div></div>';
-
-  DL._opts3 = opts;
-  DL.answered = false;
+  if(!DL.q3||DL.q3.length===0){dlFinish();return;}
+  var entry=DL.q3[0]; var w=entry.w;
+  DL._opts3=dlGenOpts4(entry,'ru');
+  var p3total=DL.words?DL.words.length:7;
+  var p3done=p3total-DL.q3.length;
+  var p3pct=p3total>0?Math.round(p3done/p3total*100):0;
+  body.innerHTML='<div style="padding:0 0 24px;">'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(52,199,89,.10);color:var(--grn);border:1px solid rgba(52,199,89,.3);">💪 Vòng 3 — Nghĩa → Tiếng Nga (còn '+DL.q3.length+' từ)</span></div>'
+    +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--grn);border-radius:2px;width:'+p3pct+'%;transition:width .3s;"></div></div>'
+    +'<div class="dl-card" style="margin-bottom:16px;">'
+    +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// chọn tiếng Nga đúng:</div>'
+    +'<div style="font-size:26px;font-weight:700;color:var(--tx);line-height:1.3;">'+w.vn+'</div>'
+    +(w.en?'<div style="font-size:12px;color:var(--com);margin-top:6px;">'+w.en+'</div>':'')
+    +'</div>'
+    +'<div id="dl-opts3">'
+    +DL._opts3.map(function(o,i){
+      return '<div class="dl-choice" id="dl3-opt'+i+'" onclick="App.dlAnswer3('+i+')">'
+        +'<div class="dl-word-badge" style="background:rgba(255,255,255,.2);"></div>'
+        +'<span style="font-size:17px;font-weight:700;font-family:var(--serif);">'+o.text+'</span></div>';
+    }).join('')
+    +'</div></div>';
+  DL.answered=false;
 }
 
 function App_dlAnswer3(i){
-  if(DL.answered) return;
-  DL.answered = true;
-  var correct = DL._opts3 && DL._opts3[i] && DL._opts3[i].correct;
-  var el = document.getElementById('dl3-opt'+i);
+  if(DL.answered)return; DL.answered=true;
+  var correct=DL._opts3&&DL._opts3[i]&&DL._opts3[i].correct;
+  var el=document.getElementById('dl3-opt'+i);
   if(correct){
-    if(el){ el.classList.add('correct'); el.querySelector('.dl-word-badge').style.background='var(--grn)'; }
-    if(navigator.vibrate) navigator.vibrate([6,30,6]);
-    // Từ học chắc!
-    var entry = DL.words[DL.wordIdx];
-    if(entry && DL.locked.indexOf(DL.wordIdx) < 0){
-      DL.locked.push(DL.wordIdx);
-      // Lưu vào mastered + SRS
-      S.mastered[entry.key] = true; saveM();
-      var nxt = srsNext(S.srsData[entry.key], 3); // easy
-      S.srsData[entry.key] = nxt; saveSRS();
+    if(el){el.classList.add('correct');el.querySelector('.dl-word-badge').style.background='var(--grn)';}
+    if(navigator.vibrate)navigator.vibrate([6,30,6]);
+    var entry=DL.q3[0];
+    if(entry&&(!DL.lockedKeys||DL.lockedKeys.indexOf(entry.key)<0)){
+      if(!DL.lockedKeys)DL.lockedKeys=[];
+      DL.lockedKeys.push(entry.key);
+      S.mastered[entry.key]=true; saveM();
+      var nxt=srsNext(S.srsData[entry.key],3);
+      S.srsData[entry.key]=nxt; saveSRS();
       dlSave();
     }
-    setTimeout(function(){
-      DL.wordIdx++;
-      DL.answered = false;
-      if(DL.wordIdx >= DL.words.length){
-        dlFinish();
-      } else {
-        dlRender();
-      }
-    }, 700);
+    setTimeout(function(){DL.q3.shift();DL.answered=false;dlRender();},700);
   } else {
-    if(el){ el.classList.add('wrong'); el.querySelector('.dl-word-badge').style.background='var(--pnk)'; }
-    if(navigator.vibrate) navigator.vibrate([80]);
+    if(el){el.classList.add('wrong');el.querySelector('.dl-word-badge').style.background='var(--pnk)';}
+    DL._opts3.forEach(function(o,j){if(o.correct){var ce=document.getElementById('dl3-opt'+j);if(ce)ce.classList.add('correct');}});
+    if(navigator.vibrate)navigator.vibrate([80]);
     setTimeout(function(){
-      var entry = DL.words.splice(DL.wordIdx, 1)[0];
-      DL.words.push(entry);
-      DL.answered = false;
-      dlRender();
-    }, 900);
+      var bad=DL.q3.shift();
+      DL.q3.splice(Math.min(2,DL.q3.length),0,bad);
+      DL.answered=false; dlRender();
+    },900);
   }
 }
 
-// ── Generate options ─────────────────────────────────────────────
-function dlGenOpts(idx, field){
-  var correct = DL.words[idx];
-  var pool = [];
-  // Lấy từ các entry khác trong DL.words + random từ DB
-  DL.words.forEach(function(e,i){ if(i!==idx) pool.push(e.w); });
-
-  // Thêm từ ngẫu nhiên từ DB nếu cần
-  var allWs = Object.values(vocabularyDatabase[S.level]).flat();
-  for(var i=allWs.length-1;i>0;i--){
-    var j=Math.floor(Math.random()*(i+1));
-    var tmp=allWs[i]; allWs[i]=allWs[j]; allWs[j]=tmp;
-  }
-  allWs.forEach(function(w){
-    if(pool.length < 8 && w.ru !== correct.w.ru) pool.push(w);
-  });
-
-  // Pick 3 wrong
-  var wrong = pool.slice(0,3);
-  var opts = [{text: correct.w[field]||'?', correct: true}]
-    .concat(wrong.map(function(w){ return {text:w[field]||'?', correct:false}; }));
-
-  // Shuffle
-  for(var i=opts.length-1;i>0;i--){
-    var j=Math.floor(Math.random()*(i+1));
-    var tmp=opts[i]; opts[i]=opts[j]; opts[j]=tmp;
-  }
+/* ── Generate 4 options ──────────────────────────────────── */
+function dlGenOpts4(correctEntry, field){
+  var pool=[];
+  // Lấy từ các từ khác trong DL.words
+  DL.words.forEach(function(e){if(e.key!==correctEntry.key)pool.push(e.w);});
+  // Bổ sung từ DB nếu cần
+  var allWs=Object.values(vocabularyDatabase[S.level]).flat();
+  for(var i=allWs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=allWs[i];allWs[i]=allWs[j];allWs[j]=t;}
+  allWs.forEach(function(w){if(pool.length<8&&w.ru!==correctEntry.w.ru)pool.push(w);});
+  var wrong=pool.slice(0,3);
+  var opts=[{text:correctEntry.w[field]||'?',correct:true}]
+    .concat(wrong.map(function(w){return{text:w[field]||'?',correct:false};}));
+  for(var i=opts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=opts[i];opts[i]=opts[j];opts[j]=t;}
   return opts;
 }
 
-// ── Finish ───────────────────────────────────────────────────────
+/* ── Finish ──────────────────────────────────────────────── */
 function dlFinish(){
-  var locked = DL.locked.length;
   renderVocab();
-
-  var em = locked >= 7 ? '🏆' : locked >= 5 ? '🥈' : '💪';
-  document.getElementById('dld-em').textContent = em;
-  document.getElementById('dld-title').textContent = locked >= 7 ? 'Hoàn hảo!' : locked >= 5 ? 'Tốt lắm!' : 'Cố lên!';
-  document.getElementById('dld-msg').textContent = 'Bạn đã học chắc ' + locked + '/7 từ hôm nay. ' +
-    (locked < 7 ? (7-locked) + ' từ sẽ xuất hiện lại ngày mai.' : 'Tất cả đều vào SRS để ôn tập!');
-
-  var stats = [
-    {label:'Từ học chắc', val: locked + '/7', color:'var(--grn)'},
-    {label:'Vào SRS', val: locked + ' từ', color:'var(--cyn)'},
-    {label:'Ôn lại sau', val: '1 ngày', color:'var(--yel)'},
-    {label:'Streak', val: dlStreak() + ' ngày 🔥', color:'#ff9f0a'},
+  // Update daily badge  
+  var b=document.getElementById('daily-nav-badge');
+  if(b){b.textContent='✓';b.style.display='inline-block';}
+  var locked=DL.lockedKeys?DL.lockedKeys.length:0;
+  var em=locked>=7?'🏆':locked>=5?'🥈':'💪';
+  document.getElementById('dld-em').textContent=em;
+  document.getElementById('dld-title').textContent=locked>=7?'Hoàn hảo!':locked>=5?'Tốt lắm!':'Cố lên!';
+  document.getElementById('dld-msg').textContent='Bạn đã học chắc '+locked+'/7 từ hôm nay. '
+    +(locked<7?(7-locked)+' từ sẽ xuất hiện lại ngày mai.':'Tất cả đều vào SRS để ôn tập!');
+  var stats=[
+    {label:'Từ học chắc',val:locked+'/7',color:'var(--grn)'},
+    {label:'Vào SRS',val:locked+' từ',color:'var(--cyn)'},
+    {label:'Ôn lại sau',val:'1 ngày',color:'var(--yel)'},
+    {label:'Streak',val:dlStreak()+' ngày 🔥',color:'#ff9f0a'},
   ];
-  document.getElementById('dld-stats').innerHTML = stats.map(function(s){
-    return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">' +
-      '<div style="font-size:16px;font-weight:800;color:'+s.color+';">'+s.val+'</div>' +
-      '<div style="font-size:10px;color:var(--com);margin-top:2px;">'+s.label+'</div>' +
-      '</div>';
+  document.getElementById('dld-stats').innerHTML=stats.map(function(s){
+    return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;text-align:center;">'
+      +'<div style="font-size:16px;font-weight:800;color:'+s.color+';">'+s.val+'</div>'
+      +'<div style="font-size:10px;color:var(--com);margin-top:2px;">'+s.label+'</div></div>';
   }).join('');
-
-  var wordsHtml = '<div style="font-size:10px;color:#ff9f0a;font-weight:700;margin-bottom:8px;font-family:var(--mono);">// 7 từ hôm nay</div>';
-  DL.words.forEach(function(e,i){
-    var done = DL.locked.indexOf(i) >= 0;
-    wordsHtml += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
-      '<span style="color:'+(done?'var(--grn)':'var(--pnk)')+';">'+(done?'✓':'✗')+'</span>' +
-      '<span style="font-family:var(--serif);font-weight:700;font-size:14px;flex:1;">'+e.w.ru+'</span>' +
-      '<span style="font-size:11px;color:var(--com);">'+e.w.vn+'</span>' +
-      '</div>';
+  var wh='<div style="font-size:10px;color:#ff9f0a;font-weight:700;margin-bottom:8px;font-family:var(--mono);">// 7 từ hôm nay</div>';
+  DL.words.forEach(function(e){
+    var done=DL.lockedKeys&&DL.lockedKeys.indexOf(e.key)>=0;
+    wh+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      +'<span style="color:'+(done?'var(--grn)':'var(--pnk)')+';">'+(done?'✓':'✗')+'</span>'
+      +'<span style="font-family:var(--serif);font-weight:700;font-size:14px;flex:1;">'+e.w.ru+'</span>'
+      +'<span style="font-size:11px;color:var(--com);">'+e.w.vn+'</span></div>';
   });
-  document.getElementById('dld-words').innerHTML = wordsHtml;
-
-  // Save streak
+  document.getElementById('dld-words').innerHTML=wh;
   dlSaveStreak();
   nav('daily-done');
 }
 
 function dlStreak(){
-  try {
-    var streak = parseInt(localStorage.getItem('dl-streak')||'0');
-    var lastDay = localStorage.getItem('dl-last-day')||'';
-    var today = dlTodayKey();
-    if(lastDay === today) return streak;
+  try{
+    var streak=parseInt(localStorage.getItem('dl-streak')||'0');
     return streak;
-  } catch(e){ return 0; }
+  }catch(e){return 0;}
 }
 
 function dlSaveStreak(){
-  try {
-    var today = dlTodayKey();
-    var lastDay = localStorage.getItem('dl-last-day')||'';
-    var streak = parseInt(localStorage.getItem('dl-streak')||'0');
-    // Check if yesterday
-    var d = new Date();
-    d.setDate(d.getDate()-1);
-    var yesterday = 'dl-'+S.level+'-'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-    if(lastDay === yesterday) streak++;
-    else if(lastDay !== today) streak = 1;
-    localStorage.setItem('dl-streak', String(streak));
-    localStorage.setItem('dl-last-day', today);
-  } catch(e){}
+  try{
+    var today=dlTodayKey();
+    var lastDay=localStorage.getItem('dl-last-day')||'';
+    var streak=parseInt(localStorage.getItem('dl-streak')||'0');
+    var d=new Date(); d.setDate(d.getDate()-1);
+    var yesterday='dl-'+S.level+'-'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    if(lastDay===yesterday) streak++;
+    else if(lastDay!==today) streak=1;
+    localStorage.setItem('dl-streak',String(streak));
+    localStorage.setItem('dl-last-day',today);
+  }catch(e){}
 }
 
-function App_dailyExit(){
-  nav('vocab');
+function App_dailyExit(){nav('vocab');}
+
+
+
+// ═══════════════════════════════════════════════════════════════
+// READ NEWS — Đọc tin tức tiếng Nga · từ tương tác
+// ═══════════════════════════════════════════════════════════════
+
+var RD = {
+  articles:    [],
+  currentWord: null,
+  loading:     false,
+  todayKey:    null,
+  _lu:         null,   // cached lookup (rebuilt on level change)
+  _luLevel:    null,
+};
+
+/* ── helpers ─────────────────────────────────────────────────── */
+function rdTodayKey(){
+  var d = new Date();
+  return 'rd-' + S.level + '-' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
 }
+
+function rdNorm(w){ return (w||'').toLowerCase().replace(/[^а-яёa-z]/g,''); }
+
+/* Build lookup once per level; store in RD._lu */
+function rdLookup(){
+  if(RD._lu && RD._luLevel === S.level) return RD._lu;
+  var lu = Object.create(null);
+  Object.keys(vocabularyDatabase).forEach(function(lvl){
+    Object.keys(vocabularyDatabase[lvl]).forEach(function(topic){
+      var words = vocabularyDatabase[lvl][topic];
+      if(!Array.isArray(words)) return;
+      words.forEach(function(w, i){
+        var key = lvl+'-'+topic+'-'+i;
+        /* index every individual word in a phrase */
+        w.ru.split(/\s+/).forEach(function(part){
+          var n = rdNorm(part);
+          if(n.length < 2) return;
+          if(!lu[n]) lu[n] = [];
+          if(!lu[n].some(function(e){ return e.key === key; }))
+            lu[n].push({w:w, key:key, lvl:lvl, topic:topic});
+        });
+      });
+    });
+  });
+  /* Pre-build stem→entry map (2-char suffix strips only) for speed */
+  lu._stems = Object.create(null);
+  Object.keys(lu).forEach(function(k){
+    if(k === '_stems') return;
+    for(var cut = 1; cut <= 4; cut++){
+      if(k.length - cut < 3) break;
+      var stem = k.slice(0, -cut);
+      if(!lu._stems[stem]) lu._stems[stem] = lu[k];
+    }
+  });
+  RD._lu = lu;
+  RD._luLevel = S.level;
+  return lu;
+}
+
+function rdMatch(norm){
+  var lu = rdLookup();
+  if(lu[norm]) return lu[norm];
+  /* stem lookup */
+  for(var cut = 1; cut <= 4; cut++){
+    if(norm.length - cut < 3) break;
+    var stem = norm.slice(0, -cut);
+    if(lu._stems && lu._stems[stem]) return lu._stems[stem];
+  }
+  return null;
+}
+
+/* ── init / fetch ────────────────────────────────────────────── */
+function rdInit(){
+  var d = new Date();
+  var el = document.getElementById('rd-date');
+  if(el) el.textContent = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+  var lb = document.getElementById('rd-level-badge');
+  if(lb) lb.textContent = S.level;
+
+  var key = rdTodayKey();
+  if(RD.todayKey && RD.todayKey !== key){ RD.articles=[]; RD.loading=false; }
+  RD.todayKey = key;
+
+  if(RD.articles && RD.articles.length > 0){ rdRender(); return; }
+  try{
+    var saved = localStorage.getItem(key);
+    if(saved){ var p=JSON.parse(saved); if(p&&p.length){ RD.articles=p; rdRender(); return; } }
+  }catch(_){}
+  rdFetch();
+}
+
+function rdFetch(){
+  if(RD.loading) return;
+  RD.loading = true;
+  var cont = document.getElementById('rd-content');
+  if(cont) cont.innerHTML = '<div class="rd-load-state">'
+    + '<div class="rd-spinner"></div>'
+    + '<div style="margin-top:14px;font-size:13px;color:var(--txd);">Đang tạo bài đọc bằng AI…</div>'
+    + '<div style="margin-top:6px;font-size:11px;color:var(--com);">Cấp ' + S.level + ' · Phù hợp từ vựng của bạn</div>'
+    + '</div>';
+
+  /* Always generate local first for instant feedback, then try API */
+  RD.articles = rdGenLocalArticles();
+  rdRender();   /* show local immediately */
+
+  /* Try Claude API for richer articles (fails silently) */
+  if(location.protocol !== 'https:'){ RD.loading=false; rdSaveCache(); return; }
+
+  var d = new Date();
+  var allT = Object.keys(vocabularyDatabase[S.level]||{});
+  var seed = d.getDate()+d.getMonth()*31;
+  var picked = [];
+  for(var i=0;i<3;i++) picked.push(allT[(seed+i*7)%allT.length]);
+  var topicStr = picked.map(function(t){return t.replace(/[^\wА-Яа-яёЁ\s]/g,'').trim();}).join(', ');
+  var wordSample = [];
+  picked.forEach(function(t){
+    var ws=vocabularyDatabase[S.level][t];
+    if(!Array.isArray(ws)) return;
+    for(var j=0;j<3&&j<ws.length;j++) wordSample.push(ws[(seed+j*3)%ws.length].ru);
+  });
+  var levelHint = {A1:'A1 — очень простой',A2:'A2 — базовый',B1:'B1 — средний',B2:'B2 — продвинутый'}[S.level]||'B1';
+
+  var ac = typeof AbortController!=='undefined' ? new AbortController() : null;
+  var tm = ac ? setTimeout(function(){ac.abort();}, 10000) : null;
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    signal: ac ? ac.signal : undefined,
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1600,
+      system:'Ты генератор учебных текстов для изучающих русский язык. Отвечай ТОЛЬКО валидным JSON.',
+      messages:[{role:'user', content:
+        'Создай 4 учебные новостные заметки на русском языке. '
+        +'Уровень: '+levelHint+'. Темы: '+topicStr+'. '
+        +'Используй слова: '+wordSample.join(', ')+'. '
+        +'Каждая заметка: заголовок 4-7 слов, текст 45-70 слов. '
+        +'Только JSON без markdown: {"articles":[{"tag":"НОВОСТИ","title":"...","body":"..."},{"tag":"ОБЩЕСТВО","title":"...","body":"..."},{"tag":"КУЛЬТУРА","title":"...","body":"..."},{"tag":"НАУКА","title":"...","body":"..."}]}'
+      }]
+    })
+  })
+  .then(function(r){ if(tm) clearTimeout(tm); return r.json(); })
+  .then(function(data){
+    var txt = (data.content&&data.content[0]&&data.content[0].text)||'';
+    /* strip markdown fences */
+    txt = txt.replace(/^```[a-z]*\s*/m,'').replace(/\s*```$/m,'').trim();
+    var obj = JSON.parse(txt);
+    if(!obj.articles||!obj.articles.length) throw 0;
+    RD.articles = obj.articles;
+    RD.loading = false;
+    rdSaveCache();
+    rdRender();
+  })
+  .catch(function(){ if(tm) clearTimeout(tm); RD.loading=false; /* keep local articles */ });
+}
+
+function rdSaveCache(){
+  try{ localStorage.setItem(RD.todayKey, JSON.stringify(RD.articles)); }catch(_){}
+}
+
+/* ── Local fallback ──────────────────────────────────────────── */
+/* ── Local article generation — readable news templates ──────── */
+function rdGenLocalArticles(){
+  var d    = new Date();
+  var seed = d.getDate() + d.getMonth()*31;
+  var lvl  = S.level;
+  var allT = Object.keys(vocabularyDatabase[lvl]||{}).filter(function(t){
+    return Array.isArray(vocabularyDatabase[lvl][t]) && vocabularyDatabase[lvl][t].length >= 3;
+  });
+  if(!allT.length) return [{tag:'ТЕКСТ',title:'Добро пожаловать',
+    body:'Нажмите на любое слово, чтобы узнать его значение.'}];
+
+  function stripEmoji(s){
+    try{ return s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}\u{1F300}-\u{1F9FF}]/gu,'').trim(); }
+    catch(e){ return s.replace(/[^\wА-Яа-яёЁ\s]/g,'').trim(); }
+  }
+  function pick(arr, n){
+    var out=[], used={};
+    for(var i=0;i<n*3&&out.length<n;i++){
+      var idx=(seed*7+i*13)%arr.length;
+      if(!used[idx]){used[idx]=true;out.push(arr[idx]);}
+    }
+    if(out.length<n) for(var i=0;i<arr.length&&out.length<n;i++) if(!used[i]) out.push(arr[i]);
+    return out;
+  }
+
+  // News article templates — each takes (topicName, words[]) and returns {tag,title,body}
+  var templates = [
+    function(nm,ws){
+      var w0=ws[0],w1=ws[1]||ws[0],w2=ws[2]||ws[0],w3=ws[3]||ws[0];
+      return {tag:'НОВОСТИ',
+        title:'В России говорят о '+w0.ru.toLowerCase(),
+        body:'Сегодня в России много говорят о теме «'+nm+'». '
+          +'Специалисты отмечают важность слова «'+w0.ru+'» — это '+w0.vn+'. '
+          +'В повседневной жизни русские часто используют слова «'+w1.ru+'» и «'+w2.ru+'». '
+          +'Например: «'+w1.ru+' — значит '+w1.vn+'». '
+          +(ws[4]?'Кроме того, слово «'+w3.ru+'» ('+w3.vn+') встречается в разговорной речи. ':' ')
+          +'Изучение таких слов помогает лучше понять русский язык.'};
+    },
+    function(nm,ws){
+      var w0=ws[0],w1=ws[1]||ws[0],w2=ws[2]||ws[0];
+      return {tag:'ОБЩЕСТВО',
+        title:'Как россияне используют '+w0.ru.toLowerCase(),
+        body:'Тема «'+nm+'» очень популярна среди россиян. '
+          +'В разговорах часто звучит слово «'+w0.ru+'». '
+          +'— Что такое «'+w0.ru+'»? — спрашивают иностранцы. '
+          +'— Это '+w0.vn+'! — отвечают им. '
+          +'Похожие слова: «'+w1.ru+'» ('+w1.vn+') и «'+w2.ru+'» ('+w2.vn+'). '
+          +'Такие слова помогают понять культуру и жизнь в России.'};
+    },
+    function(nm,ws){
+      var w0=ws[0],w1=ws[1]||ws[0],w2=ws[2]||ws[0],w3=ws[3]||ws[0];
+      return {tag:'КУЛЬТУРА',
+        title:'Русский язык: тема «'+nm.slice(0,20)+'»',
+        body:'В русском языке есть много интересных слов по теме «'+nm+'». '
+          +'Слово «'+w0.ru+'» означает «'+w0.vn+'». '
+          +'«'+w1.ru+'» — это «'+w1.vn+'». '
+          +(w2.ru!==w0.ru?'Также важно слово «'+w2.ru+'» ('+w2.vn+'). ':'')
+          +(w3.ru!==w1.ru?'И наконец, «'+w3.ru+'» переводится как «'+w3.vn+'». ':'')
+          +'Эти слова часто встречаются в текстах и разговорах.'};
+    },
+    function(nm,ws){
+      var w0=ws[0],w1=ws[1]||ws[0],w2=ws[2]||ws[0];
+      return {tag:'НАУКА',
+        title:'Учим русские слова: '+nm.slice(0,18),
+        body:'Исследования показывают: лучший способ учить язык — читать и слушать. '
+          +'Возьмём тему «'+nm+'». '
+          +'Главное слово — «'+w0.ru+'» (по-вьетнамски: '+w0.vn+'). '
+          +'Попробуйте составить предложение: '
+          +'«Я вижу '+w0.ru.toLowerCase()+'» или «Это мой '+w0.ru.toLowerCase()+'». '
+          +'Другие важные слова: «'+w1.ru+'» и «'+w2.ru+'». '
+          +'Нажмите на любое слово, чтобы увидеть его перевод!'};
+    },
+  ];
+
+  var results = [];
+  for(var i=0;i<4;i++){
+    var t   = allT[(seed + i*5) % allT.length];
+    var raw = vocabularyDatabase[lvl][t]||[];
+    if(!Array.isArray(raw)||raw.length<2) continue;
+    var ws  = pick(raw, 6);
+    var nm  = stripEmoji(t)||('Тема '+(i+1));
+    var tmpl= templates[i % templates.length];
+    results.push(tmpl(nm, ws));
+  }
+
+  return results.length ? results : [{tag:'ТЕКСТ',title:'Добро пожаловать',
+    body:'Здесь вы читаете короткие тексты на русском языке. Нажмите на любое слово, чтобы узнать его значение.'}];
+}
+
+
+/* ── Render ──────────────────────────────────────────────────── */
+function rdRender(){
+  var cont = document.getElementById('rd-content');
+  if(!cont) return;
+  var lb2 = document.getElementById('rd-level-badge');
+  if(lb2) lb2.textContent = S.level;
+  if(!RD.articles||!RD.articles.length){
+    cont.innerHTML='<div class="rd-load-state">Chưa có bài đọc. Nhấn 🔄 để tải.</div>'; return;
+  }
+
+  var html='';
+  RD.articles.forEach(function(art,ai){
+    if(!art) return;
+    var title = art.title||'';
+    var body  = art.body||'';
+    /* tokenize without building lookup again */
+    var tHtml = rdTokenize(title, ai, 't');
+    var bHtml = rdTokenize(body,  ai, 'b');
+    /* word stats */
+    var words=body.split(/\s+/), kn=0, un=0;
+    words.forEach(function(tok){
+      if(!/[а-яёА-ЯЁ]/.test(tok)) return;
+      (rdMatch(rdNorm(tok)) ? kn++ : un++);
+    });
+    html += '<div class="rd-article">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
+      +'<div class="rd-tag">'+(art.tag||'ТЕКСТ')+'</div>'
+      +'<div style="flex:1;"></div>'
+      +(kn||un?'<div style="font-size:10px;color:var(--com);font-family:var(--mono);">'
+        +(kn?'<span style="color:var(--grn);">✓'+kn+'</span> ':'' )
+        +(un?'<span style="color:rgba(255,159,10,.8);">✦'+un+'</span>':'')
+        +'</div>':'')
+      +'</div>'
+      +'<div class="rd-title">'+tHtml+'</div>'
+      +'<div class="rd-body">'+bHtml+'</div>'
+      +'</div>';
+  });
+
+  cont.innerHTML = html;
+  cont.onclick = function(e){
+    var t = e.target;
+    while(t && t !== cont){
+      if(t.dataset && t.dataset.w){ App.rdTap(t.id, t.dataset.w); return; }
+      t = t.parentNode;
+    }
+  };
+}
+
+/* ── Tokenize ────────────────────────────────────────────────── */
+function rdTokenize(text, ai, part){
+  if(!text) return '';
+  var out='', ti=0;
+  text.split(/([\s\u00A0]+|[.,!?;:()"«»—–\-]+)/).forEach(function(tok){
+    if(!tok){ return; }
+    if(/[а-яёА-ЯЁa-zA-Z]/.test(tok)){
+      var norm = rdNorm(tok);
+      var matches = rdMatch(norm);
+      var isLearned = matches && matches.some(function(m){ return S.mastered&&S.mastered[m.key]; });
+      var cls = 'rd-w '+(isLearned?'learned':matches?'known':'unknown');
+      var uid = 'rd-'+ai+'-'+part+'-'+(ti++);
+      out += '<span class="'+cls+'" id="'+uid+'" data-w="'+tok.replace(/"/g,'&quot;')+'">'+tok+'</span>';
+    } else { out += tok; }
+  });
+  return out;
+}
+
+/* ── Tap → popup ─────────────────────────────────────────────── */
+function App_rdTap(id, word){
+  word = word || '';
+  var norm = rdNorm(word);
+  var prev = document.querySelector('.rd-w.tapped');
+  if(prev) prev.classList.remove('tapped');
+  var el = document.getElementById(id);
+  if(el) el.classList.add('tapped');
+  RD.currentWord = word;
+  rdShowPopup(word, rdMatch(norm));
+}
+
+/* ── Popup ───────────────────────────────────────────────────── */
+function rdShowPopup(word, matches){
+  var pdoc=document.getElementById('rdp-word');
+  var pph =document.getElementById('rdp-ph');
+  var pbody=document.getElementById('rdp-body');
+  if(!pdoc||!pph||!pbody) return;
+
+  pdoc.textContent = word;
+
+  if(matches && matches.length){
+    var m = matches[0].w;
+    pph.textContent = m.ph ? '/ '+m.ph+' /' : '';
+    var isLearned = S.mastered&&S.mastered[matches[0].key];
+    var srs = S.srsData&&S.srsData[matches[0].key];
+    var days = srs ? Math.round((srs.dueDate-Date.now())/86400000) : null;
+    var reviewStr = days===null?'' : days<=0?'📅 Ôn hôm nay!' : '📅 Ôn sau '+days+' ngày';
+
+    var topicClean='';
+    try{ topicClean=matches[0].topic.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}]/gu,'').trim(); }
+    catch(e){ topicClean=matches[0].topic.replace(/[^\w\sА-Яа-яёЁ]/g,'').trim(); }
+
+    var html='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;margin-bottom:10px;">'
+      +'<div style="font-size:22px;font-weight:700;color:var(--tx);">'+m.vn+'</div>'
+      +(m.en?'<div style="font-size:12px;color:var(--com);margin-top:2px;">'+m.en+'</div>':'')
+      +'<div style="font-size:10px;color:rgba(255,255,255,.2);margin-top:8px;font-family:var(--mono);">'+matches[0].lvl+' · '+topicClean+'</div>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'
+      +'<span style="font-size:11px;padding:3px 8px;border-radius:8px;'
+      +(isLearned?'background:rgba(52,199,89,.15);color:var(--grn)':' background:rgba(255,214,10,.1);color:var(--yel)')+';">'
+      +(isLearned?'✓ Đã học':'○ Chưa học')+'</span>'
+      +(reviewStr?'<span style="font-size:10px;color:var(--com);">'+reviewStr+'</span>':'')
+      +'</div>';
+
+    if(matches.length>1){
+      html+='<div style="font-size:10px;color:var(--com);margin-bottom:6px;">// Nghĩa khác:</div>';
+      matches.slice(1,3).forEach(function(mm){
+        html+='<div style="font-size:13px;color:var(--txd);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+          +'<span style="font-family:var(--serif);font-weight:700;">'+mm.w.ru+'</span> — '+mm.w.vn+'</div>';
+      });
+      html+='<div style="margin-top:8px;"></div>';
+    }
+    html+='<button id="rdp-goto-btn" style="background:rgba(90,200,250,.1);border:1px solid rgba(90,200,250,.25);border-radius:10px;padding:7px 14px;color:var(--cyn);font-size:12px;width:100%;">Tra thêm trong từ điển →</button>';
+    pbody.innerHTML = html;
+
+  } else {
+    pph.textContent = '';
+    pbody.innerHTML = '<div id="rdp-ai-box" style="min-height:60px;display:flex;align-items:center;justify-content:center;">'
+      +'<div class="rd-spinner" style="width:20px;height:20px;border-width:2px;"></div></div>'
+      +'<button id="rdp-goto-btn" style="background:rgba(90,200,250,.1);border:1px solid rgba(90,200,250,.25);border-radius:10px;padding:7px 14px;color:var(--cyn);font-size:12px;width:100%;margin-top:10px;">Tìm trong từ điển →</button>';
+    rdAiTranslate(word);
+  }
+
+  document.getElementById('rd-popup').classList.add('open');
+  document.getElementById('rd-popup-backdrop').classList.add('open');
+  setTimeout(function(){
+    var btn=document.getElementById('rdp-goto-btn');
+    if(btn) btn.onclick=function(){ App.rdGoLookup(word); };
+  },10);
+}
+
+/* ── AI translate for unknown words ─────────────────────────── */
+function rdAiTranslate(word){
+  if(location.protocol !== 'https:'){
+    var box=document.getElementById('rdp-ai-box');
+    if(box) box.innerHTML='<div style="color:var(--com);font-size:12px;padding:8px;">Nhấn "Tìm trong từ điển" để tra.</div>';
+    return;
+  }
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:200,
+      system:'Переводчик. Только JSON без markdown.',
+      messages:[{role:'user',content:'Переведи русское слово "'+word+'" на вьетнамский и английский. JSON: {"vn":"...","en":"...","ph":"...","note":"краткая заметка на вьетнамском до 8 слов"}'}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var txt=(data.content&&data.content[0]&&data.content[0].text)||'';
+    txt=txt.replace(/^```[a-z]*\s*/m,'').replace(/\s*```$/m,'').trim();
+    var tr=JSON.parse(txt);
+    var box=document.getElementById('rdp-ai-box');
+    if(!box) return;
+    var pph=document.getElementById('rdp-ph');
+    if(pph&&tr.ph) pph.textContent='/ '+tr.ph+' /';
+    box.innerHTML='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;">'
+      +'<div style="font-size:22px;font-weight:700;color:var(--tx);">'+(tr.vn||'?')+'</div>'
+      +(tr.en?'<div style="font-size:12px;color:var(--com);margin-top:2px;">'+tr.en+'</div>':'')
+      +(tr.note?'<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;">'+tr.note+'</div>':'')
+      +'<div style="font-size:10px;color:rgba(255,159,10,.6);margin-top:8px;font-family:var(--mono);">✦ AI dịch</div>'
+      +'</div>';
+  })
+  .catch(function(){
+    var box=document.getElementById('rdp-ai-box');
+    if(box) box.innerHTML='<div style="color:var(--com);font-size:12px;padding:8px;">Không dịch được. Thử tra từ điển.</div>';
+  });
+}
+
+/* ── Popup controls ──────────────────────────────────────────── */
+function App_rdClosePopup(){
+  document.getElementById('rd-popup').classList.remove('open');
+  document.getElementById('rd-popup-backdrop').classList.remove('open');
+  var prev=document.querySelector('.rd-w.tapped');
+  if(prev) prev.classList.remove('tapped');
+}
+
+function App_rdSpeak(){ if(RD.currentWord) speak(RD.currentWord); }
+
+function App_rdGoLookup(word){
+  App_rdClosePopup();
+  nav('lookup');
+  setTimeout(function(){
+    var inp=document.getElementById('lk-input');
+    if(inp){ inp.value=word; App.lkSearch(word); }
+  },200);
+}
+
+function App_rdRefresh(){
+  try{ localStorage.removeItem(rdTodayKey()); }catch(_){}
+  RD.articles=[]; RD.loading=false;
+  rdFetch();
+}
+
+
 
 
 // ═══ ROADMAP ════════════════════════════════════════════════
@@ -8611,8 +9611,9 @@ function lkInit() {
   // Đếm tổng số từ để hiển thị
   let n = 0;
   for (const lvl of Object.keys(vocabularyDatabase))
-    for (const t of Object.keys(vocabularyDatabase[lvl]))
-      n += vocabularyDatabase[lvl][t].length;
+    for (const t of Object.keys(vocabularyDatabase[lvl])){
+      if(Array.isArray(vocabularyDatabase[lvl][t])) n += vocabularyDatabase[lvl][t].length;
+    }
   _lkTotal = n;
   const el = document.getElementById('lk-count');
   if (el) el.textContent = `// ${n.toLocaleString()} ${(S.lang||'vi')==='en'?'words':'từ'} · A1–B2`;
@@ -8661,6 +9662,7 @@ function _lkDoSearch(q) {
 
   for (const lvl of levels) {
     for (const topic of Object.keys(vocabularyDatabase[lvl])) {
+      if(!Array.isArray(vocabularyDatabase[lvl][topic])) continue;
       for (const w of vocabularyDatabase[lvl][topic]) {
         const ruL  = (w.ru  || '').toLowerCase();
         const vnL  = (w.vn  || '').toLowerCase();
@@ -8768,10 +9770,10 @@ function init(){load();if(!S.lang){const bl=navigator.language||'vi';S.lang=bl.s
 // navSilent: update state + side-effects, NO DOM screen transition
 function navSilent(name){
   S.screen=name; save();
-  const NM={vocab:'bn-vocab',srs:'bn-srs',grammar:'bn-grammar',lookup:'bn-lookup'};
+  const NM={vocab:'bn-vocab',srs:'bn-vocab',grammar:'bn-grammar',lookup:'bn-lookup'};
   document.querySelectorAll('.bBtn').forEach(b=>b.classList.remove('on'));
   const ab=document.getElementById(NM[name]); if(ab) ab.classList.add('on');
-  if(name==='grammar') gramTab(S.gramTab||'cases');
+  if(name==='grammar') gramTab(S.gramTab||'motion');
 }
 
 return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
@@ -8786,7 +9788,15 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   dlSpeak2:App_dlSpeak2,
   dlAnswer2:App_dlAnswer2,
   dlAnswer3:App_dlAnswer3,
-  dailyExit:App_dailyExit
+  dailyExit:App_dailyExit,
+  motionSection:App_motionSection,
+  motionReset:App_motionReset,
+  motionAnswer:App_motionAnswer,
+  rdTap:App_rdTap,
+  rdClosePopup:App_rdClosePopup,
+  rdSpeak:App_rdSpeak,
+  rdGoLookup:App_rdGoLookup,
+  rdRefresh:App_rdRefresh
 };
 })();
 document.addEventListener('DOMContentLoaded',App.init);
@@ -8932,8 +9942,8 @@ document.addEventListener('DOMContentLoaded',App.init);
 //  TELEGRAM-STYLE TAB SWIPE ENGINE — v5
 // ══════════════════════════════════════════════════════════════
 (function(){
-  var TABS    = ['vocab','srs','grammar','lookup','daily','road'];
-  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup','bn-daily','bn-road'];
+  var TABS    = ['vocab','grammar','lookup','read','daily','road'];
+  var BTN_IDS = ['bn-vocab','bn-grammar','bn-lookup','bn-read','bn-daily','bn-road'];
   var COLORS  = [
     {fg:'var(--cyn)', glow:'rgba(90,200,250,0.80)'},
     {fg:'var(--yel)', glow:'rgba(255,214,10,0.80)'},
@@ -9176,7 +10186,7 @@ document.addEventListener('DOMContentLoaded',App.init);
         void _tEl.offsetHeight;
         _tEl.classList.add('active');
         S.screen = TABS[_ti]; save();
-        if(TABS[_ti] === 'grammar' && typeof gramTab === 'function') gramTab(S.gramTab || 'cases');
+        if(TABS[_ti] === 'grammar' && typeof gramTab === 'function') gramTab(S.gramTab || 'motion');
         if(TABS[_ti] === 'srs' && typeof srsStart === 'function') srsStart();
         setTimeout(function(){ snapTo(_ti, false); }, 20);
       }, dur + 20);
@@ -9245,3 +10255,76 @@ document.addEventListener('DOMContentLoaded',App.init);
 .dl-word-badge{
   width:8px;height:8px;border-radius:50%;flex-shrink:0;
 }
+
+/* ── Read News ────────────────────────────────────────────── */
+#bn-read.on .bIcon svg, #bn-read.on .bLbl { color: var(--pnk); }
+#bn-read.on .bIcon { filter: drop-shadow(0 0 7px rgba(255,55,95,0.85)); }
+
+.rd-article {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+}
+.rd-tag {
+  display: inline-block; padding: 2px 10px; border-radius: 20px;
+  font-size: 9px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: 1px; margin-bottom: 10px;
+  background: rgba(255,55,95,0.12); color: var(--pnk);
+  border: 1px solid rgba(255,55,95,0.3);
+}
+.rd-title {
+  font-size: 16px; font-weight: 800; color: var(--tx);
+  line-height: 1.4; margin-bottom: 12px; font-family: var(--serif);
+}
+.rd-body {
+  font-size: 15px; line-height: 1.85; color: var(--txd);
+  font-family: var(--serif);
+}
+.rd-w {
+  cursor: pointer; border-radius: 3px;
+  transition: background .1s;
+  padding: 0 1px;
+}
+.rd-w.known { color: var(--txd); }
+.rd-w.known:active { background: rgba(52,199,89,0.15); border-radius:3px; }
+.rd-w.learned { color: var(--tx); }
+.rd-w.learned:active { background: rgba(52,199,89,0.2); border-radius:3px; }
+.rd-w.unknown { color: var(--tx); border-bottom: 1px solid rgba(255,159,10,0.5); }
+.rd-w.unknown:active { background: rgba(255,159,10,0.15); border-radius:3px; }
+.rd-w.tapped { background: rgba(90,200,250,0.18) !important; color: var(--cyn) !important; border-radius: 4px; border-bottom:none !important; }
+
+/* Word popup */
+#rd-popup {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(18,22,32,0.97);
+  backdrop-filter: blur(32px) saturate(2);
+  -webkit-backdrop-filter: blur(32px) saturate(2);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 22px 36px;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+  max-height: 55vh; overflow-y: auto;
+}
+#rd-popup.open { transform: translateY(0); }
+#rd-popup-backdrop {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  transition: background .2s;
+}
+#rd-popup-backdrop.open { background: rgba(0,0,0,0.4); pointer-events: all; }
+
+.rd-load-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--com); font-size: 13px;
+}
+.rd-spinner {
+  width: 32px; height: 32px; border: 2px solid rgba(255,55,95,0.2);
+  border-top-color: var(--pnk); border-radius: 50%;
+  animation: spin .7s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
