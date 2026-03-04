@@ -8419,11 +8419,10 @@ var motionData = {
 };
 
 function renderMotion(){
-  var el = document.getElementById('gram-body'); if(!el) return;
-  var tab = motionState.ex >= 0 ? 'theory' : 'exercises';
+  var exTotal = motionData.exercises.length;
   var topH = '<div style="display:flex;gap:8px;margin-bottom:18px;">'
-    + '<button onclick="App.motionSection(\'theory\')" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section!=='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section!=='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section!=='ex'?'#ff9f0a':'var(--com)')+';">📖 Lý thuyết</button>'
-    + '<button onclick="App.motionSection(\'ex\')" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section==='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section==='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section==='ex'?'#ff9f0a':'var(--com)')+';">✏️ Bài tập</button>'
+    + '<button onclick="App.motionSection(&apos;theory&apos;)" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section!=='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section!=='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section!=='ex'?'#ff9f0a':'var(--com)')+';">\u{1F4D6} L\xfd thuy\u1ebft</button>'
+    + '<button onclick="App.motionSection(&apos;ex&apos;)" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section==='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section==='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section==='ex'?'#ff9f0a':'var(--com)') +';">\u270f\ufe0f B\xe0i t\u1eadp ('+exTotal+')</button>'
     + '</div>';
 
   if(motionState.section !== 'ex'){
@@ -8441,7 +8440,7 @@ function renderMotion(){
       });
       h += '</div>';
     });
-    el.innerHTML = h;
+    setGramBody(h);
   } else {
     // ── EXERCISES ──
     var exs = motionState.shuffled && motionState.shuffled.length ? motionState.shuffled : motionData.exercises;
@@ -8450,7 +8449,7 @@ function renderMotion(){
       // Done screen
       var pct = Math.round(motionState.score/exs.length*100);
       var em  = pct>=90?'🏆':pct>=70?'🥈':'💪';
-      el.innerHTML = topH
+      setGramBody(topH
         + '<div style="text-align:center;padding:32px 0;">'
         + '<div style="font-size:64px;">'+em+'</div>'
         + '<div style="font-size:22px;font-weight:900;color:#ff9f0a;margin:10px 0;">'+motionState.score+'/'+exs.length+' đúng</div>'
@@ -8460,28 +8459,36 @@ function renderMotion(){
             +motionState.wrong.map(function(w){return '<div style="font-size:12px;color:var(--txd);padding:4px 0;">• '+w+'</div>';}).join('')
             +'</div>':'')
         + '<button class="btn" style="background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.4);color:#ff9f0a;" onclick="App.motionReset()">🔄 Làm lại</button>'
-        + '</div>';
+        + '</div>');
       return;
     }
     var q = exs[idx];
     var pct2 = Math.round(idx/exs.length*100);
-    el.innerHTML = topH
+    var ABCD = ['A','B','C','D'];
+    var optHtml = q.opts.map(function(o, i){
+      return '<div id="mot-'+i+'" onclick="App.motionAnswer('+i+')" style="'
+        + 'border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);'
+        + 'backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);'
+        + 'border-radius:14px;padding:13px 14px;margin-bottom:8px;cursor:pointer;'
+        + 'display:flex;align-items:center;gap:10px;min-height:52px;">'
+        + '<div style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.2);'
+        + 'display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;'
+        + 'color:rgba(255,255,255,.5);flex-shrink:0;">'+ABCD[i]+'</div>'
+        + '<div style="font-size:14px;color:var(--tx);flex:1;line-height:1.4;">'+o+'</div>'
+        + '</div>';
+    }).join('');
+    setGramBody(topH
       + '<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:14px;">'
       + '<div style="height:3px;background:#ff9f0a;border-radius:2px;width:'+pct2+'%;transition:width .3s;"></div></div>'
       + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);margin-bottom:10px;">Câu '+(idx+1)+'/'+exs.length+' · ✓ '+motionState.score+'</div>'
       + '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;margin-bottom:14px;">'
       + '<div style="font-size:15px;font-weight:600;line-height:1.5;color:var(--tx);">'+q.q+'</div>'
       + '</div>'
-      + '<div id="mot-opts">'
-      + q.opts.map(function(o,i){
-          return '<div class="mot-opt dl-choice" id="mot-'+i+'" onclick="App.motionAnswer('+i+')" style="font-family:var(--serif);font-size:16px;font-weight:700;">'
-            +'<div class="dl-word-badge" style="background:rgba(255,255,255,.15);"></div>'
-            +o+'</div>';
-        }).join('')
-      + '</div>'
-      + '<div id="mot-exp" style="display:none;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.2);border-radius:12px;padding:12px;margin-top:12px;font-size:12px;color:var(--txd);line-height:1.6;"></div>';
+      + '<div id="mot-opts">'+optHtml+'</div>'
+      + '<div id="mot-exp" style="display:none;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.2);border-radius:12px;padding:12px;margin-top:12px;font-size:12px;color:var(--txd);line-height:1.6;"></div>');
   }
 }
+
 
 function App_motionSection(s){
   motionState.section = s;
@@ -8505,16 +8512,22 @@ function App_motionReset(){
 function App_motionAnswer(i){
   if(motionState.answered) return;
   motionState.answered = true;
-  var exs = motionData.exercises;
+  var exs = motionState.shuffled && motionState.shuffled.length ? motionState.shuffled : motionData.exercises;
   var q   = exs[motionState.ex];
   var correct = (i === q.ans);
   if(correct) motionState.score++;
   else motionState.wrong.push(q.opts[i] + ' (đúng: ' + q.opts[q.ans] + ')');
   // Style buttons
+  var ABCD2 = ['A','B','C','D'];
   q.opts.forEach(function(_,j){
     var el=document.getElementById('mot-'+j);
     if(!el) return;
-    el.classList.add(j===q.ans?'correct':'wrong');
+    var isCorrect = j===q.ans;
+    el.style.borderColor = isCorrect ? 'var(--grn)' : (j===i&&!isCorrect ? 'var(--pnk)' : '');
+    el.style.background  = isCorrect ? 'rgba(52,199,89,0.12)' : (j===i&&!isCorrect ? 'rgba(255,55,95,0.10)' : '');
+    // Update letter badge color
+    var badge = el.querySelector('div');
+    if(badge) badge.style.color = isCorrect ? 'var(--grn)' : (j===i&&!isCorrect ? 'var(--pnk)' : '');
   });
   // Show explanation
   var exp=document.getElementById('mot-exp');
