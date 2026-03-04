@@ -1210,6 +1210,46 @@ body::after{
   <div class="scrl" id="case-body"></div>
 </div>
 
+
+<!-- DAILY LEARN SCREEN -->
+<div id="s-daily" class="screen">
+  <div class="hdr">
+    <button class="iBtn" onclick="App.dailyExit()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="f1">
+      <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" id="dl-header-sub">// 7 từ · hôm nay</div>
+      <div class="hdr-title" style="font-size:17px;" id="dl-header-title">Học hôm nay</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:18px;font-weight:800;color:#ff9f0a;font-family:var(--mono);" id="dl-score-num">0/7</div>
+      <div style="font-size:9px;color:var(--com);">từ chắc</div>
+    </div>
+  </div>
+
+  <!-- word progress dots -->
+  <div style="padding:10px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:6px;">
+    <div style="display:flex;gap:5px;align-items:center;flex:1;" id="dl-dots"></div>
+    <div style="font-size:10px;color:var(--com);font-family:var(--mono);" id="dl-phase-lbl">vòng 1/3</div>
+  </div>
+
+  <div class="scrl" id="dl-scrl" style="padding-top:8px;">
+    <div id="dl-body"></div>
+  </div>
+</div>
+
+<!-- DAILY DONE SCREEN -->
+<div id="s-daily-done" class="screen">
+  <div class="scrl" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;padding:32px 24px;">
+    <div style="font-size:72px;" id="dld-em">🏆</div>
+    <div style="font-size:26px;font-weight:900;color:#ff9f0a;font-family:var(--mono);" id="dld-title">Hoàn thành!</div>
+    <div style="font-size:14px;color:var(--txd);text-align:center;line-height:1.6;" id="dld-msg"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-top:8px;" id="dld-stats"></div>
+    <div style="width:100%;max-width:320px;background:rgba(255,159,10,0.08);border:1px solid rgba(255,159,10,0.3);border-radius:16px;padding:14px 16px;" id="dld-words"></div>
+    <button class="btn g" style="max-width:320px;" onclick="App.nav('vocab')">↩ Về trang chính</button>
+  </div>
+</div>
+
 </div><!-- end #app -->
 
 <!-- BOTTOM NAV: outside #app so position:fixed works correctly on iOS -->
@@ -1248,6 +1288,13 @@ body::after{
       <line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     </svg></span><span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
+  </button>
+  <button class="bBtn" id="bn-daily" onclick="App.dailyStart()">
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 3.5L12 1.5L16 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg></span><span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
   </button>
   <button class="bBtn" id="bn-road" onclick="App.nav('road')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1832,6 +1879,62 @@ const vocabularyDatabase = {
       { ru: 'Невкусный', vn: 'Không ngon', en: 'Không ngon', en: 'Not tasty', ph: 'nevkusnyy' },
       { ru: 'Важный', vn: 'Quan trọng', en: 'Quan trọng', en: 'Important', ph: 'vazhnyy' },
       { ru: 'Интересный', vn: 'Thú vị', en: 'Thú vị', en: 'Interesting', ph: 'interesnyy' },
+    ],
+
+    "🍳 Nấu ăn & Bếp A1": [
+      { ru: 'Готовить', vn: 'Nấu ăn', en: 'To cook', ph: 'gotóvit\'' },
+      { ru: 'Варить', vn: 'Luộc / Nấu (nước)', en: 'To boil', ph: 'várit\'' },
+      { ru: 'Жарить', vn: 'Chiên / Rán', en: 'To fry', ph: 'zhárit\'' },
+      { ru: 'Печь', vn: 'Nướng (lò)', en: 'To bake', ph: 'pech\'' },
+      { ru: 'Резать', vn: 'Cắt', en: 'To cut', ph: 'rézat\'' },
+      { ru: 'Мыть', vn: 'Rửa', en: 'To wash', ph: 'myt\'' },
+      { ru: 'Кастрюля', vn: 'Nồi', en: 'Pot', ph: 'kastrúlya' },
+      { ru: 'Сковорода', vn: 'Chảo', en: 'Frying pan', ph: 'skovorodá' },
+      { ru: 'Нож', vn: 'Con dao', en: 'Knife', ph: 'nozh' },
+      { ru: 'Ложка', vn: 'Thìa / Muỗng', en: 'Spoon', ph: 'lózhka' },
+      { ru: 'Вилка', vn: 'Dĩa / Nĩa', en: 'Fork', ph: 'vílka' },
+      { ru: 'Тарелка', vn: 'Đĩa / Bát', en: 'Plate', ph: 'tarélka' },
+      { ru: 'Стакан', vn: 'Cốc / Ly', en: 'Glass', ph: 'stakán' },
+      { ru: 'Чашка', vn: 'Tách / Cốc', en: 'Cup', ph: 'cháshka' },
+      { ru: 'Холодильник', vn: 'Tủ lạnh', en: 'Refrigerator', ph: 'kholodílnik' },
+      { ru: 'Плита', vn: 'Bếp (gas/điện)', en: 'Stove', ph: 'plitá' },
+      { ru: 'Духовка', vn: 'Lò nướng', en: 'Oven', ph: 'dukhovka' },
+      { ru: 'Масло', vn: 'Dầu / Bơ', en: 'Oil / Butter', ph: 'máslo' },
+      { ru: 'Соль', vn: 'Muối', en: 'Salt', ph: 'sol\'' },
+      { ru: 'Сахар', vn: 'Đường', en: 'Sugar', ph: 'sákhar' },
+      { ru: 'Перец', vn: 'Tiêu / Ớt', en: 'Pepper', ph: 'pérets' },
+      { ru: 'Мука', vn: 'Bột mì', en: 'Flour', ph: 'muká' },
+      { ru: 'Яйцо', vn: 'Quả trứng', en: 'Egg', ph: 'yaytso' },
+      { ru: 'Молоко', vn: 'Sữa', en: 'Milk', ph: 'moloká' },
+      { ru: 'Сыр', vn: 'Phô mai', en: 'Cheese', ph: 'syr' },
+    ],
+
+    "🏙️ Thành phố & Đường phố A1": [
+      { ru: 'Город', vn: 'Thành phố', en: 'City', ph: 'górod' },
+      { ru: 'Улица', vn: 'Đường phố', en: 'Street', ph: 'úlitsa' },
+      { ru: 'Площадь', vn: 'Quảng trường', en: 'Square / Plaza', ph: 'plóshchad\'' },
+      { ru: 'Парк', vn: 'Công viên', en: 'Park', ph: 'park' },
+      { ru: 'Мост', vn: 'Cây cầu', en: 'Bridge', ph: 'most' },
+      { ru: 'Река', vn: 'Con sông', en: 'River', ph: 'reká' },
+      { ru: 'Банк', vn: 'Ngân hàng', en: 'Bank', ph: 'bank' },
+      { ru: 'Аптека', vn: 'Hiệu thuốc', en: 'Pharmacy', ph: 'aptéka' },
+      { ru: 'Почта', vn: 'Bưu điện', en: 'Post office', ph: 'póchta' },
+      { ru: 'Полиция', vn: 'Cảnh sát', en: 'Police', ph: 'polítsiya' },
+      { ru: 'Пожарная станция', vn: 'Trạm cứu hỏa', en: 'Fire station', ph: 'pozharnaya statsiya' },
+      { ru: 'Рынок', vn: 'Chợ', en: 'Market', ph: 'rynok' },
+      { ru: 'Магазин', vn: 'Cửa hàng', en: 'Shop / Store', ph: 'magazín' },
+      { ru: 'Кино', vn: 'Rạp chiếu phim', en: 'Cinema', ph: 'kinó' },
+      { ru: 'Театр', vn: 'Nhà hát', en: 'Theatre', ph: 'teátr' },
+      { ru: 'Музей', vn: 'Bảo tàng', en: 'Museum', ph: 'muzéy' },
+      { ru: 'Церковь', vn: 'Nhà thờ', en: 'Church', ph: 'tserkov\'' },
+      { ru: 'Стадион', vn: 'Sân vận động', en: 'Stadium', ph: 'stadión' },
+      { ru: 'Светофор', vn: 'Đèn giao thông', en: 'Traffic light', ph: 'svetofór' },
+      { ru: 'Перекрёсток', vn: 'Ngã tư', en: 'Intersection', ph: 'perekyórstok' },
+      { ru: 'Тротуар', vn: 'Vỉa hè', en: 'Pavement / Sidewalk', ph: 'trotuár' },
+      { ru: 'Подъезд', vn: 'Lối vào chung cư', en: 'Entrance hall', ph: 'pod\'yezd' },
+      { ru: 'Лифт', vn: 'Thang máy', en: 'Elevator / Lift', ph: 'lift' },
+      { ru: 'Этаж', vn: 'Tầng', en: 'Floor / Story', ph: 'etázh' },
+      { ru: 'Квартира', vn: 'Căn hộ', en: 'Apartment / Flat', ph: 'kvartíra' },
     ],
   A2: {
     "🛒 Mua sắm & Tiền bạc": [
@@ -2739,6 +2842,61 @@ const vocabularyDatabase = {
       { ru: 'Успевать', vn: 'Kịp / Thành công', en: 'Kịp / Thành công', en: 'To manage / succeed', ph: 'uspevat' },
       { ru: 'Расписание', vn: 'Thời khóa biểu', en: 'Thời khóa biểu', en: 'Schedule', ph: 'raspisaniye' },
       { ru: 'Привычка', vn: 'Thói quen', en: 'Thói quen', en: 'Habit', ph: 'privychka' },
+    ],
+
+    "🤔 Cảm xúc & Tính cách nâng cao A2": [
+      { ru: 'Злой', vn: 'Tức giận', en: 'Angry', ph: 'zloy' },
+      { ru: 'Спокойный', vn: 'Bình tĩnh', en: 'Calm', ph: 'spokóynyy' },
+      { ru: 'Грустный', vn: 'Buồn bã', en: 'Sad', ph: 'grústnyy' },
+      { ru: 'Радостный', vn: 'Vui vẻ', en: 'Joyful', ph: 'rádostnyy' },
+      { ru: 'Испуганный', vn: 'Sợ hãi', en: 'Frightened', ph: 'ispúgannyy' },
+      { ru: 'Удивлённый', vn: 'Ngạc nhiên', en: 'Surprised', ph: 'udivlyonnyy' },
+      { ru: 'Смущённый', vn: 'Bối rối / Ngượng', en: 'Embarrassed', ph: 'smushchyonnyy' },
+      { ru: 'Гордый', vn: 'Tự hào', en: 'Proud', ph: 'górdyy' },
+      { ru: 'Ревнивый', vn: 'Ghen tuông', en: 'Jealous', ph: 'revnívyy' },
+      { ru: 'Одинокий', vn: 'Cô đơn', en: 'Lonely', ph: 'odinókiy' },
+      { ru: 'Уверенный', vn: 'Tự tin', en: 'Confident', ph: 'uvérennyy' },
+      { ru: 'Нервный', vn: 'Lo lắng / Căng thẳng', en: 'Nervous', ph: 'nérvnyy' },
+      { ru: 'Терпеливый', vn: 'Kiên nhẫn', en: 'Patient', ph: 'terpelívyy' },
+      { ru: 'Щедрый', vn: 'Hào phóng', en: 'Generous', ph: 'shchédryy' },
+      { ru: 'Жадный', vn: 'Tham lam', en: 'Greedy', ph: 'zhádnyy' },
+      { ru: 'Честный', vn: 'Thành thật', en: 'Honest', ph: 'chéstnyy' },
+      { ru: 'Ленивый', vn: 'Lười biếng', en: 'Lazy', ph: 'lenívyy' },
+      { ru: 'Трудолюбивый', vn: 'Chăm chỉ', en: 'Hard-working', ph: 'trudolyubívyy' },
+      { ru: 'Смелый', vn: 'Dũng cảm', en: 'Brave', ph: 'smélyi' },
+      { ru: 'Робкий', vn: 'Nhút nhát', en: 'Timid', ph: 'rópkiy' },
+      { ru: 'Общительный', vn: 'Hòa đồng', en: 'Sociable', ph: 'obshchítelnyy' },
+      { ru: 'Замкнутый', vn: 'Khép kín / Hướng nội', en: 'Reserved / Introverted', ph: 'zamknutyy' },
+      { ru: 'Добрый', vn: 'Tốt bụng', en: 'Kind', ph: 'dóbryy' },
+      { ru: 'Вежливый', vn: 'Lịch sự', en: 'Polite', ph: 'vezhlivyy' },
+    ],
+
+    "🌐 Internet & Cuộc sống số A2": [
+      { ru: 'Интернет', vn: 'Internet', en: 'Internet', ph: 'internét' },
+      { ru: 'Сайт', vn: 'Trang web', en: 'Website', ph: 'sayt' },
+      { ru: 'Приложение', vn: 'Ứng dụng (app)', en: 'App / Application', ph: 'prilozhéniye' },
+      { ru: 'Скачать', vn: 'Tải xuống', en: 'To download', ph: 'skáchat\'' },
+      { ru: 'Загрузить', vn: 'Tải lên / Nạp', en: 'To upload / load', ph: 'zagruzít\'' },
+      { ru: 'Пароль', vn: 'Mật khẩu', en: 'Password', ph: 'paról\'' },
+      { ru: 'Логин', vn: 'Tên đăng nhập', en: 'Login', ph: 'lógin' },
+      { ru: 'Аккаунт', vn: 'Tài khoản', en: 'Account', ph: 'akkáunt' },
+      { ru: 'Профиль', vn: 'Hồ sơ cá nhân', en: 'Profile', ph: 'prófil\'' },
+      { ru: 'Фотография', vn: 'Ảnh / Bức ảnh', en: 'Photo', ph: 'fotografíya' },
+      { ru: 'Видео', vn: 'Video', en: 'Video', ph: 'vídeo' },
+      { ru: 'Сообщение', vn: 'Tin nhắn', en: 'Message', ph: 'soobshchéniye' },
+      { ru: 'Звонок', vn: 'Cuộc gọi', en: 'Call', ph: 'zvonók' },
+      { ru: 'Поиск', vn: 'Tìm kiếm', en: 'Search', ph: 'póisk' },
+      { ru: 'Результат', vn: 'Kết quả', en: 'Result', ph: 'rezul\' tát' },
+      { ru: 'Ссылка', vn: 'Đường dẫn / Link', en: 'Link', ph: 'ssylka' },
+      { ru: 'Комментарий', vn: 'Bình luận', en: 'Comment', ph: 'kommentáriy' },
+      { ru: 'Лайк', vn: 'Thích / Like', en: 'Like', ph: 'layk' },
+      { ru: 'Подписка', vn: 'Đăng ký theo dõi', en: 'Subscription', ph: 'podpíska' },
+      { ru: 'Уведомление', vn: 'Thông báo', en: 'Notification', ph: 'uvedomleniye' },
+      { ru: 'Настройки', vn: 'Cài đặt', en: 'Settings', ph: 'nastróyki' },
+      { ru: 'Экран', vn: 'Màn hình', en: 'Screen', ph: 'ekrán' },
+      { ru: 'Клавиатура', vn: 'Bàn phím', en: 'Keyboard', ph: 'klaviatúra' },
+      { ru: 'Мышь', vn: 'Chuột máy tính', en: 'Mouse', ph: 'mysh\'' },
+      { ru: 'Принтер', vn: 'Máy in', en: 'Printer', ph: 'prínter' },
     ],
   B1: {
     "💬 Giao tiếp & Tranh luận B1": [
@@ -4158,6 +4316,62 @@ const vocabularyDatabase = {
       { ru: 'Приватизация', vn: 'Tư nhân hoá', en: 'Tư nhân hoá', en: 'Privatization', ph: 'privatizátsiya' },
       { ru: 'Национализация', vn: 'Quốc hữu hoá', en: 'Quốc hữu hoá', en: 'Nationalization', ph: 'natsionalizátsiya' },
     ],
+
+    "🧳 Du lịch & Trải nghiệm B1": [
+      { ru: 'Путешествовать', vn: 'Du lịch / Đi du lịch', en: 'To travel', ph: 'puteshéstvovat\'' },
+      { ru: 'Достопримечательность', vn: 'Điểm tham quan', en: 'Attraction / Landmark', ph: 'dostoprimechatelnost\'' },
+      { ru: 'Экскурсия', vn: 'Chuyến tham quan', en: 'Excursion / Tour', ph: 'ekskúrsiya' },
+      { ru: 'Гид', vn: 'Hướng dẫn viên', en: 'Guide', ph: 'gid' },
+      { ru: 'Маршрут', vn: 'Lộ trình / Tuyến đường', en: 'Route / Itinerary', ph: 'marshrút' },
+      { ru: 'Паспорт', vn: 'Hộ chiếu', en: 'Passport', ph: 'páspurt' },
+      { ru: 'Виза', vn: 'Thị thực (visa)', en: 'Visa', ph: 'víza' },
+      { ru: 'Таможня', vn: 'Hải quan', en: 'Customs', ph: 'tamózhnya' },
+      { ru: 'Граница', vn: 'Biên giới', en: 'Border', ph: 'granítsa' },
+      { ru: 'Рейс', vn: 'Chuyến bay', en: 'Flight', ph: 'reys' },
+      { ru: 'Посадка', vn: 'Hạ cánh / Lên máy bay', en: 'Landing / Boarding', ph: 'posádka' },
+      { ru: 'Задержка', vn: 'Sự chậm trễ', en: 'Delay', ph: 'zadérzhka' },
+      { ru: 'Бронировать', vn: 'Đặt trước', en: 'To book / reserve', ph: 'bronírovat\'' },
+      { ru: 'Номер', vn: 'Phòng khách sạn / Số', en: 'Room / Number', ph: 'nómer' },
+      { ru: 'Заселение', vn: 'Nhận phòng', en: 'Check-in', ph: 'zaseléniye' },
+      { ru: 'Выселение', vn: 'Trả phòng', en: 'Check-out', ph: 'vyseléniye' },
+      { ru: 'Сувенир', vn: 'Đồ lưu niệm', en: 'Souvenir', ph: 'suvenir' },
+      { ru: 'Впечатление', vn: 'Ấn tượng', en: 'Impression', ph: 'vpechatléniye' },
+      { ru: 'Незабываемый', vn: 'Không thể quên', en: 'Unforgettable', ph: 'nezabyvayemyy' },
+      { ru: 'Местный', vn: 'Địa phương / Bản địa', en: 'Local', ph: 'méstnyi' },
+      { ru: 'Турист', vn: 'Khách du lịch', en: 'Tourist', ph: 'turísт' },
+      { ru: 'Пляж', vn: 'Bãi biển', en: 'Beach', ph: 'plyazh' },
+      { ru: 'Горы', vn: 'Núi (số nhiều)', en: 'Mountains', ph: 'góry' },
+      { ru: 'Лес', vn: 'Rừng', en: 'Forest', ph: 'les' },
+      { ru: 'Озеро', vn: 'Hồ nước', en: 'Lake', ph: 'ózero' },
+    ],
+
+    "💼 Nghề nghiệp & Môi trường làm việc B1": [
+      { ru: 'Карьера', vn: 'Sự nghiệp', en: 'Career', ph: 'kar\'yéra' },
+      { ru: 'Должность', vn: 'Chức vụ / Vị trí', en: 'Position / Job title', ph: 'dolzhnost\'' },
+      { ru: 'Зарплата', vn: 'Lương', en: 'Salary', ph: 'zarplata' },
+      { ru: 'Премия', vn: 'Thưởng / Phần thưởng', en: 'Bonus / Award', ph: 'prémiya' },
+      { ru: 'Контракт', vn: 'Hợp đồng', en: 'Contract', ph: 'kontrakt' },
+      { ru: 'Отпуск', vn: 'Kỳ nghỉ / Ngày phép', en: 'Vacation / Leave', ph: 'ótpusk' },
+      { ru: 'Командировка', vn: 'Công tác / Chuyến công tác', en: 'Business trip', ph: 'komandiróvka' },
+      { ru: 'Совещание', vn: 'Cuộc họp', en: 'Meeting', ph: 'soveshchániye' },
+      { ru: 'Переговоры', vn: 'Đàm phán', en: 'Negotiations', ph: 'peregovóry' },
+      { ru: 'Коллега', vn: 'Đồng nghiệp', en: 'Colleague', ph: 'kollega' },
+      { ru: 'Начальник', vn: 'Sếp / Cấp trên', en: 'Boss / Superior', ph: 'nachálnik' },
+      { ru: 'Подчинённый', vn: 'Cấp dưới', en: 'Subordinate', ph: 'podchinonyy' },
+      { ru: 'Отдел', vn: 'Phòng ban', en: 'Department', ph: 'otdel' },
+      { ru: 'Задача', vn: 'Nhiệm vụ / Bài toán', en: 'Task / Problem', ph: 'zadácha' },
+      { ru: 'Срок', vn: 'Hạn chót / Thời hạn', en: 'Deadline / Term', ph: 'srok' },
+      { ru: 'Проект', vn: 'Dự án', en: 'Project', ph: 'proékt' },
+      { ru: 'Отчёт', vn: 'Báo cáo', en: 'Report', ph: 'otchyot' },
+      { ru: 'Опыт', vn: 'Kinh nghiệm', en: 'Experience', ph: 'ópyt' },
+      { ru: 'Навык', vn: 'Kỹ năng', en: 'Skill', ph: 'návyk' },
+      { ru: 'Повышение', vn: 'Thăng chức / Tăng lương', en: 'Promotion / Raise', ph: 'povysheniye' },
+      { ru: 'Увольнение', vn: 'Sự sa thải', en: 'Dismissal / Firing', ph: 'uvol\'neniye' },
+      { ru: 'Резюме', vn: 'Hồ sơ xin việc (CV)', en: 'Resume / CV', ph: 'rezyumé' },
+      { ru: 'Собеседование', vn: 'Phỏng vấn xin việc', en: 'Job interview', ph: 'sobesedovaniye' },
+      { ru: 'Ответственность', vn: 'Trách nhiệm', en: 'Responsibility', ph: 'otvetstvennost\'' },
+      { ru: 'Эффективность', vn: 'Hiệu quả', en: 'Effectiveness / Efficiency', ph: 'effektivnost\'' },
+    ],
   },
 
   // ════════════════════════════════════════════════════════════════
@@ -5177,6 +5391,61 @@ const vocabularyDatabase = {
       { ru: 'Коучинг', vn: 'Huấn luyện / Coaching', en: 'Huấn luyện / Coaching', en: 'Coaching', ph: 'kouching' },
       { ru: 'Ментор', vn: 'Người cố vấn', en: 'Người cố vấn', en: 'Mentor', ph: 'mentor' },
       { ru: 'Жизненные ценности', vn: 'Giá trị sống', en: 'Giá trị sống', en: 'Life values', ph: 'zhiznennyye tsennosti' },
+    ],
+    "🧬 Công nghệ sinh học & Khoa học tương lai B2": [
+      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
+      { ru: 'Алгоритм', vn: 'Thuật toán', en: 'Algorithm', ph: 'algorítm' },
+      { ru: 'Нейросеть', vn: 'Mạng nơ-ron', en: 'Neural network', ph: 'neyroset\'' },
+      { ru: 'Машинное обучение', vn: 'Học máy', en: 'Machine learning', ph: 'mashínnoye obucheniye' },
+      { ru: 'Автоматизация', vn: 'Tự động hóa', en: 'Automation', ph: 'avtomatizátsiya' },
+      { ru: 'Роботизация', vn: 'Robot hóa', en: 'Robotization', ph: 'robotizátsiya' },
+      { ru: 'Редактирование генома', vn: 'Chỉnh sửa gen', en: 'Genome editing', ph: 'redaktirovaniye genóma' },
+      { ru: 'Клонирование', vn: 'Nhân bản vô tính', en: 'Cloning', ph: 'klonírovaniye' },
+      { ru: 'Нанотехнологии', vn: 'Công nghệ nano', en: 'Nanotechnology', ph: 'nanotekhnológii' },
+      { ru: 'Квантовый компьютер', vn: 'Máy tính lượng tử', en: 'Quantum computer', ph: 'kvantovyy komp\'yuter' },
+      { ru: 'Блокчейн', vn: 'Chuỗi khối (blockchain)', en: 'Blockchain', ph: 'blokcheyn' },
+      { ru: 'Криптовалюта', vn: 'Tiền mã hóa', en: 'Cryptocurrency', ph: 'kriptovalyúta' },
+      { ru: 'Виртуальная реальность', vn: 'Thực tế ảo', en: 'Virtual reality', ph: 'virtual\'naya real\'nost\'' },
+      { ru: 'Дополненная реальность', vn: 'Thực tế tăng cường', en: 'Augmented reality', ph: 'dopolnennaya real\'nost\'' },
+      { ru: 'Облачные технологии', vn: 'Điện toán đám mây', en: 'Cloud technologies', ph: 'oblachnyye tekhnológii' },
+      { ru: 'Кибербезопасность', vn: 'An ninh mạng', en: 'Cybersecurity', ph: 'kiberbezopasnost\'' },
+      { ru: 'Биотехнология', vn: 'Công nghệ sinh học', en: 'Biotechnology', ph: 'biotekhnológiya' },
+      { ru: 'Возобновляемая энергия', vn: 'Năng lượng tái tạo', en: 'Renewable energy', ph: 'vozobnovlyayemaya energiya' },
+      { ru: 'Солнечная панель', vn: 'Tấm pin mặt trời', en: 'Solar panel', ph: 'solnechnaya panel\'' },
+      { ru: 'Электромобиль', vn: 'Xe điện', en: 'Electric car', ph: 'elektromobíl\'' },
+      { ru: 'Беспилотник', vn: 'Máy bay không người lái', en: 'Drone / UAV', ph: 'bespilótnik' },
+      { ru: 'Телемедицина', vn: 'Y tế từ xa', en: 'Telemedicine', ph: 'telemeditsína' },
+      { ru: 'Протез', vn: 'Chân / Tay giả', en: 'Prosthesis', ph: 'protez' },
+      { ru: 'Имплант', vn: 'Vật cấy ghép', en: 'Implant', ph: 'implant' },
+      { ru: 'Трансплантация', vn: 'Ghép tạng', en: 'Transplantation', ph: 'transplantátsiya' },
+    ],
+
+    "🌏 Toàn cầu hoá & Xã hội hiện đại B2": [
+      { ru: 'Глобализация', vn: 'Toàn cầu hoá', en: 'Globalization', ph: 'globalizátsiya' },
+      { ru: 'Миграция', vn: 'Di cư', en: 'Migration', ph: 'migrátsiya' },
+      { ru: 'Мультикультурализм', vn: 'Chủ nghĩa đa văn hoá', en: 'Multiculturalism', ph: 'mul\'tikul\'turalizm' },
+      { ru: 'Интеграция', vn: 'Hội nhập', en: 'Integration', ph: 'integrátsiya' },
+      { ru: 'Дискриминация', vn: 'Phân biệt đối xử', en: 'Discrimination', ph: 'diskriminatsiya' },
+      { ru: 'Толерантность', vn: 'Sự khoan dung', en: 'Tolerance', ph: 'tolerantnost\'' },
+      { ru: 'Неравенство', vn: 'Sự bất bình đẳng', en: 'Inequality', ph: 'neravénstvo' },
+      { ru: 'Бедность', vn: 'Nghèo đói', en: 'Poverty', ph: 'bednost\'' },
+      { ru: 'Безработица', vn: 'Thất nghiệp', en: 'Unemployment', ph: 'bezrabótitsa' },
+      { ru: 'Инфляция', vn: 'Lạm phát', en: 'Inflation', ph: 'inflyátsiya' },
+      { ru: 'Демография', vn: 'Nhân khẩu học', en: 'Demography', ph: 'demografíya' },
+      { ru: 'Урбанизация', vn: 'Đô thị hóa', en: 'Urbanization', ph: 'urbanizátsiya' },
+      { ru: 'Экология', vn: 'Sinh thái học', en: 'Ecology', ph: 'ekologiya' },
+      { ru: 'Устойчивое развитие', vn: 'Phát triển bền vững', en: 'Sustainable development', ph: 'ustoychivoe razvitie' },
+      { ru: 'Права человека', vn: 'Nhân quyền', en: 'Human rights', ph: 'prava cheloveka' },
+      { ru: 'Гражданское общество', vn: 'Xã hội dân sự', en: 'Civil society', ph: 'grazhdánskoye óbshchestvo' },
+      { ru: 'Свобода слова', vn: 'Tự do ngôn luận', en: 'Freedom of speech', ph: 'svobóda slova' },
+      { ru: 'Цензура', vn: 'Kiểm duyệt', en: 'Censorship', ph: 'tsenzúra' },
+      { ru: 'Пропаганда', vn: 'Tuyên truyền', en: 'Propaganda', ph: 'propagánda' },
+      { ru: 'Манипуляция', vn: 'Sự thao túng', en: 'Manipulation', ph: 'manipulyátsiya' },
+      { ru: 'Коррупция', vn: 'Tham nhũng', en: 'Corruption', ph: 'korruptsiya' },
+      { ru: 'Прозрачность', vn: 'Tính minh bạch', en: 'Transparency', ph: 'prozrachnost\'' },
+      { ru: 'Подотчётность', vn: 'Trách nhiệm giải trình', en: 'Accountability', ph: 'podotchyotnost\'' },
+      { ru: 'Реформа', vn: 'Cải cách', en: 'Reform', ph: 'reformá' },
+      { ru: 'Инновация', vn: 'Đổi mới / Sáng tạo', en: 'Innovation', ph: 'innovátsiya' },
     ],
   },
 };
@@ -6595,7 +6864,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'ĐỌC', 'nav.lookup': 'Tra từ', 'nav.road': 'Lộ trình',
+    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'ĐỌC', 'nav.lookup': 'Tra từ', 'nav.road': 'Lộ trình', 'nav.daily': 'Hôm nay',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -6638,7 +6907,7 @@ var i18n = {
     'gram.wf.noun2': 'Danh từ', 'gram.wf.verb2': 'Động từ', 'gram.wf.adj2': 'Tính từ', 'gram.wf.adv2': 'Trạng từ',
   },
   en: {
-    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH', 'nav.road': 'ROADMAP',
+    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH', 'nav.road': 'ROADMAP', 'nav.daily': 'Today',
     'vocab.loading': '// loading...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
     'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
@@ -6698,10 +6967,10 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road','daily','daily-done'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-srs',srsdone:'bn-srs',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road',daily:'bn-daily','daily-done':'bn-daily'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
-const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0};
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0,daily:0,'daily-done':1};
 
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
@@ -6756,6 +7025,7 @@ function nav(name){
 
     // Re-render screens khi quay lại để cập nhật tiến độ
     if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
+    if(name === 'daily') setTimeout(function(){ if(typeof dlRender==='function') dlRender(); }, 30);
     if(name === 'road') setTimeout(renderRoad, 40);
   });
 }
@@ -7699,6 +7969,7 @@ function setLang(lang){
   const bnG = document.getElementById('bn-grammar-lbl'); if(bnG) bnG.textContent = t('nav.grammar');
   const bnLk = document.getElementById('bn-lookup-lbl'); if(bnLk) bnLk.textContent = t('nav.lookup');
   const bnRd = document.getElementById('bn-road-lbl'); if(bnRd) bnRd.textContent = t('nav.road');
+  const bnDl = document.getElementById('bn-daily-lbl'); if(bnDl) bnDl.textContent = t('nav.daily');
   // Update static text nodes via data-i18n attributes
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     el.textContent = t(el.getAttribute('data-i18n'));
@@ -7760,6 +8031,416 @@ function setLang(lang){
 var _lkFilter = 'all';  // 'all' | 'A1' | 'A2' | 'B1' | 'B2'
 var _lkTimer  = null;
 var _lkTotal  = 0;
+
+
+// ═══════════════════════════════════════════════════════════════
+// DAILY LEARN — 7 từ/ngày, 3 vòng học chắc
+// ═══════════════════════════════════════════════════════════════
+var DL = {
+  words: [],        // 7 từ được chọn hôm nay
+  wordIdx: 0,       // từ đang học (0-6)
+  phase: 1,         // vòng 1=xem, 2=nghe→chọn nghĩa, 3=nhìn nghĩa→chọn nga
+  phaseStep: 0,     // bước trong phase hiện tại
+  correct: [],      // kết quả từng từ [true/false/...]
+  locked: [],       // từ đã học chắc (qua cả 3 vòng)
+  answered: false,
+  todayKey: '',
+};
+
+function dlTodayKey(){
+  var d = new Date();
+  return 'dl-' + S.level + '-' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+function dlLoadOrPick(){
+  var key = dlTodayKey();
+  DL.todayKey = key;
+  try {
+    var saved = localStorage.getItem(key);
+    if(saved) {
+      var data = JSON.parse(saved);
+      DL.words = data.words;
+      DL.locked = data.locked || [];
+      return;
+    }
+  } catch(e){}
+
+  // Chọn 7 từ chưa học chắc, ưu tiên từ SRS chưa có
+  var all = [];
+  Object.entries(vocabularyDatabase[S.level]).forEach(function([topic, ws]){
+    ws.forEach(function(w, i){
+      var k = S.level+'-'+topic+'-'+i;
+      if(!S.mastered[k]) all.push({w:w, key:k, topic:topic});
+    });
+  });
+
+  // shuffle
+  for(var i=all.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=all[i]; all[i]=all[j]; all[j]=tmp;
+  }
+
+  DL.words = all.slice(0, 7);
+  DL.locked = [];
+  dlSave();
+}
+
+function dlSave(){
+  try {
+    localStorage.setItem(DL.todayKey, JSON.stringify({words: DL.words, locked: DL.locked}));
+  } catch(e){}
+}
+
+function App_dailyStart(){
+  dlLoadOrPick();
+  if(DL.words.length === 0){
+    showToast('🎉 Bạn đã học hết từ ở cấp độ này!', 'grn');
+    return;
+  }
+  DL.wordIdx = 0;
+  DL.phase = 1;
+  DL.phaseStep = 0;
+  DL.answered = false;
+  DL.correct = [];
+  nav('daily');
+}
+
+function dlRender(){
+  if(!DL.words || DL.words.length === 0){ dlLoadOrPick(); }
+  dlUpdateHeader();
+  dlUpdateDots();
+
+  // Nếu đã xong tất cả từ ở phase hiện tại
+  if(DL.words.length === 0){ nav('vocab'); return; }
+  if(DL.wordIdx >= DL.words.length){
+    if(DL.phase === 1){ DL.phase=2; DL.wordIdx=0; showToast('✓ Xong vòng 1! Bắt đầu vòng 2 →','cyn'); }
+    else if(DL.phase === 2){ DL.phase=3; DL.wordIdx=0; showToast('✓ Xong vòng 2! Bắt đầu vòng 3 →','yel'); }
+    else { dlFinish(); return; }
+  }
+
+  var body = document.getElementById('dl-body');
+  if(!body) return;
+
+  if(DL.phase === 1){
+    dlRenderPhase1(body);
+  } else if(DL.phase === 2){
+    dlRenderPhase2(body);
+  } else if(DL.phase === 3){
+    dlRenderPhase3(body);
+  }
+}
+
+function dlUpdateHeader(){
+  var locked = DL.locked.length;
+  var el = document.getElementById('dl-score-num');
+  if(el) el.textContent = locked + '/7';
+  var ph = document.getElementById('dl-phase-lbl');
+  var phNames = ['','Vòng 1: Xem','Vòng 2: Nhớ','Vòng 3: Chắc'];
+  if(ph) ph.textContent = phNames[DL.phase] || 'Xong!';
+}
+
+function dlUpdateDots(){
+  var el = document.getElementById('dl-dots');
+  if(!el) return;
+  var h = '';
+  for(var i=0; i<DL.words.length; i++){
+    var cls = 'dl-step-dot';
+    if(DL.locked.indexOf(i) >= 0) cls += ' done';
+    else if(i === DL.wordIdx) cls += ' active';
+    h += '<div class="'+cls+'"></div>';
+  }
+  el.innerHTML = h;
+}
+
+// ── Vòng 1: Hiển thị từ, lật để xem nghĩa ──────────────────────
+function dlRenderPhase1(body){
+  var entry = DL.words[DL.wordIdx];
+  if(!entry){ dlNextWord(); return; }
+  var w = entry.w;
+  var shown = DL.phaseStep > 0;
+
+  body.innerHTML = '<div style="padding:0 0 24px;">' +
+    '<div style="text-align:center;margin-bottom:8px;">' +
+    '<span class="dl-phase-badge" style="background:rgba(90,200,250,0.12);color:var(--cyn);border:1px solid rgba(90,200,250,0.3);">👁 Vòng 1 — Xem & ghi nhớ</span>' +
+    '</div>' +
+
+    '<div class="dl-card" onclick="App.dlFlip()" style="cursor:pointer;margin-bottom:14px;">' +
+    '<div style="font-size:36px;font-weight:900;font-family:var(--serif);color:var(--tx);margin-bottom:6px;letter-spacing:-0.5px;">'+w.ru+'</div>' +
+    '<div style="font-size:13px;color:var(--com);font-family:var(--mono);margin-bottom:'+(shown?'16px':'4px')+';">/ '+w.ph+' /</div>' +
+    (shown
+      ? '<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:14px;margin-top:2px;">' +
+        '<div style="font-size:20px;font-weight:700;color:var(--tx);margin-bottom:4px;">'+w.vn+'</div>' +
+        (w.en ? '<div style="font-size:12px;color:var(--com);">'+w.en+'</div>' : '') +
+        '</div>'
+      : '<div style="font-size:13px;color:rgba(255,255,255,0.25);padding:10px 0;">👆 Nhấn để xem nghĩa</div>'
+    ) +
+    '</div>' +
+
+    (shown
+      ? '<button class="btn" style="background:rgba(255,159,10,0.12);border-color:rgba(255,159,10,0.4);color:#ff9f0a;" onclick="App.dlPhase1Next()">Đã nhớ → Tiếp theo</button>'
+      : '<div style="text-align:center;font-size:11px;color:var(--com);">Từ '+(DL.wordIdx+1)+' / '+DL.words.length+'</div>'
+    ) +
+    '</div>';
+}
+
+function App_dlFlip(){
+  DL.phaseStep = 1;
+  dlRender();
+  if(DL.words[DL.wordIdx]) speak(DL.words[DL.wordIdx].w.ru);
+}
+
+function App_dlPhase1Next(){
+  DL.wordIdx++;
+  DL.phaseStep = 0;
+  DL.answered = false;
+  dlRender();
+}
+
+// ── Vòng 2: Thấy tiếng Nga → chọn nghĩa tiếng Việt ──────────────
+function dlRenderPhase2(body){
+  var entry = DL.words[DL.wordIdx];
+  if(!entry){ dlRender(); return; }
+  var w = entry.w;
+
+  // Generate 4 options (1 đúng + 3 sai)
+  var opts = dlGenOpts(DL.wordIdx, 'vn');
+
+  body.innerHTML = '<div style="padding:0 0 24px;">' +
+    '<div style="text-align:center;margin-bottom:8px;">' +
+    '<span class="dl-phase-badge" style="background:rgba(255,214,10,0.10);color:var(--yel);border:1px solid rgba(255,214,10,0.3);">🧠 Vòng 2 — Tiếng Nga → Nghĩa</span>' +
+    '</div>' +
+
+    '<div class="dl-card" style="margin-bottom:16px;cursor:pointer;" onclick="App.dlSpeak2()">' +
+    '<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// đây là từ gì?</div>' +
+    '<div style="font-size:38px;font-weight:900;font-family:var(--serif);color:var(--tx);letter-spacing:-0.5px;">'+w.ru+'</div>' +
+    '<div style="font-size:12px;color:var(--com);margin-top:6px;">/ '+w.ph+' / &nbsp;🔊</div>' +
+    '</div>' +
+
+    '<div id="dl-opts2">' +
+    opts.map(function(o,i){
+      return '<div class="dl-choice" id="dl2-opt'+i+'" onclick="App.dlAnswer2('+i+')">' +
+        '<div class="dl-word-badge" style="background:rgba(255,255,255,0.2);"></div>' +
+        '<span style="font-size:14px;font-weight:600;">'+o.text+'</span>' +
+        '</div>';
+    }).join('') +
+    '</div></div>';
+
+  DL._opts2 = opts;
+  DL.answered = false;
+}
+
+function App_dlSpeak2(){
+  if(DL.words[DL.wordIdx]) speak(DL.words[DL.wordIdx].w.ru);
+}
+
+function App_dlAnswer2(i){
+  if(DL.answered) return;
+  DL.answered = true;
+  var correct = DL._opts2 && DL._opts2[i] && DL._opts2[i].correct;
+  var el = document.getElementById('dl2-opt'+i);
+  if(correct){
+    if(el){ el.classList.add('correct'); el.querySelector('.dl-word-badge').style.background='var(--grn)'; }
+    if(navigator.vibrate) navigator.vibrate([6,30,6]);
+    setTimeout(function(){
+      DL.wordIdx++;
+      DL.answered = false;
+      if(DL.wordIdx >= DL.words.length){
+        DL.wordIdx = 0;
+        DL.phase = 3;
+        showToast('✓ Xong vòng 2! Bắt đầu vòng 3 →', 'yel');
+      }
+      dlRender();
+    }, 600);
+  } else {
+    if(el){ el.classList.add('wrong'); el.querySelector('.dl-word-badge').style.background='var(--pnk)'; }
+    if(navigator.vibrate) navigator.vibrate([80]);
+    // Highlight correct answer
+    if(DL._opts2) DL._opts2.forEach(function(o,j){
+      if(o.correct){ var ce=document.getElementById('dl2-opt'+j); if(ce) ce.classList.add('correct'); }
+    });
+    // Move this word to end to retry
+    setTimeout(function(){
+      // Xáo từ sai lên sau 2 vị trí
+      var entry = DL.words.splice(DL.wordIdx, 1)[0];
+      var insertAt = Math.min(DL.wordIdx + 2, DL.words.length);
+      DL.words.splice(insertAt, 0, entry);
+      DL.answered = false;
+      dlRender();
+    }, 900);
+  }
+}
+
+// ── Vòng 3: Thấy nghĩa tiếng Việt → chọn tiếng Nga ─────────────
+function dlRenderPhase3(body){
+  var entry = DL.words[DL.wordIdx];
+  if(!entry){ dlFinish(); return; }
+  var w = entry.w;
+
+  var opts = dlGenOpts(DL.wordIdx, 'ru');
+
+  body.innerHTML = '<div style="padding:0 0 24px;">' +
+    '<div style="text-align:center;margin-bottom:8px;">' +
+    '<span class="dl-phase-badge" style="background:rgba(52,199,89,0.10);color:var(--grn);border:1px solid rgba(52,199,89,0.3);">💪 Vòng 3 — Nghĩa → Tiếng Nga</span>' +
+    '</div>' +
+
+    '<div class="dl-card" style="margin-bottom:16px;">' +
+    '<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// chọn tiếng Nga đúng:</div>' +
+    '<div style="font-size:26px;font-weight:700;color:var(--tx);line-height:1.3;">'+w.vn+'</div>' +
+    (w.en ? '<div style="font-size:12px;color:var(--com);margin-top:6px;">'+w.en+'</div>' : '') +
+    '</div>' +
+
+    '<div id="dl-opts3">' +
+    opts.map(function(o,i){
+      return '<div class="dl-choice" id="dl3-opt'+i+'" onclick="App.dlAnswer3('+i+')">' +
+        '<div class="dl-word-badge" style="background:rgba(255,255,255,0.2);"></div>' +
+        '<span style="font-size:17px;font-weight:700;font-family:var(--serif);">'+o.text+'</span>' +
+        '</div>';
+    }).join('') +
+    '</div></div>';
+
+  DL._opts3 = opts;
+  DL.answered = false;
+}
+
+function App_dlAnswer3(i){
+  if(DL.answered) return;
+  DL.answered = true;
+  var correct = DL._opts3 && DL._opts3[i] && DL._opts3[i].correct;
+  var el = document.getElementById('dl3-opt'+i);
+  if(correct){
+    if(el){ el.classList.add('correct'); el.querySelector('.dl-word-badge').style.background='var(--grn)'; }
+    if(navigator.vibrate) navigator.vibrate([6,30,6]);
+    // Từ học chắc!
+    var entry = DL.words[DL.wordIdx];
+    if(entry && DL.locked.indexOf(DL.wordIdx) < 0){
+      DL.locked.push(DL.wordIdx);
+      // Lưu vào mastered + SRS
+      S.mastered[entry.key] = true; saveM();
+      var nxt = srsNext(S.srsData[entry.key], 3); // easy
+      S.srsData[entry.key] = nxt; saveSRS();
+      dlSave();
+    }
+    setTimeout(function(){
+      DL.wordIdx++;
+      DL.answered = false;
+      if(DL.wordIdx >= DL.words.length){
+        dlFinish();
+      } else {
+        dlRender();
+      }
+    }, 700);
+  } else {
+    if(el){ el.classList.add('wrong'); el.querySelector('.dl-word-badge').style.background='var(--pnk)'; }
+    if(navigator.vibrate) navigator.vibrate([80]);
+    setTimeout(function(){
+      var entry = DL.words.splice(DL.wordIdx, 1)[0];
+      DL.words.push(entry);
+      DL.answered = false;
+      dlRender();
+    }, 900);
+  }
+}
+
+// ── Generate options ─────────────────────────────────────────────
+function dlGenOpts(idx, field){
+  var correct = DL.words[idx];
+  var pool = [];
+  // Lấy từ các entry khác trong DL.words + random từ DB
+  DL.words.forEach(function(e,i){ if(i!==idx) pool.push(e.w); });
+
+  // Thêm từ ngẫu nhiên từ DB nếu cần
+  var allWs = Object.values(vocabularyDatabase[S.level]).flat();
+  for(var i=allWs.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=allWs[i]; allWs[i]=allWs[j]; allWs[j]=tmp;
+  }
+  allWs.forEach(function(w){
+    if(pool.length < 8 && w.ru !== correct.w.ru) pool.push(w);
+  });
+
+  // Pick 3 wrong
+  var wrong = pool.slice(0,3);
+  var opts = [{text: correct.w[field]||'?', correct: true}]
+    .concat(wrong.map(function(w){ return {text:w[field]||'?', correct:false}; }));
+
+  // Shuffle
+  for(var i=opts.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=opts[i]; opts[i]=opts[j]; opts[j]=tmp;
+  }
+  return opts;
+}
+
+// ── Finish ───────────────────────────────────────────────────────
+function dlFinish(){
+  var locked = DL.locked.length;
+  renderVocab();
+
+  var em = locked >= 7 ? '🏆' : locked >= 5 ? '🥈' : '💪';
+  document.getElementById('dld-em').textContent = em;
+  document.getElementById('dld-title').textContent = locked >= 7 ? 'Hoàn hảo!' : locked >= 5 ? 'Tốt lắm!' : 'Cố lên!';
+  document.getElementById('dld-msg').textContent = 'Bạn đã học chắc ' + locked + '/7 từ hôm nay. ' +
+    (locked < 7 ? (7-locked) + ' từ sẽ xuất hiện lại ngày mai.' : 'Tất cả đều vào SRS để ôn tập!');
+
+  var stats = [
+    {label:'Từ học chắc', val: locked + '/7', color:'var(--grn)'},
+    {label:'Vào SRS', val: locked + ' từ', color:'var(--cyn)'},
+    {label:'Ôn lại sau', val: '1 ngày', color:'var(--yel)'},
+    {label:'Streak', val: dlStreak() + ' ngày 🔥', color:'#ff9f0a'},
+  ];
+  document.getElementById('dld-stats').innerHTML = stats.map(function(s){
+    return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">' +
+      '<div style="font-size:16px;font-weight:800;color:'+s.color+';">'+s.val+'</div>' +
+      '<div style="font-size:10px;color:var(--com);margin-top:2px;">'+s.label+'</div>' +
+      '</div>';
+  }).join('');
+
+  var wordsHtml = '<div style="font-size:10px;color:#ff9f0a;font-weight:700;margin-bottom:8px;font-family:var(--mono);">// 7 từ hôm nay</div>';
+  DL.words.forEach(function(e,i){
+    var done = DL.locked.indexOf(i) >= 0;
+    wordsHtml += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+      '<span style="color:'+(done?'var(--grn)':'var(--pnk)')+';">'+(done?'✓':'✗')+'</span>' +
+      '<span style="font-family:var(--serif);font-weight:700;font-size:14px;flex:1;">'+e.w.ru+'</span>' +
+      '<span style="font-size:11px;color:var(--com);">'+e.w.vn+'</span>' +
+      '</div>';
+  });
+  document.getElementById('dld-words').innerHTML = wordsHtml;
+
+  // Save streak
+  dlSaveStreak();
+  nav('daily-done');
+}
+
+function dlStreak(){
+  try {
+    var streak = parseInt(localStorage.getItem('dl-streak')||'0');
+    var lastDay = localStorage.getItem('dl-last-day')||'';
+    var today = dlTodayKey();
+    if(lastDay === today) return streak;
+    return streak;
+  } catch(e){ return 0; }
+}
+
+function dlSaveStreak(){
+  try {
+    var today = dlTodayKey();
+    var lastDay = localStorage.getItem('dl-last-day')||'';
+    var streak = parseInt(localStorage.getItem('dl-streak')||'0');
+    // Check if yesterday
+    var d = new Date();
+    d.setDate(d.getDate()-1);
+    var yesterday = 'dl-'+S.level+'-'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    if(lastDay === yesterday) streak++;
+    else if(lastDay !== today) streak = 1;
+    localStorage.setItem('dl-streak', String(streak));
+    localStorage.setItem('dl-last-day', today);
+  } catch(e){}
+}
+
+function App_dailyExit(){
+  nav('vocab');
+}
+
 
 // ═══ ROADMAP ════════════════════════════════════════════════
 function renderRoad(){
@@ -8098,7 +8779,15 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   quizStart,qzAnswer,speakQZ,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   lkSearch,lkFilter,lkClear,
-  setLang,init,renderRoad};
+  setLang,init,renderRoad,
+  dailyStart:App_dailyStart,
+  dlFlip:App_dlFlip,
+  dlPhase1Next:App_dlPhase1Next,
+  dlSpeak2:App_dlSpeak2,
+  dlAnswer2:App_dlAnswer2,
+  dlAnswer3:App_dlAnswer3,
+  dailyExit:App_dailyExit
+};
 })();
 document.addEventListener('DOMContentLoaded',App.init);
 
@@ -8243,13 +8932,14 @@ document.addEventListener('DOMContentLoaded',App.init);
 //  TELEGRAM-STYLE TAB SWIPE ENGINE — v5
 // ══════════════════════════════════════════════════════════════
 (function(){
-  var TABS    = ['vocab','srs','grammar','lookup','road'];
-  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup','bn-road'];
+  var TABS    = ['vocab','srs','grammar','lookup','daily','road'];
+  var BTN_IDS = ['bn-vocab','bn-srs','bn-grammar','bn-lookup','bn-daily','bn-road'];
   var COLORS  = [
     {fg:'var(--cyn)', glow:'rgba(90,200,250,0.80)'},
     {fg:'var(--yel)', glow:'rgba(255,214,10,0.80)'},
     {fg:'var(--pur)', glow:'rgba(191,90,242,0.80)'},
     {fg:'var(--grn)', glow:'rgba(52,199,89,0.80)'},
+    {fg:'#ff9f0a', glow:'rgba(255,159,10,0.80)'},
     {fg:'var(--org)', glow:'rgba(255,159,10,0.80)'},
   ];
 
@@ -8519,3 +9209,39 @@ document.addEventListener('DOMContentLoaded',App.init);
 </script>
 </body>
 </html>
+/* ── Daily Learn ──────────────────────────────────────────── */
+#bn-daily.on .bIcon svg,#bn-daily.on .bLbl{color:#ff9f0a;}
+#bn-daily.on .bIcon{filter:drop-shadow(0 0 7px rgba(255,159,10,0.85));}
+
+.dl-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s;}
+.dl-step-dot.done{background:var(--grn);}
+.dl-step-dot.active{background:#ff9f0a;box-shadow:0 0 8px rgba(255,159,10,.8);}
+
+.dl-card{
+  background:rgba(255,159,10,0.06);
+  border:1px solid rgba(255,159,10,0.25);
+  border-radius:24px;padding:28px 22px;
+  text-align:center;
+  box-shadow:0 1px 0 rgba(255,255,255,0.08) inset, 0 8px 32px rgba(0,0,0,0.3);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+.dl-phase-badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;
+  margin-bottom:16px;
+}
+.dl-choice{
+  border-radius:14px;border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding:13px 14px;margin-bottom:8px;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:transform .1s cubic-bezier(.34,1.56,.64,1),border-color .12s,background .12s;
+  min-height:52px;
+}
+.dl-choice:active{transform:scale3d(.975,.975,1);}
+.dl-choice.correct{border-color:var(--grn)!important;background:rgba(52,199,89,0.12)!important;}
+.dl-choice.wrong{border-color:var(--pnk)!important;background:rgba(255,55,95,0.10)!important;}
+.dl-word-badge{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
