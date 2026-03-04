@@ -1221,7 +1221,7 @@ body::after{
       <path d="M4 4.5C4 3.67 4.67 3 5.5 3H11V13L8.5 11.5L6 13V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M11 3H18.5C19.33 3 20 3.67 20 4.5V18.5C20 19.88 18.88 21 17.5 21H6.5C5.12 21 4 19.88 4 18.5V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <text x="13" y="17.5" font-size="6" font-weight="700" fill="currentColor" font-family="serif" text-anchor="middle">Я</text>
-    </svg></span><span class="bLbl" id="bn-vocab-lbl">TỪ VỰNG</span>
+    </svg></span><span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
   </button>
   <button class="bBtn" id="bn-srs" onclick="App.srsStart()">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1229,7 +1229,7 @@ body::after{
       <rect x="8" y="9" width="13" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
       <path d="M17.5 5.5L20 8L17.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M20 8H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-srs-lbl">ÔN TẬP</span>
+    </svg></span><span class="bLbl" id="bn-srs-lbl">Ôn tập</span>
   </button>
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1239,7 +1239,7 @@ body::after{
       <line x1="7" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <circle cx="15" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
       <line x1="13" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-grammar-lbl">NGỮ PHÁP</span>
+    </svg></span><span class="bLbl" id="bn-grammar-lbl">Ngữ pháp</span>
   </button>
   <button class="bBtn" id="bn-lookup" onclick="App.nav('lookup')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1247,13 +1247,13 @@ body::after{
       <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-lookup-lbl">TRA TỪ</span>
+    </svg></span><span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
   </button>
   <button class="bBtn" id="bn-road" onclick="App.nav('road')">
     <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M3 20L8 4M16 4L21 20M8 4H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       <line x1="6" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
-    </svg></span><span class="bLbl" id="bn-road-lbl">LỘ TRÌNH</span>
+    </svg></span><span class="bLbl" id="bn-road-lbl">Lộ trình</span>
   </button>
 </div>
 </div>
@@ -6595,7 +6595,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'TỪ VỰNG', 'nav.review': 'ÔN TẬP', 'nav.grammar': 'NGỮ PHÁP', 'nav.read': 'ĐỌC', 'nav.lookup': 'TRA TỪ', 'nav.road': 'LỘ TRÌNH',
+    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'ĐỌC', 'nav.lookup': 'Tra từ', 'nav.road': 'Lộ trình',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -6689,9 +6689,9 @@ const S={
 };
 
 // STORAGE
-function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');if(m)S.mastered=JSON.parse(m);if(s)S.srsData=JSON.parse(s);if(lg)S.lang=lg;}catch(e){}}
+function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m)S.mastered=JSON.parse(m);if(s)S.srsData=JSON.parse(s);if(lg)S.lang=lg;if(lv)S.level=lv;}catch(e){}}
 function saveM(){try{localStorage.setItem('mw',JSON.stringify(S.mastered));}catch(e){}}
-function save(){try{localStorage.setItem('lang',S.lang);}catch(e){}}
+function save(){try{localStorage.setItem('lang',S.lang);localStorage.setItem('lv',S.level);}catch(e){}}
 function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}catch(e){}}
 
 // SPEAK
@@ -6754,7 +6754,8 @@ function nav(name){
     // iOS Haptic (Safari 13+)
     if(window.navigator?.vibrate) navigator.vibrate(6);
 
-    // Render road when navigating to it
+    // Re-render screens khi quay lại để cập nhật tiến độ
+    if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
     if(name === 'road') setTimeout(renderRoad, 40);
   });
 }
@@ -6872,7 +6873,7 @@ function _topicName(name,lang){
 }
 
 function setLevel(lv){
-  S.level=lv;
+  S.level=lv; save();
   ['A1','A2','B1','B2'].forEach(l=>{
     const b=document.getElementById('lb-'+l);if(!b)return;
     b.classList.toggle('on',l===lv);
@@ -6965,7 +6966,15 @@ function fcRender(){
   // Auto-mark mastered on first reveal
   if(S.fcShown){
     const key=`${S.level}-${S.topic}-${S.fcIdx}`;
-    if(!S.mastered[key]){S.mastered[key]=true;saveM();showToast('✓ +1 từ đã xem','cyn');}
+    if(!S.mastered[key]){
+      S.mastered[key]=true;saveM();
+      // Thêm vào SRS schedule nếu chưa có
+      if(!S.srsData[key]){
+        S.srsData[key]={interval:1,easeFactor:2.5,dueDate:Date.now()+86400000,reps:0,lapses:0};
+        saveSRS();
+      }
+      showToast('✓ +1 từ đã xem · sẽ ôn sau 1 ngày','cyn');
+    }
   }
   document.getElementById('fc-prev').style.opacity=S.fcIdx===0?'0.3':'1';
   document.getElementById('fc-next').textContent=S.fcIdx===ws.length-1?'exit()':'next() →';
@@ -7053,7 +7062,15 @@ function qzAnswer(i){
   if(S.qzAnswered)return; S.qzAnswered=true;
   const ws=vocabularyDatabase[S.level][S.topic];
   const w=ws[S.qzIdx]; const ok=S.qzOpts[i].ru===w.ru;
-  S.qzScore.t++; if(ok){S.qzScore.c++;S.mastered[`${S.level}-${S.topic}-${S.qzIdx}`]=true;saveM();}
+  S.qzScore.t++;
+  if(ok){
+    S.qzScore.c++;
+    var qzKey=`${S.level}-${S.topic}-${S.qzIdx}`;
+    S.mastered[qzKey]=true; saveM();
+    // Cập nhật SRS: trả lời đúng = "good" (q=2)
+    var qzNxt=srsNext(S.srsData[qzKey],2);
+    S.srsData[qzKey]=qzNxt; saveSRS();
+  }
   S.qzOpts.forEach((o,j)=>{
     const el=document.getElementById('qo'+j); if(!el)return;
     const isC=o.ru===w.ru; const isSel=j===i;
