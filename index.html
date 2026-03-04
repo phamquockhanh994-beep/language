@@ -554,11 +554,13 @@ body::after{
   transition:color .14s ease;
   letter-spacing:0.1px;line-height:1;
 }
-#bn-vocab.on   .bIcon svg,#bn-vocab.on   .bLbl{color:var(--cyn);}
-#bn-srs.on     .bIcon svg,#bn-srs.on     .bLbl{color:var(--yel);}
-#bn-grammar.on .bIcon svg,#bn-grammar.on .bLbl{color:var(--pur);}
-#bn-lookup.on  .bIcon svg,#bn-lookup.on  .bLbl{color:var(--grn);}
-#bn-road.on    .bIcon svg,#bn-road.on    .bLbl{color:var(--org);}
+.bBtn.on .bIcon svg,.bBtn.on .bLbl{color:var(--tx);}
+
+
+
+
+
+
 #bn-vocab.on   .bIcon{filter:drop-shadow(0 0 7px rgba(90,200,250,0.75));}
 #bn-srs.on     .bIcon{filter:drop-shadow(0 0 7px rgba(255,214,10,0.75));}
 #bn-grammar.on .bIcon{filter:drop-shadow(0 0 7px rgba(191,90,242,0.75));}
@@ -1128,80 +1130,6 @@ body::after{
 </div>
 
 
-<!-- ПОИСК -->
-<div id="s-lookup" class="screen">
-  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
-    <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">ПОИСК</div>
-    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// загрузка...</div>
-  </div>
-  <div style="padding:12px 16px 0;flex-shrink:0;">
-    <div style="position:relative;">
-      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:0.35;">🔍</span>
-      <input id="lk-input" type="search" placeholder="Введите слово на русском или вьетнамском..."
-        autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-        oninput="App.lkSearch(this.value)"
-        onkeydown="if(event.key==='Escape')App.lkClear();">
-      <button onclick="App.lkClear()" id="lk-clear-btn"
-        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
-    </div>
-    <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
-      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Все</button>
-      <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
-      <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
-      <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
-      <button class="lk-chip" id="lk-f-B2"  onclick="App.lkFilter('B2')">B2</button>
-    </div>
-  </div>
-  <div class="scrl" style="padding-top:12px;" id="lk-results">
-    <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
-      <div style="font-size:40px;margin-bottom:14px;">📖</div>
-      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Введите слово для поиска</div>
-      <div style="font-size:11px;">// поддержка: рус · вьет · транскрипция</div>
-    </div>
-  </div>
-</div>
-
-<div id="s-road" class="screen">
-  <div class="hdr" style="padding:14px 16px;">
-    <div>
-      <div style="font-size:10px;color:var(--org);margin-bottom:2px;font-family:var(--mono);letter-spacing:0.5px;">&gt; roadmap.exe --level=auto</div>
-      <div class="hdr-title" style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">LỘ TRÌNH HỌC</div>
-      <div class="hdr-sub">Lộ trình từ A1 → C1 · 6 giai đoạn</div>
-    </div>
-  </div>
-  <div class="scrl" id="road-scrl">
-    <div id="road-content"></div>
-  </div>
-</div>
-
-<div id="s-grammar" class="screen">
-  <!-- Header fixed -->
-  <div style="background:rgba(6,8,13,0.70);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 76px 14px 16px;flex-shrink:0;">
-    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;font-family:var(--mono);letter-spacing:0.5px;">&gt; grammar.exe --lang=ru</div>
-    <div id="gram-title" style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">ГРАММАТИКА</div>
-  </div>
-
-  <!-- Tab pill bar — swipeable like Telegram -->
-  <div style="flex-shrink:0;background:rgba(6,8,13,0.40);border-bottom:1px solid rgba(255,255,255,0.05);">
-    <div id="gram-tabs" style="
-      display:flex;
-      gap:5px;
-      padding:10px 16px 9px;
-    ">
-      <button id="gt-motion" onclick="App.gramTab('motion')" class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
-      <button id="gt-cases"       onclick="App.gramTab('cases')"       class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/></svg><span>6 Cách</span></button>
-      <button id="gt-form"        onclick="App.gramTab('formation')"   class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
-      <button id="gt-conditional" onclick="App.gramTab('conditional')" class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
-      <button id="gt-passive"     onclick="App.gramTab('passive')"     class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
-      <button id="gt-quiz"        onclick="App.gramTab('quiz')"        class="gram-tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Đố vui</span></button>
-    </div>
-  </div>
-
-  <!-- Scrollable content -->
-  <div class="scrl" style="padding-top:14px;" id="gram-body"></div>
-</div>
-
 <!-- CASE DETAIL -->
 <div id="s-case" class="screen">
   <div class="hdr">
@@ -1212,31 +1140,139 @@ body::after{
 </div>
 
 
-<!-- DAILY LEARN SCREEN -->
+<!-- TRA TỪ -->
+<div id="s-lookup" class="screen">
+  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
+    <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">TRA TỪ</div>
+    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// đang tải...</div>
+  </div>
+  <div style="padding:12px 16px 0;flex-shrink:0;">
+    <div style="position:relative;">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:0.35;">🔍</span>
+      <input id="lk-input" type="search" placeholder="Gõ tiếng Nga hoặc tiếng Việt..."
+        autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+        oninput="App.lkSearch(this.value)"
+        onkeydown="if(event.key==='Escape')App.lkClear();">
+      <button onclick="App.lkClear()" id="lk-clear-btn"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
+      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Tất cả</button>
+      <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
+      <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
+      <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
+      <button class="lk-chip" id="lk-f-B2"  onclick="App.lkFilter('B2')">B2</button>
+    </div>
+  </div>
+  <div class="scrl" style="padding-top:12px;" id="lk-results">
+    <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
+      <div style="font-size:40px;margin-bottom:14px;">📖</div>
+      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>
+      <div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div>
+    </div>
+  </div>
+</div>
+
+<div id="s-grammar" class="screen">
+  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
+    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">NGỮ PHÁP TIẾNG NGA</div>
+  </div>
+  <div id="gram-tabs" style="display:flex;gap:5px;padding:10px 16px 9px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;">
+    <button class="gram-tab" id="gt-motion"     onclick="App.gramTab('motion')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
+    <button class="gram-tab" id="gt-cases"      onclick="App.gramTab('cases')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/></svg><span>6 Cách</span></button>
+    <button class="gram-tab" id="gt-form"       onclick="App.gramTab('formation')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
+    <button class="gram-tab" id="gt-conditional" onclick="App.gramTab('conditional')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
+    <button class="gram-tab" id="gt-passive"    onclick="App.gramTab('passive')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
+    <button class="gram-tab" id="gt-quiz"       onclick="App.gramTab('quiz')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Đố vui</span></button>
+  </div>
+  <div class="scrl" style="padding-top:14px;" id="gram-body"></div>
+</div>
+
+<!-- TRA TỪ -->
+<div id="s-lookup" class="screen">
+  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
+    <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">TRA TỪ</div>
+    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// đang tải...</div>
+  </div>
+  <div style="padding:12px 16px 0;flex-shrink:0;">
+    <div style="position:relative;">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:0.35;">🔍</span>
+      <input id="lk-input" type="search" placeholder="Gõ tiếng Nga hoặc tiếng Việt..."
+        autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+        oninput="App.lkSearch(this.value)"
+        onkeydown="if(event.key==='Escape')App.lkClear();">
+      <button onclick="App.lkClear()" id="lk-clear-btn"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
+      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Tất cả</button>
+      <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
+      <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
+      <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
+      <button class="lk-chip" id="lk-f-B2"  onclick="App.lkFilter('B2')">B2</button>
+    </div>
+  </div>
+  <div class="scrl" style="padding-top:12px;" id="lk-results">
+    <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
+      <div style="font-size:40px;margin-bottom:14px;">📖</div>
+      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>
+      <div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div>
+    </div>
+  </div>
+</div>
+
+<div id="s-grammar" class="screen">
+  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
+    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">NGỮ PHÁP TIẾNG NGA</div>
+  </div>
+  <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;">
+    <button class="btn" id="gt-cases" style="font-size:11px;" onclick="App.gramTab('cases')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/><circle cx="7" cy="14" r="2"/><circle cx="17" cy="14" r="2"/><line x1="5" y1="14" x2="2" y2="19"/><line x1="19" y1="14" x2="22" y2="19"/></svg> 6 Cách</button>
+    <button class="btn" id="gt-form" style="font-size:11px;" onclick="App.gramTab('formation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Từ loại</button>
+    <button class="btn" id="gt-quiz" style="font-size:11px;" onclick="App.gramTab('quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Quiz</button>
+  </div>
+  <div class="scrl" style="padding-top:12px;" id="gram-body"></div>
+</div>
+
+<!-- TODAY HUB SCREEN -->
 <div id="s-daily" class="screen">
-  <div class="hdr">
-    <button class="iBtn" onclick="App.dailyExit()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-    </button>
-    <div class="f1">
-      <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" id="dl-header-sub">// 7 từ · hôm nay</div>
-      <div class="hdr-title" style="font-size:17px;" id="dl-header-title">Học hôm nay</div>
+
+  <!-- Hub view (landing) -->
+  <div id="daily-hub" style="display:flex;flex-direction:column;height:100%;">
+    <div style="background:rgba(6,8,13,0.70);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 16px;flex-shrink:0;">
+      <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;">&gt; today.exe</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">HÔM NAY</div>
     </div>
-    <div style="text-align:right;">
-      <div style="font-size:18px;font-weight:800;color:#ff9f0a;font-family:var(--mono);" id="dl-score-num">0/7</div>
-      <div style="font-size:9px;color:var(--com);">từ chắc</div>
+    <div class="scrl" style="padding:14px 16px;" id="daily-hub-body"></div>
+  </div>
+
+  <!-- Lesson view (active learning) -->
+  <div id="daily-lesson" style="display:none;flex-direction:column;height:100%;">
+    <div class="hdr">
+      <button class="iBtn" onclick="App.dailyExit()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="f1">
+        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" id="dl-header-sub">// 7 từ · hôm nay</div>
+        <div class="hdr-title" style="font-size:17px;" id="dl-header-title">Học hôm nay</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:18px;font-weight:800;color:#ff9f0a;font-family:var(--mono);" id="dl-score-num">0/7</div>
+        <div style="font-size:9px;color:var(--com);">từ chắc</div>
+      </div>
+    </div>
+    <div style="padding:10px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:6px;">
+      <div style="display:flex;gap:5px;align-items:center;flex:1;" id="dl-dots"></div>
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);" id="dl-phase-lbl">vòng 1/3</div>
+    </div>
+    <div class="scrl" id="dl-scrl" style="padding-top:8px;">
+      <div id="dl-body"></div>
     </div>
   </div>
 
-  <!-- word progress dots -->
-  <div style="padding:10px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:6px;">
-    <div style="display:flex;gap:5px;align-items:center;flex:1;" id="dl-dots"></div>
-    <div style="font-size:10px;color:var(--com);font-family:var(--mono);" id="dl-phase-lbl">vòng 1/3</div>
-  </div>
-
-  <div class="scrl" id="dl-scrl" style="padding-top:8px;">
-    <div id="dl-body"></div>
-  </div>
 </div>
 
 <!-- DAILY DONE SCREEN -->
@@ -1338,7 +1374,7 @@ body::after{
       <line x1="6" y1="17" x2="12" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     </svg></span><span class="bLbl" id="bn-read-lbl">Đọc</span>
   </button>
-  <button class="bBtn" id="bn-daily" onclick="App.dailyStart()" style="position:relative;">
+  <button class="bBtn" id="bn-daily" onclick="App.nav('daily')" style="position:relative;">
     <span class="bIcon" style="position:relative;display:inline-block;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
@@ -1348,12 +1384,6 @@ body::after{
       <span id="daily-nav-badge" style="display:none;position:absolute;top:-4px;right:-6px;background:#ff9f0a;color:#000;font-size:9px;font-weight:800;border-radius:8px;padding:1px 4px;font-family:var(--mono);min-width:14px;text-align:center;line-height:14px;"></span>
     </span>
     <span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
-  </button>
-  <button class="bBtn" id="bn-road" onclick="App.nav('road')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 20L8 4M16 4L21 20M8 4H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <line x1="6" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
-    </svg></span><span class="bLbl" id="bn-road-lbl">Lộ trình</span>
   </button>
 </div>
 </div>
@@ -6423,7 +6453,7 @@ const wordFamilies = {
       { word: 'Проговорить', vn: 'Phát âm / Nói hết', ph: 'progovorít\'' },
     ],
     related: [
-      { word: 'Разговор', vn: 'Cuộc trò chuyện', ph: 'razgovór', type: 'HCB' },
+      { word: 'Разговор', vn: 'Cuộc trò chuyện', ph: 'razgovór', type: 'Hcb' },
       { word: 'Говорящий', vn: 'Người đang nói', ph: 'govoryáshchiy', type: 'HCB' },
       { word: 'Разговорник', vn: 'Sách hội thoại', ph: 'razgovórnik', type: 'HCB' },
       { word: 'Говорить по телефону', vn: 'Nói chuyện điện thoại', ph: 'govorít po telefónu', type: 'CB' },
@@ -7200,7 +7230,7 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 var i18n = {
   vi: {
     // Bottom Nav
-    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'ĐỌC', 'nav.lookup': 'Tra từ', 'nav.road': 'Lộ trình', 'nav.daily': 'Hôm nay',
+    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'Đọc', 'nav.lookup': 'Tra từ', 'nav.daily': 'Hôm nay',
     // Vocab screen
     'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
@@ -7243,7 +7273,7 @@ var i18n = {
     'gram.wf.noun2': 'Danh từ', 'gram.wf.verb2': 'Động từ', 'gram.wf.adj2': 'Tính từ', 'gram.wf.adv2': 'Trạng từ',
   },
   en: {
-    'nav.vocab': 'VOCAB', 'nav.review': 'REVIEW', 'nav.grammar': 'GRAMMAR', 'nav.read': 'READ', 'nav.lookup': 'SEARCH', 'nav.road': 'ROADMAP', 'nav.daily': 'Today',
+    'nav.vocab': 'Vocab', 'nav.review': 'Review', 'nav.grammar': 'Grammar', 'nav.read': 'Read', 'nav.lookup': 'Search', 'nav.road': 'Roadmap', 'nav.daily': 'Today',
     'vocab.loading': '// loading...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
     'vocab.srs.algo': '// SM-2 algorithm',
     'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
@@ -7259,7 +7289,7 @@ var i18n = {
     'srs.review_again': 'review_again()', 'srs.return': 'return_home()',
     'quiz.translate': '// translate to English:',
     'quiz.complete': '// QUIZ COMPLETE', 'quiz.retry': 'retry()', 'quiz.return': 'return()',
-    'stories.title': 'READ RUSSIAN', 'stories.sub': "// Children's stories · News articles",
+    'stories.title': 'Read Russian', 'stories.sub': "// Children's stories · News articles",
     'stories.all': 'All', 'stories.tales': '🧚 Stories', 'stories.news': '📰 News',
     'stories.words': '// WORDS IN THIS PASSAGE',
     'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cases',
@@ -7267,7 +7297,7 @@ var i18n = {
     'donate.label': '☕ Support dev',
     'fc.wf.label': 'Nouns', 'fc.wf.verb': 'Verbs', 'fc.wf.adj': 'Adjectives', 'fc.wf.adv': 'Adverbs',
     'srs.due': 'words due for review', 'srs.none': 'Nothing to review',
-    'srs.nav': 'REVIEW', 'srs.nav.due': 'REVIEW',
+    'srs.nav': 'Review', 'srs.nav.due': 'Review',
     'vocab.sub': 'words learned',
     'topic.words': 'words',
     'wf.see': '🌿 // word family', 'wf.hide': '🌿 // hide family',
@@ -7303,10 +7333,10 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','road','daily','daily-done','read'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',road:'bn-road',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','daily','daily-done','read'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
-const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,road:0,daily:0,'daily-done':1,read:0};
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0};
 
 function nav(name){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
@@ -7361,9 +7391,8 @@ function nav(name){
 
     // Re-render screens khi quay lại để cập nhật tiến độ
     if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
-    if(name === 'daily') setTimeout(function(){ if(typeof dlRender==='function') dlRender(); }, 30);
+    if(name === 'daily') setTimeout(function(){ if(typeof renderDailyHub==='function' && !DL.lessonActive) renderDailyHub(); }, 30);
     if(name === 'read') setTimeout(rdInit, 30);
-    if(name === 'road') setTimeout(renderRoad, 40);
   });
 }
 
@@ -8792,9 +8821,156 @@ function dlSave(){
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+// TODAY HUB — renderDailyHub()
+// ══════════════════════════════════════════════════════════════
+function renderDailyHub(){
+  var el = document.getElementById('daily-hub-body'); if(!el) return;
+  var hub = document.getElementById('daily-hub');
+  var lesson = document.getElementById('daily-lesson');
+  if(hub){ hub.style.display='flex'; }
+  if(lesson){ lesson.style.display='none'; }
+
+  var curLvl = S.level || 'A1';
+  var d = new Date();
+  var days   = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+  var months = ['tháng 1','tháng 2','tháng 3','tháng 4','tháng 5','tháng 6',
+                'tháng 7','tháng 8','tháng 9','tháng 10','tháng 11','tháng 12'];
+  var dateStr = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()];
+
+  function lvlProgress(lvl){
+    var total=0, done=0, db=vocabularyDatabase[lvl]||{};
+    Object.keys(db).forEach(function(t){
+      var ws=db[t]; if(!Array.isArray(ws)) return;
+      total+=ws.length;
+      ws.forEach(function(w){ if(S.mastered&&S.mastered[w.ru]) done++; });
+    });
+    return {total:total, done:done, pct:total>0?Math.round(done/total*100):0};
+  }
+
+  // Today word count
+  dlLoadOrPick();
+  var wCount = DL.words ? DL.words.length : 0;
+
+  var stages = [
+    {level:'A1', color:'#5ac8fa', icon:'🔤', title:'Cơ bản'},
+    {level:'A2', color:'#34c759', icon:'💬', title:'Sinh tồn'},
+    {level:'B1', color:'#ffd60a', icon:'⚡', title:'Thông thạo'},
+    {level:'B2', color:'#bf5af2', icon:'🚀', title:'Nâng cao'},
+    {level:'C1', color:'#ff9f0a', icon:'🏆', title:'Thành thạo'},
+  ];
+
+  // Find current stage index
+  var curIdx = 0;
+  for(var si=0;si<stages.length;si++) if(stages[si].level===curLvl){curIdx=si;break;}
+
+  var h = '';
+
+  // Date
+  h += '<div style="font-size:11px;color:var(--com);font-family:var(--mono);margin-bottom:14px;">'+dateStr+'</div>';
+
+  // Start button
+  if(wCount > 0){
+    h += '<div onclick="App.dailyStart()" style="'
+       + 'width:100%;padding:18px 20px;border-radius:20px;cursor:pointer;margin-bottom:16px;'
+       + 'border:1px solid rgba(255,159,10,.45);'
+       + 'background:linear-gradient(135deg,rgba(255,159,10,.14),rgba(255,107,107,.06));'
+       + 'box-shadow:0 0 28px rgba(255,159,10,.1) inset;">'
+       + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:6px;">// HỌC HÔM NAY</div>'
+       + '<div style="font-size:26px;font-weight:900;color:var(--tx);font-family:var(--hdisplay);">'
+       + wCount + ' từ mới  →</div>'
+       + '<div style="font-size:12px;color:var(--com);margin-top:4px;">~'+Math.ceil(wCount*1.5)+' phút</div>'
+       + '</div>';
+  } else {
+    h += '<div style="padding:18px;border-radius:20px;border:1px solid rgba(52,199,89,.3);'
+       + 'background:rgba(52,199,89,.06);margin-bottom:16px;text-align:center;">'
+       + '<div style="font-size:28px;">🎉</div>'
+       + '<div style="font-size:15px;font-weight:800;color:var(--grn);">Xong hôm nay!</div>'
+       + '<div style="font-size:12px;color:var(--com);margin-top:3px;">Quay lại vào ngày mai</div>'
+       + '</div>';
+  }
+
+  // Progress road
+  h += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);'
+     + 'border-radius:20px;padding:16px;margin-bottom:14px;">'
+     + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:12px;">// LỘ TRÌNH HỌC</div>';
+
+  for(var i=0;i<stages.length;i++){
+    var st  = stages[i];
+    var pr  = lvlProgress(st.level);
+    var isCur  = (st.level === curLvl);
+    var isDone = (pr.pct >= 70 && pr.total > 0);
+    var locked = (!isDone && !isCur && i > curIdx);
+
+    h += '<div onclick="App.setLevel(&apos;'+st.level+'&apos;)" style="'
+       + 'display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:8px;'
+       + 'border-radius:14px;cursor:pointer;'
+       + 'border:1px solid '+(isCur?'rgba(255,255,255,.25)':isDone?'rgba(52,199,89,.25)':'rgba(255,255,255,.06)')+';'
+       + 'background:'+(isCur?'rgba(255,255,255,.05)':'rgba(255,255,255,.02)')+';'
+       + (locked?'opacity:.4;':'')+'">';
+
+    // Level badge
+    h += '<div style="width:38px;height:38px;border-radius:10px;flex-shrink:0;display:flex;'
+       + 'align-items:center;justify-content:center;font-size:11px;font-weight:900;'
+       + 'font-family:var(--mono);color:'+(isCur?st.color:'var(--com)')+';'
+       + 'background:rgba(255,255,255,.04);border:1px solid '+(isCur?st.color:'rgba(255,255,255,.1)')+';'
+       + '">'+st.level+'</div>';
+
+    h += '<div style="flex:1;min-width:0;">'
+       + '<div style="font-size:13px;font-weight:700;color:'+(isCur?'var(--tx)':'var(--txd)')+';">'
+       + st.icon+' '+st.title
+       + (isCur?' <span style="font-size:10px;font-family:var(--mono);color:'+st.color+';">← hiện tại</span>':'')
+       + '</div>';
+
+    if(pr.total > 0){
+      h += '<div style="margin-top:5px;">'
+         + '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;">'
+         + '<div style="height:100%;width:'+pr.pct+'%;background:'+(isDone?'#34c759':st.color)+';border-radius:3px;transition:width .5s;"></div></div>'
+         + '<div style="font-size:10px;color:var(--com);margin-top:3px;">'+pr.done+'/'+pr.total+' từ · '+pr.pct+'%</div>'
+         + '</div>';
+    }
+    h += '</div>';
+
+    if(isDone)       h += '<span style="color:#34c759;font-size:16px;">✓</span>';
+    else if(isCur)   h += '<span style="color:'+st.color+';font-size:18px;">▸</span>';
+    else if(locked)  h += '<span style="color:var(--com);font-size:14px;">🔒</span>';
+
+    h += '</div>';
+  }
+  h += '</div>';
+
+  // Quick links
+  var links = [
+    {icon:'⚖️', label:'Ngữ pháp', color:'var(--yel)', nav:"App.nav('grammar')"},
+    {icon:'📖', label:'Đọc hiểu', color:'var(--pnk)', nav:"App.nav('read')"},
+    {icon:'🔍', label:'Tra từ',   color:'var(--grn)', nav:"App.nav('lookup')"},
+    {icon:'📚', label:'Từ vựng',  color:'var(--cyn)', nav:"App.nav('vocab')"},
+  ];
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  for(var li=0;li<links.length;li++){
+    var lk=links[li];
+    h += '<div onclick="'+lk.nav+'" style="padding:14px 12px;border-radius:16px;cursor:pointer;'
+       + 'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);">'
+       + '<div style="font-size:22px;margin-bottom:6px;">'+lk.icon+'</div>'
+       + '<div style="font-size:12px;font-weight:700;color:'+lk.color+';">'+lk.label+'</div>'
+       + '</div>';
+  }
+  h += '</div>';
+
+  el.innerHTML = h;
+}
+
+
 function App_dailyStart(){
   dlLoadOrPick();
   if(!DL.words||DL.words.length===0){showToast('🎉 Bạn đã học hết từ ở cấp này!','grn');return;}
+  // Show lesson view, hide hub
+  DL.lessonActive = true;
+  var hub = document.getElementById('daily-hub');
+  var lesson = document.getElementById('daily-lesson');
+  if(hub) hub.style.display = 'none';
+  if(lesson){ lesson.style.display = 'flex'; }
+  nav('daily');
   // Nếu đang học dở (q2/q3 còn từ) → tiếp tục, không reset
   var inProgress = (DL.phase===2&&DL.q2&&DL.q2.length>0)
                 || (DL.phase===3&&DL.q3&&DL.q3.length>0)
@@ -8804,6 +8980,7 @@ function App_dailyStart(){
     DL.q2=[]; DL.q3=[];
   }
   nav('daily');
+  dlRender();
 }
 
 function dlRender(){
@@ -9050,7 +9227,15 @@ function dlSaveStreak(){
   }catch(e){}
 }
 
-function App_dailyExit(){nav('vocab');}
+function App_dailyExit(){
+  DL.lessonActive = false;
+  var hub = document.getElementById('daily-hub');
+  var lesson = document.getElementById('daily-lesson');
+  if(hub) hub.style.display = 'flex';
+  if(lesson) lesson.style.display = 'none';
+  renderDailyHub();
+  nav('daily');
+}
 
 
 
@@ -9554,170 +9739,6 @@ function App_rdRefresh(){
 
 
 // ═══ ROADMAP ════════════════════════════════════════════════
-function renderRoad(){
-  var el = document.getElementById('road-content'); if(!el) return;
-  var isEN = (S.lang||'vi')==='en';
-  var stages = [
-    {
-      level:'A1', color:'var(--cyn)', glow:'rgba(90,200,250,0.18)', icon:'🔤',
-      title: isEN ? 'Alphabet & Basics' : 'Bảng chữ cái & Cơ bản',
-      weeks: isEN ? '2–3 weeks' : '2–3 tuần',
-      goals: isEN
-        ? ['Learn Cyrillic alphabet (33 letters)','Master basic pronunciation & stress','Learn 100–150 core words','Greetings, numbers, colors, family']
-        : ['Học bảng chữ Cyrillic (33 ký tự)','Nắm phát âm & trọng âm cơ bản','Học 100–150 từ vựng lõi','Chào hỏi, số đếm, màu sắc, gia đình'],
-      features: isEN
-        ? ['📚 Vocab: A1 topics','🃏 Flashcard mode','🔊 Pronunciation guide']
-        : ['📚 Từ vựng: Chủ đề A1','🃏 Lật thẻ flashcard','🔊 Hướng dẫn phát âm'],
-      tip: isEN ? '🎯 Focus: Reading every Cyrillic letter fluently before moving on.' : '🎯 Mục tiêu: Đọc được mọi ký tự Cyrillic trơn tru trước khi tiến lên.'
-    },
-    {
-      level:'A2', color:'var(--grn)', glow:'rgba(52,199,89,0.15)', icon:'💬',
-      title: isEN ? 'Survival Russian' : 'Tiếng Nga sinh tồn',
-      weeks: isEN ? '4–6 weeks' : '4–6 tuần',
-      goals: isEN
-        ? ['300–500 total words','Present tense verbs (conjugation)','Nominative & Accusative cases','Simple sentences & daily phrases']
-        : ['300–500 từ vựng tổng cộng','Động từ hiện tại (biến cách)','Cách 1 (Nominative) & Cách 4 (Accusative)','Câu đơn giản & cụm từ hàng ngày'],
-      features: isEN
-        ? ['📚 Vocab: A2 topics','🔄 SRS review (daily 10 min)','📝 Grammar: Cases intro']
-        : ['📚 Từ vựng: Chủ đề A2','🔄 Ôn SRS (10 phút/ngày)','📝 Ngữ pháp: Giới thiệu các Cách'],
-      tip: isEN ? '🎯 Focus: 10 min SRS every day — consistency beats intensity.' : '🎯 Mục tiêu: 10 phút SRS mỗi ngày — đều đặn hơn cường độ.'
-    },
-    {
-      level:'B1', color:'var(--yel)', glow:'rgba(255,214,10,0.13)', icon:'⚡',
-      title: isEN ? 'Building Fluency' : 'Xây dựng sự thông thạo',
-      weeks: isEN ? '8–12 weeks' : '8–12 tuần',
-      goals: isEN
-        ? ['1000+ words in active use','All 6 cases with key prepositions','Past & Future tense','Can hold basic conversations']
-        : ['1000+ từ dùng chủ động','Cả 6 Cách với giới từ chính','Thì quá khứ & tương lai','Có thể giữ cuộc hội thoại cơ bản'],
-      features: isEN
-        ? ['📚 Vocab: B1 topics','⚖️ Grammar: All 6 cases','🔄 SRS review (15 min/day)','🎮 Grammar quiz']
-        : ['📚 Từ vựng: Chủ đề B1','⚖️ Ngữ pháp: Cả 6 Cách','🔄 Ôn SRS (15 phút/ngày)','🎮 Quiz ngữ pháp'],
-      tip: isEN ? '🎯 Focus: Master the 6 cases — they unlock 80% of Russian grammar.' : '🎯 Mục tiêu: Thành thạo 6 Cách — chúng mở khóa 80% ngữ pháp tiếng Nga.'
-    },
-    {
-      level:'B2', color:'var(--pur)', glow:'rgba(191,90,242,0.13)', icon:'🚀',
-      title: isEN ? 'Upper Intermediate' : 'Trung cấp cao',
-      weeks: isEN ? '12–16 weeks' : '12–16 tuần',
-      goals: isEN
-        ? ['2000+ words','Aspect pairs (perfective/imperfective)','Complex sentence structures','Read simple texts & articles']
-        : ['2000+ từ vựng','Cặp dạng thức (hoàn thành/chưa hoàn thành)','Cấu trúc câu phức tạp','Đọc văn bản & bài báo đơn giản'],
-      features: isEN
-        ? ['📚 Vocab: B2 & AWL topics','🔄 SRS review (20 min/day)','📖 Word family explorer','🎮 Advanced grammar quiz']
-        : ['📚 Từ vựng: Chủ đề B2 & học thuật','🔄 Ôn SRS (20 phút/ngày)','📖 Khám phá họ từ','🎮 Quiz ngữ pháp nâng cao'],
-      tip: isEN ? '🎯 Focus: Aspect pairs are the hardest part — practice with examples daily.' : '🎯 Mục tiêu: Cặp dạng thức là phần khó nhất — luyện với ví dụ mỗi ngày.'
-    },
-    {
-      level:'C1', color:'var(--org)', glow:'rgba(255,159,10,0.13)', icon:'🏆',
-      title: isEN ? 'Advanced Mastery' : 'Thành thạo nâng cao',
-      weeks: isEN ? '16+ weeks' : '16+ tuần',
-      goals: isEN
-        ? ['3500+ words','Natural speech patterns & idioms','Read literature & news fluently','Write essays & formal texts']
-        : ['3500+ từ vựng','Mẫu câu tự nhiên & thành ngữ','Đọc văn học & tin tức trơn tru','Viết luận & văn bản trang trọng'],
-      features: isEN
-        ? ['📚 Full vocabulary database','🔄 SRS: all levels','🔍 Dictionary lookup','📖 Literature reading']
-        : ['📚 Toàn bộ database từ vựng','🔄 SRS: tất cả cấp độ','🔍 Tra từ điển','📖 Đọc văn học'],
-      tip: isEN ? '🎯 Focus: Immersion — Russian films, podcasts, native content daily.' : '🎯 Mục tiêu: Ngâm mình — phim Nga, podcast, nội dung thực tế mỗi ngày.'
-    }
-  ];
-
-  // Compute progress per level from mastered words
-  function levelProgress(lvl){
-    var keys = Object.keys(vocabularyDatabase).filter(k=>k.startsWith(lvl+'_')||k.startsWith(lvl+' '));
-    var total = 0, done = 0;
-    keys.forEach(function(k){
-      var ws = vocabularyDatabase[k]||[];
-      total += ws.length;
-      ws.forEach(function(w){ if(S.mastered[w.ru]) done++; });
-    });
-    return {total:total, done:done, pct: total>0 ? Math.round(done/total*100) : 0};
-  }
-
-  var curLvl = (S.level||'A1');
-  var html = '';
-
-  // Daily plan card
-  html += '<div style="background:linear-gradient(135deg,rgba(255,159,10,0.12),rgba(255,107,107,0.08));border:1px solid rgba(255,159,10,0.3);border-radius:20px;padding:16px;margin-bottom:16px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">';
-  html += '<div style="font-size:10px;color:var(--org);font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// KẾ HOẠCH HỌC MỖI NGÀY</div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-  var daily = [
-    {icon:'🃏', time:'10 phút', label: isEN ? 'New words\n(Flashcard)' : 'Từ mới\n(Flashcard)', color:'var(--cyn)', onclick:"App.nav('vocab')"},
-    {icon:'🔄', time:'10 phút', label: isEN ? 'SRS Review\n(Spaced)' : 'Ôn SRS\n(Cách quãng)', color:'var(--yel)', onclick:"App.srsStart()"},
-    {icon:'⚖️', time:'5 phút', label: isEN ? 'Grammar\n(Cases)' : 'Ngữ pháp\n(Các Cách)', color:'var(--pur)', onclick:"App.nav('grammar')"},
-    {icon:'🔍', time:'5 phút', label: isEN ? 'Look up\n(Dictionary)' : 'Tra từ\n(Từ điển)', color:'var(--grn)', onclick:"App.nav('lookup')"}
-  ];
-  daily.forEach(function(d){
-    html += '<div onclick="'+d.onclick+'" style="cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 10px;text-align:center;transition:transform .12s;">';
-    html += '<div style="font-size:22px;margin-bottom:4px;">'+d.icon+'</div>';
-    html += '<div style="font-size:10px;color:'+d.color+';font-weight:700;margin-bottom:2px;">'+d.time+'</div>';
-    html += '<div style="font-size:10px;color:var(--txd);line-height:1.35;white-space:pre-line;">'+d.label+'</div>';
-    html += '</div>';
-  });
-  html += '</div>';
-  html += '<div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:10px;font-size:11px;color:var(--com);">⏱ '+(isEN ? 'Total: ~30 min/day · Best time: morning or evening' : 'Tổng: ~30 phút/ngày · Thời điểm tốt nhất: buổi sáng hoặc tối')+'</div>';
-  html += '</div>';
-
-  // Stage cards
-  stages.forEach(function(st, i){
-    var pr = levelProgress(st.level);
-    var isCur = st.level === curLvl;
-    var isDone = pr.pct >= 70;
-    var isLocked = !isDone && !isCur && i > stages.findIndex(function(s){ return s.level===curLvl; });
-    var borderAlpha = isCur ? '0.45' : isDone ? '0.3' : '0.10';
-    var borderColor = isCur ? st.color : isDone ? st.color : 'rgba(255,255,255,0.1)';
-
-    html += '<div style="background:'+st.glow+';border:1px solid '+borderColor.replace(')',','+borderAlpha+')')+';border-radius:20px;padding:16px;margin-bottom:12px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden;'+(isLocked?'opacity:0.55;':'')+(isCur?'box-shadow:0 0 24px '+st.glow+';':'')+';">';
-
-    // Badge
-    if(isCur) html += '<div style="position:absolute;top:12px;right:12px;background:'+st.color+';color:#000;border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;font-family:var(--mono);">'+(isEN ? 'CURRENT' : 'HIỆN TẠI')+'</div>';
-    else if(isDone) html += '<div style="position:absolute;top:12px;right:12px;background:rgba(52,199,89,0.2);border:1px solid var(--grn);color:var(--grn);border-radius:8px;padding:2px 8px;font-size:10px;font-weight:700;">✓ '+(isEN?'DONE':'XONG')+'</div>';
-    else if(isLocked) html += '<div style="position:absolute;top:12px;right:12px;color:var(--com);font-size:14px;">🔒</div>';
-
-    // Header
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
-    html += '<div style="background:'+st.color+'22;border:1px solid '+st.color+';border-radius:12px;padding:6px 12px;font-size:18px;font-weight:900;color:'+st.color+';font-family:var(--mono);">'+st.level+'</div>';
-    html += '<div><div style="font-size:15px;font-weight:700;">'+st.icon+' '+st.title+'</div><div style="font-size:11px;color:var(--com);">⏳ '+st.weeks+'</div></div>';
-    html += '</div>';
-
-    // Progress bar
-    if(pr.total > 0){
-      html += '<div style="margin-bottom:12px;">';
-      html += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--com);margin-bottom:4px;"><span>'+(isEN?'Words learned':'Từ đã học')+'</span><span style="color:'+st.color+';">'+pr.done+'/'+pr.total+' ('+pr.pct+'%)</span></div>';
-      html += '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">';
-      html += '<div style="height:100%;width:'+pr.pct+'%;background:'+st.color+';border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1);"></div>';
-      html += '</div></div>';
-    }
-
-    // Goals
-    html += '<div style="margin-bottom:10px;">';
-    html += '<div style="font-size:10px;color:'+st.color+';font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// '+(isEN?'GOALS':'MỤC TIÊU')+'</div>';
-    st.goals.forEach(function(g){
-      html += '<div style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--txd);margin-bottom:4px;line-height:1.45;"><span style="color:'+st.color+';flex-shrink:0;">›</span>'+g+'</div>';
-    });
-    html += '</div>';
-
-    // Features (how to use app)
-    html += '<div style="margin-bottom:10px;">';
-    html += '<div style="font-size:10px;color:var(--com);font-weight:700;letter-spacing:1px;margin-bottom:6px;font-family:var(--mono);">// '+(isEN?'USE THIS APP':'DÙNG APP NÀY')+'</div>';
-    html += '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
-    st.features.forEach(function(f){
-      html += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--txd);">'+f+'</div>';
-    });
-    html += '</div></div>';
-
-    // Tip
-    html += '<div style="background:rgba(255,255,255,0.04);border-left:3px solid '+st.color+';border-radius:0 10px 10px 0;padding:8px 12px;font-size:11px;color:var(--com);line-height:1.5;">'+st.tip+'</div>';
-
-    // CTA button for current level
-    if(isCur){
-      html += '<button onclick="App.nav(\'vocab\')" style="width:100%;margin-top:12px;padding:12px;background:'+st.color+'22;border:1px solid '+st.color+';border-radius:14px;color:'+st.color+';font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">▶ '+(isEN?'Continue '+st.level+' →':'Tiếp tục '+st.level+' →')+'</button>';
-    }
-
-    html += '</div>';
-  });
-
-  el.innerHTML = html;
-}
-
 function lkInit() {
   // Đếm tổng số từ để hiển thị
   let n = 0;
@@ -9892,8 +9913,9 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   quizStart,qzAnswer,speakQZ,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   lkSearch,lkFilter,lkClear,
-  setLang,init,renderRoad,
+  setLang,init,
   dailyStart:App_dailyStart,
+  renderDailyHub:renderDailyHub,
   dlFlip:App_dlFlip,
   dlPhase1Next:App_dlPhase1Next,
   dlSpeak2:App_dlSpeak2,
@@ -10053,15 +10075,15 @@ document.addEventListener('DOMContentLoaded',App.init);
 //  TELEGRAM-STYLE TAB SWIPE ENGINE — v5
 // ══════════════════════════════════════════════════════════════
 (function(){
-  var TABS    = ['vocab','grammar','lookup','read','daily','road'];
-  var BTN_IDS = ['bn-vocab','bn-grammar','bn-lookup','bn-read','bn-daily','bn-road'];
+  var TABS    = ['vocab','grammar','lookup','read','daily'];
+  var BTN_IDS = ['bn-vocab','bn-grammar','bn-lookup','bn-read','bn-daily'];
   var COLORS  = [
-    {fg:'var(--cyn)', glow:'rgba(90,200,250,0.80)'},
-    {fg:'var(--yel)', glow:'rgba(255,214,10,0.80)'},
-    {fg:'var(--pur)', glow:'rgba(191,90,242,0.80)'},
-    {fg:'var(--grn)', glow:'rgba(52,199,89,0.80)'},
-    {fg:'#ff9f0a', glow:'rgba(255,159,10,0.80)'},
-    {fg:'var(--org)', glow:'rgba(255,159,10,0.80)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
+    {fg:'var(--tx)', glow:'rgba(255,255,255,0.50)'},
   ];
 
   var bnav      = document.getElementById('bnav');
@@ -10331,7 +10353,7 @@ document.addEventListener('DOMContentLoaded',App.init);
 </body>
 </html>
 /* ── Daily Learn ──────────────────────────────────────────── */
-#bn-daily.on .bIcon svg,#bn-daily.on .bLbl{color:#ff9f0a;}
+
 #bn-daily.on .bIcon{filter:drop-shadow(0 0 7px rgba(255,159,10,0.85));}
 
 .dl-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s;}
