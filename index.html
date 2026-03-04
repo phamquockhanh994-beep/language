@@ -1190,53 +1190,6 @@ body::after{
   <div class="scrl" style="padding-top:14px;" id="gram-body"></div>
 </div>
 
-<!-- TRA TỪ -->
-<div id="s-lookup" class="screen">
-  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
-    <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">TRA TỪ</div>
-    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// đang tải...</div>
-  </div>
-  <div style="padding:12px 16px 0;flex-shrink:0;">
-    <div style="position:relative;">
-      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:0.35;">🔍</span>
-      <input id="lk-input" type="search" placeholder="Gõ tiếng Nga hoặc tiếng Việt..."
-        autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-        oninput="App.lkSearch(this.value)"
-        onkeydown="if(event.key==='Escape')App.lkClear();">
-      <button onclick="App.lkClear()" id="lk-clear-btn"
-        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
-    </div>
-    <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
-      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Tất cả</button>
-      <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
-      <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
-      <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
-      <button class="lk-chip" id="lk-f-B2"  onclick="App.lkFilter('B2')">B2</button>
-    </div>
-  </div>
-  <div class="scrl" style="padding-top:12px;" id="lk-results">
-    <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
-      <div style="font-size:40px;margin-bottom:14px;">📖</div>
-      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>
-      <div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div>
-    </div>
-  </div>
-</div>
-
-<div id="s-grammar" class="screen">
-  <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
-    <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">NGỮ PHÁP TIẾNG NGA</div>
-  </div>
-  <div style="display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0;">
-    <button class="btn" id="gt-cases" style="font-size:11px;" onclick="App.gramTab('cases')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/><circle cx="7" cy="14" r="2"/><circle cx="17" cy="14" r="2"/><line x1="5" y1="14" x2="2" y2="19"/><line x1="19" y1="14" x2="22" y2="19"/></svg> 6 Cách</button>
-    <button class="btn" id="gt-form" style="font-size:11px;" onclick="App.gramTab('formation')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Từ loại</button>
-    <button class="btn" id="gt-quiz" style="font-size:11px;" onclick="App.gramTab('quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Quiz</button>
-  </div>
-  <div class="scrl" style="padding-top:12px;" id="gram-body"></div>
-</div>
-
 <!-- TODAY HUB SCREEN -->
 <div id="s-daily" class="screen">
 
@@ -7324,7 +7277,7 @@ const S={
 };
 
 // STORAGE
-function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m)S.mastered=JSON.parse(m);if(s)S.srsData=JSON.parse(s);if(lg)S.lang=lg;if(lv)S.level=lv;}catch(e){}}
+function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m){var pm=JSON.parse(m);if(pm&&typeof pm==='object')S.mastered=pm;}if(s){var ps=JSON.parse(s);if(ps&&typeof ps==='object')S.srsData=ps;}if(lg)S.lang=lg;if(lv)S.level=lv;}catch(e){} S.mastered=S.mastered||{}; S.srsData=S.srsData||{};}
 function saveM(){try{localStorage.setItem('mw',JSON.stringify(S.mastered));}catch(e){}}
 function save(){try{localStorage.setItem('lang',S.lang);localStorage.setItem('lv',S.level);}catch(e){}}
 function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}catch(e){}}
@@ -7338,7 +7291,7 @@ const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-gra
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
 const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0};
 
-function nav(name){
+function nav(name, noAnim){
   const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
   const prevDepth = NAV_DEPTH[prev] ?? 0;
   const nextDepth = NAV_DEPTH[name] ?? 0;
@@ -7363,8 +7316,8 @@ function nav(name){
       // Force reflow — ngăn iOS skip animation khi class thay đổi liên tiếp
       void el.offsetWidth;
 
-      if(isTabSwitch)      el.classList.add('tab-switch');
-      else if(isBack)      el.classList.add('slide-back');
+      if(!noAnim && isTabSwitch) el.classList.add('tab-switch');
+      else if(!noAnim && isBack)  el.classList.add('slide-back');
       // else: default iosSlideIn (forward)
 
       el.classList.add('active');
@@ -7391,6 +7344,7 @@ function nav(name){
 
     // Re-render screens khi quay lại để cập nhật tiến độ
     if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
+    if(name === 'grammar') setTimeout(function(){ gramTab(S.gramTab||'motion'); }, 30);
     if(name === 'daily') setTimeout(function(){ if(typeof renderDailyHub==='function' && !DL.lessonActive) renderDailyHub(); }, 30);
     if(name === 'read') setTimeout(rdInit, 30);
   });
@@ -7518,9 +7472,9 @@ function setLevel(lv){
   renderVocab();
 }
 function renderVocab(){
-  const topics=Object.keys(vocabularyDatabase[S.level]);
-  const total=Object.values(vocabularyDatabase[S.level]).flat().length;
-  const mCount=Object.keys(S.mastered).filter(k=>k.startsWith(S.level+'-')).length;
+  const topics=Object.keys(vocabularyDatabase[S.level]||{});
+  const total=Object.values(vocabularyDatabase[S.level]||{}).flat().length;
+  const mCount=Object.keys(S.mastered||{}).filter(k=>k.startsWith(S.level+'-')).length;
   const due=getDueCount(S.srsData,S.level);
   const pct=total>0?Math.round(mCount/total*100):0;
   document.getElementById('v-sub').textContent=`// CEFR ${S.level} · ${total} ${t('topic.words')} · ${mCount} ${t('vocab.sub')}`;
@@ -7566,7 +7520,7 @@ function renderVocab(){
 
 // selectTopic nhận INDEX số — tránh hoàn toàn vấn đề escape ký tự đặc biệt
 function selectTopic(idx){
-  const topics=Object.keys(vocabularyDatabase[S.level]);
+  const topics=Object.keys(vocabularyDatabase[S.level]||{});
   const name=topics[idx];
   S.topic=name; S.topicIdx=idx; S.fcIdx=0;
   const ws=vocabularyDatabase[S.level][name];
@@ -7672,7 +7626,7 @@ function genOpts(){
   const ws=vocabularyDatabase[S.level][S.topic];
   if(!ws[S.qzIdx])return;
   const cor=ws[S.qzIdx];
-  const all=Object.values(vocabularyDatabase[S.level]).flat();
+  const all=Object.values(vocabularyDatabase[S.level]||{}).flat();
   const oth=all.filter(w=>w.ru!==cor.ru).sort(()=>Math.random()-.5).slice(0,3);
   S.qzOpts=[cor,...oth].sort(()=>Math.random()-.5);
 }
@@ -7731,7 +7685,7 @@ function speakQZ(){const w=vocabularyDatabase[S.level][S.topic][S.qzIdx];if(w)sp
 // SRS
 function srsStart(){
   const all=[];
-  Object.entries(vocabularyDatabase[S.level]).forEach(([t,ws])=>{
+  Object.entries(vocabularyDatabase[S.level]||{}).forEach(([t,ws])=>{
     if(!Array.isArray(ws)) return;
     ws.forEach((w,i)=>all.push({key:`${S.level}-${t}-${i}`,word:w,topicName:t}));
   });
@@ -8794,7 +8748,7 @@ function dlLoadOrPick(){
   }catch(e){}
   // Chọn 7 từ chưa mastered
   var all=[];
-  Object.entries(vocabularyDatabase[S.level]).forEach(function(e){
+  Object.entries(vocabularyDatabase[S.level]||{}).forEach(function(e){
     var topic=e[0],ws=e[1];
     if(!Array.isArray(ws)) return;
     ws.forEach(function(w,i){
@@ -9160,7 +9114,7 @@ function dlGenOpts4(correctEntry, field){
   // Lấy từ các từ khác trong DL.words
   DL.words.forEach(function(e){if(e.key!==correctEntry.key)pool.push(e.w);});
   // Bổ sung từ DB nếu cần
-  var allWs=Object.values(vocabularyDatabase[S.level]).flat();
+  var allWs=Object.values(vocabularyDatabase[S.level]||{}).flat();
   for(var i=allWs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=allWs[i];allWs[i]=allWs[j];allWs[j]=t;}
   allWs.forEach(function(w){if(pool.length<8&&w.ru!==correctEntry.w.ru)pool.push(w);});
   var wrong=pool.slice(0,3);
@@ -10107,7 +10061,7 @@ document.addEventListener('DOMContentLoaded',App.init);
       const target=BACK[s], captured=el;
       setTimeout(function(){
         if(captured) rst(captured);
-        App.nav(target);
+        App.nav(target, true);
         if(navigator.vibrate) navigator.vibrate([5,18,3]);
       },250);
     } else {
@@ -10551,4 +10505,3 @@ document.addEventListener('DOMContentLoaded',App.init);
   animation: spin .7s linear infinite; margin: 0 auto 16px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
