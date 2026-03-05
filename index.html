@@ -929,6 +929,8 @@ body::after{
   min-height:52px;
 }
 .dl-choice:active{transform:scale3d(.975,.975,1);}
+.tch{-webkit-tap-highlight-color:transparent;cursor:pointer;}
+.tch:active{opacity:.7;transform:scale3d(.98,.98,1);transition:opacity .08s,transform .08s;}
 .dl-choice.correct{border-color:var(--grn)!important;background:rgba(52,199,89,0.12)!important;}
 .dl-choice.wrong{border-color:var(--pnk)!important;background:rgba(255,55,95,0.10)!important;}
 .dl-word-badge{
@@ -1336,9 +1338,12 @@ body::after{
 
   <!-- Hub view (landing) -->
   <div id="daily-hub" style="display:flex;flex-direction:column;height:100%;">
-    <div style="background:rgba(6,8,13,0.70);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 16px;flex-shrink:0;">
-      <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;">&gt; today.exe</div>
-      <div style="font-size:22px;font-weight:900;letter-spacing:-0.6px;font-family:var(--hdisplay);">HÔM NAY</div>
+    <div class="hdr">
+      <div class="f1">
+        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;">&gt; today.exe</div>
+        <div class="hdr-title">Hôm nay</div>
+      </div>
+      <div id="daily-hub-level" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;background:rgba(255,159,10,.12);color:#ff9f0a;border:1px solid rgba(255,159,10,.3);font-family:var(--mono);"></div>
     </div>
     <div class="scrl" style="padding:14px 16px;" id="daily-hub-body"></div>
   </div>
@@ -1436,11 +1441,7 @@ body::after{
 <div id="bnav">
   <div id="bnav-indicator"></div>
   <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4.5C4 3.67 4.67 3 5.5 3H11V13L8.5 11.5L6 13V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M11 3H18.5C19.33 3 20 3.67 20 4.5V18.5C20 19.88 18.88 21 17.5 21H6.5C5.12 21 4 19.88 4 18.5V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="13" y="17.5" font-size="6" font-weight="700" fill="currentColor" font-family="serif" text-anchor="middle">Я</text>
-    </svg></span><span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg></span><span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
   </button>
 
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
@@ -1462,12 +1463,7 @@ body::after{
     </svg></span><span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
   </button>
   <button class="bBtn" id="bn-read" onclick="App.nav('read')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M2 6C2 4.9 2.9 4 4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6z" stroke="currentColor" stroke-width="1.5"/>
-      <line x1="6" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="6" y1="13" x2="15" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="6" y1="17" x2="12" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-read-lbl">Đọc</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5C5 3 9 3 12 4.5C15 3 19 3 22 4.5V20C19 18.5 15 18.5 12 20C9 18.5 5 18.5 2 20V4.5z"/><line x1="12" y1="4.5" x2="12" y2="20"/></svg></span><span class="bLbl" id="bn-read-lbl">Đọc</span>
   </button>
   <button class="bBtn" id="bn-daily" onclick="App.nav('daily')" style="position:relative;">
     <span class="bIcon" style="position:relative;display:inline-block;">
@@ -7502,7 +7498,7 @@ const S={
 };
 
 // STORAGE
-function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m){var pm=JSON.parse(m);if(pm&&typeof pm==='object')S.mastered=pm;}if(s){var ps=JSON.parse(s);if(ps&&typeof ps==='object')S.srsData=ps;}if(lg)S.lang=lg;if(lv)S.level=lv;var cw=localStorage.getItem('cw'); if(cw){var pcw=JSON.parse(cw); if(Array.isArray(pcw))S.customWords=pcw;}var tp=localStorage.getItem('tp'); if(tp){var ptp=JSON.parse(tp); if(ptp)S.todayPicks=ptp;}}catch(e){} S.mastered=S.mastered||{}; S.srsData=S.srsData||{}; S.customWords=S.customWords||[]; }
+function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m){var pm=JSON.parse(m);if(pm&&typeof pm==='object')S.mastered=pm;}if(s){var ps=JSON.parse(s);if(ps&&typeof ps==='object')S.srsData=ps;}if(lg)S.lang=lg;if(lv)S.level=lv;var cw=localStorage.getItem('cw'); if(cw){var pcw=JSON.parse(cw); if(Array.isArray(pcw)){S.customWords=pcw;pcw.forEach(function(w){if(!w.ru||!w.vn) return;var lv=w.lv||'A1';var topic=w.topic||'📝 Từ của tôi';vocabularyDatabase[lv]=vocabularyDatabase[lv]||{};vocabularyDatabase[lv][topic]=vocabularyDatabase[lv][topic]||[];var exists=vocabularyDatabase[lv][topic].some(function(x){return x.ru===w.ru;});if(!exists)vocabularyDatabase[lv][topic].push({ru:w.ru,vn:w.vn,en:w.en,ph:w.ph});});}}var tp=localStorage.getItem('tp'); if(tp){var ptp=JSON.parse(tp); if(ptp)S.todayPicks=ptp;}}catch(e){} S.mastered=S.mastered||{}; S.srsData=S.srsData||{}; S.customWords=S.customWords||[]; }
 function saveM(){try{localStorage.setItem('mw',JSON.stringify(S.mastered));}catch(e){}}
 function saveCW(){try{localStorage.setItem('cw',JSON.stringify(S.customWords));}catch(e){}}
 function savePicks(){try{localStorage.setItem('tp',JSON.stringify(S.todayPicks));}catch(e){}}
@@ -9030,6 +9026,11 @@ function renderDailyHub(){
   if(lesson){ lesson.style.display='none'; }
 
   var curLvl = S.level || 'A1';
+
+  // Update level badge in header
+  var lvlBadge = document.getElementById('daily-hub-level');
+  if(lvlBadge) lvlBadge.textContent = curLvl;
+
   var d = new Date();
   var days   = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
   var months = ['tháng 1','tháng 2','tháng 3','tháng 4','tháng 5','tháng 6',
@@ -9046,7 +9047,6 @@ function renderDailyHub(){
     return {total:total, done:done, pct:total>0?Math.round(done/total*100):0};
   }
 
-  // Today word count
   dlLoadOrPick();
   var wCount = DL.words ? DL.words.length : 0;
 
@@ -9057,99 +9057,107 @@ function renderDailyHub(){
     {level:'B2', color:'#bf5af2', icon:'🚀', title:'Nâng cao'},
     {level:'C1', color:'#ff9f0a', icon:'🏆', title:'Thành thạo'},
   ];
-
-  // Find current stage index
   var curIdx = 0;
   for(var si=0;si<stages.length;si++) if(stages[si].level===curLvl){curIdx=si;break;}
 
   var h = '';
 
-  // Date
-  h += '<div style="font-size:11px;color:var(--com);font-family:var(--mono);margin-bottom:14px;">'+dateStr+'</div>';
+  // ── Date line ─────────────────────────────────────────────
+  h += '<div style="font-size:11px;color:var(--com);font-family:var(--mono);'
+     + 'letter-spacing:.3px;margin-bottom:14px;">'+dateStr+'</div>';
 
-  // Start button
+  // ── Start card ────────────────────────────────────────────
   if(wCount > 0){
-    h += '<div onclick="App.dailyStart()" style="'
-       + 'width:100%;padding:18px 20px;border-radius:20px;cursor:pointer;margin-bottom:16px;'
-       + 'border:1px solid rgba(255,159,10,.45);'
-       + 'background:linear-gradient(135deg,rgba(255,159,10,.14),rgba(255,107,107,.06));'
-       + 'box-shadow:0 0 28px rgba(255,159,10,.1) inset;">'
-       + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:6px;">// HỌC HÔM NAY</div>'
-       + '<div style="font-size:26px;font-weight:900;color:var(--tx);font-family:var(--hdisplay);">'
-       + wCount + ' từ mới  →</div>'
-       + '<div style="font-size:12px;color:var(--com);margin-top:4px;">~'+Math.ceil(wCount*1.5)+' phút</div>'
+    h += '<div class="tch" onclick="App.dailyStart()" style="'
+       + 'padding:20px;border-radius:20px;margin-bottom:12px;'
+       + 'border:1px solid rgba(255,159,10,.35);'
+       + 'background:linear-gradient(135deg,rgba(255,159,10,.10),rgba(255,107,107,.04));'
+       + 'box-shadow:0 1px 0 rgba(255,255,255,.07) inset;">'
+       + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// HỌC HÔM NAY</div>'
+       + '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">'
+       + '<div style="font-size:32px;font-weight:900;color:var(--tx);font-family:var(--hdisplay);line-height:1;">'
+       + wCount+'</div>'
+       + '<div style="font-size:16px;font-weight:700;color:var(--txd);">từ mới</div>'
+       + '</div>'
+       + '<div style="display:flex;align-items:center;justify-content:space-between;">'
+       + '<div style="font-size:12px;color:var(--com);">~'+Math.ceil(wCount*1.5)+' phút</div>'
+       + '<div style="font-size:13px;font-weight:700;color:#ff9f0a;">Bắt đầu →</div>'
+       + '</div>'
        + '</div>';
   } else {
-    h += '<div style="padding:18px;border-radius:20px;border:1px solid rgba(52,199,89,.3);'
-       + 'background:rgba(52,199,89,.06);margin-bottom:16px;text-align:center;">'
-       + '<div style="font-size:28px;">🎉</div>'
+    h += '<div style="padding:20px;border-radius:20px;border:1px solid rgba(52,199,89,.25);'
+       + 'background:rgba(52,199,89,.05);margin-bottom:12px;text-align:center;">'
+       + '<div style="font-size:28px;margin-bottom:6px;">🎉</div>'
        + '<div style="font-size:15px;font-weight:800;color:var(--grn);">Xong hôm nay!</div>'
-       + '<div style="font-size:12px;color:var(--com);margin-top:3px;">Quay lại vào ngày mai</div>'
+       + '<div style="font-size:12px;color:var(--com);margin-top:4px;">Quay lại vào ngày mai</div>'
        + '</div>';
   }
 
-  // Quick actions row
-  h += '<div style="display:flex;gap:8px;margin-bottom:14px;">'
-     + '<div onclick="App.openWordPicker()" style="flex:1;padding:12px 10px;border-radius:14px;cursor:pointer;'
-     + 'border:1px solid rgba(90,200,250,.3);background:rgba(90,200,250,.07);text-align:center;">'
-     + '<div style="font-size:18px;">🗂️</div>'
-     + '<div style="font-size:11px;font-weight:700;color:var(--cyn);margin-top:4px;">Chọn từ hôm nay</div>'
+  // ── Quick actions ──────────────────────────────────────────
+  h += '<div style="display:flex;gap:8px;margin-bottom:12px;">'
+     + '<div class="tch" onclick="App.openWordPicker()" style="flex:1;padding:13px 10px;border-radius:16px;'
+     + 'border:1px solid rgba(90,200,250,.2);background:rgba(90,200,250,.05);text-align:center;">'
+     + '<div style="font-size:20px;margin-bottom:4px;">🗂️</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--cyn);">Chọn từ</div>'
      + '</div>'
-     + '<div onclick="App.openAddWord()" style="flex:1;padding:12px 10px;border-radius:14px;cursor:pointer;'
-     + 'border:1px solid rgba(52,199,89,.3);background:rgba(52,199,89,.07);text-align:center;">'
-     + '<div style="font-size:18px;">➕</div>'
-     + '<div style="font-size:11px;font-weight:700;color:var(--grn);margin-top:4px;">Thêm từ mới</div>'
+     + '<div class="tch" onclick="App.openAddWord()" style="flex:1;padding:13px 10px;border-radius:16px;'
+     + 'border:1px solid rgba(52,199,89,.2);background:rgba(52,199,89,.05);text-align:center;">'
+     + '<div style="font-size:20px;margin-bottom:4px;">➕</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--grn);">Thêm từ</div>'
      + '</div>'
      + '</div>';
 
-  // Progress road
-  h += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);'
-     + 'border-radius:20px;padding:16px;margin-bottom:14px;">'
-     + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:12px;">// LỘ TRÌNH HỌC</div>';
+  // ── Roadmap ────────────────────────────────────────────────
+  h += '<div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);'
+     + 'border-radius:20px;padding:16px;margin-bottom:12px;">'
+     + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:12px;">// LỘ TRÌNH</div>';
 
   for(var i=0;i<stages.length;i++){
-    var st  = stages[i];
-    var pr  = lvlProgress(st.level);
+    var st   = stages[i];
+    var pr   = lvlProgress(st.level);
     var isCur  = (st.level === curLvl);
     var isDone = (pr.pct >= 70 && pr.total > 0);
     var locked = (!isDone && !isCur && i > curIdx);
 
-    h += '<div onclick="App.setLevel(&apos;'+st.level+'&apos;)" style="'
-       + 'display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:8px;'
-       + 'border-radius:14px;cursor:pointer;'
-       + 'border:1px solid '+(isCur?'rgba(255,255,255,.25)':isDone?'rgba(52,199,89,.25)':'rgba(255,255,255,.06)')+';'
-       + 'background:'+(isCur?'rgba(255,255,255,.05)':'rgba(255,255,255,.02)')+';'
-       + (locked?'opacity:.4;':'')+'">';
+    h += '<div class="tch" onclick="App.setLevel(&apos;'+st.level+'&apos;)" style="'
+       + 'display:flex;align-items:center;gap:12px;padding:11px 10px;'
+       + 'border-radius:14px;margin-bottom:6px;'
+       + 'border:1px solid '+(isCur?({A1:'rgba(90,200,250,.35)',A2:'rgba(52,199,89,.35)',B1:'rgba(255,214,10,.35)',B2:'rgba(191,90,242,.35)',C1:'rgba(255,159,10,.35)'}[st.level]||'rgba(255,255,255,.2)'):'rgba(255,255,255,.05)')+';'
+       + 'background:'+(isCur?'rgba(255,255,255,.04)':'rgba(255,255,255,.01)')+';'
+       + (locked?'opacity:.35;':'')+'">';
 
-    // Level badge
-    h += '<div style="width:38px;height:38px;border-radius:10px;flex-shrink:0;display:flex;'
-       + 'align-items:center;justify-content:center;font-size:11px;font-weight:900;'
-       + 'font-family:var(--mono);color:'+(isCur?st.color:'var(--com)')+';'
-       + 'background:rgba(255,255,255,.04);border:1px solid '+(isCur?st.color:'rgba(255,255,255,.1)')+';'
+    // Badge
+    h += '<div style="width:36px;height:36px;border-radius:10px;flex-shrink:0;'
+       + 'display:flex;align-items:center;justify-content:center;'
+       + 'font-size:11px;font-weight:900;font-family:var(--mono);'
+       + 'color:'+(isCur?st.color:'var(--com)')+';'
+       + 'background:'+(isCur?'rgba(255,255,255,.05)':'rgba(255,255,255,.02)')+';'
+       + 'border:1px solid '+(isCur?st.color:'rgba(255,255,255,.08)')+';'
        + '">'+st.level+'</div>';
 
     h += '<div style="flex:1;min-width:0;">'
        + '<div style="font-size:13px;font-weight:700;color:'+(isCur?'var(--tx)':'var(--txd)')+';">'
        + st.icon+' '+st.title
-       + (isCur?' <span style="font-size:10px;font-family:var(--mono);color:'+st.color+';">← hiện tại</span>':'')
+       + (isCur?' <span style="font-size:9px;font-family:var(--mono);color:'+st.color+';">← nay</span>':'')
        + '</div>';
 
     if(pr.total > 0){
-      h += '<div style="margin-top:5px;">'
-         + '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;">'
-         + '<div style="height:100%;width:'+pr.pct+'%;background:'+(isDone?'#34c759':st.color)+';border-radius:3px;transition:width .5s;"></div></div>'
-         + '<div style="font-size:10px;color:var(--com);margin-top:3px;">'+pr.done+'/'+pr.total+' từ · '+pr.pct+'%</div>'
+      h += '<div style="margin-top:5px;display:flex;align-items:center;gap:6px;">'
+         + '<div style="flex:1;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;">'
+         + '<div style="height:100%;width:'+pr.pct+'%;background:'+(isDone?'#34c759':st.color)+';border-radius:2px;"></div></div>'
+         + '<div style="font-size:10px;color:var(--com);white-space:nowrap;">'+pr.pct+'%</div>'
          + '</div>';
     }
     h += '</div>';
 
-    if(isDone)       h += '<span style="color:#34c759;font-size:16px;">✓</span>';
-    else if(isCur)   h += '<span style="color:'+st.color+';font-size:18px;">▸</span>';
-    else if(locked)  h += '<span style="color:var(--com);font-size:14px;">🔒</span>';
+    if(isDone)      h += '<span style="color:#34c759;font-size:15px;">✓</span>';
+    else if(isCur)  h += '<span style="font-size:14px;color:'+st.color+';">▸</span>';
+    else if(locked) h += '<span style="font-size:12px;opacity:.5;">🔒</span>';
 
     h += '</div>';
   }
   h += '</div>';
+
 
   // Quick links
   var links = [
@@ -10774,6 +10782,8 @@ function App_openAddWord(){
   ['aw-ru','aw-vn','aw-en','aw-ph'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='';
   });
+  _awLevel = S.level || 'A1';
+  setTimeout(function(){ awRenderTopics(); App_awSetLevel(_awLevel); }, 50);
   renderCustomWordList();
   openModal('modal-addword');
   setTimeout(function(){ var el=document.getElementById('aw-ru'); if(el) el.focus(); },350);
@@ -10789,13 +10799,45 @@ function renderCustomWordList(){
     h += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:5px;'
        + 'border-radius:10px;background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.18);">'
        + '<div style="flex:1;">'
-       + '<div style="font-size:14px;font-weight:700;color:var(--tx);">'+w.ru+'</div>'
-       + '<div style="font-size:11px;color:var(--com);">'+w.vn+'</div>'
+       + '<div style="font-size:11px;color:var(--com);">'+w.vn+(w.topic?' <span style="color:var(--com);font-size:10px;">· '+w.topic.slice(0,20)+'</span>':''  )+'</div>'
        + '</div>'
        + '<button onclick="App.deleteCustomWord('+i+')" style="background:rgba(255,55,95,.15);border:1px solid rgba(255,55,95,.3);border-radius:8px;padding:4px 8px;color:var(--pnk);font-size:11px;">✕</button>'
        + '</div>';
   });
   el.innerHTML = h;
+}
+
+var _awLevel = 'A1';
+
+function App_awSetLevel(lv){
+  _awLevel = lv;
+  var COLORS = {A1:'#5ac8fa',A2:'#34c759',B1:'#ffd60a',B2:'#bf5af2',C1:'#ff9f0a'};
+  var BGSUB  = {A1:'rgba(90,200,250,.15)',A2:'rgba(52,199,89,.15)',B1:'rgba(255,214,10,.15)',B2:'rgba(191,90,242,.15)',C1:'rgba(255,159,10,.15)'};
+  document.querySelectorAll('.aw-lv-btn').forEach(function(btn){
+    var isOn = btn.dataset.lv === lv;
+    var col = COLORS[lv] || '#5ac8fa';
+    if(isOn){
+      btn.style.border = '1.5px solid '+col;
+      btn.style.background = BGSUB[lv] || 'rgba(90,200,250,.15)';
+      btn.style.color = col;
+    } else {
+      btn.style.border = '1px solid rgba(255,255,255,.12)';
+      btn.style.background = 'rgba(255,255,255,.04)';
+      btn.style.color = 'var(--com)';
+    }
+  });
+  // Update topic dropdown for new level
+  awRenderTopics();
+}
+
+function awRenderTopics(){
+  var sel = document.getElementById('aw-topic');
+  if(!sel) return;
+  var lv = _awLevel || S.level || 'A1';
+  var topics = Object.keys(vocabularyDatabase[lv] || {}).filter(function(t){ return Array.isArray(vocabularyDatabase[lv][t]); });
+  sel.innerHTML = topics.map(function(t){
+    return '<option value="'+t.replace(/"/g,'&quot;')+'">'+t+'</option>';
+  }).join('');
 }
 
 function App_submitAddWord(){
@@ -10808,13 +10850,34 @@ function App_submitAddWord(){
   // Check duplicate
   var dup = (S.customWords||[]).some(function(w){ return w.ru.toLowerCase()===ru.toLowerCase(); });
   if(dup){ showToast('Từ này đã có rồi','yel'); return; }
+  var topicSel = document.getElementById('aw-topic');
+  var topic = (topicSel && topicSel.value) ? topicSel.value : null;
+  var lv = _awLevel || S.level || 'A1';
+  var word = {ru:ru, vn:vn};
+  if(en)  word.en = en;
+  if(ph)  word.ph = ph;
+
+  if(topic && vocabularyDatabase[lv] && Array.isArray(vocabularyDatabase[lv][topic])){
+    // Add directly into the vocabulary database topic
+    vocabularyDatabase[lv][topic].push(word);
+  } else {
+    // Fallback: create a personal topic
+    var personalTopic = '📝 Từ của tôi';
+    vocabularyDatabase[lv] = vocabularyDatabase[lv] || {};
+    vocabularyDatabase[lv][personalTopic] = vocabularyDatabase[lv][personalTopic] || [];
+    vocabularyDatabase[lv][personalTopic].push(word);
+    topic = personalTopic;
+  }
+
+  // Also track in customWords for management UI
   S.customWords = S.customWords||[];
-  S.customWords.push({ru:ru, vn:vn, en:en||undefined, ph:ph||undefined});
+  S.customWords.push({ru:ru, vn:vn, en:en||undefined, ph:ph||undefined, lv:lv, topic:topic});
   saveCW();
+
   // Clear inputs
   ['aw-ru','aw-vn','aw-en','aw-ph'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   renderCustomWordList();
-  showToast('Đã thêm: '+ru+' ✓','grn');
+  showToast('Đã thêm vào: '+topic,'grn');
   // Invalidate today's session so new word can appear
   try{ localStorage.removeItem(dlTodayKey()); }catch(e){}
   DL.todayKey=''; DL.words=[];
@@ -10836,7 +10899,7 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   closeModal:App_closeModal, openWordPicker:App_openWordPicker,
   pickerFilter:App_pickerFilter, pickerSearch:App_pickerSearch,
   pickerToggle:App_pickerToggle, confirmPicks:App_confirmPicks,
-  openAddWord:App_openAddWord, submitAddWord:App_submitAddWord,
+  openAddWord:App_openAddWord, submitAddWord:App_submitAddWord, awSetLevel:App_awSetLevel,
   deleteCustomWord:App_deleteCustomWord,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   lkSearch,lkFilter,lkClear,
@@ -11362,6 +11425,28 @@ document.addEventListener('DOMContentLoaded',App.init);
     <button onclick="App.closeModal()" style="background:rgba(255,255,255,.08);border:none;border-radius:10px;padding:6px 12px;color:var(--com);font-size:13px;">✕</button>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px;">
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);">CẤP ĐỘ</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;" id="aw-level-row">
+        <button data-lv="A1" onclick="App.awSetLevel('A1')" class="aw-lv-btn on" style="padding:10px 4px;border-radius:12px;border:1.5px solid #5ac8fa;background:rgba(90,200,250,.15);color:#5ac8fa;font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A1</span><span style="font-size:8px;opacity:.7;font-weight:600;">Cơ bản</span></button>
+        <button data-lv="A2" onclick="App.awSetLevel('A2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A2</span><span style="font-size:8px;opacity:.6;font-weight:600;">Sinh tồn</span></button>
+        <button data-lv="B1" onclick="App.awSetLevel('B1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B1</span><span style="font-size:8px;opacity:.6;font-weight:600;">Trung cấp</span></button>
+        <button data-lv="B2" onclick="App.awSetLevel('B2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B2</span><span style="font-size:8px;opacity:.6;font-weight:600;">Nâng cao</span></button>
+        <button data-lv="C1" onclick="App.awSetLevel('C1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>C1</span><span style="font-size:8px;opacity:.6;font-weight:600;">Thành thạo</span></button>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);">CHỦ ĐỀ</div>
+      <div id="aw-topic-wrap" style="position:relative;">
+        <select id="aw-topic" style="width:100%;box-sizing:border-box;padding:11px 36px 11px 14px;
+          border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+          color:var(--tx);font-size:14px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;">
+        </select>
+        <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--com);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+    </div>
     <div>
       <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG NGA *</div>
       <input id="aw-ru" type="text" placeholder="Например: привет" autocomplete="off" autocorrect="off"
