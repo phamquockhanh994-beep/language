@@ -892,6 +892,141 @@ body::after{
 /* ═══ ADSENSE SLOT ═══ */
 .ad-slot{background:var(--glass-1);border:1px solid var(--bord);border-radius:13px;overflow:hidden;margin:10px 0;min-height:90px;display:flex;align-items:center;justify-content:center;}
 .ad-label{font-size:9px;color:var(--com);letter-spacing:1px;position:absolute;}
+
+/* ── Daily Learn ──────────────────────────────────────────── */
+
+#bn-daily.on .bIcon{filter:drop-shadow(0 0 7px rgba(255,159,10,0.85));}
+
+.dl-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s;}
+.dl-step-dot.done{background:var(--grn);}
+.dl-step-dot.active{background:#ff9f0a;box-shadow:0 0 8px rgba(255,159,10,.8);}
+
+.dl-card{
+  background:rgba(255,159,10,0.06);
+  border:1px solid rgba(255,159,10,0.25);
+  border-radius:24px;padding:28px 22px;
+  text-align:center;
+  box-shadow:0 1px 0 rgba(255,255,255,0.08) inset, 0 8px 32px rgba(0,0,0,0.3);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+.dl-phase-badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;
+  margin-bottom:16px;
+}
+.dl-choice{
+  border-radius:14px;border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding:13px 14px;margin-bottom:8px;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:transform .1s cubic-bezier(.34,1.56,.64,1),border-color .12s,background .12s;
+  min-height:52px;
+}
+.dl-choice:active{transform:scale3d(.975,.975,1);}
+.dl-choice.correct{border-color:var(--grn)!important;background:rgba(52,199,89,0.12)!important;}
+.dl-choice.wrong{border-color:var(--pnk)!important;background:rgba(255,55,95,0.10)!important;}
+.dl-word-badge{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+
+/* ── Read News ────────────────────────────────────────────── */
+#bn-read.on .bIcon svg, #bn-read.on .bLbl { color: var(--pnk); }
+#bn-read.on .bIcon { filter: drop-shadow(0 0 7px rgba(255,55,95,0.85)); }
+
+.rd-article {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 20px 18px;
+  margin-bottom: 14px;
+}
+.rd-tag {
+  display: inline-block; padding: 2px 10px; border-radius: 20px;
+  font-size: 9px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: 1px; margin-bottom: 10px;
+  background: rgba(255,55,95,0.12); color: var(--pnk);
+  border: 1px solid rgba(255,55,95,0.3);
+}
+.rd-title {
+  font-size: 16px; font-weight: 800; color: var(--tx);
+  line-height: 1.4; margin-bottom: 12px; font-family: var(--serif);
+}
+.rd-body {
+  font-size: 15px; line-height: 1.85; color: var(--txd);
+  font-family: var(--serif);
+}
+.rd-w {
+  cursor: pointer; border-radius: 3px;
+  transition: background .12s;
+  padding: 0 1px 1px;
+  display: inline;
+}
+/* known = trong từ điển nhưng chưa học → màu nhạt */
+.rd-w.known  { color: rgba(255,255,255,0.35); }
+/* learned = đã học (có trong mastered) → màu bình thường */
+.rd-w.learned { color: var(--tx); }
+/* unknown = từ mới, chưa có trong DB → gạch chân cam */
+.rd-w.unknown {
+  color: var(--tx);
+  text-decoration: underline;
+  text-decoration-color: rgba(255,159,10,0.7);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+.rd-w.known:active   { background: rgba(255,255,255,0.08); border-radius:3px; }
+.rd-w.learned:active { background: rgba(52,199,89,0.15);   border-radius:3px; }
+.rd-w.unknown:active { background: rgba(255,159,10,0.15);  border-radius:3px; }
+.rd-w.tapped { background: rgba(90,200,250,0.18) !important; color: var(--cyn) !important; border-radius: 4px; text-decoration: none !important; }
+
+/* Word popup */
+#rd-popup {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(18,22,32,0.97);
+  backdrop-filter: blur(32px) saturate(2);
+  -webkit-backdrop-filter: blur(32px) saturate(2);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px 24px 0 0;
+  padding: 12px 22px 48px;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+  max-height: 60vh; overflow-y: auto;
+}
+#rd-popup.open { transform: translateY(0); }
+/* Drag handle */
+#rd-popup::before {
+  content:''; display:block; width:36px; height:4px;
+  background:rgba(255,255,255,.2); border-radius:2px;
+  margin:0 auto 14px;
+}
+#rd-popup-backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9998;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  transition: background .2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+#rd-popup-backdrop.open {
+  background: rgba(0,0,0,0.45);
+  pointer-events: all;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rd-load-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--com); font-size: 13px;
+}
+.rd-spinner {
+  width: 32px; height: 32px; border: 2px solid rgba(255,55,95,0.2);
+  border-top-color: var(--pnk); border-radius: 50%;
+  animation: spin .7s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -4649,9 +4784,6 @@ const vocabularyDatabase = {
       { ru: 'Анализировать', vn: 'Phân tích', en: 'To analyze', ph: 'analizirovat\'' },
       { ru: 'Перерыв', vn: 'Giờ nghỉ / Giải lao', en: 'Break', ph: 'pereryv' },
     ],
-  },
-
-  // ════════════════════════════════════════════════════════════════
 
     "🎿 Thể thao mùa đông & Trò chơi": [
       { ru: 'Играть в кёрлинг',         vn: 'Chơi curling',                    en: 'To play curling',            ph: 'igrát v kyórling' },
@@ -4732,6 +4864,9 @@ const vocabularyDatabase = {
       { ru: 'Проголосовать',             vn: 'Đã bỏ phiếu',                    en: 'To vote (pf)',               ph: 'progolosovatʼ' },
       { ru: 'Голосование',               vn: 'Bỏ phiếu / Cuộc bầu cử',        en: 'Voting / Ballot',            ph: 'golosovaniye' },
     ],
+  },
+
+  // ════════════════════════════════════════════════════════════════
 
 
   // B2 — UPPER INTERMEDIATE
@@ -10576,137 +10711,3 @@ document.addEventListener('DOMContentLoaded',App.init);
 </script>
 </body>
 </html>
-/* ── Daily Learn ──────────────────────────────────────────── */
-
-#bn-daily.on .bIcon{filter:drop-shadow(0 0 7px rgba(255,159,10,0.85));}
-
-.dl-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);transition:all .3s;}
-.dl-step-dot.done{background:var(--grn);}
-.dl-step-dot.active{background:#ff9f0a;box-shadow:0 0 8px rgba(255,159,10,.8);}
-
-.dl-card{
-  background:rgba(255,159,10,0.06);
-  border:1px solid rgba(255,159,10,0.25);
-  border-radius:24px;padding:28px 22px;
-  text-align:center;
-  box-shadow:0 1px 0 rgba(255,255,255,0.08) inset, 0 8px 32px rgba(0,0,0,0.3);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-}
-.dl-phase-badge{
-  display:inline-block;padding:4px 14px;border-radius:20px;
-  font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;
-  margin-bottom:16px;
-}
-.dl-choice{
-  border-radius:14px;border:1px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.04);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  padding:13px 14px;margin-bottom:8px;cursor:pointer;
-  display:flex;align-items:center;gap:10px;
-  transition:transform .1s cubic-bezier(.34,1.56,.64,1),border-color .12s,background .12s;
-  min-height:52px;
-}
-.dl-choice:active{transform:scale3d(.975,.975,1);}
-.dl-choice.correct{border-color:var(--grn)!important;background:rgba(52,199,89,0.12)!important;}
-.dl-choice.wrong{border-color:var(--pnk)!important;background:rgba(255,55,95,0.10)!important;}
-.dl-word-badge{
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-}
-
-/* ── Read News ────────────────────────────────────────────── */
-#bn-read.on .bIcon svg, #bn-read.on .bLbl { color: var(--pnk); }
-#bn-read.on .bIcon { filter: drop-shadow(0 0 7px rgba(255,55,95,0.85)); }
-
-.rd-article {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 20px 18px;
-  margin-bottom: 14px;
-}
-.rd-tag {
-  display: inline-block; padding: 2px 10px; border-radius: 20px;
-  font-size: 9px; font-weight: 700; font-family: var(--mono);
-  letter-spacing: 1px; margin-bottom: 10px;
-  background: rgba(255,55,95,0.12); color: var(--pnk);
-  border: 1px solid rgba(255,55,95,0.3);
-}
-.rd-title {
-  font-size: 16px; font-weight: 800; color: var(--tx);
-  line-height: 1.4; margin-bottom: 12px; font-family: var(--serif);
-}
-.rd-body {
-  font-size: 15px; line-height: 1.85; color: var(--txd);
-  font-family: var(--serif);
-}
-.rd-w {
-  cursor: pointer; border-radius: 3px;
-  transition: background .12s;
-  padding: 0 1px 1px;
-  display: inline;
-}
-/* known = trong từ điển nhưng chưa học → màu nhạt */
-.rd-w.known  { color: rgba(255,255,255,0.35); }
-/* learned = đã học (có trong mastered) → màu bình thường */
-.rd-w.learned { color: var(--tx); }
-/* unknown = từ mới, chưa có trong DB → gạch chân cam */
-.rd-w.unknown {
-  color: var(--tx);
-  text-decoration: underline;
-  text-decoration-color: rgba(255,159,10,0.7);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1.5px;
-}
-.rd-w.known:active   { background: rgba(255,255,255,0.08); border-radius:3px; }
-.rd-w.learned:active { background: rgba(52,199,89,0.15);   border-radius:3px; }
-.rd-w.unknown:active { background: rgba(255,159,10,0.15);  border-radius:3px; }
-.rd-w.tapped { background: rgba(90,200,250,0.18) !important; color: var(--cyn) !important; border-radius: 4px; text-decoration: none !important; }
-
-/* Word popup */
-#rd-popup {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(18,22,32,0.97);
-  backdrop-filter: blur(32px) saturate(2);
-  -webkit-backdrop-filter: blur(32px) saturate(2);
-  border-top: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px 24px 0 0;
-  padding: 12px 22px 48px;
-  z-index: 9999;
-  transform: translateY(100%);
-  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
-  max-height: 60vh; overflow-y: auto;
-}
-#rd-popup.open { transform: translateY(0); }
-/* Drag handle */
-#rd-popup::before {
-  content:''; display:block; width:36px; height:4px;
-  background:rgba(255,255,255,.2); border-radius:2px;
-  margin:0 auto 14px;
-}
-#rd-popup-backdrop {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 9998;
-  background: rgba(0,0,0,0);
-  pointer-events: none;
-  transition: background .2s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-#rd-popup-backdrop.open {
-  background: rgba(0,0,0,0.45);
-  pointer-events: all;
-  cursor: pointer;
-  touch-action: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.rd-load-state {
-  text-align: center; padding: 60px 20px;
-  color: var(--com); font-size: 13px;
-}
-.rd-spinner {
-  width: 32px; height: 32px; border: 2px solid rgba(255,55,95,0.2);
-  border-top-color: var(--pnk); border-radius: 50%;
-  animation: spin .7s linear infinite; margin: 0 auto 16px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
