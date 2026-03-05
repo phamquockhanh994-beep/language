@@ -56,7 +56,7 @@ p,span,.sWord{-webkit-user-select:text;user-select:text;}
 *{-webkit-tap-highlight-color:transparent;}
 
 /* 5. GPU compositing layers */
-#app,#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
+#lang-toggle{-webkit-transform:translateZ(0);transform:translateZ(0);}
 /* NOTE: #bnav-wrap must NOT have transform — breaks position:fixed on iOS */
 
 /* 6. iOS 26 scroll: native momentum everywhere */
@@ -99,8 +99,8 @@ input,textarea,select{font-size:16px!important;}
 
 /* ── Swipe Back ── */
 #swipe-zone{
-  position:fixed;left:0;top:0;bottom:0;width:32px;
-  z-index:9000;touch-action:none;pointer-events:auto;
+  position:fixed;left:0;top:0;bottom:0;width:44px;
+  z-index:100;touch-action:none;pointer-events:none;
 }
 /* Khi đang kéo, tắt animation của screen để transform inline hoạt động */
 .screen.swiping{
@@ -1273,8 +1273,11 @@ body::after{
   </div>
 </div>
 
+</div><!-- end #app -->
+
+
 <!-- WORD POPUP -->
-<div id="rd-popup-backdrop" onclick="App.rdClosePopup()"></div>
+<div id="rd-popup-backdrop" onclick="App.rdClosePopup()" ontouchend="App.rdClosePopup()"></div>
 <div id="rd-popup">
   <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;">
     <div style="flex:1;">
@@ -1286,8 +1289,6 @@ body::after{
   </div>
   <div id="rdp-body"></div>
 </div>
-
-</div><!-- end #app -->
 
 <!-- BOTTOM NAV: outside #app so position:fixed works correctly on iOS -->
 <div id="bnav-wrap">
@@ -4651,6 +4652,88 @@ const vocabularyDatabase = {
   },
 
   // ════════════════════════════════════════════════════════════════
+
+    "🎿 Thể thao mùa đông & Trò chơi": [
+      { ru: 'Играть в кёрлинг',         vn: 'Chơi curling',                    en: 'To play curling',            ph: 'igrát v kyórling' },
+      { ru: 'Играть в городки',          vn: 'Chơi gorodki (trò chơi gỗ)',      en: 'To play gorodki',            ph: 'igrát v gorodkí' },
+      { ru: 'Играть в снежки',           vn: 'Ném tuyết',                       en: 'To have a snowball fight',   ph: 'igrát v snezhkí' },
+      { ru: 'Стрелять из лука',          vn: 'Bắn cung',                        en: 'To shoot a bow',             ph: 'strelyat iz lúka' },
+      { ru: 'Стрелять из винтовки',      vn: 'Bắn súng trường',                 en: 'To shoot a rifle',           ph: 'strelyat iz vintóvki' },
+      { ru: 'Кататься на тюбинге',       vn: 'Trượt phao tuyết',                en: 'To ride a snow tube',        ph: 'katatsya na tyúbinge' },
+      { ru: 'Играть в бильярд',          vn: 'Chơi bi-a',                       en: 'To play billiards',          ph: 'igrát v bilyárd' },
+      { ru: 'Участвовать',               vn: 'Tham gia / Tham dự',              en: 'To participate',             ph: 'uchástvovatʼ' },
+      { ru: 'Принять участие',           vn: 'Tham gia (một lần)',               en: 'To take part',               ph: 'prinyát uchástie' },
+      { ru: 'Соревнования',              vn: 'Cuộc thi / Thi đấu',              en: 'Competition / Contest',      ph: 'sorevnovaniya' },
+    ],
+
+    "💍 Trang sức & Quảng cáo": [
+      { ru: 'Украшение',                 vn: 'Đồ trang sức / Vật trang trí',   en: 'Decoration / Jewellery',     ph: 'ukrasheniye' },
+      { ru: 'Кольцо',                    vn: 'Nhẫn',                            en: 'Ring',                       ph: 'koltso' },
+      { ru: 'Браслет',                   vn: 'Vòng tay',                        en: 'Bracelet',                   ph: 'braslet' },
+      { ru: 'Серьги',                    vn: 'Hoa tai / Khuyên tai',            en: 'Earrings',                   ph: 'serygi' },
+      { ru: 'Реклама',                   vn: 'Quảng cáo',                       en: 'Advertisement',              ph: 'reklama' },
+      { ru: 'Таять',                     vn: 'Tan chảy (tuyết, băng)',          en: 'To melt',                    ph: 'tayatʼ' },
+      { ru: 'Растаять',                  vn: 'Tan hết / Đã tan chảy',           en: 'To melt (completed)',        ph: 'rastaiatʼ' },
+      { ru: 'Всё впереди',               vn: 'Tất cả còn ở phía trước',         en: 'Everything is ahead / The best is yet to come', ph: 'vsyo vperedi' },
+      { ru: 'Возможность',               vn: 'Cơ hội / Khả năng',              en: 'Opportunity / Possibility',  ph: 'vozmózhnostʼ' },
+    ],
+
+    "🔬 Phân tích & Khoa học": [
+      { ru: 'Анализировать',             vn: 'Phân tích',                       en: 'To analyse',                 ph: 'analizírovat' },
+      { ru: 'Анализ',                    vn: 'Sự phân tích / Bài phân tích',    en: 'Analysis',                   ph: 'análiz' },
+      { ru: 'Осматривать',               vn: 'Khám / Xem xét kỹ',              en: 'To examine / inspect',       ph: 'osmatrívatʼ' },
+      { ru: 'Осмотреть',                 vn: 'Đã khám / Đã xem xét',           en: 'To examine (completed)',     ph: 'osmotretʼ' },
+      { ru: 'Вывод',                     vn: 'Kết luận',                        en: 'Conclusion',                 ph: 'vyvod' },
+      { ru: 'Развивать',                 vn: 'Phát triển (cái gì đó)',          en: 'To develop (sth)',           ph: 'razvívatʼ' },
+      { ru: 'Развиваться',               vn: 'Phát triển (tự phát triển)',      en: 'To develop (itself)',        ph: 'razvívatʼsya' },
+      { ru: 'Развитие',                  vn: 'Sự phát triển',                   en: 'Development',                ph: 'razvítiye' },
+      { ru: 'Эксперимент',               vn: 'Thí nghiệm / Thực nghiệm',       en: 'Experiment',                 ph: 'eksperimyent' },
+      { ru: 'Изобретать',                vn: 'Phát minh / Sáng chế',           en: 'To invent',                  ph: 'izobretatʼ' },
+      { ru: 'Изобретение',               vn: 'Sáng chế / Phát minh',           en: 'Invention',                  ph: 'izobretenie' },
+      { ru: 'Изобретатель',              vn: 'Nhà phát minh',                   en: 'Inventor',                   ph: 'izobretátelʼ' },
+      { ru: 'Совершать',                 vn: 'Thực hiện / Tiến hành',          en: 'To accomplish / make',       ph: 'sovershatʼ' },
+      { ru: 'Достигать цели',            vn: 'Đạt được mục tiêu',               en: 'To achieve a goal',          ph: 'dostigatʼ tseli' },
+      { ru: 'Цель',                      vn: 'Mục tiêu / Mục đích',            en: 'Goal / Aim',                 ph: 'tselʼ' },
+      { ru: 'Опыт',                      vn: 'Kinh nghiệm / Thí nghiệm',       en: 'Experience / Experiment',    ph: 'opyt' },
+      { ru: 'Опытный',                   vn: 'Có kinh nghiệm / Lão luyện',     en: 'Experienced',                ph: 'ópytny' },
+      { ru: 'Создавать',                 vn: 'Tạo ra / Sáng tạo',              en: 'To create',                  ph: 'sozdavatʼ' },
+      { ru: 'Создание',                  vn: 'Sự tạo ra / Tác phẩm',           en: 'Creation',                   ph: 'sozdaniye' },
+    ],
+
+    "📚 Xuất bản & Tài năng": [
+      { ru: 'Издательство',              vn: 'Nhà xuất bản',                    en: 'Publishing house',           ph: 'izdátelʼstvo' },
+      { ru: 'Издатель',                  vn: 'Nhà xuất bản (người)',            en: 'Publisher',                  ph: 'izdátelʼ' },
+      { ru: 'Издавать',                  vn: 'Xuất bản / Phát hành',           en: 'To publish',                 ph: 'izdavatʼ' },
+      { ru: 'Издание',                   vn: 'Ấn phẩm / Lần xuất bản',         en: 'Publication / Edition',      ph: 'izdaniye' },
+      { ru: 'Событие',                   vn: 'Sự kiện',                         en: 'Event',                      ph: 'sobytiye' },
+      { ru: 'Талантливый',               vn: 'Có tài năng / Tài giỏi',         en: 'Talented',                   ph: 'talantlivy' },
+      { ru: 'Талант',                    vn: 'Tài năng',                        en: 'Talent',                     ph: 'talant' },
+      { ru: 'Способность',               vn: 'Năng lực / Khả năng',            en: 'Ability / Capability',       ph: 'sposobnostʼ' },
+      { ru: 'Способный',                 vn: 'Có năng lực / Giỏi giang',       en: 'Capable / Able',             ph: 'sposobny' },
+      { ru: 'Собирать',                  vn: 'Thu thập / Tập hợp / Lắp ráp',  en: 'To collect / assemble',      ph: 'sobíratʼ' },
+    ],
+
+    "💑 Tình cảm & Hôn nhân": [
+      { ru: 'Обнимать',                  vn: 'Ôm (ai đó)',                      en: 'To hug',                     ph: 'obnimatʼ' },
+      { ru: 'Обниматься',                vn: 'Ôm nhau',                         en: 'To hug each other',          ph: 'obnimatʼsya' },
+      { ru: 'Влюбляться',                vn: 'Yêu / Phải lòng',                en: 'To fall in love',            ph: 'vlyublyatʼsya' },
+      { ru: 'Влюбиться',                 vn: 'Đã yêu / Phải lòng (xong)',      en: 'To fall in love (pf)',       ph: 'vlyubítʼsya' },
+      { ru: 'Стесняться',                vn: 'Ngại ngùng / Xấu hổ',            en: 'To be shy / embarrassed',    ph: 'stesnyatʼsya' },
+      { ru: 'Стеснительный',             vn: 'Nhút nhát / Hay ngại',           en: 'Shy / Bashful',              ph: 'stesnitelʼny' },
+      { ru: 'Жениться',                  vn: 'Lấy vợ / Kết hôn (chồng)',      en: 'To marry (said of a man)',   ph: 'zhenitʼsya' },
+      { ru: 'Пожениться',                vn: 'Kết hôn (cả hai)',               en: 'To get married (couple)',    ph: 'pozhenitʼsya' },
+      { ru: 'Выйти замуж',               vn: 'Lấy chồng / Kết hôn (vợ)',      en: 'To marry (said of a woman)', ph: 'výyti zámuzh' },
+      { ru: 'Разводиться',               vn: 'Ly hôn',                          en: 'To divorce / get divorced',  ph: 'razvadítʼsya' },
+      { ru: 'Развестись',                vn: 'Đã ly hôn',                       en: 'To get divorced (pf)',       ph: 'razvesʼtís' },
+    ],
+
+    "🗳️ Chính trị & Xã hội": [
+      { ru: 'Голосовать',                vn: 'Bỏ phiếu / Bầu cử',             en: 'To vote',                    ph: 'golosovatʼ' },
+      { ru: 'Проголосовать',             vn: 'Đã bỏ phiếu',                    en: 'To vote (pf)',               ph: 'progolosovatʼ' },
+      { ru: 'Голосование',               vn: 'Bỏ phiếu / Cuộc bầu cử',        en: 'Voting / Ballot',            ph: 'golosovaniye' },
+    ],
+
+
   // B2 — UPPER INTERMEDIATE
   // ════════════════════════════════════════════════════════════════
   B2: {
@@ -9319,6 +9402,7 @@ function rdFetch(){
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
+    signal: rdAiTranslate._ctrl ? rdAiTranslate._ctrl.signal : undefined,
     signal: ac ? ac.signal : undefined,
     body: JSON.stringify({
       model:'claude-sonnet-4-20250514',
@@ -9772,9 +9856,13 @@ function rdShowPopup(word, matches){
 
 /* ── AI translate for unknown words ─────────────────────────── */
 function rdAiTranslate(word){
+  // Cancel any previous in-flight request
+  if(rdAiTranslate._ctrl) try{ rdAiTranslate._ctrl.abort(); }catch(e){}
+  rdAiTranslate._ctrl = (typeof AbortController!=='undefined') ? new AbortController() : null;
+
   if(location.protocol !== 'https:'){
     var box=document.getElementById('rdp-ai-box');
-    if(box) box.innerHTML='<div style="color:var(--com);font-size:12px;padding:8px;">Nhấn "Tìm trong từ điển" để tra.</div>';
+    if(box) box.innerHTML='<div style="color:var(--com);font-size:13px;padding:10px 0;">Không có trong từ điển.<br><span style="color:rgba(255,255,255,.3);font-size:11px;">'+word+'</span></div>';
     return;
   }
   fetch('https://api.anthropic.com/v1/messages',{
@@ -9803,14 +9891,20 @@ function rdAiTranslate(word){
       +'<div style="font-size:10px;color:rgba(255,159,10,.6);margin-top:8px;font-family:var(--mono);">✦ AI dịch</div>'
       +'</div>';
   })
-  .catch(function(){
+  .catch(function(err){
+    if(err && err.name === 'AbortError') return; // cancelled, ignore
     var box=document.getElementById('rdp-ai-box');
-    if(box) box.innerHTML='<div style="color:var(--com);font-size:12px;padding:8px;">Không dịch được. Thử tra từ điển.</div>';
+    if(box) box.innerHTML='<div style="color:var(--com);font-size:13px;padding:10px 0;">Không dịch được.<br><span style="color:rgba(255,255,255,.3);font-size:11px;">Thử tra trong từ điển.</span></div>';
   });
 }
 
 /* ── Popup controls ──────────────────────────────────────────── */
 function App_rdClosePopup(){
+  // Cancel any in-flight AI translation
+  if(typeof rdAiTranslate !== 'undefined' && rdAiTranslate._ctrl){
+    try{ rdAiTranslate._ctrl.abort(); } catch(e){}
+    rdAiTranslate._ctrl = null;
+  }
   var pop = document.getElementById('rd-popup');
   var bd  = document.getElementById('rd-popup-backdrop');
   if(pop) pop.classList.remove('open');
@@ -10037,139 +10131,168 @@ document.addEventListener('DOMContentLoaded',App.init);
 
 
 (function(){
-  const BACK={topic:'vocab',fc:'topic',quiz:'topic',qzdone:'topic',
-              srs:'vocab',srsdone:'vocab',
-              case:'grammar',ag:'grammar',hd:'grammar',gd:'grammar',ez:'grammar'};
-  const ALL=['vocab','topic','fc','quiz','qzdone','srs','srsdone',
-             'lookup','grammar','case','ag','hd','gd','ez'];
-  const THR=100, VEL=0.35;
+  const BACK = {
+    topic:'vocab', fc:'topic', quiz:'topic', qzdone:'topic',
+    srs:'vocab',   srsdone:'vocab',
+    case:'grammar', ag:'grammar', hd:'grammar', gd:'grammar', ez:'grammar',
+    'daily-done':'daily'
+  };
+  const ALL = ['vocab','topic','fc','quiz','qzdone','srs','srsdone',
+               'lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read'];
+  const THR = 88;   // px to trigger
+  const VEL = 0.3;  // px/ms
 
   const zone  = document.getElementById('swipe-zone');
   const glow  = document.getElementById('swipe-glow');
   const arrow = document.getElementById('swipe-arrow');
-  let on=false, sx=0, sy=0, lx=0, t0=0, confirmed=false, el=null;
+  if(!zone) return;
+
+  let on=false, maybeSwipe=false, sx=0, sy=0, lx=0, t0=0, confirmed=false, el=null;
 
   function cur(){
-    return ALL.find(s=>{
-      const e=document.getElementById('s-'+s);
-      return e&&e.classList.contains('active');
+    return ALL.find(function(s){
+      var e=document.getElementById('s-'+s);
+      return e && e.classList.contains('active');
     });
   }
 
-  /* Đặt transform inline — phải xoá animation trước */
   function drag(e, dx){
     if(!e) return;
-    // KEY FIX: tắt CSS animation để transform inline không bị ghi đè
     e.classList.add('swiping');
-    e.style.transform = 'translate3d('+Math.round(dx*.62)+'px,0,0)';
-    e.style.opacity   = String(Math.max(.78, 1 - dx/(window.innerWidth*.75)*.22));
+    e.style.transform = 'translate3d('+Math.round(dx * .65)+'px,0,0)';
+    e.style.opacity   = String(Math.max(.75, 1 - dx/(window.innerWidth*.8)*.25));
   }
 
   function rst(e){
     if(!e) return;
     e.classList.remove('swiping');
-    e.style.transform='';
-    e.style.opacity='';
-    e.style.transition='';
+    e.style.cssText = '';
   }
 
-  zone.addEventListener('touchstart', function(e){
-    if(e.touches.length!==1) return;
-    const s=cur();
-    if(!s||!BACK[s]) return;
-    const t=e.touches[0];
-    sx=lx=t.clientX; sy=t.clientY; t0=Date.now();
-    on=true; confirmed=false;
-    el=document.getElementById('s-'+s);
-    e.preventDefault();
-  },{passive:false});
-
-  function onMove(t){
-    if(!on) return;
-    lx=t.clientX;
-    const dx=lx-sx, dy=t.clientY-sy;
-    if(Math.abs(dy)>Math.abs(dx)*2.2&&dx<24){ cancel(); return; }
-    if(dx<=0) return;
-
-    drag(el, dx);
-
-    const p=Math.min(dx/THR,1);
-    glow.style.opacity=String(Math.min(p*1.8,1));
-    glow.style.boxShadow='0 0 '+(10+p*24)+'px rgba(110,198,255,'+(0.25+p*.6)+')';
-
-    if(dx>28) arrow.classList.add('show');
-    else       arrow.classList.remove('show');
-
-    arrow.style.left = Math.min(14+dx*.15, 44)+'px';
-
-    if(p>=1&&!confirmed){
-      confirmed=true;
+  function showGlow(p){
+    glow.style.opacity = String(Math.min(p * 1.6, 1));
+    glow.style.boxShadow = '0 0 '+(10+p*28)+'px rgba(110,198,255,'+(0.2+p*.65)+')';
+    if(p > 0.28) arrow.classList.add('show');
+    else          arrow.classList.remove('show');
+    arrow.style.left = Math.min(12 + p * THR * .18, 46) + 'px';
+    if(p >= 1 && !confirmed){
+      confirmed = true;
       arrow.classList.add('ok');
       if(navigator.vibrate) navigator.vibrate(8);
-    } else if(p<1&&confirmed){
-      confirmed=false;
+    } else if(p < 1 && confirmed){
+      confirmed = false;
       arrow.classList.remove('ok');
     }
   }
 
-  zone.addEventListener('touchmove', function(e){
-    e.preventDefault();
-    onMove(e.touches[0]);
-  },{passive:false});
-
-  // Bắt tiếp khi ngón trượt ra ngoài zone
-  document.addEventListener('touchmove', function(e){
-    if(on) onMove(e.touches[0]);
-  },{passive:true});
-
-  function finish(){
-    if(!on) return;
-    on=false;
-    const dx=lx-sx, vel=dx/Math.max(1,Date.now()-t0);
-    const s=cur();
-    const goBack=(dx>=THR)||(dx>=50&&vel>=VEL);
-
-    if(goBack&&s&&BACK[s]){
-      if(el){
-        el.classList.add('swiping'); // giữ animation tắt trong suốt slide-out
-        el.style.transition='transform .26s cubic-bezier(0.32,0.72,0,1),opacity .22s ease';
-        el.style.transform='translate3d(100%,0,0)';
-        el.style.opacity='0';
-      }
-      glow.style.opacity='0';
-      arrow.classList.remove('show','ok');
-      const target=BACK[s], captured=el;
-      setTimeout(function(){
-        if(captured) rst(captured);
-        App.nav(target, true);
-        if(navigator.vibrate) navigator.vibrate([5,18,3]);
-      },250);
-    } else {
-      cancel();
-    }
-    el=null;
+  function hideGlow(){
+    glow.style.opacity = '0';
+    arrow.classList.remove('show','ok');
+    arrow.style.left = '12px';
   }
 
-  function cancel(){
-    on=false;
+  // ── touchstart: only start if beginning near left edge ────────
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;
+    var t = e.touches[0];
+    // Only intercept touches starting in left 44px (wider for reliability)
+    if(t.clientX > 44) return;
+    // Skip if popup is open
+    var pop = document.getElementById('rd-popup');
+    if(pop && pop.classList.contains('open')) return;
+    var s = cur();
+    if(!s || !BACK[s]) return;
+    sx = lx = t.clientX; sy = t.clientY; t0 = Date.now();
+    on = false; maybeSwipe = true; confirmed = false;
+    el = document.getElementById('s-' + s);
+  }, {passive: true});
+
+  // ── touchmove: decide if this is a horizontal swipe ───────────
+  document.addEventListener('touchmove', function(e){
+    if(!maybeSwipe) return;
+    var t = e.touches[0];
+    lx = t.clientX;
+    var dx = lx - sx, dy = t.clientY - sy;
+
+    // First movement: decide horizontal vs vertical
+    if(!on){
+      if(dx < 4 && Math.abs(dy) < 4) return; // not moved enough yet
+      if(Math.abs(dy) > Math.abs(dx) * 1.6){
+        // Mostly vertical → let page scroll, cancel swipe
+        maybeSwipe = false; return;
+      }
+      if(dx < 0){ maybeSwipe = false; return; } // going left
+      // It's a rightward horizontal drag → commit to swipe
+      on = true;
+    }
+
+    if(dx <= 0){ drag(el, 0); hideGlow(); return; }
+    drag(el, dx);
+    showGlow(Math.min(dx / THR, 1));
+
+    // Prevent scroll while swiping
+    e.preventDefault();
+  }, {passive: false});
+
+  // ── touchend ──────────────────────────────────────────────────
+  document.addEventListener('touchend', function(e){
+    if(!maybeSwipe) return;
+    var wasOn = on;
+    maybeSwipe = false; on = false;
+    if(!wasOn){ hideGlow(); return; }
+
+    var dx = lx - sx, dt = Math.max(1, Date.now() - t0);
+    var vel = dx / dt;
+    var goBack = (dx >= THR) || (dx >= 40 && vel >= VEL);
+
+    if(goBack && el){
+      // Slide out
+      el.classList.add('swiping');
+      el.style.transition = 'transform .24s cubic-bezier(0.32,0.72,0,1), opacity .2s ease';
+      el.style.transform  = 'translate3d(100%,0,0)';
+      el.style.opacity    = '0';
+      hideGlow();
+      var target = BACK[cur() || ''] || BACK[ALL.find(function(s){ var e=document.getElementById('s-'+s); return e&&e.classList.contains('active'); })];
+      // Recalculate target from current screen before it changes
+      var s2 = ALL.find(function(s){ var e=document.getElementById('s-'+s); return e&&e.classList.contains('active'); });
+      var dest = BACK[s2];
+      var captured = el; el = null;
+      setTimeout(function(){
+        rst(captured);
+        if(dest) App.nav(dest, true);
+        if(navigator.vibrate) navigator.vibrate([4, 16, 3]);
+      }, 230);
+    } else {
+      // Snap back
+      if(el){
+        el.classList.add('swiping');
+        el.style.transition = 'transform .32s cubic-bezier(0.34,1.56,0.64,1), opacity .22s ease';
+        el.style.transform  = 'translate3d(0,0,0)';
+        el.style.opacity    = '1';
+        var cap = el; el = null;
+        setTimeout(function(){ rst(cap); }, 340);
+      }
+      hideGlow();
+    }
+    confirmed = false;
+  }, {passive: true});
+
+  document.addEventListener('touchcancel', function(){
+    if(!maybeSwipe && !on) return;
+    maybeSwipe = false; on = false;
     if(el){
       el.classList.add('swiping');
-      el.style.transition='transform .3s cubic-bezier(0.34,1.56,0.64,1),opacity .2s ease';
-      el.style.transform='translate3d(0,0,0)';
-      el.style.opacity='1';
-      const cap=el;
-      setTimeout(function(){ rst(cap); }, 320);
+      el.style.transition = 'transform .28s ease, opacity .2s ease';
+      el.style.transform  = 'translate3d(0,0,0)';
+      el.style.opacity    = '1';
+      var cap = el; el = null;
+      setTimeout(function(){ rst(cap); }, 300);
     }
-    el=null; confirmed=false;
-    glow.style.opacity='0';
-    arrow.classList.remove('show','ok');
-    arrow.style.left='14px';
-  }
+    hideGlow();
+    confirmed = false;
+    el = null;
+  }, {passive: true});
 
-  zone.addEventListener('touchend',    function(){ finish(); }, {passive:true});
-  zone.addEventListener('touchcancel', function(){ cancel(); }, {passive:true});
-  document.addEventListener('touchend',    function(){ if(on) finish(); }, {passive:true});
-  document.addEventListener('touchcancel', function(){ if(on) cancel(); }, {passive:true});
 })();
 
 // ══════════════════════════════════════════════════════════════
@@ -10573,6 +10696,8 @@ document.addEventListener('DOMContentLoaded',App.init);
   background: rgba(0,0,0,0.45);
   pointer-events: all;
   cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .rd-load-state {
