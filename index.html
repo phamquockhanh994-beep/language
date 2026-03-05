@@ -102,10 +102,13 @@ input,textarea,select{font-size:16px!important;}
   position:fixed;left:0;top:0;bottom:0;width:44px;
   z-index:100;touch-action:none;pointer-events:none;
 }
-/* Khi đang kéo, tắt animation của screen để transform inline hoạt động */
+/* Khi đang kéo, tắt animation */
 .screen.swiping{
   animation:none !important;
   transition:none !important;
+}
+.screen.swiping[data-anim]{
+  animation:none !important;
 }
 #swipe-glow{
   position:fixed;left:0;top:0;bottom:0;width:3px;
@@ -814,13 +817,15 @@ body::after{
 }
 .screen.active{
   display:flex;
-  animation:iosSlideIn 0.34s var(--ease-ios) both;
 }
-.screen.slide-back{
-  animation:iosSlideBack 0.28s var(--ease-ios) both;
+.screen.active[data-anim="fwd"]{
+  animation:iosSlideIn 0.28s var(--ease-ios) both;
 }
-.screen.tab-switch{
-  animation:iosTabIn 0.24s var(--ease-out) both;
+.screen.active[data-anim="back"]{
+  animation:iosSlideBack 0.24s var(--ease-ios) both;
+}
+.screen.active[data-anim="tab"]{
+  animation:iosTabIn 0.22s var(--ease-out) both;
 }
 
 .row{display:flex;align-items:center;gap:8px;}
@@ -7485,6 +7490,7 @@ var topicNamesEN={"🙋 Chào hỏi & Giới thiệu":"🙋 Greetings & Introduc
 const S={
   level:'A1', topic:null, topicIdx:0,
   mastered:{}, srsData:{},
+  customWords:[], todayPicks:null,
   srsDeck:[], srsIdx:0, srsShown:false,
   srsStats:{again:0,hard:0,good:0,easy:0},
   fcIdx:0, fcShown:false, fcFamily:false,
@@ -7496,8 +7502,11 @@ const S={
 };
 
 // STORAGE
-function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m){var pm=JSON.parse(m);if(pm&&typeof pm==='object')S.mastered=pm;}if(s){var ps=JSON.parse(s);if(ps&&typeof ps==='object')S.srsData=ps;}if(lg)S.lang=lg;if(lv)S.level=lv;}catch(e){} S.mastered=S.mastered||{}; S.srsData=S.srsData||{};}
+function load(){try{const m=localStorage.getItem('mw');const s=localStorage.getItem('sd');const lg=localStorage.getItem('lang');const lv=localStorage.getItem('lv');if(m){var pm=JSON.parse(m);if(pm&&typeof pm==='object')S.mastered=pm;}if(s){var ps=JSON.parse(s);if(ps&&typeof ps==='object')S.srsData=ps;}if(lg)S.lang=lg;if(lv)S.level=lv;var cw=localStorage.getItem('cw'); if(cw){var pcw=JSON.parse(cw); if(Array.isArray(pcw))S.customWords=pcw;}var tp=localStorage.getItem('tp'); if(tp){var ptp=JSON.parse(tp); if(ptp)S.todayPicks=ptp;}}catch(e){} S.mastered=S.mastered||{}; S.srsData=S.srsData||{}; S.customWords=S.customWords||[]; }
 function saveM(){try{localStorage.setItem('mw',JSON.stringify(S.mastered));}catch(e){}}
+function saveCW(){try{localStorage.setItem('cw',JSON.stringify(S.customWords));}catch(e){}}
+function savePicks(){try{localStorage.setItem('tp',JSON.stringify(S.todayPicks));}catch(e){}}
+
 function save(){try{localStorage.setItem('lang',S.lang);localStorage.setItem('lv',S.level);}catch(e){}}
 function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}catch(e){}}
 
@@ -7505,69 +7514,71 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','daily','daily-done','read'];
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read'];
 const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
 const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0};
 
 function nav(name, noAnim){
-  const prev = SCREENS.find(s=>document.getElementById('s-'+s)?.classList.contains('active'));
-  const prevDepth = NAV_DEPTH[prev] ?? 0;
-  const nextDepth = NAV_DEPTH[name] ?? 0;
+  var prev = SCREENS.find(function(s){
+    var e=document.getElementById('s-'+s); return e&&e.classList.contains('active');
+  });
+  var prevDepth = NAV_DEPTH[prev]  !== undefined ? NAV_DEPTH[prev]  : 0;
+  var nextDepth = NAV_DEPTH[name]  !== undefined ? NAV_DEPTH[name]  : 0;
+  var isBack      = nextDepth < prevDepth;
+  var isTabSwitch = (prevDepth === 0) && (nextDepth === 0) && (prev !== name);
 
-  // Tab-level screens = depth 0: vocab, grammar, lookup, srs, srsdone
-  const isTabRoot = nextDepth === 0;
-  // Back = going shallower
-  const isBack = nextDepth < prevDepth;
-  // Tab switch = both screens are root level (tapping nav bar)
-  const isTabSwitch = isTabRoot && (prev == null || prevDepth === 0);
+  // Pre-render BEFORE showing new screen (prevents empty-frame flash)
+  if(name === 'vocab' || name === 'topic' || name === 'qzdone') renderVocab();
+  if(name === 'grammar') gramTab(S.gramTab||'motion');
+  if(name === 'daily' && typeof renderDailyHub==='function' && !DL.lessonActive) renderDailyHub();
 
-  requestAnimationFrame(()=>{
-    SCREENS.forEach(s=>{
-      const el = document.getElementById('s-'+s);
-      if(el){
-        el.classList.remove('active','slide-back','tab-switch');
+  requestAnimationFrame(function(){
+    // Hide previous screen without animation interference
+    if(prev && prev !== name){
+      var prevEl = document.getElementById('s-'+prev);
+      if(prevEl){
+        prevEl.classList.remove('active','slide-back','tab-switch','swiping');
+        prevEl.style.cssText = '';
       }
-    });
+    }
 
-    const el = document.getElementById('s-'+name);
+    // Show next screen
+    var el = document.getElementById('s-'+name);
     if(el){
-      // Force reflow — ngăn iOS skip animation khi class thay đổi liên tiếp
-      void el.offsetWidth;
+      // Clear all animation state first
+      el.classList.remove('active','slide-back','tab-switch','swiping');
+      el.style.cssText = '';
 
-      if(!noAnim && isTabSwitch) el.classList.add('tab-switch');
-      else if(!noAnim && isBack)  el.classList.add('slide-back');
-      // else: default iosSlideIn (forward)
+      if(!noAnim){
+        if(isTabSwitch)  el.setAttribute('data-anim','tab');
+        else if(isBack)  el.setAttribute('data-anim','back');
+        else             el.setAttribute('data-anim','fwd');
+      } else {
+        el.removeAttribute('data-anim');
+      }
 
+      // Single RAF ensures class add triggers animation from clean state
       el.classList.add('active');
     }
 
-    // Update nav active state
-    document.querySelectorAll('.bBtn').forEach(b=>b.classList.remove('on'));
-    const activeBtn = document.getElementById(NAVMAP[name]||'bn-vocab');
+    // Update nav highlight
+    document.querySelectorAll('.bBtn').forEach(function(b){ b.classList.remove('on'); });
+    var activeBtn = document.getElementById(NAVMAP[name]||'bn-vocab');
     if(activeBtn){
       activeBtn.classList.add('on');
-      // Re-trigger icon pop animation
-      const icon = activeBtn.querySelector('.bIcon');
-      if(icon){
-        icon.style.animation='none';
-        void icon.offsetWidth;
-        icon.style.animation='';
-      }
+      var icon = activeBtn.querySelector('.bIcon');
+      if(icon){ icon.style.animation='none'; void icon.offsetWidth; icon.style.animation=''; }
     }
 
     S.screen=name; save();
+    if(window.navigator && navigator.vibrate) navigator.vibrate(6);
 
-    // iOS Haptic (Safari 13+)
-    if(window.navigator?.vibrate) navigator.vibrate(6);
-
-    // Re-render screens khi quay lại để cập nhật tiến độ
-    if(name === 'vocab' || name === 'topic' || name === 'qzdone') setTimeout(renderVocab, 30);
-    if(name === 'grammar') setTimeout(function(){ gramTab(S.gramTab||'motion'); }, 30);
-    if(name === 'daily') setTimeout(function(){ if(typeof renderDailyHub==='function' && !DL.lessonActive) renderDailyHub(); }, 30);
-    if(name === 'read') setTimeout(rdInit, 30);
+    // Post-render for screens not pre-rendered (read needs async init)
+    if(name === 'read') setTimeout(rdInit, 16);
   });
 }
+
 
 // VOCAB MENU
 
@@ -8957,7 +8968,6 @@ function dlTodayKey(){
 
 function dlLoadOrPick(){
   var key=dlTodayKey();
-  // If same day key and words already loaded, keep them
   if(DL.todayKey===key && DL.words && DL.words.length>0) return;
   DL.todayKey=key;
   try{
@@ -8965,16 +8975,31 @@ function dlLoadOrPick(){
     if(saved){var data=JSON.parse(saved);
       DL.words=data.words; DL.lockedKeys=data.lockedKeys||[]; return;}
   }catch(e){}
-  // Chọn 7 từ chưa mastered
+
+  // Build full pool: vocabulary DB + custom words
   var all=[];
   Object.entries(vocabularyDatabase[S.level]||{}).forEach(function(e){
     var topic=e[0],ws=e[1];
     if(!Array.isArray(ws)) return;
     ws.forEach(function(w,i){
       var k=S.level+'-'+topic+'-'+i;
-      if(!S.mastered[k]) all.push({w:w,key:k});
+      if(!S.mastered[k]) all.push({w:w,key:k,custom:false});
     });
   });
+  // Add unmastered custom words
+  (S.customWords||[]).forEach(function(w,i){
+    var k='custom-'+i;
+    if(!S.mastered[k]) all.push({w:w,key:k,custom:true});
+  });
+
+  // If user has saved manual picks for today, use them
+  if(S.todayPicks && S.todayPicks.key===key && Array.isArray(S.todayPicks.keys)){
+    var pickSet=S.todayPicks.keys;
+    var picked=all.filter(function(x){ return pickSet.indexOf(x.key)>=0; });
+    if(picked.length>0){ DL.words=picked; DL.lockedKeys=[]; dlSave(); return; }
+  }
+
+  // Default: random 7
   for(var i=all.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=all[i];all[i]=all[j];all[j]=tmp;}
   DL.words=all.slice(0,7);
   DL.lockedKeys=[];
@@ -9062,6 +9087,20 @@ function renderDailyHub(){
        + '<div style="font-size:12px;color:var(--com);margin-top:3px;">Quay lại vào ngày mai</div>'
        + '</div>';
   }
+
+  // Quick actions row
+  h += '<div style="display:flex;gap:8px;margin-bottom:14px;">'
+     + '<div onclick="App.openWordPicker()" style="flex:1;padding:12px 10px;border-radius:14px;cursor:pointer;'
+     + 'border:1px solid rgba(90,200,250,.3);background:rgba(90,200,250,.07);text-align:center;">'
+     + '<div style="font-size:18px;">🗂️</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--cyn);margin-top:4px;">Chọn từ hôm nay</div>'
+     + '</div>'
+     + '<div onclick="App.openAddWord()" style="flex:1;padding:12px 10px;border-radius:14px;cursor:pointer;'
+     + 'border:1px solid rgba(52,199,89,.3);background:rgba(52,199,89,.07);text-align:center;">'
+     + '<div style="font-size:18px;">➕</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--grn);margin-top:4px;">Thêm từ mới</div>'
+     + '</div>'
+     + '</div>';
 
   // Progress road
   h += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);'
@@ -9993,6 +10032,323 @@ function rdShowPopup(word, matches){
   },10);
 }
 
+
+/* ── Built-in fallback dictionary for common Russian words ───── */
+var RD_FALLBACK = {
+  // ── Предлоги / Prepositions ──────────────────────────
+  'в':    {ru:'в',vn:'trong / vào',en:'in / into',ph:'v'},
+  'на':   {ru:'на',vn:'trên / vào',en:'on / onto',ph:'na'},
+  'с':    {ru:'с',vn:'với / từ',en:'with / from',ph:'s'},
+  'из':   {ru:'из',vn:'từ / ra khỏi',en:'from / out of',ph:'iz'},
+  'по':   {ru:'по',vn:'theo / qua',en:'along / by',ph:'po'},
+  'за':   {ru:'за',vn:'sau / vì / trả cho',en:'behind / for',ph:'za'},
+  'до':   {ru:'до',vn:'đến / trước',en:'until / before',ph:'do'},
+  'от':   {ru:'от',vn:'từ / khỏi',en:'from / away from',ph:'ot'},
+  'без':  {ru:'без',vn:'không có / thiếu',en:'without',ph:'byez'},
+  'при':  {ru:'при',vn:'trong thời / tại',en:'at / under',ph:'pri'},
+  'над':  {ru:'над',vn:'trên / phía trên',en:'above / over',ph:'nad'},
+  'под':  {ru:'под',vn:'dưới / bên dưới',en:'under / beneath',ph:'pod'},
+  'между':  {ru:'между',vn:'giữa',en:'between',ph:'myezhdu'},
+  'перед':  {ru:'перед',vn:'trước / phía trước',en:'in front of / before',ph:'pyered'},
+  'после':  {ru:'после',vn:'sau / sau khi',en:'after',ph:'posle'},
+  'около':  {ru:'около',vn:'gần / khoảng',en:'near / about',ph:'okolo'},
+  'через':  {ru:'через',vn:'qua / sau',en:'through / in (time)',ph:'chyerez'},
+  'вместе': {ru:'вместе',vn:'cùng nhau',en:'together',ph:'vmyeste'},
+  'вместо': {ru:'вместо',vn:'thay vì',en:'instead of',ph:'vmyesto'},
+  'вокруг': {ru:'вокруг',vn:'xung quanh',en:'around',ph:'vokrug'},
+  'среди':  {ru:'среди',vn:'trong số / giữa',en:'among / amid',ph:'sredi'},
+  'против': {ru:'против',vn:'chống lại / đối diện',en:'against / opposite',ph:'protif'},
+  'кроме':  {ru:'кроме',vn:'ngoài / trừ',en:'except / besides',ph:'krome'},
+  'вдоль':  {ru:'вдоль',vn:'dọc theo',en:'along',ph:'vdolʼ'},
+  'внутри': {ru:'внутри',vn:'bên trong',en:'inside',ph:'vnutri'},
+
+  // ── Союзы / Conjunctions ─────────────────────────────
+  'и':    {ru:'и',vn:'và',en:'and',ph:'i'},
+  'а':    {ru:'а',vn:'còn / nhưng',en:'but / and',ph:'a'},
+  'но':   {ru:'но',vn:'nhưng',en:'but',ph:'no'},
+  'или':  {ru:'или',vn:'hoặc / hay',en:'or',ph:'ili'},
+  'что':  {ru:'что',vn:'rằng / gì / cái gì',en:'that / what',ph:'chto'},
+  'как':  {ru:'как',vn:'như / thế nào',en:'how / as / like',ph:'kak'},
+  'если': {ru:'если',vn:'nếu',en:'if',ph:'yesli'},
+  'хотя': {ru:'хотя',vn:'mặc dù / dù',en:'although / though',ph:'khotya'},
+  'когда':{ru:'когда',vn:'khi / lúc nào',en:'when',ph:'kogda'},
+  'где':  {ru:'где',vn:'ở đâu / nơi',en:'where',ph:'gdye'},
+  'куда': {ru:'куда',vn:'đi đâu / về đâu',en:'where (to)',ph:'kuda'},
+  'откуда':{ru:'откуда',vn:'từ đâu',en:'from where',ph:'otkuda'},
+  'почему':{ru:'почему',vn:'tại sao / vì sao',en:'why',ph:'pochemu'},
+  'зачем':{ru:'зачем',vn:'để làm gì / tại sao',en:'why / what for',ph:'zachem'},
+  'чтобы':{ru:'чтобы',vn:'để (mục đích)',en:'in order to / so that',ph:'chtoby'},
+  'пока': {ru:'пока',vn:'trong khi / tạm biệt',en:'while / for now',ph:'poka'},
+  'потому':{ru:'потому',vn:'vì vậy / vì thế',en:'because / therefore',ph:'potomu'},
+  'однако':{ru:'однако',vn:'tuy nhiên / song',en:'however / yet',ph:'odnako'},
+  'также': {ru:'также',vn:'cũng / ngoài ra',en:'also / as well',ph:'takzhe'},
+  'ни':   {ru:'ни',vn:'cũng không / dù',en:'neither / nor',ph:'ni'},
+  'либо': {ru:'либо',vn:'hoặc là',en:'either / or',ph:'libo'},
+
+  // ── Местоимения / Pronouns ───────────────────────────
+  'я':    {ru:'я',vn:'tôi / mình',en:'I',ph:'ya'},
+  'ты':   {ru:'ты',vn:'bạn / cậu (thân mật)',en:'you (informal)',ph:'ty'},
+  'он':   {ru:'он',vn:'anh ấy / ông ấy / nó',en:'he / it',ph:'on'},
+  'она':  {ru:'она',vn:'cô ấy / bà ấy / nó',en:'she / it',ph:'ona'},
+  'оно':  {ru:'оно',vn:'nó (trung tính)',en:'it',ph:'ono'},
+  'мы':   {ru:'мы',vn:'chúng tôi / chúng ta',en:'we',ph:'my'},
+  'вы':   {ru:'вы',vn:'các bạn / quý vị',en:'you (formal/plural)',ph:'vy'},
+  'они':  {ru:'они',vn:'họ / chúng',en:'they',ph:'oni'},
+  'мне':  {ru:'мне',vn:'cho tôi / với tôi',en:'to me / me',ph:'mnye'},
+  'меня': {ru:'меня',vn:'của tôi / tôi (tân ngữ)',en:'me (accusative)',ph:'menya'},
+  'его':  {ru:'его',vn:'của anh ấy / anh ấy (tân ngữ)',en:'his / him',ph:'yevo'},
+  'её':   {ru:'её',vn:'của cô ấy / cô ấy (tân ngữ)',en:'her',ph:'yeyo'},
+  'нас':  {ru:'нас',vn:'chúng tôi (tân ngữ)',en:'us',ph:'nas'},
+  'вас':  {ru:'вас',vn:'các bạn (tân ngữ)',en:'you (obj.)',ph:'vas'},
+  'им':   {ru:'им',vn:'cho họ / của họ',en:'to them / their',ph:'im'},
+  'их':   {ru:'их',vn:'của họ / họ (tân ngữ)',en:'their / them',ph:'ikh'},
+  'себя': {ru:'себя',vn:'bản thân / mình',en:'oneself / yourself',ph:'sebya'},
+  'сам':  {ru:'сам',vn:'tự mình / chính',en:'oneself / himself',ph:'sam'},
+  'сама': {ru:'сама',vn:'tự mình (nữ)',en:'herself',ph:'sama'},
+  'сами': {ru:'сами',vn:'tự chúng ta',en:'ourselves',ph:'sami'},
+  'этот': {ru:'этот',vn:'cái này / người này',en:'this',ph:'etot'},
+  'эта':  {ru:'эта',vn:'cái này (nữ)',en:'this (fem.)',ph:'eta'},
+  'это':  {ru:'это',vn:'cái này / đây là',en:'this / it is',ph:'eto'},
+  'эти':  {ru:'эти',vn:'những cái này',en:'these',ph:'eti'},
+  'тот':  {ru:'тот',vn:'cái đó / người đó',en:'that',ph:'tot'},
+  'та':   {ru:'та',vn:'cái đó (nữ)',en:'that (fem.)',ph:'ta'},
+  'те':   {ru:'те',vn:'những cái đó',en:'those',ph:'te'},
+  'весь': {ru:'весь',vn:'tất cả / cả',en:'all / whole',ph:'vyes'},
+  'вся':  {ru:'вся',vn:'tất cả (nữ)',en:'all (fem.)',ph:'vsya'},
+  'все':  {ru:'все',vn:'tất cả mọi người',en:'everyone / all',ph:'vsye'},
+  'всё':  {ru:'всё',vn:'tất cả mọi thứ',en:'everything / all',ph:'vsyo'},
+  'каждый':{ru:'каждый',vn:'mỗi / từng',en:'every / each',ph:'kazhdyy'},
+  'любой':{ru:'любой',vn:'bất kỳ / nào cũng',en:'any',ph:'lyuboy'},
+  'никто':{ru:'никто',vn:'không ai',en:'nobody',ph:'nikto'},
+  'ничто':{ru:'ничто',vn:'không gì / không có gì',en:'nothing',ph:'nichto'},
+  'некто':{ru:'некто',vn:'một ai đó',en:'someone',ph:'nyekto'},
+  'нечто':{ru:'нечто',vn:'một điều gì đó',en:'something',ph:'nyechto'},
+  'кто':  {ru:'кто',vn:'ai',en:'who',ph:'kto'},
+  'кого': {ru:'кого',vn:'ai (tân ngữ)',en:'whom',ph:'kogo'},
+  'кому': {ru:'кому',vn:'cho ai',en:'to whom',ph:'komu'},
+  'кем':  {ru:'кем',vn:'bởi ai',en:'by whom',ph:'kyem'},
+  'чей':  {ru:'чей',vn:'của ai',en:'whose',ph:'chyey'},
+  'чья':  {ru:'чья',vn:'của ai (nữ)',en:'whose (fem.)',ph:'chya'},
+  'чьё':  {ru:'чьё',vn:'của ai (trung)',en:'whose (neut.)',ph:'chyo'},
+
+  // ── Наречия / Adverbs ────────────────────────────────
+  'очень':  {ru:'очень',vn:'rất / lắm',en:'very',ph:'ochen'},
+  'уже':    {ru:'уже',vn:'đã / rồi',en:'already',ph:'uzhe'},
+  'ещё':    {ru:'ещё',vn:'vẫn / còn / nữa',en:'still / yet / more',ph:'yeshcho'},
+  'только': {ru:'только',vn:'chỉ / vừa mới',en:'only / just',ph:'tolko'},
+  'тоже':   {ru:'тоже',vn:'cũng / nữa',en:'also / too',ph:'tozhe'},
+  'всегда': {ru:'всегда',vn:'luôn luôn',en:'always',ph:'vsegda'},
+  'никогда':{ru:'никогда',vn:'không bao giờ',en:'never',ph:'nikogda'},
+  'иногда': {ru:'иногда',vn:'đôi khi / thỉnh thoảng',en:'sometimes',ph:'inogda'},
+  'часто':  {ru:'часто',vn:'thường / hay',en:'often',ph:'chasto'},
+  'редко':  {ru:'редко',vn:'hiếm khi / ít khi',en:'rarely',ph:'ryedko'},
+  'теперь': {ru:'теперь',vn:'bây giờ / giờ thì',en:'now / nowadays',ph:'teper'},
+  'сейчас': {ru:'сейчас',vn:'ngay bây giờ',en:'right now',ph:'seychas'},
+  'сначала':{ru:'сначала',vn:'lúc đầu / trước tiên',en:'at first / initially',ph:'snachala'},
+  'потом':  {ru:'потом',vn:'sau đó / rồi',en:'then / afterwards',ph:'potom'},
+  'наконец':{ru:'наконец',vn:'cuối cùng / rốt cuộc',en:'finally / at last',ph:'nakonets'},
+  'вдруг':  {ru:'вдруг',vn:'bỗng nhiên / đột nhiên',en:'suddenly',ph:'vdrug'},
+  'опять':  {ru:'опять',vn:'lại / lại nữa',en:'again',ph:'opyat'},
+  'снова':  {ru:'снова',vn:'lại / một lần nữa',en:'again / anew',ph:'snova'},
+  'вместе': {ru:'вместе',vn:'cùng nhau',en:'together',ph:'vmyeste'},
+  'здесь':  {ru:'здесь',vn:'ở đây',en:'here',ph:'zdyes'},
+  'там':    {ru:'там',vn:'ở đó / kia',en:'there',ph:'tam'},
+  'тут':    {ru:'тут',vn:'ở đây / ngay đây',en:'here / right here',ph:'tut'},
+  'далеко': {ru:'далеко',vn:'xa',en:'far away',ph:'dalyeko'},
+  'близко': {ru:'близко',vn:'gần',en:'close / near',ph:'blizko'},
+  'вверх':  {ru:'вверх',vn:'lên trên',en:'upwards',ph:'vverkh'},
+  'вниз':   {ru:'вниз',vn:'xuống dưới',en:'downwards',ph:'vniz'},
+  'вправо': {ru:'вправо',vn:'sang phải',en:'to the right',ph:'vpravo'},
+  'влево':  {ru:'влево',vn:'sang trái',en:'to the left',ph:'vlyevo'},
+  'везде':  {ru:'везде',vn:'khắp nơi',en:'everywhere',ph:'vyezdye'},
+  'нигде':  {ru:'нигде',vn:'không đâu / không nơi nào',en:'nowhere',ph:'nihdye'},
+  'давно':  {ru:'давно',vn:'từ lâu / lâu rồi',en:'long ago / for a long time',ph:'davno'},
+  'скоро':  {ru:'скоро',vn:'sắp / chẳng bao lâu',en:'soon',ph:'skoro'},
+  'быстро': {ru:'быстро',vn:'nhanh / nhanh chóng',en:'quickly / fast',ph:'bystro'},
+  'медленно':{ru:'медленно',vn:'chậm / từ từ',en:'slowly',ph:'myedlyenno'},
+  'тихо':   {ru:'тихо',vn:'yên lặng / nhẹ nhàng',en:'quietly / softly',ph:'tikho'},
+  'громко': {ru:'громко',vn:'to / ồn ào',en:'loudly',ph:'gromko'},
+  'хорошо': {ru:'хорошо',vn:'tốt / ổn / được',en:'well / good / OK',ph:'khorosho'},
+  'плохо':  {ru:'плохо',vn:'tệ / không tốt',en:'badly / poorly',ph:'plokho'},
+  'много':  {ru:'много',vn:'nhiều',en:'many / much',ph:'mnogo'},
+  'мало':   {ru:'мало',vn:'ít',en:'few / little',ph:'malo'},
+  'немного':{ru:'немного',vn:'một chút / ít chút',en:'a little / a bit',ph:'nyemnogo'},
+  'совсем': {ru:'совсем',vn:'hoàn toàn / hẳn',en:'completely / quite',ph:'sovsyem'},
+  'почти':  {ru:'почти',vn:'gần như / hầu như',en:'almost / nearly',ph:'pochti'},
+  'примерно':{ru:'примерно',vn:'khoảng / xấp xỉ',en:'approximately',ph:'primyerno'},
+  'именно': {ru:'именно',vn:'chính là / đúng là',en:'exactly / namely',ph:'imyenno'},
+  'конечно':{ru:'конечно',vn:'tất nhiên / dĩ nhiên',en:'of course / certainly',ph:'konechno'},
+  'наверное':{ru:'наверное',vn:'chắc / có lẽ',en:'probably / I think',ph:'navyernoye'},
+  'может':  {ru:'может',vn:'có thể',en:'maybe / might',ph:'mozhet'},
+  'надо':   {ru:'надо',vn:'cần / phải',en:'need to / must',ph:'nado'},
+  'нужно':  {ru:'нужно',vn:'cần thiết / phải',en:'necessary / need',ph:'nuzhno'},
+  'можно':  {ru:'можно',vn:'được phép / có thể',en:'may / allowed',ph:'mozhno'},
+  'нельзя': {ru:'нельзя',vn:'không được / cấm',en:'not allowed / impossible',ph:'nelzya'},
+  'нет':    {ru:'нет',vn:'không / không có',en:'no / there is not',ph:'nyet'},
+  'да':     {ru:'да',vn:'có / vâng',en:'yes',ph:'da'},
+
+  // ── Глаголы / Common verbs ───────────────────────────
+  'быть':   {ru:'быть',vn:'là / có / tồn tại',en:'to be',ph:'bytʼ'},
+  'есть':   {ru:'есть',vn:'có / tồn tại / ăn',en:'there is / to eat',ph:'yestʼ'},
+  'был':    {ru:'был',vn:'đã là / đã có',en:'was (masc.)',ph:'byl'},
+  'была':   {ru:'была',vn:'đã là (nữ)',en:'was (fem.)',ph:'byla'},
+  'было':   {ru:'было',vn:'đã là (trung)',en:'was (neut.)',ph:'bylo'},
+  'были':   {ru:'были',vn:'đã là (số nhiều)',en:'were',ph:'byli'},
+  'стать':  {ru:'стать',vn:'trở thành',en:'to become',ph:'statʼ'},
+  'стал':   {ru:'стал',vn:'đã trở thành',en:'became (masc.)',ph:'stal'},
+  'идти':   {ru:'идти',vn:'đi / đang đi',en:'to go (on foot)',ph:'idti'},
+  'идёт':   {ru:'идёт',vn:'đang đi / diễn ra',en:'goes / is going on',ph:'idyot'},
+  'ходить': {ru:'ходить',vn:'đi (thường xuyên)',en:'to walk / go (regularly)',ph:'khodit'},
+  'ехать':  {ru:'ехать',vn:'đi (bằng xe)',en:'to go (by vehicle)',ph:'yekhat'},
+  'ездить': {ru:'ездить',vn:'đi xe (thường xuyên)',en:'to drive / ride',ph:'yezdit'},
+  'прийти': {ru:'прийти',vn:'đến / tới',en:'to come / arrive',ph:'priyti'},
+  'приехать':{ru:'приехать',vn:'đến (bằng xe)',en:'to arrive (by vehicle)',ph:'priyekhat'},
+  'знать':  {ru:'знать',vn:'biết',en:'to know',ph:'znatʼ'},
+  'думать': {ru:'думать',vn:'nghĩ / suy nghĩ',en:'to think',ph:'dumatʼ'},
+  'говорить':{ru:'говорить',vn:'nói',en:'to speak / say',ph:'govoritʼ'},
+  'сказать':{ru:'сказать',vn:'nói (xong) / bảo',en:'to say (pf.)',ph:'skazatʼ'},
+  'видеть': {ru:'видеть',vn:'thấy / nhìn',en:'to see',ph:'videtʼ'},
+  'смотреть':{ru:'смотреть',vn:'xem / nhìn',en:'to look / watch',ph:'smotryet'},
+  'слышать':{ru:'слышать',vn:'nghe thấy',en:'to hear',ph:'slyshat'},
+  'слушать':{ru:'слушать',vn:'lắng nghe',en:'to listen',ph:'slushat'},
+  'работать':{ru:'работать',vn:'làm việc',en:'to work',ph:'rabotат'},
+  'делать': {ru:'делать',vn:'làm / thực hiện',en:'to do / make',ph:'delatʼ'},
+  'хотеть': {ru:'хотеть',vn:'muốn',en:'to want',ph:'khotetʼ'},
+  'любить': {ru:'любить',vn:'yêu / thích',en:'to love / like',ph:'lyubitʼ'},
+  'нравиться':{ru:'нравиться',vn:'thích / ưa',en:'to like (impersonal)',ph:'nravitsya'},
+  'помочь': {ru:'помочь',vn:'giúp đỡ (xong)',en:'to help (pf.)',ph:'pomoch'},
+  'понять': {ru:'понять',vn:'hiểu (ra)',en:'to understand (pf.)',ph:'ponyat'},
+  'понимать':{ru:'понимать',vn:'hiểu / đang hiểu',en:'to understand',ph:'ponimat'},
+  'ждать':  {ru:'ждать',vn:'chờ đợi',en:'to wait',ph:'zhdatʼ'},
+  'получить':{ru:'получить',vn:'nhận được / lấy',en:'to get / receive',ph:'poluchit'},
+  'давать': {ru:'давать',vn:'cho / đưa',en:'to give',ph:'davatʼ'},
+  'дать':   {ru:'дать',vn:'cho (xong) / đưa',en:'to give (pf.)',ph:'datʼ'},
+  'брать':  {ru:'брать',vn:'lấy / cầm',en:'to take',ph:'bratʼ'},
+  'взять':  {ru:'взять',vn:'lấy (xong) / cầm',en:'to take (pf.)',ph:'vzyatʼ'},
+  'ставить':{ru:'ставить',vn:'đặt (đứng)',en:'to put / place',ph:'stavit'},
+  'класть': {ru:'класть',vn:'đặt (nằm)',en:'to put / lay',ph:'klastʼ'},
+  'писать': {ru:'писать',vn:'viết',en:'to write',ph:'pisatʼ'},
+  'читать': {ru:'читать',vn:'đọc',en:'to read',ph:'chitatʼ'},
+  'учить':  {ru:'учить',vn:'học / dạy',en:'to learn / teach',ph:'uchitʼ'},
+  'учиться':{ru:'учиться',vn:'học (ở trường)',en:'to study',ph:'uchitʼsya'},
+  'жить':   {ru:'жить',vn:'sống / ở',en:'to live',ph:'zhitʼ'},
+  'стоить': {ru:'стоить',vn:'có giá / đáng',en:'to cost / be worth',ph:'stoitʼ'},
+  'начать': {ru:'начать',vn:'bắt đầu',en:'to begin (pf.)',ph:'nachatʼ'},
+  'начинать':{ru:'начинать',vn:'bắt đầu (đang)',en:'to begin',ph:'nachinatʼ'},
+  'кончить':{ru:'кончить',vn:'kết thúc / xong',en:'to finish',ph:'konchitʼ'},
+  'продолжать':{ru:'продолжать',vn:'tiếp tục',en:'to continue',ph:'prodolzhat'},
+  'открыть':{ru:'открыть',vn:'mở ra',en:'to open (pf.)',ph:'otkryt'},
+  'закрыть':{ru:'закрыть',vn:'đóng lại',en:'to close (pf.)',ph:'zakryt'},
+  'спросить':{ru:'спросить',vn:'hỏi',en:'to ask (pf.)',ph:'sprosit'},
+  'ответить':{ru:'ответить',vn:'trả lời',en:'to answer (pf.)',ph:'otvetit'},
+  'купить': {ru:'купить',vn:'mua',en:'to buy (pf.)',ph:'kupit'},
+  'продать':{ru:'продать',vn:'bán',en:'to sell (pf.)',ph:'prodat'},
+  'искать': {ru:'искать',vn:'tìm kiếm',en:'to search / look for',ph:'iskat'},
+  'найти':  {ru:'найти',vn:'tìm thấy',en:'to find (pf.)',ph:'nayti'},
+  'показать':{ru:'показать',vn:'chỉ / cho xem',en:'to show (pf.)',ph:'pokazat'},
+  'называть':{ru:'называть',vn:'gọi là / đặt tên',en:'to call / name',ph:'nazyvat'},
+  'называться':{ru:'называться',vn:'có tên là / gọi là',en:'to be called',ph:'nazyvatsya'},
+  'считать':{ru:'считать',vn:'cho rằng / đếm',en:'to consider / count',ph:'schitat'},
+  'использовать':{ru:'использовать',vn:'sử dụng',en:'to use',ph:'ispolzovat'},
+  'строить':{ru:'строить',vn:'xây dựng',en:'to build',ph:'stroit'},
+  'решить': {ru:'решить',vn:'quyết định / giải',en:'to decide / solve (pf.)',ph:'reshit'},
+  'значить':{ru:'значить',vn:'có nghĩa là',en:'to mean / signify',ph:'znachit'},
+
+  // ── Прилагательные / Adjectives ──────────────────────
+  'большой':{ru:'большой',vn:'to / lớn',en:'big / large',ph:'bolshoy'},
+  'маленький':{ru:'маленький',vn:'nhỏ / bé',en:'small / little',ph:'malyenkiy'},
+  'новый':  {ru:'новый',vn:'mới',en:'new',ph:'novy'},
+  'старый': {ru:'старый',vn:'cũ / già',en:'old',ph:'stary'},
+  'хороший':{ru:'хороший',vn:'tốt / hay',en:'good',ph:'khoroshy'},
+  'плохой': {ru:'плохой',vn:'xấu / tệ',en:'bad',ph:'plakhoy'},
+  'красивый':{ru:'красивый',vn:'đẹp',en:'beautiful / handsome',ph:'krasivyy'},
+  'молодой':{ru:'молодой',vn:'trẻ',en:'young',ph:'molodoy'},
+  'другой': {ru:'другой',vn:'khác / người khác',en:'other / another',ph:'drugoy'},
+  'первый': {ru:'первый',vn:'đầu tiên / thứ nhất',en:'first',ph:'pyervy'},
+  'последний':{ru:'последний',vn:'cuối cùng / mới nhất',en:'last / latest',ph:'poslydniy'},
+  'следующий':{ru:'следующий',vn:'tiếp theo',en:'next / following',ph:'slyduyushiy'},
+  'разный': {ru:'разный',vn:'khác nhau / đa dạng',en:'different / various',ph:'razny'},
+  'важный': {ru:'важный',vn:'quan trọng',en:'important',ph:'vazhny'},
+  'главный':{ru:'главный',vn:'chính / chủ yếu',en:'main / chief',ph:'glavny'},
+  'полный': {ru:'полный',vn:'đầy / đầy đủ',en:'full / complete',ph:'polny'},
+  'целый':  {ru:'целый',vn:'cả / nguyên vẹn',en:'whole / entire',ph:'tselyy'},
+  'нужный': {ru:'нужный',vn:'cần thiết',en:'needed / necessary',ph:'nuzhny'},
+  'высокий':{ru:'высокий',vn:'cao',en:'tall / high',ph:'vysokiy'},
+  'низкий': {ru:'низкий',vn:'thấp',en:'low / short',ph:'nizkiy'},
+  'длинный':{ru:'длинный',vn:'dài',en:'long',ph:'dlinny'},
+  'короткий':{ru:'короткий',vn:'ngắn',en:'short',ph:'korotkiy'},
+  'широкий':{ru:'широкий',vn:'rộng',en:'wide / broad',ph:'shirokiy'},
+  'узкий':  {ru:'узкий',vn:'hẹp',en:'narrow',ph:'uzkiy'},
+  'сильный':{ru:'сильный',vn:'mạnh / khoẻ',en:'strong',ph:'silny'},
+  'слабый': {ru:'слабый',vn:'yếu / nhẹ',en:'weak',ph:'slaby'},
+  'лёгкий': {ru:'лёгкий',vn:'nhẹ / dễ',en:'light / easy',ph:'lyokhkiy'},
+  'трудный':{ru:'трудный',vn:'khó / vất vả',en:'difficult / hard',ph:'trudny'},
+  'свободный':{ru:'свободный',vn:'tự do / rảnh rỗi',en:'free / available',ph:'svobodny'},
+  'известный':{ru:'известный',vn:'nổi tiếng / có tiếng',en:'famous / known',ph:'izvyestny'},
+  'интересный':{ru:'интересный',vn:'thú vị / hay',en:'interesting',ph:'interesny'},
+  'популярный':{ru:'популярный',vn:'phổ biến',en:'popular',ph:'populyarny'},
+  'любимый':{ru:'любимый',vn:'yêu thích / cưng',en:'favourite / beloved',ph:'lyubimyy'},
+  'настоящий':{ru:'настоящий',vn:'thực sự / hiện tại',en:'real / present',ph:'nastoyashiy'},
+  'особый': {ru:'особый',vn:'đặc biệt / riêng',en:'special / particular',ph:'osoby'},
+
+  // ── Числа и время / Numbers & Time ──────────────────
+  'год':    {ru:'год',vn:'năm',en:'year',ph:'got'},
+  'лет':    {ru:'лет',vn:'năm (tuổi/năm)',en:'years (gen.pl.)',ph:'lyet'},
+  'месяц':  {ru:'месяц',vn:'tháng',en:'month',ph:'myesyats'},
+  'неделя': {ru:'неделя',vn:'tuần',en:'week',ph:'nedelya'},
+  'день':   {ru:'день',vn:'ngày / ban ngày',en:'day',ph:'dyen'},
+  'час':    {ru:'час',vn:'giờ / tiếng',en:'hour',ph:'chas'},
+  'минута': {ru:'минута',vn:'phút',en:'minute',ph:'minuta'},
+  'утро':   {ru:'утро',vn:'buổi sáng',en:'morning',ph:'utro'},
+  'вечер':  {ru:'вечер',vn:'buổi tối',en:'evening',ph:'vyecher'},
+  'ночь':   {ru:'ночь',vn:'đêm / ban đêm',en:'night',ph:'noch'},
+  'сегодня':{ru:'сегодня',vn:'hôm nay',en:'today',ph:'syegodnya'},
+  'завтра': {ru:'завтра',vn:'ngày mai',en:'tomorrow',ph:'zavtra'},
+  'вчера':  {ru:'вчера',vn:'hôm qua',en:'yesterday',ph:'fchera'},
+  'раньше': {ru:'раньше',vn:'trước đây / sớm hơn',en:'before / earlier',ph:'ranshe'},
+  'позже':  {ru:'позже',vn:'sau / muộn hơn',en:'later',ph:'pozhe'},
+  'сразу':  {ru:'сразу',vn:'ngay / liền',en:'immediately / at once',ph:'srazu'},
+
+  // ── Существительные / Common nouns ──────────────────
+  'жизнь':  {ru:'жизнь',vn:'cuộc sống / đời sống',en:'life',ph:'zhizn'},
+  'время':  {ru:'время',vn:'thời gian / thời điểm',en:'time',ph:'vremya'},
+  'место':  {ru:'место',vn:'nơi / chỗ / vị trí',en:'place / seat',ph:'myesto'},
+  'путь':   {ru:'путь',vn:'con đường / hành trình',en:'way / path',ph:'put'},
+  'часть':  {ru:'часть',vn:'phần / bộ phận',en:'part / portion',ph:'chast'},
+  'вопрос': {ru:'вопрос',vn:'câu hỏi / vấn đề',en:'question / issue',ph:'vopros'},
+  'ответ':  {ru:'ответ',vn:'câu trả lời',en:'answer',ph:'otvet'},
+  'пример': {ru:'пример',vn:'ví dụ / tấm gương',en:'example',ph:'primyer'},
+  'число':  {ru:'число',vn:'số / ngày (trong tháng)',en:'number / date',ph:'chislo'},
+  'результат':{ru:'результат',vn:'kết quả',en:'result',ph:'ryezultat'},
+  'проблема':{ru:'проблема',vn:'vấn đề / khó khăn',en:'problem',ph:'problema'},
+  'причина':{ru:'причина',vn:'lý do / nguyên nhân',en:'reason / cause',ph:'prichina'},
+  'цена':   {ru:'цена',vn:'giá / giá cả',en:'price',ph:'tsena'},
+  'роль':   {ru:'роль',vn:'vai trò',en:'role / part',ph:'rol'},
+  'система':{ru:'система',vn:'hệ thống',en:'system',ph:'sistema'},
+  'общество':{ru:'общество',vn:'xã hội',en:'society',ph:'obshchestvo'},
+  'власть': {ru:'власть',vn:'quyền lực / chính quyền',en:'power / authority',ph:'vlast'},
+  'закон':  {ru:'закон',vn:'luật / quy định',en:'law',ph:'zakon'},
+  'правило':{ru:'правило',vn:'quy tắc / luật lệ',en:'rule',ph:'pravilo'},
+  'связь':  {ru:'связь',vn:'liên kết / kết nối / liên lạc',en:'connection / communication',ph:'svyaz'},
+  'программа':{ru:'программа',vn:'chương trình',en:'programme',ph:'programma'},
+  'услуга': {ru:'услуга',vn:'dịch vụ',en:'service',ph:'usluga'},
+  'ситуация':{ru:'ситуация',vn:'tình huống / hoàn cảnh',en:'situation',ph:'situatsiya'},
+  'отношение':{ru:'отношение',vn:'mối quan hệ / thái độ',en:'relation / attitude',ph:'otnosheniye'},
+  'качество':{ru:'качество',vn:'chất lượng',en:'quality',ph:'kachestvo'},
+  'требование':{ru:'требование',vn:'yêu cầu / đòi hỏi',en:'requirement / demand',ph:'trebovaniye'},
+};
+
+/* Lookup in fallback dict — tries exact, then stripped form */
+function rdFallbackLookup(norm){
+  if(RD_FALLBACK[norm]) return RD_FALLBACK[norm];
+  // Also try without trailing case endings (simple trim)
+  for(var cut=1;cut<=4;cut++){
+    var stem = norm.slice(0,-cut);
+    if(stem.length>=3 && RD_FALLBACK[stem]) return RD_FALLBACK[stem];
+  }
+  return null;
+}
+
 /* ── AI translate for unknown words ─────────────────────────── */
 function rdAiTranslate(word){
   // Cancel any previous in-flight request
@@ -10248,9 +10604,240 @@ function navSilent(name){
   if(name==='grammar') gramTab(S.gramTab||'motion');
 }
 
+/* ── Modal helpers ─────────────────────────────────────────── */
+var _activeModal = null;
+var _pickerSel   = [];   // selected keys
+var _pickerAll   = [];   // all available words for picker
+var _pickerQuery = '';
+
+function openModal(id){
+  var bd = document.getElementById('modal-backdrop');
+  var m  = document.getElementById(id);
+  if(!bd || !m) return;
+  _activeModal = id;
+  bd.style.display = 'flex';
+  requestAnimationFrame(function(){
+    bd.style.opacity = '1';
+    m.style.transform = 'translateY(0)';
+  });
+}
+
+function App_closeModal(){
+  var bd = document.getElementById('modal-backdrop');
+  if(!bd) return;
+  ['modal-picker','modal-addword'].forEach(function(id){
+    var m = document.getElementById(id);
+    if(m) m.style.transform = 'translateY(100%)';
+  });
+  bd.style.display = 'none';
+  _activeModal = null;
+}
+
+/* ── Word Picker ──────────────────────────────────────────── */
+function App_openWordPicker(){
+  // Build pool
+  _pickerAll = [];
+  _pickerSel = [];
+  // Load current picks from todayPicks
+  var todayKey = dlTodayKey();
+  var existingPicks = (S.todayPicks && S.todayPicks.key===todayKey) ? (S.todayPicks.keys||[]) : [];
+
+  Object.entries(vocabularyDatabase[S.level]||{}).forEach(function(e){
+    var topic=e[0], ws=e[1];
+    if(!Array.isArray(ws)) return;
+    ws.forEach(function(w,i){
+      var k=S.level+'-'+topic+'-'+i;
+      _pickerAll.push({w:w, key:k, topic:topic, custom:false, mastered:!!(S.mastered&&S.mastered[k])});
+    });
+  });
+  (S.customWords||[]).forEach(function(w,i){
+    var k='custom-'+i;
+    _pickerAll.push({w:w, key:k, topic:'📝 Từ của tôi', custom:true, mastered:!!(S.mastered&&S.mastered[k])});
+  });
+
+  // Pre-select existing picks or today's DL words
+  if(existingPicks.length){
+    _pickerSel = existingPicks.slice();
+  } else if(DL.words && DL.words.length){
+    _pickerSel = DL.words.map(function(x){ return x.key; });
+  }
+
+  // Build topic filter chips
+  var topics = [];
+  _pickerAll.forEach(function(x){ if(topics.indexOf(x.topic)<0) topics.push(x.topic); });
+  var filterRow = document.getElementById('picker-filter-row');
+  if(filterRow){
+    var chips = '<button data-f="" onclick="App.pickerFilter(this.dataset.f)" class="lk-chip on" id="pf-all">Tất cả</button>';
+    topics.slice(0,8).forEach(function(t){
+      var tClean = t.replace(/[^\wА-Яа-яёЁ\sÀ-ɏ]/g,'').trim().slice(0,18);
+      chips += '<button data-f="'+t.replace(/"/g,'&quot;')+'" onclick="App.pickerFilter(this.dataset.f)" class="lk-chip" id="pf-'+encodeURIComponent(t)+'">'+tClean+'</button>';
+    });
+    filterRow.innerHTML = chips;
+  }
+  _pickerQuery = '';
+  var si = document.getElementById('picker-search');
+  if(si) si.value = '';
+  _pickerActiveFilter = '';
+  pickerRender();
+  openModal('modal-picker');
+}
+
+var _pickerActiveFilter = '';
+
+function App_pickerFilter(topic){
+  if(topic==='all') topic='';
+  _pickerActiveFilter = topic;
+  document.querySelectorAll('#picker-filter-row .lk-chip').forEach(function(b){ b.classList.remove('on'); });
+  var id = (topic && topic!=='all') ? 'pf-'+encodeURIComponent(topic) : 'pf-all';
+  var btn = document.getElementById(id);
+  if(btn) btn.classList.add('on');
+  pickerRender();
+}
+
+function App_pickerSearch(q){
+  _pickerQuery = (q||'').toLowerCase();
+  pickerRender();
+}
+
+function pickerRender(){
+  var list = document.getElementById('picker-list');
+  if(!list) return;
+  var sub  = document.getElementById('picker-subtitle');
+  var cnt  = _pickerSel.length;
+  if(sub) sub.textContent = cnt+'/7 từ đã chọn'+(cnt>=7?' (tối đa)':'');
+
+  var btn = document.getElementById('picker-confirm-btn');
+  if(btn) btn.textContent = cnt>0 ? '✓ Học '+cnt+' từ ngay' : '✓ Học ngẫu nhiên';
+
+  var q = _pickerQuery;
+  var visible = _pickerAll.filter(function(x){
+    if(_pickerActiveFilter && x.topic !== _pickerActiveFilter) return false;
+    if(q && x.w.ru.toLowerCase().indexOf(q)<0 && (x.w.vn||'').toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+
+  var html = '';
+  visible.slice(0,80).forEach(function(x){
+    var sel = _pickerSel.indexOf(x.key)>=0;
+    var disabled = (!sel && cnt>=7);
+    html += '<div data-k="'+x.key+'" onclick="App.pickerToggle(this.dataset.k)" style="'
+      + 'display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;'
+      + 'border-radius:12px;cursor:pointer;transition:background .12s;'
+      + (sel   ? 'background:rgba(90,200,250,.13);border:1px solid rgba(90,200,250,.35);'
+               : disabled ? 'background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);opacity:.4;'
+                          : 'background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);')
+      + '">'
+      + '<div style="width:20px;height:20px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;'
+      + (sel ? 'background:rgba(90,200,250,.3);border:1.5px solid var(--cyn);' : 'border:1.5px solid rgba(255,255,255,.2);background:none;')
+      + '">'+(sel?'<svg width="11" height="11" viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,3" stroke="var(--cyn)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</div>'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div style="font-size:15px;font-weight:700;color:'+(sel?'var(--cyn)':'var(--tx)')+';">'+x.w.ru+'</div>'
+      + '<div style="font-size:12px;color:var(--com);margin-top:1px;">'+x.w.vn+(x.mastered?' · <span style="color:var(--grn)">✓ đã học</span>':'')+'</div>'
+      + '</div>'
+      + (x.custom?'<div style="font-size:9px;color:var(--grn);font-family:var(--mono);padding:2px 6px;border-radius:6px;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.2);">TÔI</div>':'')
+      + '</div>';
+  });
+  if(!visible.length) html='<div style="text-align:center;color:var(--com);padding:24px;font-size:13px;">Không tìm thấy từ nào.</div>';
+  list.innerHTML = html;
+}
+
+function App_pickerToggle(key){
+  var idx = _pickerSel.indexOf(key);
+  if(idx>=0){
+    _pickerSel.splice(idx,1);
+  } else {
+    if(_pickerSel.length>=7){ showToast('Tối đa 7 từ mỗi ngày','yel'); return; }
+    _pickerSel.push(key);
+  }
+  pickerRender();
+}
+
+function App_confirmPicks(){
+  var todayKey = dlTodayKey();
+  if(_pickerSel.length>0){
+    S.todayPicks = {key:todayKey, keys:_pickerSel.slice()};
+    savePicks();
+    // Reset DL so it reloads with new picks
+    DL.todayKey = '';
+    DL.words = [];
+    try{ localStorage.removeItem(todayKey); }catch(e){}
+    dlLoadOrPick();
+  }
+  App_closeModal();
+  renderDailyHub();
+  showToast('Đã cập nhật từ hôm nay ✓','grn');
+}
+
+/* ── Add Word ─────────────────────────────────────────────── */
+function App_openAddWord(){
+  // Clear form
+  ['aw-ru','aw-vn','aw-en','aw-ph'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  renderCustomWordList();
+  openModal('modal-addword');
+  setTimeout(function(){ var el=document.getElementById('aw-ru'); if(el) el.focus(); },350);
+}
+
+function renderCustomWordList(){
+  var el = document.getElementById('aw-custom-list');
+  if(!el) return;
+  var words = S.customWords||[];
+  if(!words.length){ el.innerHTML='<div style="color:var(--com);font-size:12px;text-align:center;padding:8px;">Chưa có từ cá nhân nào.</div>'; return; }
+  var h = '<div style="font-size:10px;color:var(--com);font-family:var(--mono);margin-bottom:8px;letter-spacing:1px;">// TỪ CÁ NHÂN ('+words.length+')</div>';
+  words.forEach(function(w,i){
+    h += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:5px;'
+       + 'border-radius:10px;background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.18);">'
+       + '<div style="flex:1;">'
+       + '<div style="font-size:14px;font-weight:700;color:var(--tx);">'+w.ru+'</div>'
+       + '<div style="font-size:11px;color:var(--com);">'+w.vn+'</div>'
+       + '</div>'
+       + '<button onclick="App.deleteCustomWord('+i+')" style="background:rgba(255,55,95,.15);border:1px solid rgba(255,55,95,.3);border-radius:8px;padding:4px 8px;color:var(--pnk);font-size:11px;">✕</button>'
+       + '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function App_submitAddWord(){
+  var ru = (document.getElementById('aw-ru')||{}).value||'';
+  var vn = (document.getElementById('aw-vn')||{}).value||'';
+  var en = (document.getElementById('aw-en')||{}).value||'';
+  var ph = (document.getElementById('aw-ph')||{}).value||'';
+  ru = ru.trim(); vn = vn.trim(); en = en.trim(); ph = ph.trim();
+  if(!ru || !vn){ showToast('Nhập tiếng Nga và tiếng Việt','yel'); return; }
+  // Check duplicate
+  var dup = (S.customWords||[]).some(function(w){ return w.ru.toLowerCase()===ru.toLowerCase(); });
+  if(dup){ showToast('Từ này đã có rồi','yel'); return; }
+  S.customWords = S.customWords||[];
+  S.customWords.push({ru:ru, vn:vn, en:en||undefined, ph:ph||undefined});
+  saveCW();
+  // Clear inputs
+  ['aw-ru','aw-vn','aw-en','aw-ph'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  renderCustomWordList();
+  showToast('Đã thêm: '+ru+' ✓','grn');
+  // Invalidate today's session so new word can appear
+  try{ localStorage.removeItem(dlTodayKey()); }catch(e){}
+  DL.todayKey=''; DL.words=[];
+}
+
+function App_deleteCustomWord(i){
+  if(!S.customWords||!S.customWords[i]) return;
+  var w = S.customWords[i];
+  S.customWords.splice(i,1);
+  saveCW();
+  renderCustomWordList();
+  showToast('Đã xoá: '+w.ru,'com');
+}
+
+
 return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   fcStart,fcFlip,fcFamily,fcNav,fcMaster,speakFC,
   quizStart,qzAnswer,speakQZ,
+  closeModal:App_closeModal, openWordPicker:App_openWordPicker,
+  pickerFilter:App_pickerFilter, pickerSearch:App_pickerSearch,
+  pickerToggle:App_pickerToggle, confirmPicks:App_confirmPicks,
+  openAddWord:App_openAddWord, submitAddWord:App_submitAddWord,
+  deleteCustomWord:App_deleteCustomWord,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
   lkSearch,lkFilter,lkClear,
   setLang,init,
@@ -10719,5 +11306,99 @@ document.addEventListener('DOMContentLoaded',App.init);
   document.addEventListener('touchcancel', release, {passive:true});
 })();
 </script>
+
+<!-- ══ WORD PICKER MODAL ══════════════════════════════════════ -->
+<div id="modal-backdrop" onclick="App.closeModal()" style="
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  z-index:10000;display:none;align-items:flex-end;"></div>
+
+<div id="modal-picker" style="
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(14,18,28,0.98);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border-top:1px solid rgba(255,255,255,0.1);border-radius:24px 24px 0 0;
+  padding:0 0 calc(env(safe-area-inset-bottom,0px)+16px);
+  z-index:10001;transform:translateY(100%);
+  transition:transform .32s cubic-bezier(0.34,1.56,0.64,1);
+  max-height:85vh;display:flex;flex-direction:column;">
+  <div style="padding:16px 20px 0;flex-shrink:0;">
+    <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 14px;"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div>
+        <div style="font-size:17px;font-weight:800;color:var(--tx);">🗂️ Chọn từ hôm nay</div>
+        <div style="font-size:11px;color:var(--com);margin-top:2px;" id="picker-subtitle">Chọn tối đa 7 từ để học</div>
+      </div>
+      <button onclick="App.closeModal()" style="background:rgba(255,255,255,.08);border:none;border-radius:10px;padding:6px 12px;color:var(--com);font-size:13px;">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px;" id="picker-filter-row"></div>
+    <input id="picker-search" type="search" placeholder="Tìm từ tiếng Nga hoặc tiếng Việt..." 
+      oninput="App.pickerSearch(this.value)"
+      style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:12px;
+             border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);
+             color:var(--tx);font-size:14px;outline:none;">
+  </div>
+  <div id="picker-list" style="overflow-y:auto;padding:8px 16px 0;flex:1;min-height:0;"></div>
+  <div style="padding:12px 16px 0;flex-shrink:0;">
+    <button onclick="App.confirmPicks()" id="picker-confirm-btn"
+      style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
+             background:linear-gradient(135deg,rgba(90,200,250,.25),rgba(90,200,250,.15));
+             border:1px solid rgba(90,200,250,.4);color:var(--cyn);font-size:15px;font-weight:700;">
+      ✓ Học ngay
+    </button>
+  </div>
+</div>
+
+<!-- ══ ADD WORD MODAL ═════════════════════════════════════════ -->
+<div id="modal-addword" style="
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(14,18,28,0.98);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border-top:1px solid rgba(255,255,255,0.1);border-radius:24px 24px 0 0;
+  padding:20px 20px calc(env(safe-area-inset-bottom,0px)+16px);
+  z-index:10001;transform:translateY(100%);
+  transition:transform .32s cubic-bezier(0.34,1.56,0.64,1);">
+  <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 16px;"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="font-size:17px;font-weight:800;color:var(--tx);">➕ Thêm từ vựng</div>
+    <button onclick="App.closeModal()" style="background:rgba(255,255,255,.08);border:none;border-radius:10px;padding:6px 12px;color:var(--com);font-size:13px;">✕</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG NGA *</div>
+      <input id="aw-ru" type="text" placeholder="Например: привет" autocomplete="off" autocorrect="off"
+        style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
+               border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+               color:var(--tx);font-size:16px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG VIỆT *</div>
+      <input id="aw-vn" type="text" placeholder="Ví dụ: xin chào" autocomplete="off"
+        style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
+               border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+               color:var(--tx);font-size:16px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG ANH (tuỳ chọn)</div>
+      <input id="aw-en" type="text" placeholder="e.g. hello" autocomplete="off"
+        style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
+               border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+               color:var(--tx);font-size:16px;outline:none;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">PHIÊN ÂM (tuỳ chọn)</div>
+      <input id="aw-ph" type="text" placeholder="Ví dụ: privet" autocomplete="off"
+        style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
+               border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+               color:var(--tx);font-size:16px;outline:none;">
+    </div>
+    <button onclick="App.submitAddWord()"
+      style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
+             background:linear-gradient(135deg,rgba(52,199,89,.25),rgba(52,199,89,.15));
+             border:1px solid rgba(52,199,89,.4);color:var(--grn);font-size:15px;font-weight:700;margin-top:4px;">
+      ✓ Thêm vào từ điển cá nhân
+    </button>
+    <div id="aw-custom-list" style="margin-top:6px;"></div>
+  </div>
+</div>
+
 </body>
 </html>
