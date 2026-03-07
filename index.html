@@ -8969,7 +8969,14 @@ function dlLoadOrPick(){
   try{
     var saved=localStorage.getItem(key);
     if(saved){var data=JSON.parse(saved);
-      DL.words=data.words; DL.lockedKeys=data.lockedKeys||[]; return;}
+      DL.words=data.words||[]; DL.lockedKeys=data.lockedKeys||[];
+      if(data.phase)    DL.phase    = data.phase;
+      if(data.wordIdx !== undefined) DL.wordIdx = data.wordIdx;
+      if(data.phaseStep !== undefined) DL.phaseStep = data.phaseStep;
+      if(data.q2)       DL.q2       = data.q2;
+      if(data.q3)       DL.q3       = data.q3;
+      if(data.lessonActive) DL.lessonActive = data.lessonActive;
+      return;}
   }catch(e){}
 
   // Build full pool: vocabulary DB + custom words
@@ -9003,7 +9010,11 @@ function dlLoadOrPick(){
 }
 
 function dlSave(){
-  try{localStorage.setItem(DL.todayKey,JSON.stringify({words:DL.words,lockedKeys:DL.lockedKeys}));}catch(e){}
+  try{localStorage.setItem(DL.todayKey,JSON.stringify({
+    words:DL.words, lockedKeys:DL.lockedKeys,
+    phase:DL.phase, wordIdx:DL.wordIdx, phaseStep:DL.phaseStep,
+    q2:DL.q2, q3:DL.q3, lessonActive:DL.lessonActive
+  }));}catch(e){}
   // Update daily nav badge
   var b=document.getElementById('daily-nav-badge');
   if(b){
@@ -9185,7 +9196,7 @@ function App_dailyStart(){
   dlLoadOrPick();
   if(!DL.words||DL.words.length===0){showToast('🎉 Bạn đã học hết từ ở cấp này!','grn');return;}
   // Show lesson view, hide hub
-  DL.lessonActive = true;
+  DL.lessonActive = true; dlSave();
   var hub = document.getElementById('daily-hub');
   var lesson = document.getElementById('daily-lesson');
   if(hub) hub.style.display = 'none';
@@ -9237,7 +9248,7 @@ function dlRenderPhase1(body){
   if(DL.wordIdx>=DL.words.length){
     // Xong vòng 1 → build q2 gồm tất cả 7 từ theo thứ tự ngẫu nhiên
     DL.q2=DL.words.slice().sort(function(){return Math.random()-.5;});
-    DL.phase=2; DL.answered=false;
+    DL.phase=2; DL.answered=false; dlSave();
     showToast('✓ Xong vòng 1 — bắt đầu vòng 2!','cyn');
     dlRender(); return;
   }
@@ -9262,14 +9273,14 @@ function dlRenderPhase1(body){
 }
 
 function App_dlFlip(){DL.phaseStep=1;dlRender();if(DL.words[DL.wordIdx])speak(DL.words[DL.wordIdx].w.ru);}
-function App_dlPhase1Next(){DL.wordIdx++;DL.phaseStep=0;dlRender();}
+function App_dlPhase1Next(){DL.wordIdx++;DL.phaseStep=0;dlSave();dlRender();}
 
 /* ── VÒNG 2: thấy tiếng Nga → chọn nghĩa Việt ───────────── */
 function dlRenderPhase2(body){
   if(!DL.q2||DL.q2.length===0){
     // Xong vòng 2 → build q3
     DL.q3=DL.words.slice().sort(function(){return Math.random()-.5;});
-    DL.phase=3; DL.answered=false;
+    DL.phase=3; DL.answered=false; dlSave();
     showToast('✓ Xong vòng 2 — bắt đầu vòng 3!','yel');
     dlRender(); return;
   }
@@ -9422,6 +9433,7 @@ function dlFinish(){
       +'<span style="font-size:11px;color:var(--com);">'+e.w.vn+'</span></div>';
   });
   document.getElementById('dld-words').innerHTML=wh;
+  DL.lessonActive = false; dlSave();
   dlSaveStreak();
   nav('daily-done');
 }
@@ -10635,11 +10647,57 @@ function App_closeModal(){
   if(!bd) return;
   ['modal-picker','modal-addword'].forEach(function(id){
     var m = document.getElementById(id);
-    if(m) m.style.transform = 'translateY(100%)';
+    if(m){ m.style.transition='transform .28s cubic-bezier(0.32,0.72,0,1)'; m.style.transform = 'translateY(100%)'; }
   });
-  bd.style.display = 'none';
+  setTimeout(function(){ bd.style.display = 'none'; }, 290);
   _activeModal = null;
 }
+
+/* ── Swipe-down to close modals ─────────────────────── */
+(function(){
+  var _msy=0, _mly=0, _mel=null, _mOn=false;
+
+  function onMStart(e){
+    if(e.touches.length!==1) return;
+    // Only from the drag handle zone (top 48px of modal)
+    var modal = document.getElementById(_activeModal||'');
+    if(!modal) return;
+    var rect = modal.getBoundingClientRect();
+    var ty = e.touches[0].clientY;
+    if(ty - rect.top > 60) return; // only top 60px
+    _msy = _mly = ty;
+    _mel = modal;
+    _mOn = true;
+  }
+
+  function onMMove(e){
+    if(!_mOn || !_mel) return;
+    _mly = e.touches[0].clientY;
+    var dy = _mly - _msy;
+    if(dy < 0) dy = 0;
+    _mel.style.transition = 'none';
+    _mel.style.transform = 'translateY('+dy+'px)';
+    e.preventDefault();
+  }
+
+  function onMEnd(){
+    if(!_mOn || !_mel) return;
+    _mOn = false;
+    var dy = _mly - _msy;
+    if(dy > 80){
+      App_closeModal();
+    } else {
+      _mel.style.transition = 'transform .28s cubic-bezier(0.34,1.56,0.64,1)';
+      _mel.style.transform = 'translateY(0)';
+    }
+    _mel = null;
+  }
+
+  document.addEventListener('touchstart', onMStart, {passive:true});
+  document.addEventListener('touchmove',  onMMove,  {passive:false});
+  document.addEventListener('touchend',   onMEnd,   {passive:true});
+  document.addEventListener('touchcancel',onMEnd,   {passive:true});
+})();
 
 /* ── Word Picker ──────────────────────────────────────────── */
 function App_openWordPicker(){
@@ -11041,20 +11099,21 @@ document.addEventListener('DOMContentLoaded',App.init);
     var goBack = (dx >= THR) || (dx >= 40 && vel >= VEL);
 
     if(goBack && el){
+      // Capture dest NOW (before any class changes alter cur())
+      var curScreen = cur();
+      var dest = BACK[curScreen];
+      if(!dest){ hideGlow(); el = null; return; }
+
       // Slide out
       el.classList.add('swiping');
       el.style.transition = 'transform .24s cubic-bezier(0.32,0.72,0,1), opacity .2s ease';
       el.style.transform  = 'translate3d(100%,0,0)';
       el.style.opacity    = '0';
       hideGlow();
-      var target = BACK[cur() || ''] || BACK[ALL.find(function(s){ var e=document.getElementById('s-'+s); return e&&e.classList.contains('active'); })];
-      // Recalculate target from current screen before it changes
-      var s2 = ALL.find(function(s){ var e=document.getElementById('s-'+s); return e&&e.classList.contains('active'); });
-      var dest = BACK[s2];
       var captured = el; el = null;
       setTimeout(function(){
         rst(captured);
-        if(dest) App.nav(dest, true);
+        App.nav(dest, true);
         if(navigator.vibrate) navigator.vibrate([4, 16, 3]);
       }, 230);
     } else {
