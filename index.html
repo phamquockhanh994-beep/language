@@ -9499,8 +9499,18 @@ function renderDailyHub(){
     var total=0, done=0, db=vocabularyDatabase[lvl]||{};
     Object.keys(db).forEach(function(t){
       var ws=db[t]; if(!Array.isArray(ws)) return;
-      total+=ws.length;
-      ws.forEach(function(w){ if(S.mastered&&S.mastered[w.ru]) done++; });
+      ws.forEach(function(w,i){
+        total++;
+        var k=lvl+'-'+t+'-'+i;
+        if(S.mastered&&S.mastered[k]) done++;
+      });
+    });
+    // also count mastered custom words for this level
+    (S.customWords||[]).forEach(function(w,i){
+      if((w.lv||'A1')===lvl){
+        total++;
+        if(S.mastered&&S.mastered['custom-'+i]) done++;
+      }
     });
     return {total:total, done:done, pct:total>0?Math.round(done/total*100):0};
   }
