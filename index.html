@@ -1477,6 +1477,11 @@ body::after{
     </span>
     <span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
   </button>
+
+  <button class="bBtn" id="bn-write" onclick="App.nav('write')">
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+    <span class="bLbl" id="bn-write-lbl">Luyện viết</span>
+  </button>
 </div>
 </div>
 
@@ -5987,7 +5992,6 @@ const vocabularyDatabase = {
       { ru: 'Реформа', vn: 'Cải cách', en: 'Reform', ph: 'reformá' },
       { ru: 'Инновация', vn: 'Đổi mới / Sáng tạo', en: 'Innovation', ph: 'innovátsiya' },
     ],
-  },
     "🏢 Quản lý dự án & Môi trường làm việc nâng cao": [
       { ru: 'Делегирование',  vn: 'Uỷ quyền',                  en: 'Delegation',         ph: 'delegirovaniye' },
       { ru: 'Приоритизация',  vn: 'Ưu tiên hoá',               en: 'Prioritization',     ph: 'prioritizátsiya' },
@@ -6039,6 +6043,7 @@ const vocabularyDatabase = {
       { ru: 'Принятие',       vn: 'Sự chấp nhận',              en: 'Acceptance',         ph: 'prinyátiye' },
       { ru: 'Исцеление',      vn: 'Chữa lành / Hồi phục',       en: 'Healing',            ph: 'istseléniye' },
     ],
+  },
 
   C1: {
    "🧠 Triết học & Tư duy trừu tượng": [
@@ -7901,10 +7906,10 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read','write'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',write:'bn-write',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
-const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0};
+const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0,write:0};
 
 function nav(name, noAnim){
   var prev = SCREENS.find(function(s){
@@ -7963,6 +7968,7 @@ function nav(name, noAnim){
 
     // Post-render for screens not pre-rendered (read needs async init)
     if(name === 'read') setTimeout(rdInit, 16);
+    if(name === 'write') setTimeout(wrInit, 16);
   });
 }
 
@@ -11342,7 +11348,280 @@ function App_deleteCustomWord(i){
 }
 
 
-return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
+/* ══════════════════════════════════════════════════════════════
+   WRITE / LUYỆN VIẾT — AI grammar checker
+   ════════════════════════════════════════════════════════════ */
+
+var _wrMode   = 'full';   // 'full' | 'quick' | 'native'
+var _wrHistory = [];      // [{input, result, ts}]
+var _wrLoading = false;
+var _wrAbort   = null;
+
+var WR_EXAMPLES = [
+  'Я хочу кушать пицца.',
+  'Вчера я пошёл в магазин и покупаю хлеб.',
+  'Мне нравится слушать музыка.',
+  'Она не знает где живёт её друг.',
+  'Мы с другом играли в футбол в парке вчера.',
+  'Я учусь русский язык уже два года.',
+  'Сегодня погода очень хорошо.',
+  'Он сказал мне что он устал.',
+];
+
+function wrInit(){
+  // Render example prompts
+  var el = document.getElementById('wr-example-list');
+  if(!el) return;
+  var html = '';
+  WR_EXAMPLES.slice(0, 5).forEach(function(ex){
+    html += '<div class="tch" onclick="App.wrUseExample(this.dataset.ex)" data-ex="'+ex.replace(/"/g,'&quot;')+'"'
+          + ' style="padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.03);'
+          + 'border:1px solid rgba(255,255,255,.07);color:var(--txd);font-size:14px;'
+          + 'line-height:1.4;cursor:pointer;">'+ex+'</div>';
+  });
+  el.innerHTML = html;
+  // Load saved history
+  try{
+    var h = localStorage.getItem('wr_history');
+    if(h) _wrHistory = JSON.parse(h) || [];
+  }catch(e){}
+}
+
+function App_wrOnInput(ta){
+  var v = ta.value;
+  var cnt = document.getElementById('wr-char-count');
+  var clr = document.getElementById('wr-clear-btn');
+  if(cnt) cnt.textContent = v.length;
+  if(clr) clr.style.display = v.length > 0 ? 'block' : 'none';
+}
+
+function App_wrClear(){
+  var ta = document.getElementById('wr-input');
+  if(ta){ ta.value = ''; App_wrOnInput(ta); }
+  document.getElementById('wr-result').innerHTML = '';
+  document.getElementById('wr-examples').style.display = '';
+}
+
+function App_wrUseExample(ex){
+  var ta = document.getElementById('wr-input');
+  if(!ta) return;
+  ta.value = ex;
+  App_wrOnInput(ta);
+  ta.focus();
+  document.getElementById('wr-examples').style.display = 'none';
+}
+
+function App_wrSetMode(mode){
+  _wrMode = mode;
+  document.querySelectorAll('.wr-mode-btn').forEach(function(b){
+    var isOn = b.dataset.mode === mode;
+    b.style.border       = isOn ? '1.5px solid rgba(52,199,89,.4)' : '1px solid rgba(255,255,255,.1)';
+    b.style.background   = isOn ? 'rgba(52,199,89,.12)' : 'rgba(255,255,255,.04)';
+    b.style.color        = isOn ? 'var(--grn)' : 'var(--com)';
+  });
+}
+
+function App_wrToggleHistory(){
+  var main    = document.getElementById('wr-main');
+  var hist    = document.getElementById('wr-history-panel');
+  var btn     = document.getElementById('wr-history-btn');
+  if(!hist) return;
+  var showing = hist.style.display !== 'none';
+  if(showing){
+    hist.style.display = 'none';
+    main.style.display = '';
+    btn.style.color    = 'var(--com)';
+    btn.style.border   = '1px solid rgba(255,255,255,.1)';
+  } else {
+    main.style.display = 'none';
+    hist.style.display = 'flex';
+    btn.style.color    = 'var(--grn)';
+    btn.style.border   = '1px solid rgba(52,199,89,.3)';
+    wrRenderHistory();
+  }
+}
+
+function wrRenderHistory(){
+  var el = document.getElementById('wr-history-list');
+  if(!el) return;
+  if(!_wrHistory.length){
+    el.innerHTML = '<div style="text-align:center;color:var(--com);padding:32px 0;font-size:13px;">Chưa có lịch sử nào.<br>Hãy luyện câu đầu tiên!</div>';
+    return;
+  }
+  var html = '';
+  _wrHistory.slice().reverse().forEach(function(item, i){
+    var d = new Date(item.ts);
+    var ts = d.getDate()+'/'+(d.getMonth()+1)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+    html += '<div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:8px;">'
+          + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);margin-bottom:6px;">'+ts+'</div>'
+          + '<div style="font-size:14px;color:var(--txd);margin-bottom:8px;font-style:italic;">«'+item.input+'»</div>'
+          + '<div style="font-size:13px;color:var(--tx);line-height:1.6;">'+item.summary+'</div>'
+          + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function App_wrSubmit(){
+  if(_wrLoading) return;
+  var ta = document.getElementById('wr-input');
+  if(!ta) return;
+  var text = ta.value.trim();
+  if(!text){ showToast('Nhập câu tiếng Nga trước nhé','yel'); return; }
+  if(text.length > 500){ showToast('Câu quá dài (tối đa 500 ký tự)','yel'); return; }
+
+  _wrLoading = true;
+  document.getElementById('wr-examples').style.display = 'none';
+
+  var btn = document.getElementById('wr-submit-btn');
+  if(btn){ btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;animation:spin .7s linear infinite"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg></span> Đang phân tích...'; }
+
+  var resultEl = document.getElementById('wr-result');
+  resultEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--com);font-size:13px;">AI đang phân tích câu của bạn...</div>';
+
+  var PROMPTS = {
+    full: 'Phân tích ngữ pháp câu tiếng Nga sau bằng tiếng Việt. Câu cần kiểm tra: «'+text+'». Chỉ trả về JSON hợp lệ, không markdown: {"score":1-10,"verdict":"Đúng hoặc Có lỗi hoặc Sai hoàn toàn","corrected":"câu đã sửa đúng","errors":[{"original":"phần sai","fix":"sửa thành","explain":"giải thích ngắn tiếng Việt"}],"natural":"câu tự nhiên hơn hoặc null","tip":"mẹo ngữ pháp tiếng Nga liên quan","native_reaction":"người Nga bản địa cảm nhận thế nào"}',
+    quick: 'Sửa nhanh câu tiếng Nga: «'+text+'». Chỉ JSON: {"score":1-10,"corrected":"câu đúng","errors":[{"original":"sai","fix":"đúng","explain":"lý do tiếng Việt"}],"ok":true}',
+    native: 'Bạn là người Nga bản địa. Đọc câu này: «'+text+'». Phản hồi bằng tiếng Việt, chỉ JSON: {"understood":true,"reaction":"cảm nhận khi đọc","sounds_like":"nghe giống ai nói","corrected":"cách nói tự nhiên nhất","score":1-10}',
+  };
+
+  if(_wrAbort) _wrAbort.abort();
+  var ac = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  _wrAbort = ac;
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    signal: ac ? ac.signal : undefined,
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{role:'user', content: PROMPTS[_wrMode]}]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    _wrLoading = false;
+    if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Kiểm tra câu'; }
+    var raw = (data.content||[]).map(function(x){ return x.text||''; }).join('');
+    raw = raw.replace(/```json|```/g,'').trim();
+    try{
+      var j = JSON.parse(raw);
+      wrRenderResult(text, j, _wrMode);
+      // Save to history
+      var summary = j.corrected && j.corrected !== text ? '✏️ '+j.corrected : (j.ok===true?'✅ Câu đúng':'⚠️ '+((j.errors||[])[0]||{}).explain||'');
+      _wrHistory.push({input:text, result:j, summary:summary, mode:_wrMode, ts:Date.now()});
+      if(_wrHistory.length > 50) _wrHistory = _wrHistory.slice(-50);
+      try{ localStorage.setItem('wr_history', JSON.stringify(_wrHistory)); }catch(e){}
+    }catch(e){
+      resultEl.innerHTML = '<div style="padding:16px;color:var(--pnk);font-size:13px;">Lỗi phân tích kết quả. Thử lại nhé.</div>';
+    }
+  })
+  .catch(function(e){
+    _wrLoading = false;
+    if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Kiểm tra câu'; }
+    resultEl.innerHTML = '<div style="padding:16px;color:var(--pnk);font-size:13px;">Cần kết nối internet để dùng tính năng này.</div>';
+  });
+}
+
+function wrScoreColor(s){
+  if(s >= 9) return 'var(--grn)';
+  if(s >= 7) return '#5ac8fa';
+  if(s >= 5) return 'var(--yel)';
+  return 'var(--pnk)';
+}
+
+function wrRenderResult(original, j, mode){
+  var el = document.getElementById('wr-result');
+  if(!el) return;
+  var score = j.score || 0;
+  var col   = wrScoreColor(score);
+  var html  = '';
+
+  // Score header
+  html += '<div style="display:flex;align-items:center;gap:12px;padding:16px;border-radius:18px;'
+        + 'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);margin-bottom:10px;">'
+        + '<div style="width:54px;height:54px;border-radius:14px;flex-shrink:0;'
+        + 'display:flex;align-items:center;justify-content:center;flex-direction:column;'
+        + 'background:rgba(255,255,255,.05);border:2px solid '+col+';">'
+        + '<div style="font-size:22px;font-weight:900;color:'+col+';font-family:var(--mono);line-height:1;">'+score+'</div>'
+        + '<div style="font-size:8px;color:var(--com);">/10</div>'
+        + '</div>'
+        + '<div style="flex:1;">'
+        + '<div style="font-size:15px;font-weight:800;color:'+col+';">'+( j.verdict || (j.ok ? '✅ Câu đúng' : '⚠️ Có lỗi') )+'</div>'
+        + (j.native_reaction ? '<div style="font-size:12px;color:var(--com);margin-top:3px;line-height:1.4;font-style:italic;">'+j.native_reaction+'</div>' : '')
+        + (j.reaction ? '<div style="font-size:12px;color:var(--com);margin-top:3px;line-height:1.4;font-style:italic;">'+j.reaction+'</div>' : '')
+        + '</div>'
+        + '</div>';
+
+  // Corrected sentence
+  if(j.corrected && j.corrected !== original){
+    html += '<div style="padding:14px 16px;border-radius:16px;'
+          + 'background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.25);margin-bottom:10px;">'
+          + '<div style="font-size:10px;color:var(--grn);font-family:var(--mono);letter-spacing:1px;margin-bottom:7px;">// CÂU ĐÃ SỬA</div>'
+          + '<div style="font-size:18px;font-weight:700;color:var(--tx);">'+j.corrected+'</div>'
+          + '</div>';
+  } else if(score >= 9){
+    html += '<div style="padding:12px 16px;border-radius:14px;'
+          + 'background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.2);margin-bottom:10px;">'
+          + '<div style="font-size:13px;font-weight:700;color:var(--grn);">✓ Câu viết rất tốt, không cần sửa!</div>'
+          + '</div>';
+  }
+
+  // Errors
+  if(j.errors && j.errors.length){
+    html += '<div style="padding:14px 16px;border-radius:16px;'
+          + 'background:rgba(255,55,95,.05);border:1px solid rgba(255,55,95,.2);margin-bottom:10px;">'
+          + '<div style="font-size:10px;color:var(--pnk);font-family:var(--mono);letter-spacing:1px;margin-bottom:10px;">// LỖI TÌM THẤY</div>';
+    j.errors.forEach(function(err, i){
+      html += '<div style="'+(i>0?'margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);':'')+'">'
+            + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">'
+            + '<span style="background:rgba(255,55,95,.15);color:var(--pnk);padding:2px 8px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:line-through;">'+err.original+'</span>'
+            + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
+            + '<span style="background:rgba(52,199,89,.12);color:var(--grn);padding:2px 8px;border-radius:6px;font-size:13px;font-weight:700;">'+err.fix+'</span>'
+            + '</div>'
+            + '<div style="font-size:12px;color:var(--com);line-height:1.5;">'+err.explain+'</div>'
+            + '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Natural alternative
+  if(j.natural){
+    html += '<div style="padding:13px 16px;border-radius:14px;'
+          + 'background:rgba(90,200,250,.06);border:1px solid rgba(90,200,250,.2);margin-bottom:10px;">'
+          + '<div style="font-size:10px;color:var(--cyn);font-family:var(--mono);letter-spacing:1px;margin-bottom:6px;">// TỰ NHIÊN HƠN</div>'
+          + '<div style="font-size:16px;font-weight:700;color:var(--tx);">'+j.natural+'</div>'
+          + '</div>';
+  }
+
+  // Sounds like (native mode)
+  if(j.sounds_like){
+    html += '<div style="padding:12px 16px;border-radius:14px;'
+          + 'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);margin-bottom:10px;">'
+          + '<div style="font-size:12px;color:var(--txd);">🗣️ '+j.sounds_like+'</div>'
+          + '</div>';
+  }
+
+  // Grammar tip
+  if(j.tip){
+    html += '<div style="padding:13px 16px;border-radius:14px;'
+          + 'background:rgba(255,159,10,.06);border:1px solid rgba(255,159,10,.2);margin-bottom:10px;">'
+          + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:6px;">// MẸO NGỮ PHÁP</div>'
+          + '<div style="font-size:13px;color:var(--tx);line-height:1.5;">'+j.tip+'</div>'
+          + '</div>';
+  }
+
+  // Try again button
+  html += '<button onclick="App.wrClear()" class="tch"'
+        + ' style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);'
+        + 'background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:20px;">'
+        + '← Kiểm tra câu khác</button>';
+
+  el.innerHTML = html;
+}
+
+
+return{nav,navSilent,wrOnInput:App_wrOnInput,wrClear:App_wrClear,wrUseExample:App_wrUseExample,wrSetMode:App_wrSetMode,wrToggleHistory:App_wrToggleHistory,wrSubmit:App_wrSubmit,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   fcStart,fcFlip,fcFamily,fcNav,fcMaster,speakFC,
   quizStart,qzAnswer,speakQZ,
   closeModal:App_closeModal, openWordPicker:App_openWordPicker,
@@ -11938,228 +12217,87 @@ document.addEventListener('DOMContentLoaded',App.init);
   </div>
 </div>
 
+
+<!-- ════ WRITE / LUYỆN VIẾT SCREEN ════════════════════════════ -->
+<div id="s-write" class="screen">
+
+  <div class="hdr">
+    <div class="f1">
+      <div style="font-size:10px;color:var(--grn);font-family:var(--mono);letter-spacing:.5px;">&gt; grammar_check.exe</div>
+      <div class="hdr-title">Luyện viết</div>
+    </div>
+    <div id="wr-history-btn" onclick="App.wrToggleHistory()" style="padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--com);font-size:12px;font-weight:600;cursor:pointer;">Lịch sử</div>
+  </div>
+
+  <div class="scrl" style="padding:14px 16px;" id="wr-main">
+
+    <!-- Input area -->
+    <div style="margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// NHẬP CÂU TIẾNG NGA</div>
+      <div style="position:relative;">
+        <textarea id="wr-input"
+          placeholder="Например: Я хочу кушать пицца..."
+          rows="3"
+          style="width:100%;box-sizing:border-box;padding:14px 14px 40px;
+            border-radius:16px;border:1px solid rgba(255,255,255,.12);
+            background:rgba(255,255,255,.05);color:var(--tx);font-size:17px;
+            line-height:1.5;resize:none;outline:none;font-family:inherit;
+            -webkit-tap-highlight-color:transparent;caret-color:var(--grn);"
+          oninput="App.wrOnInput(this)"></textarea>
+        <div style="position:absolute;bottom:10px;right:10px;display:flex;gap:6px;align-items:center;">
+          <span id="wr-char-count" style="font-size:11px;color:var(--com);font-family:var(--mono);">0</span>
+          <button id="wr-clear-btn" onclick="App.wrClear()" style="display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:3px 8px;color:var(--com);font-size:11px;cursor:pointer;">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode selector -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;" id="wr-mode-row">
+      <button class="wr-mode-btn active" data-mode="full" onclick="App.wrSetMode('full')"
+        style="flex:1;padding:9px 6px;border-radius:12px;border:1.5px solid rgba(52,199,89,.4);
+               background:rgba(52,199,89,.12);color:var(--grn);font-size:11px;font-weight:700;cursor:pointer;">
+        🔍 Phân tích đầy đủ
+      </button>
+      <button class="wr-mode-btn" data-mode="quick" onclick="App.wrSetMode('quick')"
+        style="flex:1;padding:9px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
+               background:rgba(255,255,255,.04);color:var(--com);font-size:11px;font-weight:700;cursor:pointer;">
+        ⚡ Sửa nhanh
+      </button>
+      <button class="wr-mode-btn" data-mode="native" onclick="App.wrSetMode('native')"
+        style="flex:1;padding:9px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
+               background:rgba(255,255,255,.04);color:var(--com);font-size:11px;font-weight:700;cursor:pointer;">
+        🗣️ Bản ngữ
+      </button>
+    </div>
+
+    <button id="wr-submit-btn" onclick="App.wrSubmit()"
+      style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
+             background:linear-gradient(135deg,rgba(52,199,89,.22),rgba(52,199,89,.12));
+             border:1px solid rgba(52,199,89,.4);color:var(--grn);font-size:15px;font-weight:700;
+             margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Kiểm tra câu
+    </button>
+
+    <!-- Result area -->
+    <div id="wr-result"></div>
+
+    <!-- Example prompts -->
+    <div id="wr-examples">
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:10px;">// THỬ CÁC CÂU NÀY</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="wr-example-list"></div>
+    </div>
+
+  </div>
+
+  <!-- History panel (hidden by default) -->
+  <div id="wr-history-panel" style="display:none;flex:1;min-height:0;flex-direction:column;">
+    <div style="padding:12px 16px 8px;flex-shrink:0;">
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;">// LỊCH SỬ LUYỆN VIẾT</div>
+    </div>
+    <div class="scrl" style="padding:0 16px 14px;" id="wr-history-list"></div>
+  </div>
+
+</div>
 </body>
 </html>
-  C1: {
-
-    "🎓 Ngôn ngữ học thuật & Lập luận": [
-      { ru: 'Аргументировать', vn: 'Lập luận / Tranh luận', en: 'To argue', ph: 'argumentirovat' },
-      { ru: 'Обосновать', vn: 'Luận chứng / Chứng minh', en: 'To substantiate', ph: 'obosnovat' },
-      { ru: 'Опровергнуть', vn: 'Bác bỏ / Phản bác', en: 'To refute', ph: 'oprovergnut' },
-      { ru: 'Сформулировать', vn: 'Phát biểu / Diễn đạt', en: 'To formulate', ph: 'sformulirovat' },
-      { ru: 'Обобщить', vn: 'Khái quát hoá', en: 'To summarise', ph: 'obobshchit' },
-      { ru: 'Противоречие', vn: 'Mâu thuẫn', en: 'Contradiction', ph: 'protivorechiye' },
-      { ru: 'Предпосылка', vn: 'Tiền đề', en: 'Premise', ph: 'predposylka' },
-      { ru: 'Умозаключение', vn: 'Kết luận suy lý', en: 'Inference', ph: 'umozaklyucheniye' },
-      { ru: 'Парадокс', vn: 'Nghịch lý', en: 'Paradox', ph: 'paradoks' },
-      { ru: 'Риторика', vn: 'Tu từ học', en: 'Rhetoric', ph: 'ritorika' },
-      { ru: 'Аналогия', vn: 'Sự tương đồng / Loại suy', en: 'Analogy', ph: 'analogiya' },
-      { ru: 'Дискурс', vn: 'Diễn ngôn', en: 'Discourse', ph: 'diskurs' },
-      { ru: 'Концепция', vn: 'Khái niệm / Quan niệm', en: 'Concept', ph: 'kontseptsiya' },
-      { ru: 'Трактовать', vn: 'Diễn giải / Giải thích', en: 'To interpret', ph: 'traktovat' },
-      { ru: 'Абстрактный', vn: 'Trừu tượng', en: 'Abstract', ph: 'abstraktnyy' },
-      { ru: 'Категория', vn: 'Phạm trù', en: 'Category', ph: 'kategoriya' },
-      { ru: 'Постулат', vn: 'Nguyên lý cơ bản', en: 'Postulate', ph: 'postulat' },
-      { ru: 'Дедуктивный', vn: 'Diễn dịch', en: 'Deductive', ph: 'deduktivnyy' },
-      { ru: 'Индуктивный', vn: 'Quy nạp', en: 'Inductive', ph: 'induktivnyy' },
-      { ru: 'Методология', vn: 'Phương pháp luận', en: 'Methodology', ph: 'metodologiya' },
-    ],
-    "📜 Văn học & Phê bình": [
-      { ru: 'Повествование', vn: 'Lối kể chuyện', en: 'Narrative', ph: 'povestvovaniye' },
-      { ru: 'Метафора', vn: 'Ẩn dụ', en: 'Metaphor', ph: 'metafora' },
-      { ru: 'Аллегория', vn: 'Ngụ ngôn / Ẩn dụ mở rộng', en: 'Allegory', ph: 'allegoriya' },
-      { ru: 'Эпитет', vn: 'Tính từ bổ nghĩa', en: 'Epithet', ph: 'epitet' },
-      { ru: 'Сатира', vn: 'Châm biếm', en: 'Satire', ph: 'satira' },
-      { ru: 'Ирония', vn: 'Mỉa mai / Sự mỉa mai', en: 'Irony', ph: 'ironiya' },
-      { ru: 'Символизм', vn: 'Chủ nghĩa tượng trưng', en: 'Symbolism', ph: 'simvolizm' },
-      { ru: 'Сюжет', vn: 'Cốt truyện', en: 'Plot', ph: 'syuzhet' },
-      { ru: 'Персонаж', vn: 'Nhân vật', en: 'Character', ph: 'personazh' },
-      { ru: 'Лирика', vn: 'Thơ trữ tình', en: 'Lyric poetry', ph: 'lirika' },
-      { ru: 'Проза', vn: 'Văn xuôi', en: 'Prose', ph: 'proza' },
-      { ru: 'Жанр', vn: 'Thể loại', en: 'Genre', ph: 'zhanr' },
-      { ru: 'Интерпретация', vn: 'Sự diễn giải', en: 'Interpretation', ph: 'interpretatsiya' },
-      { ru: 'Рецензия', vn: 'Bài phê bình', en: 'Review / Critique', ph: 'retsenziya' },
-      { ru: 'Автобиография', vn: 'Tự truyện', en: 'Autobiography', ph: 'avtobiografiya' },
-      { ru: 'Летопись', vn: 'Biên niên sử', en: 'Chronicle', ph: 'letopis' },
-      { ru: 'Эпос', vn: 'Sử thi', en: 'Epic', ph: 'epos' },
-      { ru: 'Стихотворение', vn: 'Bài thơ', en: 'Poem', ph: 'stikhotvoreniye' },
-      { ru: 'Авангард', vn: 'Tiên phong / Tiền vệ', en: 'Avant-garde', ph: 'avangard' },
-      { ru: 'Постмодернизм', vn: 'Chủ nghĩa hậu hiện đại', en: 'Postmodernism', ph: 'postmodernizm' },
-    ],
-    "⚖️ Luật pháp & Triết học chính trị": [
-      { ru: 'Конституционный', vn: 'Theo hiến pháp', en: 'Constitutional', ph: 'konstitutsionnyy' },
-      { ru: 'Суверенитет', vn: 'Chủ quyền', en: 'Sovereignty', ph: 'suverenitet' },
-      { ru: 'Юрисдикция', vn: 'Thẩm quyền pháp lý', en: 'Jurisdiction', ph: 'yurisdiktsiya' },
-      { ru: 'Прецедент', vn: 'Tiền lệ pháp', en: 'Precedent', ph: 'pretsedent' },
-      { ru: 'Легитимность', vn: 'Tính hợp pháp / Chính danh', en: 'Legitimacy', ph: 'legitimnost' },
-      { ru: 'Олигархия', vn: 'Chế độ thiểu số độc quyền', en: 'Oligarchy', ph: 'oligarkhiya' },
-      { ru: 'Анархизм', vn: 'Chủ nghĩa vô chính phủ', en: 'Anarchism', ph: 'anarkhizm' },
-      { ru: 'Тоталитаризм', vn: 'Chủ nghĩa toàn trị', en: 'Totalitarianism', ph: 'totalitarizm' },
-      { ru: 'Федерализм', vn: 'Chủ nghĩa liên bang', en: 'Federalism', ph: 'federalizm' },
-      { ru: 'Гражданское право', vn: 'Dân luật', en: 'Civil law', ph: 'grazhdanskoye pravo' },
-      { ru: 'Уголовное право', vn: 'Hình luật', en: 'Criminal law', ph: 'ugolovnoye pravo' },
-      { ru: 'Правовое государство', vn: 'Nhà nước pháp quyền', en: 'Rule of law', ph: 'pravovoye gosudarstvo' },
-      { ru: 'Импичмент', vn: 'Luận tội / Bãi miễn', en: 'Impeachment', ph: 'impichment' },
-      { ru: 'Лоббирование', vn: 'Vận động hành lang', en: 'Lobbying', ph: 'lobbirovaniye' },
-      { ru: 'Коррупция', vn: 'Tham nhũng', en: 'Corruption', ph: 'korruptsiya' },
-      { ru: 'Абсолютизм', vn: 'Chủ nghĩa chuyên quyền', en: 'Absolutism', ph: 'absolyutizm' },
-      { ru: 'Гегемония', vn: 'Bá quyền', en: 'Hegemony', ph: 'gegemoniya' },
-      { ru: 'Цензура', vn: 'Kiểm duyệt', en: 'Censorship', ph: 'tsenzura' },
-      { ru: 'Репрессия', vn: 'Đàn áp', en: 'Repression', ph: 'repressiya' },
-      { ru: 'Плюрализм', vn: 'Chủ nghĩa đa nguyên', en: 'Pluralism', ph: 'plyuralizm' },
-    ],
-    "🧠 Triết học & Tư tưởng": [
-      { ru: 'Онтология', vn: 'Bản thể luận', en: 'Ontology', ph: 'ontologiya' },
-      { ru: 'Эпистемология', vn: 'Nhận thức luận', en: 'Epistemology', ph: 'epistemologiya' },
-      { ru: 'Экзистенциализм', vn: 'Chủ nghĩa hiện sinh', en: 'Existentialism', ph: 'egzistentsializm' },
-      { ru: 'Нигилизм', vn: 'Chủ nghĩa hư vô', en: 'Nihilism', ph: 'nigilizm' },
-      { ru: 'Утилитаризм', vn: 'Chủ nghĩa công lợi', en: 'Utilitarianism', ph: 'utilitarizm' },
-      { ru: 'Диалектика', vn: 'Biện chứng pháp', en: 'Dialectics', ph: 'dialektika' },
-      { ru: 'Детерминизм', vn: 'Thuyết tất định', en: 'Determinism', ph: 'determinizm' },
-      { ru: 'Субъективный', vn: 'Chủ quan', en: 'Subjective', ph: 'subyektivnyy' },
-      { ru: 'Объективный', vn: 'Khách quan', en: 'Objective', ph: 'obyektivnyy' },
-      { ru: 'Сознание', vn: 'Ý thức', en: 'Consciousness', ph: 'soznaniye' },
-      { ru: 'Восприятие', vn: 'Sự nhận thức / Tri giác', en: 'Perception', ph: 'vospriyatiye' },
-      { ru: 'Свобода воли', vn: 'Ý chí tự do', en: 'Free will', ph: 'svoboda voli' },
-      { ru: 'Нравственность', vn: 'Đạo đức / Phẩm hạnh', en: 'Morality', ph: 'nravstvennost' },
-      { ru: 'Справедливость', vn: 'Công bằng / Chính nghĩa', en: 'Justice', ph: 'spravedlivost' },
-      { ru: 'Трансцендентный', vn: 'Siêu việt', en: 'Transcendent', ph: 'transtsendentniy' },
-      { ru: 'Феноменология', vn: 'Hiện tượng luận', en: 'Phenomenology', ph: 'fenomenologiya' },
-      { ru: 'Идеализм', vn: 'Chủ nghĩa duy tâm', en: 'Idealism', ph: 'idealizm' },
-      { ru: 'Материализм', vn: 'Chủ nghĩa duy vật', en: 'Materialism', ph: 'materializm' },
-      { ru: 'Метафизика', vn: 'Siêu hình học', en: 'Metaphysics', ph: 'metafizika' },
-      { ru: 'Скептицизм', vn: 'Chủ nghĩa hoài nghi', en: 'Scepticism', ph: 'skeptitsizm' },
-    ],
-    "🔬 Khoa học & Công nghệ nâng cao": [
-      { ru: 'Квантовый', vn: 'Lượng tử', en: 'Quantum', ph: 'kvantovyy' },
-      { ru: 'Нейросеть', vn: 'Mạng nơ-ron', en: 'Neural network', ph: 'neyroset' },
-      { ru: 'Алгоритм', vn: 'Thuật toán', en: 'Algorithm', ph: 'algoritm' },
-      { ru: 'Биотехнология', vn: 'Công nghệ sinh học', en: 'Biotechnology', ph: 'biotekhnologiya' },
-      { ru: 'Геномика', vn: 'Bộ gen học', en: 'Genomics', ph: 'genomika' },
-      { ru: 'Наночастица', vn: 'Hạt nano', en: 'Nanoparticle', ph: 'nanochastitsa' },
-      { ru: 'Термодинамика', vn: 'Nhiệt động lực học', en: 'Thermodynamics', ph: 'termodinamika' },
-      { ru: 'Электромагнитный', vn: 'Điện từ', en: 'Electromagnetic', ph: 'elektromagnitnyy' },
-      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
-      { ru: 'Кибербезопасность', vn: 'An ninh mạng', en: 'Cybersecurity', ph: 'kiberbezopasnost' },
-      { ru: 'Блокчейн', vn: 'Chuỗi khối', en: 'Blockchain', ph: 'blokcheyn' },
-      { ru: 'Криптография', vn: 'Mật mã học', en: 'Cryptography', ph: 'kriptografiya' },
-      { ru: 'Экосистема', vn: 'Hệ sinh thái', en: 'Ecosystem', ph: 'ekosistema' },
-      { ru: 'Биосфера', vn: 'Sinh quyển', en: 'Biosphere', ph: 'biosfera' },
-      { ru: 'Ядерный синтез', vn: 'Tổng hợp hạt nhân', en: 'Nuclear fusion', ph: 'yadernyy sintez' },
-      { ru: 'Параллельный', vn: 'Song song', en: 'Parallel', ph: 'parallelnyy' },
-      { ru: 'Автоматизация', vn: 'Tự động hoá', en: 'Automation', ph: 'avtomatizatsiya' },
-      { ru: 'Синтез', vn: 'Tổng hợp', en: 'Synthesis', ph: 'sintez' },
-      { ru: 'Катализатор', vn: 'Chất xúc tác', en: 'Catalyst', ph: 'katalizator' },
-      { ru: 'Гипотеза', vn: 'Giả thuyết', en: 'Hypothesis', ph: 'gipoteza' },
-    ],
-    "🌐 Kinh tế học & Tài chính nâng cao": [
-      { ru: 'Ликвидность', vn: 'Tính thanh khoản', en: 'Liquidity', ph: 'likvidnost' },
-      { ru: 'Дивиденды', vn: 'Cổ tức', en: 'Dividends', ph: 'dividendy' },
-      { ru: 'Волатильность', vn: 'Biến động', en: 'Volatility', ph: 'volatilnost' },
-      { ru: 'Монетарная политика', vn: 'Chính sách tiền tệ', en: 'Monetary policy', ph: 'monetarnaya politika' },
-      { ru: 'Фискальная политика', vn: 'Chính sách tài khoá', en: 'Fiscal policy', ph: 'fiskalnaya politika' },
-      { ru: 'Рецессия', vn: 'Suy thoái kinh tế', en: 'Recession', ph: 'retsessiya' },
-      { ru: 'Стагфляция', vn: 'Đình lạm', en: 'Stagflation', ph: 'stagflyatsiya' },
-      { ru: 'Деривативы', vn: 'Công cụ phái sinh', en: 'Derivatives', ph: 'derivativy' },
-      { ru: 'Портфель', vn: 'Danh mục đầu tư', en: 'Portfolio', ph: 'portfel' },
-      { ru: 'Хеджирование', vn: 'Phòng ngừa rủi ro', en: 'Hedging', ph: 'khedzirovaniye' },
-      { ru: 'Субсидия', vn: 'Trợ cấp', en: 'Subsidy', ph: 'subsidiya' },
-      { ru: 'Протекционизм', vn: 'Chủ nghĩa bảo hộ', en: 'Protectionism', ph: 'protektsionizm' },
-      { ru: 'Дефицит бюджета', vn: 'Thâm hụt ngân sách', en: 'Budget deficit', ph: 'defitsit byudzheta' },
-      { ru: 'Мультипликатор', vn: 'Số nhân', en: 'Multiplier', ph: 'multiplikator' },
-      { ru: 'Монополия', vn: 'Độc quyền', en: 'Monopoly', ph: 'monopoliya' },
-      { ru: 'Олигополия', vn: 'Độc quyền nhóm', en: 'Oligopoly', ph: 'oligopoliya' },
-      { ru: 'Эластичность', vn: 'Độ co giãn', en: 'Elasticity', ph: 'elastichnost' },
-      { ru: 'Конъюнктура', vn: 'Tình hình thị trường', en: 'Market conditions', ph: 'konyunktura' },
-      { ru: 'Амортизация', vn: 'Khấu hao', en: 'Depreciation', ph: 'amortizatsiya' },
-      { ru: 'Капитализация', vn: 'Vốn hoá thị trường', en: 'Capitalisation', ph: 'kapitalizatsiya' },
-    ],
-    "🎨 Mỹ học & Nghệ thuật nâng cao": [
-      { ru: 'Эстетика', vn: 'Mỹ học', en: 'Aesthetics', ph: 'estetika' },
-      { ru: 'Авторство', vn: 'Quyền tác giả', en: 'Authorship', ph: 'avtorstvo' },
-      { ru: 'Композиция', vn: 'Bố cục', en: 'Composition', ph: 'kompozitsiya' },
-      { ru: 'Импрессионизм', vn: 'Trường phái ấn tượng', en: 'Impressionism', ph: 'impressionizm' },
-      { ru: 'Абстракционизм', vn: 'Trường phái trừu tượng', en: 'Abstract art', ph: 'abstraktsionizm' },
-      { ru: 'Инсталляция', vn: 'Nghệ thuật sắp đặt', en: 'Installation art', ph: 'installyatsiya' },
-      { ru: 'Перформанс', vn: 'Nghệ thuật trình diễn', en: 'Performance art', ph: 'performans' },
-      { ru: 'Архетип', vn: 'Nguyên mẫu', en: 'Archetype', ph: 'arkhetip' },
-      { ru: 'Иконография', vn: 'Biểu tượng học', en: 'Iconography', ph: 'ikonografiya' },
-      { ru: 'Палитра', vn: 'Bảng màu', en: 'Palette', ph: 'palitra' },
-      { ru: 'Перспектива', vn: 'Phối cảnh / Viễn cảnh', en: 'Perspective', ph: 'perspektiva' },
-      { ru: 'Скульптура', vn: 'Điêu khắc', en: 'Sculpture', ph: 'skulptura' },
-      { ru: 'Архитектура', vn: 'Kiến trúc', en: 'Architecture', ph: 'arkhitektura' },
-      { ru: 'Орнамент', vn: 'Hoa văn trang trí', en: 'Ornament', ph: 'ornament' },
-      { ru: 'Графика', vn: 'Đồ hoạ', en: 'Graphics', ph: 'grafika' },
-      { ru: 'Пространство', vn: 'Không gian', en: 'Space', ph: 'prostranstvo' },
-      { ru: 'Ритм', vn: 'Nhịp điệu', en: 'Rhythm', ph: 'ritm' },
-      { ru: 'Гармония', vn: 'Sự hài hoà', en: 'Harmony', ph: 'garmoniya' },
-      { ru: 'Экспрессия', vn: 'Sự biểu hiện', en: 'Expression', ph: 'ekspressiya' },
-      { ru: 'Минимализм', vn: 'Chủ nghĩa tối giản', en: 'Minimalism', ph: 'minimalizm' },
-    ],
-    "🌍 Xã hội học & Nhân học": [
-      { ru: 'Социализация', vn: 'Xã hội hoá', en: 'Socialisation', ph: 'sotsializatsiya' },
-      { ru: 'Стереотип', vn: 'Định kiến / Khuôn mẫu', en: 'Stereotype', ph: 'stereotip' },
-      { ru: 'Дискриминация', vn: 'Phân biệt đối xử', en: 'Discrimination', ph: 'diskriminatsiya' },
-      { ru: 'Маргинализация', vn: 'Gạt ra ngoài lề', en: 'Marginalisation', ph: 'marginalizatsiya' },
-      { ru: 'Идентичность', vn: 'Bản sắc / Danh tính', en: 'Identity', ph: 'identichnost' },
-      { ru: 'Субкультура', vn: 'Tiểu văn hoá', en: 'Subculture', ph: 'subkultura' },
-      { ru: 'Мобильность', vn: 'Tính di động xã hội', en: 'Social mobility', ph: 'mobilnost' },
-      { ru: 'Интеграция', vn: 'Hội nhập', en: 'Integration', ph: 'integratsiya' },
-      { ru: 'Ассимиляция', vn: 'Đồng hoá', en: 'Assimilation', ph: 'assimilyatsiya' },
-      { ru: 'Диаспора', vn: 'Cộng đồng di cư', en: 'Diaspora', ph: 'diaspora' },
-      { ru: 'Неравенство', vn: 'Bất bình đẳng', en: 'Inequality', ph: 'neravenstvo' },
-      { ru: 'Патриархат', vn: 'Chế độ gia trưởng', en: 'Patriarchy', ph: 'patriarkhat' },
-      { ru: 'Феминизм', vn: 'Chủ nghĩa nữ quyền', en: 'Feminism', ph: 'feminizm' },
-      { ru: 'Глобализация', vn: 'Toàn cầu hoá', en: 'Globalisation', ph: 'globalizatsiya' },
-      { ru: 'Мультикультурализм', vn: 'Đa văn hoá', en: 'Multiculturalism', ph: 'multikulturalizm' },
-      { ru: 'Ксенофобия', vn: 'Bài ngoại', en: 'Xenophobia', ph: 'ksenofobiya' },
-      { ru: 'Толерантность', vn: 'Khoan dung', en: 'Tolerance', ph: 'tolerantnost' },
-      { ru: 'Нарратив', vn: 'Câu chuyện / Diễn ngôn', en: 'Narrative', ph: 'narrativ' },
-      { ru: 'Консенсус', vn: 'Đồng thuận', en: 'Consensus', ph: 'konsensus' },
-      { ru: 'Сегрегация', vn: 'Phân ly / Cách ly', en: 'Segregation', ph: 'segregatsiya' },
-    ],
-    "💊 Y học & Sinh học nâng cao": [
-      { ru: 'Иммунитет', vn: 'Miễn dịch', en: 'Immunity', ph: 'immunitet' },
-      { ru: 'Антитело', vn: 'Kháng thể', en: 'Antibody', ph: 'antitelo' },
-      { ru: 'Патоген', vn: 'Mầm bệnh', en: 'Pathogen', ph: 'patogen' },
-      { ru: 'Метаболизм', vn: 'Chuyển hoá', en: 'Metabolism', ph: 'metabolism' },
-      { ru: 'Хронический', vn: 'Mãn tính', en: 'Chronic', ph: 'khronicheskiy' },
-      { ru: 'Острый', vn: 'Cấp tính', en: 'Acute', ph: 'ostryy' },
-      { ru: 'Диагностика', vn: 'Chẩn đoán', en: 'Diagnostics', ph: 'diagnostika' },
-      { ru: 'Симптом', vn: 'Triệu chứng', en: 'Symptom', ph: 'simptom' },
-      { ru: 'Терапия', vn: 'Liệu pháp', en: 'Therapy', ph: 'terapiya' },
-      { ru: 'Хирургия', vn: 'Phẫu thuật', en: 'Surgery', ph: 'khirurgiya' },
-      { ru: 'Реабилитация', vn: 'Phục hồi chức năng', en: 'Rehabilitation', ph: 'reabilitatsiya' },
-      { ru: 'Эпидемия', vn: 'Dịch bệnh', en: 'Epidemic', ph: 'epidemiya' },
-      { ru: 'Пандемия', vn: 'Đại dịch', en: 'Pandemic', ph: 'pandemiya' },
-      { ru: 'Вакцинация', vn: 'Tiêm chủng', en: 'Vaccination', ph: 'vaktsinatsiya' },
-      { ru: 'Мутация', vn: 'Đột biến', en: 'Mutation', ph: 'mutatsiya' },
-      { ru: 'ДНК', vn: 'ADN', en: 'DNA', ph: 'de-en-ka' },
-      { ru: 'Нейромедиатор', vn: 'Chất dẫn truyền thần kinh', en: 'Neurotransmitter', ph: 'neyromediator' },
-      { ru: 'Гормон', vn: 'Hoóc-môn', en: 'Hormone', ph: 'gormon' },
-      { ru: 'Воспаление', vn: 'Viêm', en: 'Inflammation', ph: 'vospaleniye' },
-      { ru: 'Биохимия', vn: 'Sinh hoá', en: 'Biochemistry', ph: 'biokhimiya' },
-    ],
-    "✨ Khái niệm trừu tượng & Biểu đạt C1": [
-      { ru: 'Неоднозначность', vn: 'Tính mơ hồ / Hai nghĩa', en: 'Ambiguity', ph: 'neodnoznachnost' },
-      { ru: 'Нюанс', vn: 'Sắc thái / Khía cạnh tế nhị', en: 'Nuance', ph: 'nyuans' },
-      { ru: 'Взаимозависимость', vn: 'Sự phụ thuộc lẫn nhau', en: 'Interdependence', ph: 'vzaimozavisimost' },
-      { ru: 'Устойчивость', vn: 'Tính bền vững', en: 'Sustainability', ph: 'ustoychivost' },
-      { ru: 'Прозрачность', vn: 'Tính minh bạch', en: 'Transparency', ph: 'prozrachnost' },
-      { ru: 'Подотчётность', vn: 'Trách nhiệm giải trình', en: 'Accountability', ph: 'podotchotnost' },
-      { ru: 'Беспристрастный', vn: 'Vô tư / Không thiên vị', en: 'Impartial', ph: 'bespristrastnyy' },
-      { ru: 'Всеобъемлющий', vn: 'Toàn diện / Bao hàm', en: 'Comprehensive', ph: 'vseobemlyushchiy' },
-      { ru: 'Компетентность', vn: 'Năng lực', en: 'Competence', ph: 'kompetentnost' },
-      { ru: 'Эффективность', vn: 'Hiệu quả', en: 'Efficiency', ph: 'effektivnost' },
-      { ru: 'Инициатива', vn: 'Sáng kiến', en: 'Initiative', ph: 'initsiativa' },
-      { ru: 'Добросовестность', vn: 'Sự trung thực / Liêm chính', en: 'Integrity', ph: 'dobrosovestnost' },
-      { ru: 'Преодолевать', vn: 'Vượt qua / Khắc phục', en: 'To overcome', ph: 'preodolevat' },
-      { ru: 'Воздерживаться', vn: 'Kiềm chế / Không tham gia', en: 'To abstain', ph: 'vozderzivatsya' },
-      { ru: 'Предполагать', vn: 'Giả định / Dự tính', en: 'To presuppose', ph: 'predpolagat' },
-      { ru: 'Фигурально', vn: 'Theo nghĩa bóng', en: 'Figuratively', ph: 'figuralno' },
-      { ru: 'Буквально', vn: 'Theo nghĩa đen', en: 'Literally', ph: 'bukvalno' },
-      { ru: 'Сложность', vn: 'Sự phức tạp', en: 'Complexity', ph: 'slozhnost' },
-      { ru: 'Принципиальный', vn: 'Có nguyên tắc / Cơ bản', en: 'Principled / Fundamental', ph: 'printsipialnyy' },
-      { ru: 'Обусловливать', vn: 'Quy định / Phụ thuộc vào', en: 'To determine/condition', ph: 'obuslovlivat' },
-    ],
-  }
