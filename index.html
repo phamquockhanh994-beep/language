@@ -835,7 +835,25 @@ body::after{
 .bold{font-weight:700;}.center{text-align:center;}
 .badge{display:inline-block;border-radius:4px;border:1px solid;padding:1px 6px;font-size:9px;font-weight:700;}
 
-#offline-badge{display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));right:12px;background:rgba(240,192,64,0.1);backdrop-filter:var(--blur);border:1px solid rgba(240,192,64,0.3);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--yel);z-index:100;}
+#net-status{
+  position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));left:50%;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px 8px 10px;border-radius:20px;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  font-size:12px;font-weight:600;white-space:nowrap;
+  z-index:9999;
+  transition:opacity .3s ease, transform .3s ease;
+}
+#net-status.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+#net-status.offline{background:rgba(255,55,95,.12);border:1px solid rgba(255,55,95,.3);color:#ff375f;}
+#net-status.online{background:rgba(52,199,89,.12);border:1px solid rgba(52,199,89,.35);color:var(--grn);}
+#net-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+#net-status.offline #net-dot{background:#ff375f;}
+#net-status.online #net-dot{background:var(--grn);}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.7);}}
+#offline-badge{display:none;}
 
 /* ═══ LANG TOGGLE — iOS 26 glass pill ═══ */
 #lang-toggle{
@@ -1485,7 +1503,10 @@ body::after{
 </div>
 </div>
 
-<div id="offline-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> offline</div>
+<div id="net-status">
+  <div id="net-dot"></div>
+  <span id="net-label">Đang kiểm tra...</span>
+</div>
 <div id="toast"></div>
 <script>
 
@@ -9247,8 +9268,30 @@ function gqAnswer(optIdx){
 // PWA
 let _deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_deferredPrompt=e;});
-window.addEventListener('online',()=>{document.getElementById('offline-badge').style.display='none';});
-window.addEventListener('offline',()=>{document.getElementById('offline-badge').style.display='block';});
+/* ── Network status: simple online/offline ── */
+(function(){
+  var _hideTimer = null;
+
+  function show(type, label, autohide){
+    var el = document.getElementById('net-status');
+    var lbl = document.getElementById('net-label');
+    if(!el) return;
+    clearTimeout(_hideTimer);
+    el.className = 'show ' + type;
+    if(lbl) lbl.textContent = label;
+    if(autohide) _hideTimer = setTimeout(function(){ el.classList.remove('show'); }, autohide);
+  }
+
+  window.addEventListener('online',  function(){ show('online',  '✓ Đã có mạng', 3000); });
+  window.addEventListener('offline', function(){ show('offline', '✗ Mất kết nối', 0); });
+
+  // Show on load only if offline
+  setTimeout(function(){
+    if(!navigator.onLine) show('offline', '✗ Mất kết nối', 0);
+  }, 500);
+
+  window.netIsOnline = function(){ return navigator.onLine; };
+})();
 
 // SERVICE WORKER
 if('serviceWorker' in navigator){
@@ -11415,9 +11458,8 @@ function App_wrSetMode(mode){
   _wrMode = mode;
   document.querySelectorAll('.wr-mode-btn').forEach(function(b){
     var isOn = b.dataset.mode === mode;
-    b.style.border       = isOn ? '1.5px solid rgba(52,199,89,.4)' : '1px solid rgba(255,255,255,.1)';
-    b.style.background   = isOn ? 'rgba(52,199,89,.12)' : 'rgba(255,255,255,.04)';
-    b.style.color        = isOn ? 'var(--grn)' : 'var(--com)';
+    b.style.background = isOn ? 'rgba(90,200,250,.15)' : 'transparent';
+    b.style.color      = isOn ? 'var(--tx)' : 'var(--com)';
   });
 }
 
@@ -11431,12 +11473,12 @@ function App_wrToggleHistory(){
     hist.style.display = 'none';
     main.style.display = '';
     btn.style.color    = 'var(--com)';
-    btn.style.border   = '1px solid rgba(255,255,255,.1)';
+    btn.style.border   = '';
   } else {
     main.style.display = 'none';
     hist.style.display = 'flex';
-    btn.style.color    = 'var(--grn)';
-    btn.style.border   = '1px solid rgba(52,199,89,.3)';
+    btn.style.color    = 'var(--cyn)';
+    btn.style.border   = '1px solid rgba(90,200,250,.3)';
     wrRenderHistory();
   }
 }
@@ -11468,12 +11510,11 @@ function App_wrSubmit(){
   var text = ta.value.trim();
   if(!text){ showToast('Nhập câu tiếng Nga trước nhé','yel'); return; }
   if(text.length > 500){ showToast('Câu quá dài (tối đa 500 ký tự)','yel'); return; }
-
   _wrLoading = true;
   document.getElementById('wr-examples').style.display = 'none';
 
   var btn = document.getElementById('wr-submit-btn');
-  if(btn){ btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;animation:spin .7s linear infinite"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg></span> Đang phân tích...'; }
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Đang phân tích...'; btn.style.opacity = '0.7'; }
 
   var resultEl = document.getElementById('wr-result');
   resultEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--com);font-size:13px;">AI đang phân tích câu của bạn...</div>';
@@ -11501,7 +11542,7 @@ function App_wrSubmit(){
   .then(function(r){ return r.json(); })
   .then(function(data){
     _wrLoading = false;
-    if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Kiểm tra câu'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Kiểm tra câu'; btn.style.opacity = '1'; }
     var raw = (data.content||[]).map(function(x){ return x.text||''; }).join('');
     raw = raw.replace(/```json|```/g,'').trim();
     try{
@@ -11518,14 +11559,15 @@ function App_wrSubmit(){
   })
   .catch(function(e){
     _wrLoading = false;
-    if(btn){ btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Kiểm tra câu'; }
-    resultEl.innerHTML = '<div style="padding:16px;color:var(--pnk);font-size:13px;">Cần kết nối internet để dùng tính năng này.</div>';
+    if(btn){ btn.disabled = false; btn.textContent = 'Kiểm tra câu'; btn.style.opacity = '1'; }
+    resultEl.innerHTML = '<div style="padding:16px;color:var(--pnk);font-size:13px;">⚠ Lỗi kết nối. Kiểm tra internet và thử lại.</div>';
+    showToast('Lỗi: ' + (e && e.message ? e.message.substring(0,40) : 'Network error'), 'pnk');
   });
 }
 
 function wrScoreColor(s){
-  if(s >= 9) return 'var(--grn)';
-  if(s >= 7) return '#5ac8fa';
+  if(s >= 9) return 'var(--cyn)';
+  if(s >= 7) return 'var(--grn)';
   if(s >= 5) return 'var(--yel)';
   return 'var(--pnk)';
 }
@@ -12223,81 +12265,79 @@ document.addEventListener('DOMContentLoaded',App.init);
 
   <div class="hdr">
     <div class="f1">
-      <div style="font-size:10px;color:var(--grn);font-family:var(--mono);letter-spacing:.5px;">&gt; grammar_check.exe</div>
+      <div style="font-size:10px;color:var(--cyn);font-family:var(--mono);letter-spacing:.5px;">// kiểm tra ngữ pháp</div>
       <div class="hdr-title">Luyện viết</div>
     </div>
-    <div id="wr-history-btn" onclick="App.wrToggleHistory()" style="padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--com);font-size:12px;font-weight:600;cursor:pointer;">Lịch sử</div>
+    <button class="iBtn tch" id="wr-history-btn" onclick="App.wrToggleHistory()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </button>
   </div>
 
-  <div class="scrl" style="padding:14px 16px;" id="wr-main">
+  <!-- Main panel -->
+  <div class="scrl" id="wr-main" style="padding:14px 16px 24px;">
 
-    <!-- Input area -->
-    <div style="margin-bottom:12px;">
+    <!-- Textarea -->
+    <div style="margin-bottom:10px;">
       <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// NHẬP CÂU TIẾNG NGA</div>
       <div style="position:relative;">
         <textarea id="wr-input"
           placeholder="Например: Я хочу кушать пицца..."
           rows="3"
-          style="width:100%;box-sizing:border-box;padding:14px 14px 40px;
-            border-radius:16px;border:1px solid rgba(255,255,255,.12);
-            background:rgba(255,255,255,.05);color:var(--tx);font-size:17px;
+          style="width:100%;box-sizing:border-box;padding:12px 12px 36px;
+            border-radius:14px;border:1px solid var(--bord);
+            background:var(--glass-1);color:var(--tx);font-size:17px;
             line-height:1.5;resize:none;outline:none;font-family:inherit;
-            -webkit-tap-highlight-color:transparent;caret-color:var(--grn);"
+            -webkit-tap-highlight-color:transparent;caret-color:var(--cyn);"
           oninput="App.wrOnInput(this)"></textarea>
-        <div style="position:absolute;bottom:10px;right:10px;display:flex;gap:6px;align-items:center;">
+        <div style="position:absolute;bottom:8px;right:10px;display:flex;gap:6px;align-items:center;">
           <span id="wr-char-count" style="font-size:11px;color:var(--com);font-family:var(--mono);">0</span>
-          <button id="wr-clear-btn" onclick="App.wrClear()" style="display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:3px 8px;color:var(--com);font-size:11px;cursor:pointer;">✕</button>
+          <button id="wr-clear-btn" onclick="App.wrClear()"
+            style="display:none;background:var(--glass-1);border:1px solid var(--bord);border-radius:7px;padding:2px 8px;color:var(--com);font-size:11px;cursor:pointer;">✕</button>
         </div>
       </div>
     </div>
 
-    <!-- Mode selector -->
-    <div style="display:flex;gap:6px;margin-bottom:12px;" id="wr-mode-row">
-      <button class="wr-mode-btn active" data-mode="full" onclick="App.wrSetMode('full')"
-        style="flex:1;padding:9px 6px;border-radius:12px;border:1.5px solid rgba(52,199,89,.4);
-               background:rgba(52,199,89,.12);color:var(--grn);font-size:11px;font-weight:700;cursor:pointer;">
-        🔍 Phân tích đầy đủ
+    <!-- Mode tabs -->
+    <div style="display:flex;gap:5px;margin-bottom:10px;padding:4px;background:var(--glass-1);border-radius:13px;border:1px solid var(--bord);" id="wr-mode-row">
+      <button class="wr-mode-btn tch" data-mode="full" onclick="App.wrSetMode('full')"
+        style="flex:1;padding:8px 4px;border-radius:10px;border:none;color:var(--tx);font-size:11px;font-weight:700;cursor:pointer;background:rgba(90,200,250,.15);">
+        🔍 Đầy đủ
       </button>
-      <button class="wr-mode-btn" data-mode="quick" onclick="App.wrSetMode('quick')"
-        style="flex:1;padding:9px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
-               background:rgba(255,255,255,.04);color:var(--com);font-size:11px;font-weight:700;cursor:pointer;">
-        ⚡ Sửa nhanh
+      <button class="wr-mode-btn tch" data-mode="quick" onclick="App.wrSetMode('quick')"
+        style="flex:1;padding:8px 4px;border-radius:10px;border:none;color:var(--com);font-size:11px;font-weight:700;cursor:pointer;background:transparent;">
+        ⚡ Nhanh
       </button>
-      <button class="wr-mode-btn" data-mode="native" onclick="App.wrSetMode('native')"
-        style="flex:1;padding:9px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
-               background:rgba(255,255,255,.04);color:var(--com);font-size:11px;font-weight:700;cursor:pointer;">
+      <button class="wr-mode-btn tch" data-mode="native" onclick="App.wrSetMode('native')"
+        style="flex:1;padding:8px 4px;border-radius:10px;border:none;color:var(--com);font-size:11px;font-weight:700;cursor:pointer;background:transparent;">
         🗣️ Bản ngữ
       </button>
     </div>
 
-    <button id="wr-submit-btn" onclick="App.wrSubmit()"
-      style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
-             background:linear-gradient(135deg,rgba(52,199,89,.22),rgba(52,199,89,.12));
-             border:1px solid rgba(52,199,89,.4);color:var(--grn);font-size:15px;font-weight:700;
-             margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <!-- Submit -->
+    <button id="wr-submit-btn" onclick="App.wrSubmit()" class="tch"
+      style="width:100%;padding:14px;border-radius:14px;
+             background:rgba(90,200,250,.1);border:1px solid rgba(90,200,250,.25);
+             color:var(--cyn);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:14px;">
       Kiểm tra câu
     </button>
 
-    <!-- Result area -->
+    <!-- Result -->
     <div id="wr-result"></div>
 
-    <!-- Example prompts -->
+    <!-- Examples -->
     <div id="wr-examples">
-      <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:10px;">// THỬ CÁC CÂU NÀY</div>
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// THỬ CÁC CÂU NÀY</div>
       <div style="display:flex;flex-direction:column;gap:6px;" id="wr-example-list"></div>
     </div>
 
   </div>
 
-  <!-- History panel (hidden by default) -->
+  <!-- History panel -->
   <div id="wr-history-panel" style="display:none;flex:1;min-height:0;flex-direction:column;">
-    <div style="padding:12px 16px 8px;flex-shrink:0;">
+    <div style="padding:12px 16px 6px;flex-shrink:0;">
       <div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;">// LỊCH SỬ LUYỆN VIẾT</div>
     </div>
-    <div class="scrl" style="padding:0 16px 14px;" id="wr-history-list"></div>
+    <div class="scrl" style="padding:0 16px 20px;" id="wr-history-list"></div>
   </div>
 
-</div>
-</body>
-</html>
+</div>>
