@@ -1404,29 +1404,48 @@ body::after{
 
 <!-- READ SCREEN -->
 <div id="s-read" class="screen">
+  <!-- Header -->
   <div class="hdr">
     <div class="f1">
       <div style="font-size:10px;color:var(--pnk);font-family:var(--mono);letter-spacing:.5px;">// đọc hiểu tiếng Nga</div>
-      <div class="hdr-title">Đọc hiểu</div>
+      <div class="hdr-title" id="rd-hdr-title">Đọc hiểu</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <div id="rd-level-badge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;background:rgba(255,55,95,.15);color:var(--pnk);border:1px solid rgba(255,55,95,.3);font-family:var(--mono);"></div>
-      <button class="iBtn" onclick="App.rdRefresh()" id="rd-refresh-btn" title="Tải bài mới">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <button class="iBtn tch" id="rd-back-btn" onclick="App.rdBack()" style="display:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
     </div>
   </div>
-  <div style="padding:6px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:10px;">
-    <div style="font-size:10px;color:var(--com);flex:1;">
-      👆 Nhấn từ để xem nghĩa &nbsp;·&nbsp;
-      <span style="color:rgba(255,159,10,.8);border-bottom:1px solid rgba(255,159,10,.5);">gạch chân</span> = từ mới &nbsp;·&nbsp;
-      <span style="color:var(--tx);">bình thường</span> = đã biết
-    </div>
-    <div style="font-size:10px;color:var(--com);font-family:var(--mono);white-space:nowrap;" id="rd-date"></div>
+
+  <!-- Topic grid view -->
+  <div class="scrl" id="rd-topics-view" style="padding:14px 16px 24px;">
+    <div id="rd-topic-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
   </div>
-  <div class="scrl" id="rd-scrl" style="padding:8px 16px 80px;">
-    <div id="rd-content">
-      <div class="rd-load-state"><div class="rd-spinner"></div>Đang tải bài đọc...</div>
+
+  <!-- Story list view -->
+  <div class="scrl" id="rd-list-view" style="display:none;padding:14px 16px 24px;">
+    <div id="rd-story-list"></div>
+  </div>
+
+  <!-- Story reader view -->
+  <div class="scrl" id="rd-reader-view" style="display:none;padding:14px 16px 32px;">
+    <div id="rd-reader-content"></div>
+  </div>
+
+  <!-- Word popup -->
+  <div id="rd-popup" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;
+      background:rgba(4,5,10,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border-top:1px solid rgba(255,255,255,0.1);border-radius:20px 20px 0 0;
+      padding:20px 20px calc(env(safe-area-inset-bottom,0px)+20px);">
+    <div id="rdp-word" style="font-size:22px;font-weight:800;color:var(--tx);margin-bottom:4px;"></div>
+    <div id="rdp-ai-box"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="tch" onclick="App.rdSpeak()" style="flex:1;padding:10px;border-radius:12px;background:var(--glass-1);border:1px solid var(--bord);color:var(--txd);font-size:13px;font-weight:600;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> Nghe
+      </button>
+      <button class="tch" onclick="App.rdGoLookup()" style="flex:1;padding:10px;border-radius:12px;background:var(--glass-1);border:1px solid var(--bord);color:var(--txd);font-size:13px;font-weight:600;">Tra từ điển</button>
+      <button class="tch" onclick="App.rdClosePopup()" style="padding:10px 16px;border-radius:12px;background:var(--glass-1);border:1px solid var(--bord);color:var(--com);font-size:13px;font-weight:600;">✕</button>
     </div>
   </div>
 </div>
@@ -9912,972 +9931,462 @@ var RD = {
   _luLevel:    null,
 };
 
-/* ── helpers ─────────────────────────────────────────────────── */
-function rdTodayKey(){
-  var d = new Date();
-  return 'rd4-' + S.level + '-' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-}
 
-function rdNorm(w){ return (w||'').toLowerCase().replace(/[^а-яёa-z]/g,''); }
+/* ═══════════════════════════════════════════════
+   ĐỌC HIỂU — Topic-based Story Reader
+   ═══════════════════════════════════════════════ */
 
-/* Build lookup once per level; store in RD._lu */
-function rdLookup(){
-  if(RD._lu && RD._luLevel === S.level) return RD._lu;
-  var lu = Object.create(null);
-  Object.keys(vocabularyDatabase).forEach(function(lvl){
-    Object.keys(vocabularyDatabase[lvl]).forEach(function(topic){
-      var words = vocabularyDatabase[lvl][topic];
-      if(!Array.isArray(words)) return;
-      words.forEach(function(w, i){
-        var key = lvl+'-'+topic+'-'+i;
-        /* index every individual word in a phrase */
-        w.ru.split(/\s+/).forEach(function(part){
-          var n = rdNorm(part);
-          if(n.length < 2) return;
-          if(!lu[n]) lu[n] = [];
-          if(!lu[n].some(function(e){ return e.key === key; }))
-            lu[n].push({w:w, key:key, lvl:lvl, topic:topic});
-        });
-      });
-    });
-  });
-  /* Pre-build stem→entry map (2-char suffix strips only) for speed */
-  lu._stems = Object.create(null);
-  Object.keys(lu).forEach(function(k){
-    if(k === '_stems') return;
-    for(var cut = 1; cut <= 4; cut++){
-      if(k.length - cut < 3) break;
-      var stem = k.slice(0, -cut);
-      if(!lu._stems[stem]) lu._stems[stem] = lu[k];
-    }
-  });
-  RD._lu = lu;
-  RD._luLevel = S.level;
-  return lu;
-}
+/* ── Story database ──────────────────────────────────────────── */
+var RD_TOPICS = [
+  { id:'skazki',   icon:'🧚', name:'Cổ tích',   name_ru:'Сказки',      color:'rgba(191,90,242,',  border:'rgba(191,90,242,' },
+  { id:'literatura',icon:'📖',name:'Văn học',   name_ru:'Литература',   color:'rgba(255,159,10,',  border:'rgba(255,159,10,' },
+  { id:'istoriya', icon:'🏛️', name:'Lịch sử',   name_ru:'История',     color:'rgba(255,55,95,',   border:'rgba(255,55,95,'  },
+  { id:'nauka',    icon:'🔬', name:'Khoa học',  name_ru:'Наука',        color:'rgba(90,200,250,',  border:'rgba(90,200,250,' },
+  { id:'putesh',   icon:'🌍', name:'Du lịch',   name_ru:'Путешествия',  color:'rgba(52,199,89,',   border:'rgba(52,199,89,'  },
+  { id:'kultura',  icon:'🎭', name:'Văn hoá',   name_ru:'Культура',     color:'rgba(255,214,10,',  border:'rgba(255,214,10,' },
+];
 
-function rdMatch(norm){
-  var lu = rdLookup();
-  if(lu[norm]) return lu[norm];
-  /* stem lookup */
-  for(var cut = 1; cut <= 4; cut++){
-    if(norm.length - cut < 3) break;
-    var stem = norm.slice(0, -cut);
-    if(lu._stems && lu._stems[stem]) return lu._stems[stem];
-  }
-  return null;
-}
+var RD_STORIES = {
+  skazki: [
+    { id:'s1', level:'A1', title:'Колобок', time:3,
+      body:'Жил-был старик со старухой. Старуха испекла колобок. Колобок лежал на окне и думал. Потом он прыгнул и покатился по дороге. По дороге он встретил зайца. «Колобок, я тебя съем!» — сказал заяц. «Нет, не съешь!» — ответил колобок и покатился дальше. Потом он встретил волка и медведя. Наконец колобок встретил лису. Лиса сказала: «Какой красивый колобок! Спой мне песню.» Колобок открыл рот — и лиса его съела.',
+      vn:'Ngày xưa có ông lão và bà lão. Bà lão nướng một chiếc bánh tròn Kolobok. Kolobok nằm trên cửa sổ và suy nghĩ. Rồi nó nhảy xuống và lăn dọc con đường. Trên đường nó gặp thỏ. «Kolobok, ta sẽ ăn mày!» — thỏ nói. «Không, mày không ăn được ta!» — Kolobok trả lời và tiếp tục lăn. Rồi nó gặp sói và gấu. Cuối cùng Kolobok gặp cáo. Cáo nói: «Chiếc bánh đẹp quá! Hãy hát cho ta nghe một bài.» Kolobok há miệng — và cáo ăn mất nó.',
+      en:'Once upon a time an old man and woman lived together. The old woman baked a round bread called Kolobok. Kolobok lay on the windowsill thinking. Then he jumped down and rolled along the road. He met a hare who said: «Kolobok, I will eat you!» «No, you won\'t!» replied Kolobok and rolled on. He met a wolf and a bear too. Finally Kolobok met a fox. The fox said: «What a beautiful Kolobok! Sing me a song.» Kolobok opened his mouth — and the fox ate him up.'},
+    { id:'s2', level:'A2', title:'Три медведя', time:4,
+      body:'Маша пошла в лес и заблудилась. В лесу она увидела дом. В доме никого не было. На столе стояли три тарелки с кашей. Маша попробовала кашу из большой тарелки — она была горячей. Из средней — тоже горячей. Из маленькой — в самый раз. Маша съела всю кашу. Потом она увидела три кровати. Она легла на маленькую кровать и заснула. Вернулись медведи. «Кто ел мою кашу?» — закричал маленький медведь. Маша проснулась, увидела медведей и убежала домой.',
+      vn:'Masha vào rừng và bị lạc. Trong rừng cô thấy một ngôi nhà. Trong nhà không có ai. Trên bàn có ba bát cháo. Masha thử cháo trong bát lớn — nó còn nóng. Bát vừa — cũng nóng. Bát nhỏ — vừa ăn. Masha ăn hết cháo. Rồi cô thấy ba chiếc giường. Cô nằm lên chiếc giường nhỏ và ngủ thiếp đi. Ba con gấu trở về. «Ai đã ăn cháo của tao?» — gấu con kêu lên. Masha tỉnh dậy, thấy những con gấu và chạy về nhà.',
+      en:'Masha went into the forest and got lost. She found a house with nobody inside. On the table were three bowls of porridge. She tried the big bowl — too hot. The medium bowl — also hot. The small bowl — just right. She ate it all. Then she found three beds and fell asleep in the small one. The bears came home. «Who ate my porridge?» cried the little bear. Masha woke up, saw the bears, and ran all the way home.'},
+    { id:'s3', level:'B1', title:'Царевна-лягушка', time:5,
+      body:'Царь велел трём сыновьям пустить стрелы. Где стрела упадёт — там и искать невесту. Стрела старшего сына упала во двор боярина, среднего — во двор купца. Стрела младшего — Ивана — упала в болото, где её нашла лягушка. Иван не хотел жениться на лягушке, но отец приказал. На свадьбе лягушка сбросила кожу и превратилась в красавицу Василису Премудрую. Иван от радости сжёг лягушечью кожу. Василиса заплакала: «Зачем ты это сделал? Теперь ищи меня за тридевять земель, в тридесятом царстве, у Кощея Бессмертного.»',
+      vn:'Nhà vua bảo ba người con trai bắn tên. Tên rơi đâu — ở đó tìm vợ. Tên của con cả rơi vào sân nhà boyar, con giữa — vào sân nhà thương nhân. Tên của Ivan — con út — rơi xuống đầm lầy, nơi một con ếch nhặt được. Ivan không muốn lấy ếch, nhưng cha ra lệnh. Trong đám cưới con ếch lột da và biến thành mỹ nhân Vasilisa Thông Tuệ. Ivan vì vui mừng đốt mất da ếch. Vasilisa khóc: «Sao anh làm vậy? Bây giờ hãy tìm em ở chín tầng trời, mười vương quốc, ở chỗ Koschei Bất Tử.»',
+      en:'The tsar ordered his three sons to shoot arrows. Wherever the arrow fell, there they must seek a bride. The eldest son\'s arrow fell into a boyar\'s courtyard, the middle son\'s into a merchant\'s. Ivan the youngest\'s arrow fell into a swamp, where a frog picked it up. Ivan didn\'t want to marry a frog, but his father commanded it. At the wedding the frog shed her skin and became the beautiful Vasilisa the Wise. In his joy Ivan burned the frog skin. Vasilisa wept: «Why did you do that? Now search for me in the thirtieth kingdom, with Koschei the Deathless.»'},
+    { id:'s4', level:'B2', title:'Иван-царевич и Жар-птица', time:6,
+      body:'В некотором царстве жил царь с тремя сыновьями. По ночам кто-то похищал золотые яблоки из царского сада. Царь велел сыновьям сторожить сад. Старшие братья заснули, но младший Иван не спал и увидел Жар-птицу. Он схватил птицу за хвост, но она вырвалась, оставив в руке перо. Перо светилось в темноте как факел. Царь отправил сыновей искать Жар-птицу. В пути Иван встретил серого волка, который согласился ему помочь. Волк носил Ивана по всему свету, пока тот не добыл Жар-птицу, коня златогривого и невесту — Елену Прекрасную.',
+      vn:'Ở một vương quốc nọ, nhà vua có ba người con trai. Hàng đêm ai đó ăn trộm táo vàng trong vườn. Vua sai các con canh gác. Hai anh cả ngủ thiếp, nhưng Ivan út thức và thấy Chim Lửa. Cậu túm lấy đuôi chim nhưng nó vùng thoát, để lại một chiếc lông trong tay. Chiếc lông sáng trong đêm tối như đuốc. Vua sai các con đi tìm Chim Lửa. Trên đường Ivan gặp sói xám đồng ý giúp đỡ. Sói chở Ivan khắp thiên hạ cho đến khi cậu kiếm được Chim Lửa, ngựa bờm vàng và người yêu — Elena Xinh Đẹp.',
+      en:'In a certain kingdom lived a tsar with three sons. Every night someone stole golden apples from the royal garden. The tsar ordered his sons to guard it. The elder brothers fell asleep, but young Ivan stayed awake and saw the Firebird. He grabbed its tail but it escaped, leaving a feather in his hand. The feather glowed in the dark like a torch. The tsar sent his sons to find the Firebird. On the road Ivan met a grey wolf who agreed to help him. The wolf carried Ivan across the world until he obtained the Firebird, a golden-maned horse, and his bride — Elena the Beautiful.'},
+  ],
+  literatura: [
+    { id:'l1', level:'A2', title:'Пушкин о зиме', time:3,
+      body:'Александр Пушкин любил зиму. Он писал о снеге и морозе. В его стихах зима — это красота и покой. «Мороз и солнце; день чудесный!» — написал он однажды. Пушкин родился в Москве в 1799 году. Он писал стихи, романы и сказки. Его самые известные произведения — «Евгений Онегин», «Капитанская дочка» и «Руслан и Людмила». Пушкина называют «солнцем русской поэзии». Его стихи учат в школе все дети России.',
+      vn:'Alexander Pushkin yêu mùa đông. Ông viết về tuyết và giá lạnh. Trong thơ ông mùa đông là vẻ đẹp và sự bình yên. «Sương giá và nắng trời; một ngày kỳ diệu!» — ông đã viết một lần. Pushkin sinh năm 1799 ở Moskva. Ông viết thơ, tiểu thuyết và truyện cổ tích. Tác phẩm nổi tiếng nhất của ông — «Evgeny Onegin», «Con gái viên đại úy» và «Ruslan và Lyudmila». Pushkin được gọi là «mặt trời của thơ ca Nga». Trẻ em Nga học thơ ông ở trường.',
+      en:'Alexander Pushkin loved winter. He wrote about snow and frost. In his poems winter means beauty and peace. «Frost and sun; a wonderful day!» he once wrote. Pushkin was born in Moscow in 1799. He wrote poems, novels and fairy tales. His most famous works are «Eugene Onegin», «The Captain\'s Daughter» and «Ruslan and Lyudmila». Pushkin is called «the sun of Russian poetry». All Russian schoolchildren learn his verses.'},
+    { id:'l2', level:'B1', title:'Лев Толстой', time:4,
+      body:'Лев Толстой — один из величайших писателей мира. Он родился в 1828 году в усадьбе Ясная Поляна. Его романы «Война и мир» и «Анна Каренина» переведены на все языки мира. В «Войне и мире» Толстой описывает события 1812 года — войну с Наполеоном. В центре романа — судьбы нескольких дворянских семей. Толстой считал, что главное в жизни — нравственное совершенствование. В старости он отказался от богатства и дворянских привилегий. Он умер в 1910 году на маленькой железнодорожной станции Астапово.',
+      vn:'Lev Tolstoy là một trong những nhà văn vĩ đại nhất thế giới. Ông sinh năm 1828 tại điền trang Yasnaya Polyana. Tiểu thuyết «Chiến tranh và Hòa bình» và «Anna Karenina» được dịch ra tất cả ngôn ngữ trên thế giới. Trong «Chiến tranh và Hòa bình», Tolstoy miêu tả các sự kiện năm 1812 — chiến tranh với Napoleon. Trung tâm cuốn sách là số phận của nhiều gia đình quý tộc. Tolstoy cho rằng điều quan trọng nhất trong cuộc sống là sự hoàn thiện đạo đức. Về già ông từ bỏ của cải và đặc quyền quý tộc. Ông mất năm 1910 tại ga xe lửa nhỏ Astapovo.',
+      en:'Leo Tolstoy is one of the greatest writers in the world. He was born in 1828 at his estate Yasnaya Polyana. His novels «War and Peace» and «Anna Karenina» have been translated into every language. In «War and Peace» Tolstoy describes the events of 1812 — the war with Napoleon — through the lives of several aristocratic families. Tolstoy believed that the most important thing in life is moral self-improvement. In old age he renounced wealth and noble privileges. He died in 1910 at the small railway station of Astapovo.'},
+    { id:'l3', level:'B1', title:'Чехов и маленький человек', time:5,
+      body:'Антон Чехов — мастер короткого рассказа. Он родился в 1860 году в Таганроге в семье купца. Чехов был врачом и писателем одновременно. «Медицина — моя законная жена, а литература — любовница», — говорил он. В его рассказах часто появляется «маленький человек» — чиновник, учитель, врач. Эти люди несчастны, потому что боятся жизни или сами себя. Самые известные пьесы Чехова — «Чайка», «Три сестры» и «Вишнёвый сад». Чехов умер в 1904 году в немецком городе Баденвейлер от туберкулёза.',
+      vn:'Anton Chekhov là bậc thầy truyện ngắn. Ông sinh năm 1860 ở Taganrog trong gia đình thương nhân. Chekhov vừa là bác sĩ vừa là nhà văn. «Y học là vợ hợp pháp của tôi, còn văn học là người tình», — ông nói. Trong truyện của ông thường xuất hiện «con người nhỏ bé» — viên chức, thầy giáo, bác sĩ. Những người này bất hạnh vì họ sợ cuộc sống hoặc sợ chính mình. Các vở kịch nổi tiếng nhất của Chekhov — «Hải âu», «Ba chị em» và «Vườn anh đào». Chekhov mất năm 1904 tại thành phố Badenweiler của Đức vì bệnh lao.',
+      en:'Anton Chekhov is a master of the short story. He was born in 1860 in Taganrog to a merchant family. Chekhov was both a doctor and a writer. «Medicine is my lawful wife, and literature is my mistress», he used to say. His stories often feature the «little man» — a clerk, a teacher, a doctor. These people are unhappy because they are afraid of life or of themselves. His most famous plays are «The Seagull», «Three Sisters» and «The Cherry Orchard». Chekhov died in 1904 in the German town of Badenweiler from tuberculosis.'},
+    { id:'l4', level:'B2', title:'Достоевский: душа человека', time:5,
+      body:'Фёдор Достоевский исследовал глубины человеческой души. Его романы «Преступление и наказание», «Идиот» и «Братья Карамазовы» — шедевры мировой литературы. В молодости Достоевский был приговорён к смертной казни за участие в тайном кружке. В последний момент казнь была заменена каторгой. Четыре года в Сибири изменили его взгляды. Достоевский стал убеждённым христианином. Главный вопрос его творчества: может ли человек совершить зло ради добра? Родион Раскольников в «Преступлении и наказании» убивает старуху, считая себя «необыкновенным человеком». Но совесть разрушает его.',
+      vn:'Fyodor Dostoyevsky khám phá chiều sâu tâm hồn con người. Tiểu thuyết «Tội ác và Trừng phạt», «Thằng ngốc» và «Anh em nhà Karamazov» là kiệt tác văn học thế giới. Thời trẻ Dostoyevsky bị kết án tử hình vì tham gia nhóm bí mật. Vào phút cuối bản án được đổi thành khổ sai. Bốn năm ở Siberia thay đổi quan điểm của ông. Dostoyevsky trở thành tín đồ Thiên Chúa giáo thuần thành. Câu hỏi chủ chốt trong sáng tác của ông: con người có thể làm điều ác vì mục đích tốt không? Rodion Raskolnikov trong «Tội ác và Trừng phạt» giết bà lão, cho mình là «người phi thường». Nhưng lương tâm hủy hoại anh ta.',
+      en:'Fyodor Dostoevsky explored the depths of the human soul. His novels «Crime and Punishment», «The Idiot» and «The Brothers Karamazov» are masterpieces of world literature. In his youth Dostoevsky was sentenced to death for joining a secret circle. At the last moment the sentence was commuted to hard labour. Four years in Siberia transformed his worldview. He became a devout Christian. The central question of his work: can a person do evil for the sake of good? Rodion Raskolnikov in «Crime and Punishment» murders an old woman believing himself an «extraordinary man». But his conscience destroys him.'},
+  ],
+  istoriya: [
+    { id:'i1', level:'A2', title:'Крещение Руси (988)', time:3,
+      body:'В 988 году князь Владимир крестил Русь. До этого русские люди поклонялись языческим богам. Владимир выбрал православное христианство из Византии. По преданию, он спросил послов о разных верах. Ислам не понравился ему запретом вина. Православие поразило красотой богослужения: «Не знаем, на небе мы были или на земле». Владимир крестился сам и приказал крестить киевлян в реке Днепр. Это событие изменило всю историю России. Православная церковь стала основой русской культуры и государства.',
+      vn:'Năm 988 hoàng tử Vladimir rửa tội cho nước Nga. Trước đó người Nga thờ các vị thần ngoại giáo. Vladimir chọn Chính thống giáo từ Byzantine. Theo truyền thuyết, ông hỏi các sứ giả về các tôn giáo khác nhau. Hồi giáo không vừa ý vì cấm rượu. Chính thống giáo làm ông choáng ngợp vì vẻ đẹp của lễ thờ phụng: «Chúng tôi không biết mình đang ở trên trời hay dưới đất». Vladimir tự rửa tội và ra lệnh rửa tội cho người Kiev ở sông Dnepr. Sự kiện này thay đổi toàn bộ lịch sử nước Nga. Giáo hội Chính thống trở thành nền tảng của văn hóa và nhà nước Nga.',
+      en:'In 988 Prince Vladimir baptised Rus. Before this the Russian people worshipped pagan gods. Vladimir chose Orthodox Christianity from Byzantium. According to legend he questioned envoys about different faiths. Islam displeased him with its ban on wine. Orthodoxy overwhelmed him with the beauty of its worship: «We did not know whether we were in heaven or on earth.» Vladimir was baptised himself and ordered the people of Kiev to be baptised in the Dnieper river. This event changed all of Russian history. The Orthodox Church became the foundation of Russian culture and statehood.'},
+    { id:'i2', level:'A2', title:'Москва и монголы (1147–1380)', time:4,
+      body:'В 1147 году летопись впервые упоминает Москву. Тогда это была маленькая крепость на реке Москве. В 1223 году монголы разбили русских князей на реке Калке. Затем они завоевали всю Русь и основали Золотую Орду. Русские князья должны были платить дань и ездить к хану за разрешением править. Это продолжалось сто пятьдесят лет. В 1380 году московский князь Дмитрий собрал русские войска и встретился с монголами на Куликовом поле. Русские победили. Дмитрия назвали Донским — в честь реки Дон.',
+      vn:'Năm 1147 biên niên sử lần đầu đề cập đến Moskva. Khi đó đây chỉ là một pháo đài nhỏ trên sông Moskva. Năm 1223 quân Mông Cổ đánh bại các hoàng tử Nga trên sông Kalka. Sau đó họ chinh phục toàn bộ nước Nga và thành lập Kim Trướng Hãn quốc. Các hoàng tử Nga phải nộp cống và đến gặp hãn để xin phép cai trị. Điều này kéo dài một trăm rưỡi năm. Năm 1380 hoàng tử Moskva Dmitry tập hợp quân Nga và gặp quân Mông Cổ tại cánh đồng Kulikovo. Người Nga chiến thắng. Dmitry được đặt tên là Donskoy — để vinh danh sông Don.',
+      en:'In 1147 the chronicles first mention Moscow as a small fortress on the Moskva river. In 1223 the Mongols defeated the Russian princes at the river Kalka, then conquered all of Rus and founded the Golden Horde. Russian princes had to pay tribute and travel to the khan for permission to rule. This lasted 150 years. In 1380 Moscow prince Dmitry gathered Russian forces and met the Mongols at Kulikovo field. The Russians won. Dmitry was nicknamed Donskoy — in honour of the river Don near where the battle took place.'},
+    { id:'i3', level:'B1', title:'Иван Грозный: реформы (1533–1560)', time:5,
+      body:'В 1533 году умер Василий III. Его сыну Ивану было три года. Боярские семьи боролись за власть, пока Иван рос. Это сделало его жёстким и подозрительным. В 1547 году Иван венчался на царство — первый русский правитель с этим титулом. В 1549 году созвал первый Земский собор — совещание представителей разных сословий. В 1550 году принял новый Судебник — кодекс законов, который ограничивал произвол бояр. В 1552 году русская армия взяла Казань — столицу Казанского ханства. Начался поход в Сибирь.',
+      vn:'Năm 1533 Vasily III qua đời. Con trai ông Ivan mới ba tuổi. Các gia đình boyar tranh giành quyền lực trong khi Ivan lớn lên. Điều này khiến ông trở nên khắc nghiệt và đa nghi. Năm 1547 Ivan đăng quang — người cai trị Nga đầu tiên mang danh hiệu này. Năm 1549 triệu tập Zemsky Sobor đầu tiên — hội đồng đại diện các tầng lớp xã hội. Năm 1550 ban hành Sudebnik mới — bộ luật giới hạn sự tùy tiện của boyar. Năm 1552 quân Nga chiếm Kazan — thủ đô của Hãn quốc Kazan. Bắt đầu cuộc chinh phạt Siberia.',
+      en:'In 1533 Vasily III died, leaving his three-year-old son Ivan as heir. Boyar families fought for power while Ivan grew up, making him harsh and suspicious. In 1547 Ivan was crowned tsar — the first Russian ruler to hold this title. In 1549 he convened the first Zemsky Sobor, a council of representatives from all social classes. In 1550 he adopted a new Sudebnik — a law code limiting boyar arbitrariness. In 1552 Russian forces captured Kazan, the capital of the Kazan Khanate, opening the way to Siberia.'},
+    { id:'i4', level:'B2', title:'Иван Грозный: итоги правления', time:5,
+      body:'Правление Ивана Грозного длилось пятьдесят лет — с 1533 по 1584 год. Результаты противоречивы. За это время площадь России удвоилась: были присоединены Казанское и Астраханское ханства, началось освоение Сибири. Появилось более пятидесяти новых городов и ста пятидесяти пяти крепостей. Население страны выросло. Однако цена была огромной. Ливонская война за выход к Балтийскому морю (1558–1583) закончилась поражением. Опричнина — политика террора против бояр — разорила страну. Иван лично убил своего сына в приступе гнева. История по сей день спорит: был ли Иван великим государственным строителем или тираном?',
+      vn:'Triều đại của Ivan Bạo Chúa kéo dài năm mươi năm — từ 1533 đến 1584. Kết quả mâu thuẫn. Trong thời gian này diện tích nước Nga tăng gấp đôi: sáp nhập Hãn quốc Kazan và Astrakhan, bắt đầu khai thác Siberia. Xuất hiện hơn năm mươi thành phố mới và một trăm năm mươi lăm pháo đài. Dân số đất nước tăng lên. Tuy nhiên cái giá rất lớn. Chiến tranh Livonia để có cửa ra biển Baltic (1558–1583) kết thúc bằng thất bại. Oprichnina — chính sách khủng bố chống boyar — tàn phá đất nước. Ivan tự tay giết chết con trai trong cơn thịnh nộ. Lịch sử đến nay vẫn tranh luận: Ivan là nhà xây dựng nhà nước vĩ đại hay là kẻ bạo chúa?',
+      en:'Ivan the Terrible\'s reign lasted fifty years, from 1533 to 1584. The results are contradictory. Russia\'s territory doubled: the Kazan and Astrakhan khanates were annexed and the conquest of Siberia began. More than fifty new cities and 155 fortresses appeared. The population grew. But the price was enormous. The Livonian War for access to the Baltic Sea (1558–1583) ended in defeat. The Oprichnina — a policy of terror against the boyars — devastated the country. Ivan personally killed his own son in a fit of rage. Historians still debate: was Ivan a great state-builder or a tyrant?'},
+    { id:'i5', level:'B1', title:'Война 1812 года', time:5,
+      body:'В июне 1812 года Наполеон вошёл в Россию с армией в шестьсот тысяч солдат. Это была самая большая армия в истории Европы. Русские войска отступали. В сентябре произошла Бородинская битва — одно из самых кровопролитных сражений. Наполеон занял Москву, но она была пуста и горела. Французы ждали мира, но его не было. Русская зима и недостаток провизии уничтожили армию Наполеона. В декабре французы бежали из России. Из шестисот тысяч солдат домой вернулось только сто тысяч.',
+      vn:'Tháng 6 năm 1812 Napoleon tiến vào nước Nga với đội quân sáu trăm nghìn binh sĩ. Đây là đội quân lớn nhất trong lịch sử châu Âu. Quân Nga rút lui. Tháng 9 diễn ra trận Borodino — một trong những trận chiến đẫm máu nhất. Napoleon chiếm Moskva nhưng thành phố trống rỗng và đang cháy. Quân Pháp chờ đợi hòa bình nhưng không có. Mùa đông Nga và thiếu lương thực đã tiêu diệt quân đội Napoleon. Tháng 12 quân Pháp bỏ chạy khỏi nước Nga. Từ sáu trăm nghìn binh sĩ chỉ có một trăm nghìn người trở về nhà.',
+      en:'In June 1812 Napoleon invaded Russia with an army of 600,000 soldiers — the largest army in European history. Russian forces retreated. In September the Battle of Borodino took place, one of the bloodiest battles ever fought. Napoleon occupied Moscow but found it empty and burning. The French waited for peace talks that never came. The Russian winter and lack of supplies destroyed Napoleon\'s army. In December the French fled Russia. Of the original 600,000 soldiers, only 100,000 made it home.'},
+    { id:'i6', level:'B1', title:'Революция 1917 года', time:5,
+      body:'В феврале 1917 года в Петрограде начались волнения. Рабочие и солдаты вышли на улицы. Царь Николай Второй отрёкся от престола. Россия стала республикой. Власть перешла к Временному правительству. Но война продолжалась, и народ был недоволен. В октябре 1917 года большевики во главе с Лениным захватили власть. Они обещали мир, землю и хлеб. Началась Гражданская война между красными и белыми. Она продолжалась до 1922 года. Большевики победили и создали Советский Союз.',
+      vn:'Tháng 2 năm 1917 tại Petrograd bắt đầu bất ổn. Công nhân và binh sĩ xuống đường. Sa hoàng Nicholas II thoái vị. Nga trở thành cộng hòa. Quyền lực chuyển sang Chính phủ Lâm thời. Nhưng chiến tranh tiếp diễn và nhân dân bất mãn. Tháng 10 năm 1917 những người Bolshevik dưới sự lãnh đạo của Lenin giành chính quyền. Họ hứa hẹn hòa bình, đất đai và bánh mì. Nội chiến bùng nổ giữa Hồng quân và Bạch quân. Nó kéo dài đến năm 1922. Những người Bolshevik chiến thắng và thành lập Liên Xô.',
+      en:'In February 1917 unrest broke out in Petrograd. Workers and soldiers took to the streets. Tsar Nicholas II abdicated. Russia became a republic. Power passed to the Provisional Government. But the war continued and the people were discontent. In October 1917 the Bolsheviks led by Lenin seized power, promising peace, land and bread. Civil war broke out between the Reds and the Whites. It lasted until 1922. The Bolsheviks won and created the Soviet Union.'},
+    { id:'i7', level:'B2', title:'Блокада Ленинграда', time:6,
+      body:'8 сентября 1941 года немецкие войска окружили Ленинград. Началась блокада, которая продолжалась 872 дня. Город был отрезан от остальной страны. Единственная связь с «большой землёй» — Дорога жизни через замёрзшее Ладожское озеро. Зимой 1941–1942 годов горожане получали всего 125 граммов хлеба в день. От голода, холода и бомбардировок погибло около миллиона мирных жителей. Но город не сдался. Люди работали на заводах, ходили в театр, слушали симфонию Шостаковича. 27 января 1944 года блокада была снята.',
+      vn:'Ngày 8 tháng 9 năm 1941 quân Đức bao vây Leningrad. Bắt đầu cuộc phong tỏa kéo dài 872 ngày. Thành phố bị cắt đứt khỏi phần còn lại của đất nước. Kết nối duy nhất với «đất liền» — Con đường Sự sống qua hồ Ladoga đóng băng. Mùa đông 1941–1942 người dân chỉ nhận được 125 gram bánh mì mỗi ngày. Khoảng một triệu dân thường thiệt mạng vì đói, lạnh và bom đạn. Nhưng thành phố không đầu hàng. Người ta vẫn làm việc ở nhà máy, đi xem hát, nghe bản giao hưởng Shostakovich. Ngày 27 tháng 1 năm 1944 cuộc phong tỏa được dỡ bỏ.',
+      en:'On 8 September 1941 German forces surrounded Leningrad. The siege lasted 872 days. The city was cut off from the rest of the country. The only connection to the mainland was the Road of Life across the frozen Lake Ladoga. In the winter of 1941–1942 residents received just 125 grams of bread per day. About one million civilians died from hunger, cold and bombardment. But the city did not surrender. People worked in factories, went to the theatre, and listened to Shostakovich\'s symphony. On 27 January 1944 the siege was lifted.'},
+  ],
+  nauka: [
+    { id:'n1', level:'A2', title:'Юрий Гагарин', time:3,
+      body:'Юрий Гагарин — первый человек в космосе. Он родился в 1934 году в маленькой деревне. В детстве он мечтал летать. Гагарин стал лётчиком и потом космонавтом. 12 апреля 1961 года он полетел в космос на корабле «Восток». Полёт длился 108 минут. Гагарин облетел Землю один раз. Он сказал знаменитые слова: «Поехали!» Весь мир узнал о его полёте. 12 апреля в России — День космонавтики.',
+      vn:'Yury Gagarin là người đầu tiên bay vào vũ trụ. Ông sinh năm 1934 ở một ngôi làng nhỏ. Từ nhỏ ông mơ được bay. Gagarin trở thành phi công rồi sau đó là nhà du hành vũ trụ. Ngày 12 tháng 4 năm 1961 ông bay vào vũ trụ trên tàu «Vostok». Chuyến bay kéo dài 108 phút. Gagarin bay vòng quanh Trái Đất một lần. Ông đã nói những lời nổi tiếng: «Xuất phát!» Cả thế giới biết đến chuyến bay của ông. Ngày 12 tháng 4 ở Nga là Ngày Du hành vũ trụ.',
+      en:'Yuri Gagarin was the first human in space. He was born in 1934 in a small village. As a child he dreamed of flying. Gagarin became a pilot and then a cosmonaut. On 12 April 1961 he flew into space aboard the Vostok spacecraft. The flight lasted 108 minutes. Gagarin orbited the Earth once. He spoke the famous words: «Let\'s go!» The whole world heard about his flight. In Russia, 12 April is Cosmonautics Day.'},
+    { id:'n2', level:'B1', title:'Менделеев и таблица элементов', time:4,
+      body:'Дмитрий Менделеев — великий русский химик. В 1869 году он создал периодическую таблицу химических элементов. По легенде, идея таблицы пришла к нему во сне. Менделеев расположил все известные элементы по атомному весу и заметил, что их свойства повторяются через определённые промежутки. Он оставил пустые места для неоткрытых элементов и предсказал их свойства. Вскоре эти элементы были открыты — и свойства совпали с предсказаниями Менделеева. Сегодня его таблица висит в каждой школе мира.',
+      vn:'Dmitry Mendeleev là nhà hóa học vĩ đại người Nga. Năm 1869 ông tạo ra bảng tuần hoàn các nguyên tố hóa học. Theo truyền thuyết, ý tưởng về bảng đến với ông trong giấc mơ. Mendeleev sắp xếp tất cả các nguyên tố đã biết theo khối lượng nguyên tử và nhận thấy tính chất của chúng lặp lại theo chu kỳ nhất định. Ông để trống chỗ cho các nguyên tố chưa được phát hiện và dự đoán tính chất của chúng. Không lâu sau các nguyên tố này được tìm ra — và tính chất trùng khớp với dự đoán. Ngày nay bảng của ông treo trong mỗi trường học trên thế giới.',
+      en:'Dmitry Mendeleev was a great Russian chemist. In 1869 he created the periodic table of chemical elements. Legend has it the idea came to him in a dream. Mendeleev arranged all known elements by atomic weight and noticed their properties repeated at regular intervals. He left gaps for undiscovered elements and predicted their properties. Soon these elements were found — and their properties matched his predictions perfectly. Today his table hangs in every school in the world.'},
+    { id:'n3', level:'B1', title:'Лобачевский и новая геометрия', time:4,
+      body:'Николай Лобачевский — русский математик, создатель неевклидовой геометрии. В школе мы учим геометрию Евклида: параллельные линии никогда не пересекаются, сумма углов треугольника равна 180 градусам. Лобачевский доказал, что возможна другая геометрия. В его системе через точку можно провести бесконечно много прямых, параллельных данной. Сумма углов треугольника меньше 180 градусов. Современники не поняли его идей. Но через сто лет теория Лобачевского стала основой для теории относительности Эйнштейна.',
+      vn:'Nikolai Lobachevsky là nhà toán học Nga, cha đẻ của hình học phi Euclid. Ở trường chúng ta học hình học Euclid: các đường song song không bao giờ giao nhau, tổng các góc của tam giác bằng 180 độ. Lobachevsky chứng minh rằng có thể tồn tại một hình học khác. Trong hệ thống của ông qua một điểm có thể vẽ vô số đường thẳng song song với đường thẳng cho trước. Tổng các góc của tam giác nhỏ hơn 180 độ. Người đương thời không hiểu ý tưởng của ông. Nhưng một trăm năm sau lý thuyết Lobachevsky trở thành cơ sở cho thuyết tương đối của Einstein.',
+      en:'Nikolai Lobachevsky was a Russian mathematician who created non-Euclidean geometry. At school we learn Euclid\'s geometry: parallel lines never meet, the angles of a triangle add up to 180 degrees. Lobachevsky proved that another geometry is possible. In his system infinitely many lines parallel to a given line can be drawn through a single point. The angles of a triangle sum to less than 180 degrees. His contemporaries did not understand his ideas. But a century later Lobachevsky\'s theory became the foundation for Einstein\'s theory of relativity.'},
+    { id:'n4', level:'B2', title:'Павлов и условный рефлекс', time:5,
+      body:'Иван Павлов — российский физиолог, лауреат Нобелевской премии 1904 года. Его знаменитые опыты с собаками изменили наше понимание поведения. Павлов заметил, что собаки выделяют слюну не только при виде еды, но и при звонке колокольчика, если раньше звонок сопровождал кормление. Он назвал это «условным рефлексом». Безусловный рефлекс — врождённый, условный — приобретённый. Эти открытия легли в основу бихевиоризма — науки о поведении. Павлов работал до 86 лет и умер в 1936 году.',
+      vn:'Ivan Pavlov là nhà sinh lý học Nga, người đoạt giải Nobel năm 1904. Các thí nghiệm nổi tiếng của ông với chó đã thay đổi sự hiểu biết của chúng ta về hành vi. Pavlov nhận thấy rằng chó tiết nước bọt không chỉ khi nhìn thấy thức ăn mà còn khi nghe tiếng chuông, nếu trước đó tiếng chuông đi kèm với bữa ăn. Ông gọi đây là «phản xạ có điều kiện». Phản xạ không điều kiện là bẩm sinh, có điều kiện là mắc phải. Những khám phá này đặt nền tảng cho chủ nghĩa hành vi — khoa học về hành vi. Pavlov làm việc đến năm 86 tuổi và mất năm 1936.',
+      en:'Ivan Pavlov was a Russian physiologist and winner of the 1904 Nobel Prize. His famous experiments with dogs transformed our understanding of behaviour. Pavlov noticed that dogs salivated not only at the sight of food but also at the sound of a bell, if the bell had previously accompanied feeding. He called this a «conditioned reflex». An unconditioned reflex is innate; a conditioned reflex is acquired. These discoveries formed the basis of behaviourism — the science of behaviour. Pavlov worked until the age of 86 and died in 1936.'},
+  ],
+  putesh: [
+    { id:'p1', level:'A1', title:'Москва — столица России', time:3,
+      body:'Москва — главный город России. Это очень большой город. В Москве живёт около двенадцати миллионов человек. В центре города — Красная площадь. На Красной площади стоит Кремль. В Кремле работает президент России. Рядом — Собор Василия Блаженного. Это очень красивая церковь. В Москве много музеев, театров и парков. Самый известный музей — Третьяковская галерея. Там можно увидеть русские картины. Московское метро — одно из лучших в мире.',
+      vn:'Moskva là thành phố lớn nhất của Nga. Đây là thành phố rất lớn. Ở Moskva có khoảng mười hai triệu người. Ở trung tâm thành phố là Quảng trường Đỏ. Trên Quảng trường Đỏ có Điện Kremlin. Tổng thống Nga làm việc trong Điện Kremlin. Gần đó là Nhà thờ Vasily Phúc. Đây là nhà thờ rất đẹp. Ở Moskva có nhiều bảo tàng, nhà hát và công viên. Bảo tàng nổi tiếng nhất là Phòng trưng bày Tretyakov. Ở đó bạn có thể xem tranh Nga. Tàu điện ngầm Moskva là một trong những tuyến tốt nhất thế giới.',
+      en:'Moscow is the main city of Russia. It is a very large city. About twelve million people live in Moscow. In the city centre is Red Square. On Red Square stands the Kremlin. The President of Russia works in the Kremlin. Nearby is Saint Basil\'s Cathedral — a very beautiful church. Moscow has many museums, theatres and parks. The most famous museum is the Tretyakov Gallery, where you can see Russian paintings. The Moscow Metro is one of the best in the world.'},
+    { id:'p2', level:'A2', title:'Санкт-Петербург', time:3,
+      body:'Санкт-Петербург — красивый город на севере России. Пётр Первый основал этот город в 1703 году. Долгое время он был столицей России. В городе много красивых дворцов и каналов. Поэтому его называют «Северной Венецией». Зимой в Петербурге очень холодно. Летом бывают белые ночи — ночью светло как днём. Самый известный музей города — Эрмитаж. Там хранится одна из лучших художественных коллекций мира.',
+      vn:'Sankt-Peterburg là thành phố đẹp ở miền bắc nước Nga. Peter Đại đế thành lập thành phố này năm 1703. Trong một thời gian dài đây là thủ đô của nước Nga. Thành phố có nhiều cung điện đẹp và kênh đào. Vì vậy nó được gọi là «Venice phương Bắc». Mùa đông ở Peterburg rất lạnh. Mùa hè có đêm trắng — ban đêm sáng như ban ngày. Bảo tàng nổi tiếng nhất của thành phố là Hermitage. Ở đó lưu giữ một trong những bộ sưu tập nghệ thuật tốt nhất thế giới.',
+      en:'Saint Petersburg is a beautiful city in northern Russia. Peter the First founded it in 1703. For a long time it was the capital of Russia. The city has many beautiful palaces and canals, which is why it is called the «Northern Venice». Winters in Petersburg are very cold. In summer there are white nights when it is as bright at midnight as during the day. The city\'s most famous museum is the Hermitage, home to one of the finest art collections in the world.'},
+    { id:'p3', level:'B1', title:'Байкал — море в Сибири', time:4,
+      body:'Байкал — самое глубокое озеро в мире. Его глубина — 1642 метра. Байкал находится в Сибири и содержит около двадцати процентов всей пресной воды планеты. Озеро образовалось около двадцати пяти миллионов лет назад. Летом вода в Байкале прозрачная и чистая — видно дно на глубине сорока метров. Зимой озеро замерзает. В Байкале живут уникальные животные: байкальская нерпа — единственный пресноводный тюлень в мире, и омуль — рыба, которую не встретишь больше нигде.',
+      vn:'Baikal là hồ sâu nhất thế giới. Độ sâu của nó là 1642 mét. Baikal nằm ở Siberia và chứa khoảng hai mươi phần trăm tất cả nước ngọt trên hành tinh. Hồ được hình thành khoảng hai mươi lăm triệu năm trước. Mùa hè nước ở Baikal trong và sạch — có thể nhìn thấy đáy hồ ở độ sâu bốn mươi mét. Mùa đông hồ đóng băng. Trong Baikal sống các động vật độc đáo: hải cẩu Baikal — loài hải cẩu nước ngọt duy nhất trên thế giới, và cá omul — loài cá không tìm thấy ở nơi nào khác.',
+      en:'Lake Baikal is the deepest lake in the world, reaching 1,642 metres. Located in Siberia, it holds about 20 percent of all the planet\'s fresh water. The lake formed about 25 million years ago. In summer the water is crystal clear — you can see the bottom at 40 metres depth. In winter the lake freezes over. Baikal is home to unique animals: the Baikal seal — the world\'s only freshwater seal — and the omul, a fish found nowhere else on earth.'},
+    { id:'p4', level:'B1', title:'Транссибирская магистраль', time:5,
+      body:'Транссибирская железная дорога — самая длинная в мире. Её длина — 9288 километров. Дорога соединяет Москву с Владивостоком на Тихом океане. Поезд едет семь суток без остановки. За окном меняются пейзажи: леса, степи, горы, реки. Строительство дороги началось в 1891 году и заняло двадцать пять лет. Работали тысячи рабочих в тяжелейших условиях. Магистраль открыла Сибирь для переселенцев и помогла освоить огромные природные богатства. Сегодня по Транссибу путешествуют туристы со всего мира.',
+      vn:'Đường sắt xuyên Siberia là tuyến đường dài nhất thế giới. Chiều dài của nó là 9288 kilômét. Tuyến đường nối Moskva với Vladivostok trên bờ Thái Bình Dương. Tàu chạy bảy ngày đêm không dừng. Qua cửa sổ phong cảnh thay đổi: rừng, thảo nguyên, núi, sông. Việc xây dựng bắt đầu năm 1891 và kéo dài hai mươi lăm năm. Hàng nghìn công nhân làm việc trong điều kiện khắc nghiệt nhất. Tuyến đường mở cửa Siberia cho người di cư và giúp khai thác tài nguyên thiên nhiên khổng lồ. Ngày nay khách du lịch từ khắp thế giới đi du lịch trên tuyến xuyên Siberia.',
+      en:'The Trans-Siberian Railway is the longest in the world at 9,288 kilometres. It connects Moscow with Vladivostok on the Pacific Ocean. The train travels for seven days non-stop. Outside the window the scenery changes continuously: forests, steppes, mountains, rivers. Construction began in 1891 and took 25 years. Thousands of workers laboured in the most difficult conditions. The railway opened Siberia to settlers and helped exploit its vast natural resources. Today tourists from all over the world travel the Trans-Siberian.'},
+  ],
+  kultura: [
+    { id:'k1', level:'A2', title:'Русский балет', time:3,
+      body:'Балет пришёл в Россию из Франции в восемнадцатом веке. Но именно в России он стал великим искусством. Пётр Чайковский написал музыку для трёх великих балетов: «Лебединое озеро», «Спящая красавица» и «Щелкунчик». Эти балеты знают во всём мире. Главные театры — Большой в Москве и Мариинский в Санкт-Петербурге. Русских балерин считают лучшими в мире. Каждый год миллионы людей приходят на «Щелкунчик» на Рождество.',
+      vn:'Ballet đến nước Nga từ Pháp vào thế kỷ mười tám. Nhưng chính ở Nga nó trở thành nghệ thuật vĩ đại. Pyotr Tchaikovsky đã viết nhạc cho ba vở ballet vĩ đại: «Hồ Thiên Nga», «Người đẹp ngủ trong rừng» và «Kẹp hạt dẻ». Những vở ballet này được biết đến trên toàn thế giới. Các nhà hát chính — Bolshoi ở Moskva và Mariinsky ở Sankt-Peterburg. Các nữ diễn viên ballet Nga được coi là tốt nhất thế giới. Hàng năm hàng triệu người đến xem «Kẹp hạt dẻ» vào dịp Giáng sinh.',
+      en:'Ballet came to Russia from France in the eighteenth century, but it was in Russia that it became a great art form. Pyotr Tchaikovsky composed music for three great ballets: «Swan Lake», «Sleeping Beauty» and «The Nutcracker». These ballets are known worldwide. The main theatres are the Bolshoi in Moscow and the Mariinsky in Saint Petersburg. Russian ballerinas are considered the finest in the world. Every year millions of people attend «The Nutcracker» at Christmas.'},
+    { id:'k2', level:'B1', title:'Масленица', time:4,
+      body:'Масленица — один из самых весёлых русских праздников. Она отмечается в конце зимы, перед православным Великим постом. Масленица длится целую неделю. Главное блюдо праздника — блины. Круглые и золотые, они символизируют солнце. Каждый день недели имеет своё название и традиции. В среду зятья едут к тёщам на блины. В пятницу тёщи приходят к зятьям. В воскресенье — «Прощёное воскресенье». Люди просят друг у друга прощения. В последний день сжигают соломенное чучело Масленицы — прощаются с зимой.',
+      vn:'Maslenitsa là một trong những lễ hội vui nhộn nhất của người Nga. Nó được tổ chức vào cuối mùa đông, trước Mùa Chay Chính thống giáo. Maslenitsa kéo dài cả tuần. Món ăn chính của lễ hội là blini (bánh kếp). Tròn và vàng, chúng tượng trưng cho mặt trời. Mỗi ngày trong tuần có tên và truyền thống riêng. Thứ Tư rể đến nhà mẹ vợ ăn blini. Thứ Sáu mẹ vợ đến nhà rể. Chủ nhật là «Chủ nhật Tha thứ». Mọi người xin lỗi nhau. Ngày cuối cùng đốt hình nộm rơm Maslenitsa — tạm biệt mùa đông.',
+      en:'Maslenitsa is one of Russia\'s most joyful festivals. It is celebrated at the end of winter, before Orthodox Lent, and lasts an entire week. The main food is blini — round golden pancakes that symbolise the sun. Each day of the week has its own name and traditions. On Wednesday sons-in-law visit their mothers-in-law for blini. On Friday the mothers-in-law come to their sons-in-law. Sunday is «Forgiveness Sunday», when people ask each other for forgiveness. On the final day a straw effigy of Maslenitsa is burned — a farewell to winter.'},
+    { id:'k3', level:'B1', title:'Русская кухня', time:4,
+      body:'Русская кухня отражает суровый климат и богатую природу страны. Основа традиционной кухни — хлеб, каши и щи. Щи — это суп из капусты, который едят в России больше тысячи лет. «Щи да каша — пища наша», — говорит старая пословица. Борщ, который часто считают украинским, тоже популярен в России. Пельмени пришли из Сибири. Блины известны с языческих времён. Квас — традиционный безалкогольный напиток из хлеба. На праздники готовят пирожки с разными начинками.',
+      vn:'Ẩm thực Nga phản ánh khí hậu khắc nghiệt và thiên nhiên phong phú của đất nước. Nền tảng của ẩm thực truyền thống là bánh mì, cháo và súp shchi. Shchi là súp bắp cải mà người Nga đã ăn hơn một nghìn năm. «Shchi và cháo — thức ăn của chúng ta», — câu tục ngữ cổ nói. Borscht, thường được coi là của Ukraine, cũng rất phổ biến ở Nga. Pelmeni đến từ Siberia. Blini được biết đến từ thời ngoại giáo. Kvas là đồ uống không cồn truyền thống làm từ bánh mì. Vào ngày lễ người ta làm pirozhki với nhiều loại nhân.',
+      en:'Russian cuisine reflects the country\'s harsh climate and rich nature. The foundation of traditional cooking is bread, porridge and shchi. Shchi is a cabbage soup that Russians have eaten for over a thousand years. «Shchi and porridge — that\'s our food», says the old proverb. Borscht, often considered Ukrainian, is also popular in Russia. Pelmeni dumplings came from Siberia. Blini have been known since pagan times. Kvas is a traditional non-alcoholic drink made from bread. For holidays people make pirozhki with various fillings.'},
+    { id:'k4', level:'B2', title:'Иконопись', time:5,
+      body:'Икона в православной традиции — не просто картина, а «окно в иной мир». Иконопись пришла на Русь из Византии в десятом веке вместе с христианством. Но русские мастера создали собственный неповторимый стиль. Самый великий иконописец — Андрей Рублёв, живший в четырнадцатом–пятнадцатом веках. Его «Троица» — шедевр мирового искусства. Иконы писали яичной темперой на деревянных досках. Каждый цвет имел символическое значение: золотой — Божественный свет, красный — кровь Христа, синий — небо. Иконы украшали не только церкви, но и каждый дом.',
+      vn:'Trong truyền thống Chính thống giáo, biểu tượng không chỉ là bức tranh mà là «cửa sổ nhìn vào thế giới khác». Nghệ thuật vẽ biểu tượng đến nước Nga từ Byzantine vào thế kỷ mười cùng với Thiên Chúa giáo. Nhưng các nghệ nhân Nga đã tạo ra phong cách độc đáo của riêng họ. Họa sĩ vẽ biểu tượng vĩ đại nhất là Andrei Rublev, sống vào thế kỷ mười bốn–mười lăm. «Chúa Ba Ngôi» của ông là kiệt tác nghệ thuật thế giới. Biểu tượng được vẽ bằng tempera trứng trên tấm gỗ. Mỗi màu sắc có ý nghĩa biểu tượng: vàng — ánh sáng Thần thánh, đỏ — máu Chúa Kitô, xanh — bầu trời. Biểu tượng trang trí không chỉ nhà thờ mà còn mỗi ngôi nhà.',
+      en:'In Orthodox tradition an icon is not merely a painting but a «window into another world». Icon-painting came to Rus from Byzantium in the tenth century along with Christianity. But Russian masters created their own unique style. The greatest icon painter was Andrei Rublev, who lived in the fourteenth and fifteenth centuries. His «Trinity» is a masterpiece of world art. Icons were painted in egg tempera on wooden boards. Each colour had symbolic meaning: gold for Divine light, red for Christ\'s blood, blue for heaven. Icons decorated not only churches but every home.'},
+  ],
+};
+;
 
-/* ── init / fetch ────────────────────────────────────────────── */
+/* ── State ───────────────────────────────────────────────────── */
+var RD = {
+  view: 'topics',       // 'topics' | 'list' | 'reader'
+  topicId: null,
+  story: null,
+  currentWord: null,
+  _lu: null,
+  _luLevel: null,
+};
+
+/* ── Init ────────────────────────────────────────────────────── */
 function rdInit(){
-  var d = new Date();
-  var el = document.getElementById('rd-date');
-  if(el) el.textContent = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
   var lb = document.getElementById('rd-level-badge');
   if(lb) lb.textContent = S.level;
-
-  var key = rdTodayKey();
-  if(RD.todayKey && RD.todayKey !== key){ RD.articles=[]; RD.loading=false; }
-  RD.todayKey = key;
-
-  if(RD.articles && RD.articles.length > 0){ rdRender(); return; }
-  try{
-    var saved = localStorage.getItem(key);
-    if(saved){ var p=JSON.parse(saved); if(p&&p.length){ RD.articles=p; rdRender(); return; } }
-  }catch(_){}
-  rdFetch();
+  rdShowTopics();
 }
 
-function rdFetch(){
-  if(RD.loading) return;
-  RD.loading = true;
-  var cont = document.getElementById('rd-content');
-  if(cont) cont.innerHTML = '<div class="rd-load-state">'
-    + '<div class="rd-spinner"></div>'
-    + '<div style="margin-top:14px;font-size:13px;color:var(--txd);">Đang tạo bài đọc bằng AI…</div>'
-    + '<div style="margin-top:6px;font-size:11px;color:var(--com);">Cấp ' + S.level + ' · Phù hợp từ vựng của bạn</div>'
-    + '</div>';
+/* ── View: topic grid ────────────────────────────────────────── */
+function rdShowTopics(){
+  RD.view = 'topics';
+  RD.topicId = null;
 
-  /* Always generate local first for instant feedback, then try API */
-  RD.articles = rdGenLocalArticles();
-  rdRender();   /* show local immediately */
+  var hdr = document.getElementById('rd-hdr-title');
+  if(hdr) hdr.textContent = 'Đọc hiểu';
+  var backBtn = document.getElementById('rd-back-btn');
+  if(backBtn) backBtn.style.display = 'none';
 
-  /* Try Claude API for richer articles (fails silently) */
-  if(location.protocol !== 'https:'){ RD.loading=false; rdSaveCache(); return; }
+  document.getElementById('rd-topics-view').style.display = '';
+  document.getElementById('rd-list-view').style.display = 'none';
+  document.getElementById('rd-reader-view').style.display = 'none';
 
-  var d = new Date();
-  var allT = Object.keys(vocabularyDatabase[S.level]||{});
-  var seed = d.getDate()+d.getMonth()*31;
-  var picked = [];
-  for(var i=0;i<3;i++) picked.push(allT[(seed+i*7)%allT.length]);
-  var topicStr = picked.map(function(t){return t.replace(/[^\wА-Яа-яёЁ\s]/g,'').trim();}).join(', ');
-  var wordSample = [];
-  picked.forEach(function(t){
-    var ws=vocabularyDatabase[S.level][t];
-    if(!Array.isArray(ws)) return;
-    for(var j=0;j<3&&j<ws.length;j++) wordSample.push(ws[(seed+j*3)%ws.length].ru);
+  var grid = document.getElementById('rd-topic-grid');
+  if(!grid) return;
+
+  var h = '';
+  RD_TOPICS.forEach(function(tp){
+    var stories = (RD_STORIES[tp.id]||[]);
+    var counts = {};
+    stories.forEach(function(s){ counts[s.level] = (counts[s.level]||0)+1; });
+    var levelTags = Object.keys(counts).sort().map(function(lv){
+      return '<span style="font-size:9px;padding:1px 5px;border-radius:4px;'
+           + 'background:'+tp.color+'0.12);color:'+tp.color+'0.8);font-family:var(--mono);font-weight:700;">'+lv+'</span>';
+    }).join(' ');
+    h += '<div class="tch" onclick="App.rdOpenTopic(\''+tp.id+'\')"'
+       + ' style="padding:16px;border-radius:18px;background:'+tp.color+'0.07);'
+       + 'border:1px solid '+tp.border+'0.2);cursor:pointer;position:relative;overflow:hidden;">'
+       + '<div style="font-size:28px;margin-bottom:8px;">'+tp.icon+'</div>'
+       + '<div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:2px;">'+tp.name+'</div>'
+       + '<div style="font-size:11px;color:var(--com);margin-bottom:8px;">'+tp.name_ru+'</div>'
+       + '<div style="font-size:11px;color:var(--txd);margin-bottom:8px;">'+stories.length+' truyện</div>'
+       + '<div style="display:flex;flex-wrap:wrap;gap:3px;">'+levelTags+'</div>'
+       + '</div>';
   });
-  var levelHint = {A1:'A1 — очень простой',A2:'A2 — базовый',B1:'B1 — средний',B2:'B2 — продвинутый'}[S.level]||'B1';
-
-  var ac = typeof AbortController!=='undefined' ? new AbortController() : null;
-  var tm = ac ? setTimeout(function(){ac.abort();}, 10000) : null;
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    signal: rdAiTranslate._ctrl ? rdAiTranslate._ctrl.signal : undefined,
-    signal: ac ? ac.signal : undefined,
-    body: JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1600,
-      system:'Ты генератор учебных текстов для изучающих русский язык. Отвечай ТОЛЬКО валидным JSON.',
-      messages:[{role:'user', content:
-        'Создай 4 учебные новостные заметки на русском языке. '
-        +'Уровень: '+levelHint+'. Темы: '+topicStr+'. '
-        +'Используй слова: '+wordSample.join(', ')+'. '
-        +'Каждая заметка: заголовок 4-7 слов, текст 45-70 слов. '
-        +'Только JSON без markdown: {"articles":[{"tag":"НОВОСТИ","title":"...","body":"..."},{"tag":"ОБЩЕСТВО","title":"...","body":"..."},{"tag":"КУЛЬТУРА","title":"...","body":"..."},{"tag":"НАУКА","title":"...","body":"..."}]}'
-      }]
-    })
-  })
-  .then(function(r){ if(tm) clearTimeout(tm); return r.json(); })
-  .then(function(data){
-    var txt = (data.content&&data.content[0]&&data.content[0].text)||'';
-    /* strip markdown fences */
-    txt = txt.replace(/^```[a-z]*\s*/m,'').replace(/\s*```$/m,'').trim();
-    var obj = JSON.parse(txt);
-    if(!obj.articles||!obj.articles.length) throw 0;
-    RD.articles = obj.articles;
-    RD.loading = false;
-    rdSaveCache();
-    rdRender();
-  })
-  .catch(function(){ if(tm) clearTimeout(tm); RD.loading=false; /* keep local articles */ });
+  grid.innerHTML = h;
 }
 
-function rdSaveCache(){
-  try{ localStorage.setItem(RD.todayKey, JSON.stringify(RD.articles)); }catch(_){}
-}
+/* ── View: story list ────────────────────────────────────────── */
+function App_rdOpenTopic(topicId){
+  RD.view = 'list';
+  RD.topicId = topicId;
 
-/* ── Local fallback ──────────────────────────────────────────── */
-/* ── Local article generation — readable news templates ──────── */
-function rdGenLocalArticles(){
-  var d    = new Date();
-  var seed = d.getDate() + d.getMonth()*31 + d.getFullYear()*7;
-  var lvl  = S.level;
-  var allT = Object.keys(vocabularyDatabase[lvl]||{}).filter(function(t){
-    return Array.isArray(vocabularyDatabase[lvl][t]) && vocabularyDatabase[lvl][t].length >= 4;
+  var tp = RD_TOPICS.find(function(t){ return t.id===topicId; });
+  if(!tp) return;
+
+  var hdr = document.getElementById('rd-hdr-title');
+  if(hdr) hdr.textContent = tp.icon+' '+tp.name;
+  var backBtn = document.getElementById('rd-back-btn');
+  if(backBtn) backBtn.style.display = '';
+
+  document.getElementById('rd-topics-view').style.display = 'none';
+  document.getElementById('rd-list-view').style.display = '';
+  document.getElementById('rd-reader-view').style.display = 'none';
+
+  var stories = RD_STORIES[topicId]||[];
+  var h = '';
+  stories.forEach(function(s){
+    var lvlColor = {A1:'var(--grn)',A2:'var(--cyn)',B1:'var(--yel)',B2:'var(--pnk)'}[s.level]||'var(--com)';
+    var wordCount = s.body.split(/\s+/).length;
+    h += '<div class="tch" onclick="App.rdOpenStory(\''+topicId+'\',\''+s.id+'\')"'
+       + ' style="padding:14px 16px;border-radius:16px;background:rgba(255,255,255,0.04);'
+       + 'border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">'
+       + '<div style="flex:1;min-width:0;">'
+       + '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px;">'+s.title+'</div>'
+       + '<div style="display:flex;align-items:center;gap:8px;">'
+       + '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
+       + '<span style="font-size:11px;color:var(--com);">'+wordCount+' từ · ~'+s.time+' phút</span>'
+       + '</div></div>'
+       + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
+       + '</div>';
   });
-  if(!allT.length) return [{tag:'ТЕКСТ',title:'Добро пожаловать',
-    body:'Нажмите на любое слово, чтобы узнать его значение.'}];
-
-  function stripEmoji(s){
-    try{ return s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}\u{1F300}-\u{1F9FF}]/gu,'').replace(/[·—–]/g,'').trim(); }
-    catch(e){ return s.replace(/[^\wА-Яа-яёЁ\s]/g,'').trim(); }
-  }
-  function pw(arr, n){ // pick n words deterministically
-    var out=[], used={};
-    for(var i=0;out.length<n&&i<arr.length*3;i++){
-      var ix=((seed*3+i*7)%arr.length+arr.length)%arr.length;
-      if(!used[ix]){used[ix]=1;out.push(arr[ix]);}
-    }
-    while(out.length<n) out.push(arr[out.length%arr.length]);
-    return out;
-  }
-  function ru(w){ return w.ru; }
-  function vn(w){ return w.vn; }
-
-  // ── Real narrative templates ──────────────────────────────────
-  var templates = [
-    // 1. Mini news story
-    function(nm,ws,lvl){
-      var city = ['Москва','Санкт-Петербург','Новосибирск','Екатеринбург'][seed%4];
-      var char = ['Иван','Мария','Антон','Анна','Дмитрий','Катя'][seed%6];
-      if(lvl==='A1'||lvl==='A2') return {tag:'ЖИЗНЬ',
-        title: char+' и тема «'+nm+'»',
-        body: char+' живёт в '+city+'. Каждый день он думает о «'+nm+'». '
-          +'Вчера он сказал другу: «Я люблю '+ru(ws[0]).toLowerCase()+'!» '
-          +'Друг ответил: «Да, '+ru(ws[0]).toLowerCase()+' — это '+vn(ws[0])+'». '
-          +'Потом они говорили о '+ru(ws[1]).toLowerCase()+' и '+ru(ws[2]).toLowerCase()+'. '
-          +'«'+ru(ws[1])+' очень важно в жизни», — сказал '+char+'. '
-          +'Вечером он читал о '+ru(ws[3]).toLowerCase()+' и думал о '+ru(ws[2]).toLowerCase()+'.'
-      };
-      return {tag:'НОВОСТИ',
-        title: 'В '+city+': история о «'+nm+'»',
-        body: 'Корреспондент из '+city+' рассказывает о теме «'+nm+'». '
-          +'По словам местных жителей, '+ru(ws[0]).toLowerCase()+' стало важной частью их жизни. '
-          +char+', житель '+city+', объясняет: «'+ru(ws[0])+' — это основа. '
-          +'Без '+ru(ws[1]).toLowerCase()+' трудно представить современную жизнь». '
-          +'Эксперты также отмечают роль '+ru(ws[2]).toLowerCase()+' и '+ru(ws[3]).toLowerCase()+' в этой сфере. '
-          +'«'+ru(ws[2])+' и '+ru(ws[3])+' — два ключевых понятия», — добавляет специалист.'
-      };
-    },
-    // 2. Dialogue / conversation
-    function(nm,ws,lvl){
-      var A = ['Алёша','Борис','Виктор','Глеб'][seed%4];
-      var B = ['Надя','Света','Таня','Ира'][(seed+2)%4];
-      if(lvl==='A1') return {tag:'ДИАЛОГ',
-        title: A+' и '+B+' говорят',
-        body: '— '+A+', ты знаешь слово «'+ru(ws[0])+'»?\n'
-          +'— Да! '+ru(ws[0])+' — это '+vn(ws[0])+'.\n'
-          +'— А «'+ru(ws[1])+'»?\n'
-          +'— '+ru(ws[1])+' значит «'+vn(ws[1])+'».\n'
-          +'— Отлично! А «'+ru(ws[2])+'» и «'+ru(ws[3])+'»?\n'
-          +'— '+ru(ws[2])+' — это '+vn(ws[2])+'. А '+ru(ws[3])+' — '+vn(ws[3])+'.\n'
-          +'— Спасибо! Теперь я понимаю тему «'+nm+'».'
-      };
-      return {tag:'ДИАЛОГ',
-        title: 'Разговор о «'+nm+'»',
-        body: '— '+A+', расскажи мне о «'+nm+'».\n'
-          +'— Конечно! Это широкая тема. Начнём с понятия «'+ru(ws[0])+'».\n'
-          +'— И что это значит?\n'
-          +'— По сути, '+ru(ws[0]).toLowerCase()+' — это когда есть '+vn(ws[0])+'. '
-          +'Сюда же относятся «'+ru(ws[1])+'» и «'+ru(ws[2])+'».\n'
-          +'— А «'+ru(ws[3])+'»? Это то же самое?\n'
-          +'— Почти. Но «'+ru(ws[3])+'» скорее означает '+vn(ws[3])+'. '
-          +'Разница небольшая, но важная.'
-      };
-    },
-    // 3. Short essay / explanation
-    function(nm,ws,lvl){
-      var season = ['весной','летом','осенью','зимой'][d.getMonth()%4];
-      return {tag:'СТАТЬЯ',
-        title: nm+': что это такое?',
-        body: 'Тема «'+nm+'» актуальна '+season+' и всегда. '
-          +'Центральное понятие здесь — «'+ru(ws[0])+'». '
-          +(lvl==='A1'||lvl==='A2'
-            ? ru(ws[0])+' — это '+vn(ws[0])+'. Это простое и важное слово. '
-            : 'В широком смысле, '+ru(ws[0]).toLowerCase()+' охватывает множество аспектов, включая '+vn(ws[0])+'. ')
-          +'Не менее важны слова «'+ru(ws[1])+'» ('+vn(ws[1])+') и «'+ru(ws[2])+'» ('+vn(ws[2])+'). '
-          +(ws[4]?'Специалисты также выделяют «'+ru(ws[3])+'» как ключевой элемент. ':'')
-          +'Понимание этих слов открывает дверь к глубокому знанию русского языка.'
-      };
-    },
-    // 4. Day-in-the-life story
-    function(nm,ws,lvl){
-      var char = ['Сергей','Лена','Олег','Наташа','Коля','Вера'][seed%6];
-      var time = ['утром','днём','вечером','в выходные'][seed%4];
-      return {tag:'ИСТОРИЯ',
-        title: 'День '+char+': «'+nm+'»',
-        body: char+' думал о «'+nm+'» '+time+'. '
-          +'Сначала он вспомнил о '+ru(ws[0]).toLowerCase()+' — ведь '+ru(ws[0]).toLowerCase()+' это '+vn(ws[0])+'. '
-          +'Потом позвонил другу и спросил: «Как у тебя с '+ru(ws[1]).toLowerCase()+'?» '
-          +'Друг ответил, что '+ru(ws[1]).toLowerCase()+' ('+vn(ws[1])+') идёт хорошо. '
-          +'Вечером '+char+' читал о '+ru(ws[2]).toLowerCase()+' и '+ru(ws[3]).toLowerCase()+'. '
-          +ru(ws[2])+' и '+ru(ws[3])+' — очень разные вещи, но оба важны. '
-          +'«Нужно учиться каждый день», — подумал '+char+' перед сном.'
-      };
-    },
-  ];
-
-  var results = [];
-  var usedTopics = {};
-  for(var i=0;i<4;i++){
-    // Pick a topic not yet used
-    var t;
-    for(var attempt=0;attempt<allT.length;attempt++){
-      t = allT[(seed + i*7 + attempt*3) % allT.length];
-      if(!usedTopics[t]) break;
-    }
-    usedTopics[t] = 1;
-    var raw = vocabularyDatabase[lvl][t]||[];
-    if(!Array.isArray(raw)||raw.length<2) continue;
-    var ws  = pw(raw, Math.min(6, raw.length));
-    var nm  = stripEmoji(t).replace(/\s+/g,' ')||('Тема '+(i+1));
-    if(nm.length > 30) nm = nm.slice(0,28)+'…';
-    results.push(templates[i % templates.length](nm, ws, lvl));
-  }
-
-  // ── Fixed real-world articles (metro / tram / street signs) ──
-  var realWorld = [
-    {
-      tag:'МЕТРО',
-      title:'В московском метро',
-      body:'Уважаемые пассажиры! Просьба не прислоняться к дверям. Следующая станция — Арбатская. Переход на Арбатско-Покровскую линию. Станция закрыта на выход. Воспользуйтесь соседними выходами. Уступайте места пожилым людям, пассажирам с детьми и инвалидам. Держитесь за поручни. При выходе из поезда убедитесь, что не забыли свои вещи.'
-    },
-    {
-      tag:'МЕТРО',
-      title:'Объявления в метро',
-      body:'Поезд дальше не идёт. Просьба освободить вагоны. Осторожно, двери закрываются. Следующая станция — конечная. Переход на другие линии. Кольцевая линия. Вход с улицы закрыт. Вход свободный. Выход в город. Левая дверь не работает. Просьба не курить на территории метрополитена. Стоп-кран срывать только в случае крайней необходимости.'
-    },
-    {
-      tag:'ТРАМВАЙ',
-      title:'В трамвае и автобусе',
-      body:'Уважаемые пассажиры, оплатите проезд. Проездной билет необходимо приложить к валидатору. Вы можете оплатить проезд картой или наличными. Штраф за безбилетный проезд — пятьсот рублей. Следующая остановка — Красная площадь. Конечная остановка. Просьба не загораживать двери. При выходе нажмите кнопку.'
-    },
-    {
-      tag:'УЛИЦА',
-      title:'Знаки и таблички на улице',
-      body:'Въезд запрещён. Движение запрещено. Ремонт дороги. Объезд справа. Осторожно, скользко! Мокрая уборка. Осторожно: возможно падение льда и снега с крыши. Видеонаблюдение ведётся круглосуточно. Посторонним вход воспрещён. Частная собственность. Проход закрыт. Будьте внимательны на дороге. Переходите улицу только на зелёный свет.'
-    },
-    {
-      tag:'МАГАЗИН',
-      title:'В магазине и торговом центре',
-      body:'Режим работы: с восьми до двадцати двух часов без выходных. Касса открыта. Принимаем карты и наличные. Бесплатная парковка для покупателей. Скидка двадцать процентов на все товары. Акция действует до конца месяца. Возврат и обмен товара в течение четырнадцати дней. Примерочная кабина свободна. Уважаемые покупатели, магазин закрывается через десять минут.'
-    },
-    {
-      tag:'АЭРОПОРТ',
-      title:'В аэропорту',
-      body:'Рейс SU-150 Москва — Санкт-Петербург задерживается. Посадка на рейс объявляется у выхода номер семь. Пожалуйста, приготовьте документы и посадочный талон. Провоз жидкостей более ста миллилитров запрещён. Ручная кладь не должна превышать восемь килограммов. Получение багажа — лента номер три. Таможенный контроль. Зелёный коридор — нечего декларировать.'
-    },
-    {
-      tag:'БОЛЬНИЦА',
-      title:'В больнице и аптеке',
-      body:'Регистратура. Запись к врачу по телефону или через интернет. Приём по полису ОМС. Скорая помощь — ноль три или ноль один два. Принимайте лекарство три раза в день после еды. Хранить в прохладном тёмном месте. Не принимать при беременности. Перед применением проконсультируйтесь с врачом. Рецептурный препарат. Срок годности истёк.'
-    },
-    {
-      tag:'РЕСТОРАН',
-      title:'В кафе и ресторане',
-      body:'Добро пожаловать! Столик на двоих? Меню, пожалуйста. Что будете заказывать? Вам порекомендовать что-нибудь? Блюдо дня — борщ со сметаной и пирожком. Всё свежее, готовим при вас. Ждать около пятнадцати минут. Счёт, пожалуйста. Обслуживание включено. Оплата картой или наличными. Приятного аппетита! Будем рады видеть вас снова.'
-    },
-    {
-      tag:'БАНК',
-      title:'В банке и банкомате',
-      body:'Вставьте карту. Введите пин-код. Выберите операцию. Снятие наличных. Баланс счёта. Пополнение карты. Перевод средств. Введите сумму. Подтвердите операцию. Возьмите карту и деньги. Операция выполнена успешно. Недостаточно средств на счёте. Карта заблокирована. Обратитесь в отделение банка. Комиссия за снятие наличных — один процент.'
-    },
-    {
-      tag:'ПОЧТА',
-      title:'На почте',
-      body:'Почта России. Режим работы: понедельник — пятница, с девяти до восемнадцати часов. Суббота — с десяти до четырнадцати. Воскресенье — выходной. Отправка писем и посылок. Получение заказных писем по уведомлению. Предъявите паспорт. Вес посылки не должен превышать двадцать килограммов. Срок доставки — от трёх до семи дней.'
-    },
-
-    // ── ЭКОНОМИКА ──────────────────────────────────────────────
-    {
-      tag:'ЭКОНОМИКА',
-      title:'Курс рубля и инфляция',
-      body:'Центральный банк России объявил о повышении ключевой ставки. Это решение связано с ростом инфляции в стране. По данным статистики, цены на продукты питания выросли на восемь процентов за последний год. Эксперты советуют гражданам хранить сбережения в нескольких валютах. Курс доллара и евро по отношению к рублю остаётся нестабильным. Аналитики прогнозируют постепенное снижение инфляции к концу года.'
-    },
-    {
-      tag:'ЭКОНОМИКА',
-      title:'Малый бизнес в России',
-      body:'В России около шести миллионов малых предприятий. Они производят почти двадцать процентов ВВП страны. Самые популярные сферы — торговля, общественное питание и услуги. Государство поддерживает малый бизнес льготными кредитами и налоговыми каникулами. Многие предприниматели открывают бизнес онлайн. Маркетплейсы Wildberries и Ozon стали главными площадками для малого бизнеса. Количество самозанятых превысило девять миллионов человек.'
-    },
-    {
-      tag:'ЭКОНОМИКА',
-      title:'Рынок недвижимости',
-      body:'Цены на квартиры в Москве продолжают расти. Однокомнатная квартира в среднем стоит десять миллионов рублей. За МКАДом жильё значительно дешевле. Ипотека остаётся главным способом купить квартиру. Ставка по ипотеке сейчас составляет около шестнадцати процентов годовых. Многие россияне предпочитают снимать жильё, а не покупать. Аренда однокомнатной квартиры в Москве обходится в сорок — шестьдесят тысяч рублей в месяц.'
-    },
-    {
-      tag:'ЭКОНОМИКА',
-      title:'Зарплаты и рынок труда',
-      body:'Средняя зарплата в России составляет около семидесяти тысяч рублей. В Москве этот показатель выше — примерно сто тридцать тысяч. Самые высокооплачиваемые профессии — программист, финансист и врач. Рынок труда становится всё более цифровым. Удалённая работа стала нормой для многих офисных сотрудников. Нехватка рабочих рук наблюдается в строительстве, транспорте и промышленности. Многие компании повышают зарплаты, чтобы удержать сотрудников.'
-    },
-    {
-      tag:'ЭКОНОМИКА',
-      title:'Торговля и потребление',
-      body:'Россияне тратят большую часть доходов на еду, жильё и транспорт. Онлайн-шопинг растёт каждый год на двадцать — тридцать процентов. Самые популярные товары в интернет-магазинах — одежда, электроника и продукты. Крупные торговые сети — «Магнит», «Пятёрочка» и «Перекрёсток» — есть почти в каждом городе. Скидки и акции привлекают миллионы покупателей. В период распродаж россияне тратят в два-три раза больше обычного.'
-    },
-
-    // ── СКАЗКИ И РАССКАЗЫ ─────────────────────────────────────
-    {
-      tag:'СКАЗКА',
-      title:'Колобок (пересказ)',
-      body:'Жили-были дед и баба. Баба испекла колобок и положила его на окошко остывать. Колобок соскочил и покатился по дорожке. По дороге он встретил зайца. «Колобок, я тебя съем!» — сказал заяц. «Не ешь меня», — ответил колобок и покатился дальше. Потом он встретил волка и медведя. Каждому он пел свою песенку и убегал. Но хитрая лиса его перехитрила и съела. Мораль: не слушай лесть незнакомцев.'
-    },
-    {
-      tag:'СКАЗКА',
-      title:'Репка (пересказ)',
-      body:'Посадил дед репку. Выросла репка большая-пребольшая. Стал дед тянуть репку — тянет-потянет, вытянуть не может. Позвал дед бабку. Бабка за дедку, дедка за репку. Тянут-потянут — не вытянуть. Пришли внучка, Жучка, кошка и, наконец, мышка. Только все вместе смогли вытащить репку. Мораль: в единстве — сила. Вместе легче справиться с любым делом.'
-    },
-    {
-      tag:'РАССКАЗ',
-      title:'Лев Толстой: «Акула» (краткий пересказ)',
-      body:'Корабль стоял у берегов Африки. Два мальчика прыгнули купаться в море. Вдруг из воды появилась акула и поплыла к детям. Все на корабле закричали от ужаса. Отец одного мальчика — старый артиллерист — схватил пушку и выстрелил. Он боялся попасть в детей, но рискнул. Ядро упало рядом с акулой, и та исчезла. Мальчики были спасены. Отец упал на палубу и заплакал от пережитого страха и облегчения.'
-    },
-    {
-      tag:'РАССКАЗ',
-      title:'Антон Чехов: «Хамелеон» (краткий пересказ)',
-      body:'По базарной площади идёт полицейский надзиратель Очумелов. Вдруг крик: собака укусила ювелира за палец. Очумелов начинает разбирать дело. Узнав, что собака, возможно, принадлежит генералу Жигалову, он тут же меняет своё отношение. «Это не собака, а прелесть!» — говорит он. Потом слышит, что нет, не генеральская. И снова требует собаку уничтожить. Чехов высмеивает людей, которые меняют своё мнение в зависимости от того, кто стоит перед ними.'
-    },
-    {
-      tag:'РАССКАЗ',
-      title:'Иван Тургенев: «Муму» (краткий пересказ)',
-      body:'Глухонемой крестьянин Герасим служил дворником у барыни в Москве. Он нашёл маленькую собачку и назвал её Муму. Муму стала его единственным другом. Но капризная барыня приказала убрать собаку из дома. Герасим не смог защитить Муму. По приказу барыни он утопил собаку в реке. После этого он бросил службу и ушёл пешком в деревню. Тургенев показывает бесправие крепостных крестьян при царизме.'
-    },
-    {
-      tag:'ПОЭЗИЯ',
-      title:'Александр Пушкин: о его поэзии',
-      body:'Александр Сергеевич Пушкин — величайший русский поэт. Он родился в 1799 году в Москве и погиб на дуэли в 1837 году. За свою короткую жизнь он написал сотни стихотворений, поэмы «Евгений Онегин» и «Руслан и Людмила», а также прозу. Его язык прост, музыкален и точен. Пушкина называют создателем современного русского литературного языка. Школьники до сих пор учат его стихи наизусть. «Я помню чудное мгновенье» и «Зимний вечер» знает каждый россиянин.'
-    },
-    {
-      tag:'ИСТОРИЯ',
-      title:'Краткая история Москвы',
-      body:'Москва была основана в 1147 году князем Юрием Долгоруким. Сначала это было небольшое поселение на реке Москве. В тринадцатом веке город разрушили монголы, но он быстро восстановился. В шестнадцатом веке Москва стала столицей единого Русского государства. При Петре Первом столицу перенесли в Санкт-Петербург, но в 1918 году Москва снова стала главным городом страны. Сегодня в ней живут более двенадцати миллионов человек.'
-    },
-    {
-      tag:'НАУКА',
-      title:'Космическая программа России',
-      body:'Россия — одна из ведущих космических держав мира. В 1957 году советский спутник стал первым искусственным объектом на орбите Земли. В 1961 году Юрий Гагарин совершил первый полёт человека в космос. Байконур — знаменитый космодром в Казахстане, откуда стартовали многие российские ракеты. Сегодня Россия активно участвует в программе Международной космической станции. Российские ракеты «Союз» считаются одними из самых надёжных в мире.'
-    },
-    {
-      tag:'СПОРТ',
-      title:'Футбол в России',
-      body:'Футбол — самый популярный спорт в России. Главная лига страны называется Российская Премьер-лига. Самые известные клубы — ЦСКА, «Спартак», «Зенит» и «Локомотив». «Зенит» из Санкт-Петербурга — действующий чемпион страны. В 2018 году Россия принимала чемпионат мира по футболу. Турнир прошёл в одиннадцати городах и стал большим праздником для болельщиков. Сборная России дошла до четвертьфинала, победив испанцев в серии пенальти.'
-    },
-    {
-      tag:'ПРИРОДА',
-      title:'Байкал — жемчужина России',
-      body:'Байкал — самое глубокое озеро на планете. Его глубина достигает тысячи шестисот сорока двух метров. В Байкале содержится около двадцати процентов всей пресной воды Земли. Вода в озере настолько чистая, что видно дно на глубине сорока метров. На берегах Байкала растут уникальные леса. В озере обитают более двух тысяч видов животных и растений, многие из которых больше нигде не встречаются. Байкал включён в список Всемирного наследия ЮНЕСКО.'
-    },
-  ];
-
-  // Rotate by day so user sees different real-world article each day
-  var rwIdx = (seed * 3) % realWorld.length;
-  results.push(realWorld[rwIdx]);
-  results.push(realWorld[(rwIdx + 1) % realWorld.length]);
-  results.push(realWorld[(rwIdx + 2) % realWorld.length]);
-
-  return results.length ? results : [{tag:'ТЕКСТ',
-    title:'Добро пожаловать',
-    body:'Здесь вы читаете короткие тексты на русском языке. Нажмите на любое слово, чтобы узнать его значение.'}];
+  document.getElementById('rd-story-list').innerHTML = h;
 }
 
+/* ── View: story reader ──────────────────────────────────────── */
+function App_rdOpenStory(topicId, storyId){
+  var stories = RD_STORIES[topicId]||[];
+  var s = stories.find(function(x){ return x.id===storyId; });
+  if(!s) return;
 
-/* ── Render ──────────────────────────────────────────────────── */
-function rdRender(){
-  var cont = document.getElementById('rd-content');
-  if(!cont) return;
-  // Stop refresh spin
-  var btn2 = document.getElementById('rd-refresh-btn');
-  if(btn2){ btn2.classList.remove('spinning'); btn2.disabled=false; }
-  var lb2 = document.getElementById('rd-level-badge');
-  if(lb2) lb2.textContent = S.level;
-  if(!RD.articles||!RD.articles.length){
-    cont.innerHTML='<div class="rd-load-state">Chưa có bài đọc. Nhấn 🔄 để tải.</div>'; return;
-  }
+  RD.view = 'reader';
+  RD.story = s;
+  RD.topicId = topicId;
+  RD._transLang = null;
 
-  var html='';
-  RD.articles.forEach(function(art,ai){
-    if(!art) return;
-    var title = art.title||'';
-    var body  = art.body||'';
-    /* tokenize without building lookup again */
-    var tHtml = rdTokenize(title, ai, 't');
-    var bHtml = rdTokenize(body,  ai, 'b');
-    /* word stats */
-    var words=body.split(/\s+/), kn=0, un=0;
-    words.forEach(function(tok){
-      if(!/[а-яёА-ЯЁ]/.test(tok)) return;
-      (rdMatch(rdNorm(tok)) ? kn++ : un++);
-    });
-    html += '<div class="rd-article">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
-      +'<div class="rd-tag">'+(art.tag||'ТЕКСТ')+'</div>'
-      +'<div style="flex:1;"></div>'
-      +(kn||un?'<div style="font-size:10px;color:var(--com);font-family:var(--mono);">'
-        +(kn?'<span style="color:var(--grn);">✓'+kn+'</span> ':'' )
-        +(un?'<span style="color:rgba(255,159,10,.8);">✦'+un+'</span>':'')
-        +'</div>':'')
-      +'</div>'
-      +'<div class="rd-title">'+tHtml+'</div>'
-      +'<div class="rd-body">'+bHtml+'</div>'
+  var hdr = document.getElementById('rd-hdr-title');
+  if(hdr) hdr.textContent = s.title;
+  document.getElementById('rd-back-btn').style.display = '';
+  document.getElementById('rd-topics-view').style.display = 'none';
+  document.getElementById('rd-list-view').style.display = 'none';
+  document.getElementById('rd-reader-view').style.display = '';
+  var lb = document.getElementById('rd-level-badge');
+  if(lb) lb.textContent = s.level;
+  rdRenderStory();
+}
+
+function rdRenderStory(){
+  var s = RD.story; if(!s) return;
+  var tp = RD_TOPICS.find(function(t){ return t.id===RD.topicId; });
+  var content = document.getElementById('rd-reader-content'); if(!content) return;
+  var curLang = RD._transLang;
+
+  var lvlColor = {A1:'var(--grn)',A2:'var(--cyn)',B1:'var(--yel)',B2:'var(--pnk)'}[s.level]||'var(--com)';
+  var tpColor = tp ? tp.color+'0.8)' : 'var(--com)';
+  var bodyHtml = rdTokenize(s.body, 0, 'b');
+
+  var transHtml = '';
+  if(curLang && s[curLang]){
+    var tBg = curLang==='vn' ? 'rgba(90,200,250,0.06)' : 'rgba(52,199,89,0.06)';
+    var tBrd = curLang==='vn' ? 'rgba(90,200,250,0.2)' : 'rgba(52,199,89,0.2)';
+    var tCol = curLang==='vn' ? 'var(--cyn)' : 'var(--grn)';
+    var tLabel = curLang==='vn' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English';
+    transHtml = '<div style="margin-top:12px;padding:14px 16px;border-radius:14px;background:'+tBg+';border:1px solid '+tBrd+';">'
+      +'<div style="font-size:10px;font-weight:700;color:'+tCol+';font-family:var(--mono);letter-spacing:.5px;margin-bottom:8px;">'+tLabel+'</div>'
+      +'<div style="font-size:15px;line-height:1.9;color:var(--txd);">'+s[curLang]+'</div>'
       +'</div>';
-  });
+  }
 
-  cont.innerHTML = html;
-  cont.onclick = function(e){
+  var btnBase = 'flex:1;padding:8px 4px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;';
+  var btnOn  = btnBase+'background:rgba(255,255,255,0.12);color:var(--tx);';
+  var btnOff = btnBase+'background:transparent;color:var(--com);';
+
+  content.innerHTML =
+    '<div style="margin-bottom:12px;">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">'
+    +(tp?'<span style="font-size:11px;font-weight:700;color:'+tpColor+';">'+tp.icon+' '+tp.name_ru+'</span>':'')
+    +'<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
+    +'</div>'
+    +'<div style="font-size:21px;font-weight:800;color:var(--tx);line-height:1.3;margin-bottom:12px;">'+s.title+'</div>'
+    +'</div>'
+    +'<div style="font-size:17px;line-height:1.85;color:var(--tx);">'+bodyHtml+'</div>'
+    +transHtml
+    +'<div style="display:flex;gap:4px;margin-top:14px;padding:4px;background:rgba(255,255,255,0.04);border-radius:12px;border:1px solid rgba(255,255,255,0.07);">'
+    +'<button class="tch" onclick="App.rdTrans(null)" style="'+(curLang===null?btnOn:btnOff)+'">🔤 Nga</button>'
+    +'<button class="tch" onclick="App.rdTrans(\'vn\')" style="'+(curLang==='vn'?btnOn:btnOff)+'">🇻🇳 Việt</button>'
+    +'<button class="tch" onclick="App.rdTrans(\'en\')" style="'+(curLang==='en'?btnOn:btnOff)+'">🇬🇧 English</button>'
+    +'</div>'
+    +'<div style="margin-top:12px;font-size:11px;color:var(--com);text-align:center;">Nhấn vào từ để tra nghĩa</div>';
+
+  content.onclick = function(e){
     var t = e.target;
-    while(t && t !== cont){
+    while(t && t !== content){
       if(t.dataset && t.dataset.w){ App.rdTap(t.id, t.dataset.w); return; }
       t = t.parentNode;
     }
   };
 }
 
-/* ── Tokenize ────────────────────────────────────────────────── */
-function rdTokenize(text, ai, part){
-  if(!text) return '';
-  var out='', ti=0;
-  text.split(/([\s\u00A0]+|[.,!?;:()"«»—–\-]+)/).forEach(function(tok){
-    if(!tok){ return; }
-    if(/[а-яёА-ЯЁa-zA-Z]/.test(tok)){
-      var norm = rdNorm(tok);
-      var matches = rdMatch(norm);
-      var isLearned = matches && matches.some(function(m){ return S.mastered&&S.mastered[m.key]; });
-      var cls = 'rd-w '+(isLearned?'learned':matches?'known':'unknown');
-      var uid = 'rd-'+ai+'-'+part+'-'+(ti++);
-      out += '<span class="'+cls+'" id="'+uid+'" data-w="'+tok.replace(/"/g,'&quot;')+'">'+tok+'</span>';
-    } else { out += tok; }
-  });
-  return out;
+function App_rdTrans(lang){
+  RD._transLang = lang;
+  rdRenderStory();
 }
 
-/* ── Tap → popup ─────────────────────────────────────────────── */
+/* ── Back navigation ─────────────────────────────────────────── */
+function App_rdBack(){
+  if(RD.view === 'reader'){
+    App_rdOpenTopic(RD.topicId);
+  } else {
+    rdShowTopics();
+  }
+}
+
+/* ── Word tap / popup ────────────────────────────────────────── */
+function rdBuildLookup(){
+  if(RD._lu && RD._luLevel === S.level) return;
+  var lv = vocabularyDatabase[S.level]||{};
+  var map = {};
+  Object.values(lv).forEach(function(arr){
+    if(!Array.isArray(arr)) return;
+    arr.forEach(function(w){
+      if(w.ru) map[rdNorm(w.ru)] = w;
+    });
+  });
+  RD._lu = map;
+  RD._luLevel = S.level;
+}
+
+function rdNorm(w){ return w.toLowerCase().replace(/[^а-яёa-z]/g,''); }
+
+function rdMatch(nw){
+  rdBuildLookup();
+  return RD._lu[nw] || null;
+}
+
+function rdTokenize(text, ai, part){
+  return text.replace(/([А-Яа-яЁёA-Za-z]+)/g, function(word, _, offset){
+    var nw = rdNorm(word);
+    var known = rdMatch(nw);
+    var id = 'w'+ai+'_'+part+'_'+offset;
+    var style = known
+      ? 'color:var(--tx);border-bottom:1px solid rgba(52,199,89,0.4);'
+      : 'color:var(--tx);';
+    return '<span id="'+id+'" data-w="'+word+'" style="'+style+'cursor:pointer;">'+word+'</span>';
+  });
+}
+
 function App_rdTap(id, word){
-  word = word || '';
-  var norm = rdNorm(word);
-  var prev = document.querySelector('.rd-w.tapped');
-  // Toggle: tap same word again → close
-  if(prev && prev.id === id){
-    prev.classList.remove('tapped');
-    App_rdClosePopup();
+  RD.currentWord = word;
+  var popup = document.getElementById('rd-popup');
+  var wEl   = document.getElementById('rdp-word');
+  var aiBox = document.getElementById('rdp-ai-box');
+  if(!popup || !wEl) return;
+  wEl.textContent = word;
+  aiBox.innerHTML = '';
+  popup.style.display = 'block';
+
+  // Check local vocab first
+  var nw = rdNorm(word);
+  var entry = rdMatch(nw);
+  if(entry){
+    aiBox.innerHTML = '<div style="margin-top:8px;">'
+      + '<div style="font-size:16px;font-weight:700;color:var(--cyn);">'+entry.vn+'</div>'
+      + (entry.en?'<div style="font-size:13px;color:var(--com);margin-top:2px;">'+entry.en+'</div>':'')
+      + '</div>';
     return;
   }
-  if(prev) prev.classList.remove('tapped');
-  var el = document.getElementById(id);
-  if(el) el.classList.add('tapped');
-  RD.currentWord = word;
-  rdShowPopup(word, rdMatch(norm));
-}
 
-/* ── Popup ───────────────────────────────────────────────────── */
-function rdShowPopup(word, matches){
-  var pdoc=document.getElementById('rdp-word');
-  var pph =document.getElementById('rdp-ph');
-  var pbody=document.getElementById('rdp-body');
-  if(!pdoc||!pph||!pbody) return;
-
-  pdoc.textContent = word;
-
-  if(matches && matches.length){
-    var m = matches[0].w;
-    pph.textContent = m.ph ? '/ '+m.ph+' /' : '';
-    var isLearned = S.mastered&&S.mastered[matches[0].key];
-    var srs = S.srsData&&S.srsData[matches[0].key];
-    var days = srs ? Math.round((srs.dueDate-Date.now())/86400000) : null;
-    var reviewStr = days===null?'' : days<=0?'📅 Ôn hôm nay!' : '📅 Ôn sau '+days+' ngày';
-
-    var topicClean='';
-    try{ topicClean=matches[0].topic.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}]/gu,'').trim(); }
-    catch(e){ topicClean=matches[0].topic.replace(/[^\w\sА-Яа-яёЁ]/g,'').trim(); }
-
-    var html='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;margin-bottom:10px;">'
-      +'<div style="font-size:22px;font-weight:700;color:var(--tx);">'+m.vn+'</div>'
-      +(m.en?'<div style="font-size:12px;color:var(--com);margin-top:2px;">'+m.en+'</div>':'')
-      +'<div style="font-size:10px;color:rgba(255,255,255,.2);margin-top:8px;font-family:var(--mono);">'+matches[0].lvl+' · '+topicClean+'</div>'
-      +'</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'
-      +'<span style="font-size:11px;padding:3px 8px;border-radius:8px;'
-      +(isLearned?'background:rgba(52,199,89,.15);color:var(--grn)':' background:rgba(255,214,10,.1);color:var(--yel)')+';">'
-      +(isLearned?'✓ Đã học':'○ Chưa học')+'</span>'
-      +(reviewStr?'<span style="font-size:10px;color:var(--com);">'+reviewStr+'</span>':'')
-      +'</div>';
-
-    if(matches.length>1){
-      html+='<div style="font-size:10px;color:var(--com);margin-bottom:6px;">// Nghĩa khác:</div>';
-      matches.slice(1,3).forEach(function(mm){
-        html+='<div style="font-size:13px;color:var(--txd);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
-          +'<span style="font-family:var(--serif);font-weight:700;">'+mm.w.ru+'</span> — '+mm.w.vn+'</div>';
-      });
-      html+='<div style="margin-top:8px;"></div>';
-    }
-    html+='<button id="rdp-goto-btn" style="background:rgba(90,200,250,.1);border:1px solid rgba(90,200,250,.25);border-radius:10px;padding:7px 14px;color:var(--cyn);font-size:12px;width:100%;">Tra thêm trong từ điển →</button>';
-    pbody.innerHTML = html;
-
-  } else {
-    pph.textContent = '';
-    pbody.innerHTML = '<div id="rdp-ai-box" style="min-height:60px;display:flex;align-items:center;justify-content:center;">'
-      +'<div class="rd-spinner" style="width:20px;height:20px;border-width:2px;"></div></div>'
-      +'<button id="rdp-goto-btn" style="background:rgba(90,200,250,.1);border:1px solid rgba(90,200,250,.25);border-radius:10px;padding:7px 14px;color:var(--cyn);font-size:12px;width:100%;margin-top:10px;">Tìm trong từ điển →</button>';
+  // AI fallback
+  if(location.protocol === 'https:'){
     rdAiTranslate(word);
+  } else {
+    var fb = rdFallbackLookup(word);
+    aiBox.innerHTML = '<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||'Không có trong từ điển')+'</div>';
   }
-
-  document.getElementById('rd-popup').classList.add('open');
-  document.getElementById('rd-popup-backdrop').classList.add('open');
-  setTimeout(function(){
-    var btn=document.getElementById('rdp-goto-btn');
-    if(btn) btn.onclick=function(){ App.rdGoLookup(word); };
-  },10);
 }
 
-
-/* ── Built-in fallback dictionary for common Russian words ───── */
-var RD_FALLBACK = {
-  // ── Предлоги / Prepositions ──────────────────────────
-  'в':    {ru:'в',vn:'trong / vào',en:'in / into',ph:'v'},
-  'на':   {ru:'на',vn:'trên / vào',en:'on / onto',ph:'na'},
-  'с':    {ru:'с',vn:'với / từ',en:'with / from',ph:'s'},
-  'из':   {ru:'из',vn:'từ / ra khỏi',en:'from / out of',ph:'iz'},
-  'по':   {ru:'по',vn:'theo / qua',en:'along / by',ph:'po'},
-  'за':   {ru:'за',vn:'sau / vì / trả cho',en:'behind / for',ph:'za'},
-  'до':   {ru:'до',vn:'đến / trước',en:'until / before',ph:'do'},
-  'от':   {ru:'от',vn:'từ / khỏi',en:'from / away from',ph:'ot'},
-  'без':  {ru:'без',vn:'không có / thiếu',en:'without',ph:'byez'},
-  'при':  {ru:'при',vn:'trong thời / tại',en:'at / under',ph:'pri'},
-  'над':  {ru:'над',vn:'trên / phía trên',en:'above / over',ph:'nad'},
-  'под':  {ru:'под',vn:'dưới / bên dưới',en:'under / beneath',ph:'pod'},
-  'между':  {ru:'между',vn:'giữa',en:'between',ph:'myezhdu'},
-  'перед':  {ru:'перед',vn:'trước / phía trước',en:'in front of / before',ph:'pyered'},
-  'после':  {ru:'после',vn:'sau / sau khi',en:'after',ph:'posle'},
-  'около':  {ru:'около',vn:'gần / khoảng',en:'near / about',ph:'okolo'},
-  'через':  {ru:'через',vn:'qua / sau',en:'through / in (time)',ph:'chyerez'},
-  'вместе': {ru:'вместе',vn:'cùng nhau',en:'together',ph:'vmyeste'},
-  'вместо': {ru:'вместо',vn:'thay vì',en:'instead of',ph:'vmyesto'},
-  'вокруг': {ru:'вокруг',vn:'xung quanh',en:'around',ph:'vokrug'},
-  'среди':  {ru:'среди',vn:'trong số / giữa',en:'among / amid',ph:'sredi'},
-  'против': {ru:'против',vn:'chống lại / đối diện',en:'against / opposite',ph:'protif'},
-  'кроме':  {ru:'кроме',vn:'ngoài / trừ',en:'except / besides',ph:'krome'},
-  'вдоль':  {ru:'вдоль',vn:'dọc theo',en:'along',ph:'vdolʼ'},
-  'внутри': {ru:'внутри',vn:'bên trong',en:'inside',ph:'vnutri'},
-
-  // ── Союзы / Conjunctions ─────────────────────────────
-  'и':    {ru:'и',vn:'và',en:'and',ph:'i'},
-  'а':    {ru:'а',vn:'còn / nhưng',en:'but / and',ph:'a'},
-  'но':   {ru:'но',vn:'nhưng',en:'but',ph:'no'},
-  'или':  {ru:'или',vn:'hoặc / hay',en:'or',ph:'ili'},
-  'что':  {ru:'что',vn:'rằng / gì / cái gì',en:'that / what',ph:'chto'},
-  'как':  {ru:'как',vn:'như / thế nào',en:'how / as / like',ph:'kak'},
-  'если': {ru:'если',vn:'nếu',en:'if',ph:'yesli'},
-  'хотя': {ru:'хотя',vn:'mặc dù / dù',en:'although / though',ph:'khotya'},
-  'когда':{ru:'когда',vn:'khi / lúc nào',en:'when',ph:'kogda'},
-  'где':  {ru:'где',vn:'ở đâu / nơi',en:'where',ph:'gdye'},
-  'куда': {ru:'куда',vn:'đi đâu / về đâu',en:'where (to)',ph:'kuda'},
-  'откуда':{ru:'откуда',vn:'từ đâu',en:'from where',ph:'otkuda'},
-  'почему':{ru:'почему',vn:'tại sao / vì sao',en:'why',ph:'pochemu'},
-  'зачем':{ru:'зачем',vn:'để làm gì / tại sao',en:'why / what for',ph:'zachem'},
-  'чтобы':{ru:'чтобы',vn:'để (mục đích)',en:'in order to / so that',ph:'chtoby'},
-  'пока': {ru:'пока',vn:'trong khi / tạm biệt',en:'while / for now',ph:'poka'},
-  'потому':{ru:'потому',vn:'vì vậy / vì thế',en:'because / therefore',ph:'potomu'},
-  'однако':{ru:'однако',vn:'tuy nhiên / song',en:'however / yet',ph:'odnako'},
-  'также': {ru:'также',vn:'cũng / ngoài ra',en:'also / as well',ph:'takzhe'},
-  'ни':   {ru:'ни',vn:'cũng không / dù',en:'neither / nor',ph:'ni'},
-  'либо': {ru:'либо',vn:'hoặc là',en:'either / or',ph:'libo'},
-
-  // ── Местоимения / Pronouns ───────────────────────────
-  'я':    {ru:'я',vn:'tôi / mình',en:'I',ph:'ya'},
-  'ты':   {ru:'ты',vn:'bạn / cậu (thân mật)',en:'you (informal)',ph:'ty'},
-  'он':   {ru:'он',vn:'anh ấy / ông ấy / nó',en:'he / it',ph:'on'},
-  'она':  {ru:'она',vn:'cô ấy / bà ấy / nó',en:'she / it',ph:'ona'},
-  'оно':  {ru:'оно',vn:'nó (trung tính)',en:'it',ph:'ono'},
-  'мы':   {ru:'мы',vn:'chúng tôi / chúng ta',en:'we',ph:'my'},
-  'вы':   {ru:'вы',vn:'các bạn / quý vị',en:'you (formal/plural)',ph:'vy'},
-  'они':  {ru:'они',vn:'họ / chúng',en:'they',ph:'oni'},
-  'мне':  {ru:'мне',vn:'cho tôi / với tôi',en:'to me / me',ph:'mnye'},
-  'меня': {ru:'меня',vn:'của tôi / tôi (tân ngữ)',en:'me (accusative)',ph:'menya'},
-  'его':  {ru:'его',vn:'của anh ấy / anh ấy (tân ngữ)',en:'his / him',ph:'yevo'},
-  'её':   {ru:'её',vn:'của cô ấy / cô ấy (tân ngữ)',en:'her',ph:'yeyo'},
-  'нас':  {ru:'нас',vn:'chúng tôi (tân ngữ)',en:'us',ph:'nas'},
-  'вас':  {ru:'вас',vn:'các bạn (tân ngữ)',en:'you (obj.)',ph:'vas'},
-  'им':   {ru:'им',vn:'cho họ / của họ',en:'to them / their',ph:'im'},
-  'их':   {ru:'их',vn:'của họ / họ (tân ngữ)',en:'their / them',ph:'ikh'},
-  'себя': {ru:'себя',vn:'bản thân / mình',en:'oneself / yourself',ph:'sebya'},
-  'сам':  {ru:'сам',vn:'tự mình / chính',en:'oneself / himself',ph:'sam'},
-  'сама': {ru:'сама',vn:'tự mình (nữ)',en:'herself',ph:'sama'},
-  'сами': {ru:'сами',vn:'tự chúng ta',en:'ourselves',ph:'sami'},
-  'этот': {ru:'этот',vn:'cái này / người này',en:'this',ph:'etot'},
-  'эта':  {ru:'эта',vn:'cái này (nữ)',en:'this (fem.)',ph:'eta'},
-  'это':  {ru:'это',vn:'cái này / đây là',en:'this / it is',ph:'eto'},
-  'эти':  {ru:'эти',vn:'những cái này',en:'these',ph:'eti'},
-  'тот':  {ru:'тот',vn:'cái đó / người đó',en:'that',ph:'tot'},
-  'та':   {ru:'та',vn:'cái đó (nữ)',en:'that (fem.)',ph:'ta'},
-  'те':   {ru:'те',vn:'những cái đó',en:'those',ph:'te'},
-  'весь': {ru:'весь',vn:'tất cả / cả',en:'all / whole',ph:'vyes'},
-  'вся':  {ru:'вся',vn:'tất cả (nữ)',en:'all (fem.)',ph:'vsya'},
-  'все':  {ru:'все',vn:'tất cả mọi người',en:'everyone / all',ph:'vsye'},
-  'всё':  {ru:'всё',vn:'tất cả mọi thứ',en:'everything / all',ph:'vsyo'},
-  'каждый':{ru:'каждый',vn:'mỗi / từng',en:'every / each',ph:'kazhdyy'},
-  'любой':{ru:'любой',vn:'bất kỳ / nào cũng',en:'any',ph:'lyuboy'},
-  'никто':{ru:'никто',vn:'không ai',en:'nobody',ph:'nikto'},
-  'ничто':{ru:'ничто',vn:'không gì / không có gì',en:'nothing',ph:'nichto'},
-  'некто':{ru:'некто',vn:'một ai đó',en:'someone',ph:'nyekto'},
-  'нечто':{ru:'нечто',vn:'một điều gì đó',en:'something',ph:'nyechto'},
-  'кто':  {ru:'кто',vn:'ai',en:'who',ph:'kto'},
-  'кого': {ru:'кого',vn:'ai (tân ngữ)',en:'whom',ph:'kogo'},
-  'кому': {ru:'кому',vn:'cho ai',en:'to whom',ph:'komu'},
-  'кем':  {ru:'кем',vn:'bởi ai',en:'by whom',ph:'kyem'},
-  'чей':  {ru:'чей',vn:'của ai',en:'whose',ph:'chyey'},
-  'чья':  {ru:'чья',vn:'của ai (nữ)',en:'whose (fem.)',ph:'chya'},
-  'чьё':  {ru:'чьё',vn:'của ai (trung)',en:'whose (neut.)',ph:'chyo'},
-
-  // ── Наречия / Adverbs ────────────────────────────────
-  'очень':  {ru:'очень',vn:'rất / lắm',en:'very',ph:'ochen'},
-  'уже':    {ru:'уже',vn:'đã / rồi',en:'already',ph:'uzhe'},
-  'ещё':    {ru:'ещё',vn:'vẫn / còn / nữa',en:'still / yet / more',ph:'yeshcho'},
-  'только': {ru:'только',vn:'chỉ / vừa mới',en:'only / just',ph:'tolko'},
-  'тоже':   {ru:'тоже',vn:'cũng / nữa',en:'also / too',ph:'tozhe'},
-  'всегда': {ru:'всегда',vn:'luôn luôn',en:'always',ph:'vsegda'},
-  'никогда':{ru:'никогда',vn:'không bao giờ',en:'never',ph:'nikogda'},
-  'иногда': {ru:'иногда',vn:'đôi khi / thỉnh thoảng',en:'sometimes',ph:'inogda'},
-  'часто':  {ru:'часто',vn:'thường / hay',en:'often',ph:'chasto'},
-  'редко':  {ru:'редко',vn:'hiếm khi / ít khi',en:'rarely',ph:'ryedko'},
-  'теперь': {ru:'теперь',vn:'bây giờ / giờ thì',en:'now / nowadays',ph:'teper'},
-  'сейчас': {ru:'сейчас',vn:'ngay bây giờ',en:'right now',ph:'seychas'},
-  'сначала':{ru:'сначала',vn:'lúc đầu / trước tiên',en:'at first / initially',ph:'snachala'},
-  'потом':  {ru:'потом',vn:'sau đó / rồi',en:'then / afterwards',ph:'potom'},
-  'наконец':{ru:'наконец',vn:'cuối cùng / rốt cuộc',en:'finally / at last',ph:'nakonets'},
-  'вдруг':  {ru:'вдруг',vn:'bỗng nhiên / đột nhiên',en:'suddenly',ph:'vdrug'},
-  'опять':  {ru:'опять',vn:'lại / lại nữa',en:'again',ph:'opyat'},
-  'снова':  {ru:'снова',vn:'lại / một lần nữa',en:'again / anew',ph:'snova'},
-  'вместе': {ru:'вместе',vn:'cùng nhau',en:'together',ph:'vmyeste'},
-  'здесь':  {ru:'здесь',vn:'ở đây',en:'here',ph:'zdyes'},
-  'там':    {ru:'там',vn:'ở đó / kia',en:'there',ph:'tam'},
-  'тут':    {ru:'тут',vn:'ở đây / ngay đây',en:'here / right here',ph:'tut'},
-  'далеко': {ru:'далеко',vn:'xa',en:'far away',ph:'dalyeko'},
-  'близко': {ru:'близко',vn:'gần',en:'close / near',ph:'blizko'},
-  'вверх':  {ru:'вверх',vn:'lên trên',en:'upwards',ph:'vverkh'},
-  'вниз':   {ru:'вниз',vn:'xuống dưới',en:'downwards',ph:'vniz'},
-  'вправо': {ru:'вправо',vn:'sang phải',en:'to the right',ph:'vpravo'},
-  'влево':  {ru:'влево',vn:'sang trái',en:'to the left',ph:'vlyevo'},
-  'везде':  {ru:'везде',vn:'khắp nơi',en:'everywhere',ph:'vyezdye'},
-  'нигде':  {ru:'нигде',vn:'không đâu / không nơi nào',en:'nowhere',ph:'nihdye'},
-  'давно':  {ru:'давно',vn:'từ lâu / lâu rồi',en:'long ago / for a long time',ph:'davno'},
-  'скоро':  {ru:'скоро',vn:'sắp / chẳng bao lâu',en:'soon',ph:'skoro'},
-  'быстро': {ru:'быстро',vn:'nhanh / nhanh chóng',en:'quickly / fast',ph:'bystro'},
-  'медленно':{ru:'медленно',vn:'chậm / từ từ',en:'slowly',ph:'myedlyenno'},
-  'тихо':   {ru:'тихо',vn:'yên lặng / nhẹ nhàng',en:'quietly / softly',ph:'tikho'},
-  'громко': {ru:'громко',vn:'to / ồn ào',en:'loudly',ph:'gromko'},
-  'хорошо': {ru:'хорошо',vn:'tốt / ổn / được',en:'well / good / OK',ph:'khorosho'},
-  'плохо':  {ru:'плохо',vn:'tệ / không tốt',en:'badly / poorly',ph:'plokho'},
-  'много':  {ru:'много',vn:'nhiều',en:'many / much',ph:'mnogo'},
-  'мало':   {ru:'мало',vn:'ít',en:'few / little',ph:'malo'},
-  'немного':{ru:'немного',vn:'một chút / ít chút',en:'a little / a bit',ph:'nyemnogo'},
-  'совсем': {ru:'совсем',vn:'hoàn toàn / hẳn',en:'completely / quite',ph:'sovsyem'},
-  'почти':  {ru:'почти',vn:'gần như / hầu như',en:'almost / nearly',ph:'pochti'},
-  'примерно':{ru:'примерно',vn:'khoảng / xấp xỉ',en:'approximately',ph:'primyerno'},
-  'именно': {ru:'именно',vn:'chính là / đúng là',en:'exactly / namely',ph:'imyenno'},
-  'конечно':{ru:'конечно',vn:'tất nhiên / dĩ nhiên',en:'of course / certainly',ph:'konechno'},
-  'наверное':{ru:'наверное',vn:'chắc / có lẽ',en:'probably / I think',ph:'navyernoye'},
-  'может':  {ru:'может',vn:'có thể',en:'maybe / might',ph:'mozhet'},
-  'надо':   {ru:'надо',vn:'cần / phải',en:'need to / must',ph:'nado'},
-  'нужно':  {ru:'нужно',vn:'cần thiết / phải',en:'necessary / need',ph:'nuzhno'},
-  'можно':  {ru:'можно',vn:'được phép / có thể',en:'may / allowed',ph:'mozhno'},
-  'нельзя': {ru:'нельзя',vn:'không được / cấm',en:'not allowed / impossible',ph:'nelzya'},
-  'нет':    {ru:'нет',vn:'không / không có',en:'no / there is not',ph:'nyet'},
-  'да':     {ru:'да',vn:'có / vâng',en:'yes',ph:'da'},
-
-  // ── Глаголы / Common verbs ───────────────────────────
-  'быть':   {ru:'быть',vn:'là / có / tồn tại',en:'to be',ph:'bytʼ'},
-  'есть':   {ru:'есть',vn:'có / tồn tại / ăn',en:'there is / to eat',ph:'yestʼ'},
-  'был':    {ru:'был',vn:'đã là / đã có',en:'was (masc.)',ph:'byl'},
-  'была':   {ru:'была',vn:'đã là (nữ)',en:'was (fem.)',ph:'byla'},
-  'было':   {ru:'было',vn:'đã là (trung)',en:'was (neut.)',ph:'bylo'},
-  'были':   {ru:'были',vn:'đã là (số nhiều)',en:'were',ph:'byli'},
-  'стать':  {ru:'стать',vn:'trở thành',en:'to become',ph:'statʼ'},
-  'стал':   {ru:'стал',vn:'đã trở thành',en:'became (masc.)',ph:'stal'},
-  'идти':   {ru:'идти',vn:'đi / đang đi',en:'to go (on foot)',ph:'idti'},
-  'идёт':   {ru:'идёт',vn:'đang đi / diễn ra',en:'goes / is going on',ph:'idyot'},
-  'ходить': {ru:'ходить',vn:'đi (thường xuyên)',en:'to walk / go (regularly)',ph:'khodit'},
-  'ехать':  {ru:'ехать',vn:'đi (bằng xe)',en:'to go (by vehicle)',ph:'yekhat'},
-  'ездить': {ru:'ездить',vn:'đi xe (thường xuyên)',en:'to drive / ride',ph:'yezdit'},
-  'прийти': {ru:'прийти',vn:'đến / tới',en:'to come / arrive',ph:'priyti'},
-  'приехать':{ru:'приехать',vn:'đến (bằng xe)',en:'to arrive (by vehicle)',ph:'priyekhat'},
-  'знать':  {ru:'знать',vn:'biết',en:'to know',ph:'znatʼ'},
-  'думать': {ru:'думать',vn:'nghĩ / suy nghĩ',en:'to think',ph:'dumatʼ'},
-  'говорить':{ru:'говорить',vn:'nói',en:'to speak / say',ph:'govoritʼ'},
-  'сказать':{ru:'сказать',vn:'nói (xong) / bảo',en:'to say (pf.)',ph:'skazatʼ'},
-  'видеть': {ru:'видеть',vn:'thấy / nhìn',en:'to see',ph:'videtʼ'},
-  'смотреть':{ru:'смотреть',vn:'xem / nhìn',en:'to look / watch',ph:'smotryet'},
-  'слышать':{ru:'слышать',vn:'nghe thấy',en:'to hear',ph:'slyshat'},
-  'слушать':{ru:'слушать',vn:'lắng nghe',en:'to listen',ph:'slushat'},
-  'работать':{ru:'работать',vn:'làm việc',en:'to work',ph:'rabotат'},
-  'делать': {ru:'делать',vn:'làm / thực hiện',en:'to do / make',ph:'delatʼ'},
-  'хотеть': {ru:'хотеть',vn:'muốn',en:'to want',ph:'khotetʼ'},
-  'любить': {ru:'любить',vn:'yêu / thích',en:'to love / like',ph:'lyubitʼ'},
-  'нравиться':{ru:'нравиться',vn:'thích / ưa',en:'to like (impersonal)',ph:'nravitsya'},
-  'помочь': {ru:'помочь',vn:'giúp đỡ (xong)',en:'to help (pf.)',ph:'pomoch'},
-  'понять': {ru:'понять',vn:'hiểu (ra)',en:'to understand (pf.)',ph:'ponyat'},
-  'понимать':{ru:'понимать',vn:'hiểu / đang hiểu',en:'to understand',ph:'ponimat'},
-  'ждать':  {ru:'ждать',vn:'chờ đợi',en:'to wait',ph:'zhdatʼ'},
-  'получить':{ru:'получить',vn:'nhận được / lấy',en:'to get / receive',ph:'poluchit'},
-  'давать': {ru:'давать',vn:'cho / đưa',en:'to give',ph:'davatʼ'},
-  'дать':   {ru:'дать',vn:'cho (xong) / đưa',en:'to give (pf.)',ph:'datʼ'},
-  'брать':  {ru:'брать',vn:'lấy / cầm',en:'to take',ph:'bratʼ'},
-  'взять':  {ru:'взять',vn:'lấy (xong) / cầm',en:'to take (pf.)',ph:'vzyatʼ'},
-  'ставить':{ru:'ставить',vn:'đặt (đứng)',en:'to put / place',ph:'stavit'},
-  'класть': {ru:'класть',vn:'đặt (nằm)',en:'to put / lay',ph:'klastʼ'},
-  'писать': {ru:'писать',vn:'viết',en:'to write',ph:'pisatʼ'},
-  'читать': {ru:'читать',vn:'đọc',en:'to read',ph:'chitatʼ'},
-  'учить':  {ru:'учить',vn:'học / dạy',en:'to learn / teach',ph:'uchitʼ'},
-  'учиться':{ru:'учиться',vn:'học (ở trường)',en:'to study',ph:'uchitʼsya'},
-  'жить':   {ru:'жить',vn:'sống / ở',en:'to live',ph:'zhitʼ'},
-  'стоить': {ru:'стоить',vn:'có giá / đáng',en:'to cost / be worth',ph:'stoitʼ'},
-  'начать': {ru:'начать',vn:'bắt đầu',en:'to begin (pf.)',ph:'nachatʼ'},
-  'начинать':{ru:'начинать',vn:'bắt đầu (đang)',en:'to begin',ph:'nachinatʼ'},
-  'кончить':{ru:'кончить',vn:'kết thúc / xong',en:'to finish',ph:'konchitʼ'},
-  'продолжать':{ru:'продолжать',vn:'tiếp tục',en:'to continue',ph:'prodolzhat'},
-  'открыть':{ru:'открыть',vn:'mở ra',en:'to open (pf.)',ph:'otkryt'},
-  'закрыть':{ru:'закрыть',vn:'đóng lại',en:'to close (pf.)',ph:'zakryt'},
-  'спросить':{ru:'спросить',vn:'hỏi',en:'to ask (pf.)',ph:'sprosit'},
-  'ответить':{ru:'ответить',vn:'trả lời',en:'to answer (pf.)',ph:'otvetit'},
-  'купить': {ru:'купить',vn:'mua',en:'to buy (pf.)',ph:'kupit'},
-  'продать':{ru:'продать',vn:'bán',en:'to sell (pf.)',ph:'prodat'},
-  'искать': {ru:'искать',vn:'tìm kiếm',en:'to search / look for',ph:'iskat'},
-  'найти':  {ru:'найти',vn:'tìm thấy',en:'to find (pf.)',ph:'nayti'},
-  'показать':{ru:'показать',vn:'chỉ / cho xem',en:'to show (pf.)',ph:'pokazat'},
-  'называть':{ru:'называть',vn:'gọi là / đặt tên',en:'to call / name',ph:'nazyvat'},
-  'называться':{ru:'называться',vn:'có tên là / gọi là',en:'to be called',ph:'nazyvatsya'},
-  'считать':{ru:'считать',vn:'cho rằng / đếm',en:'to consider / count',ph:'schitat'},
-  'использовать':{ru:'использовать',vn:'sử dụng',en:'to use',ph:'ispolzovat'},
-  'строить':{ru:'строить',vn:'xây dựng',en:'to build',ph:'stroit'},
-  'решить': {ru:'решить',vn:'quyết định / giải',en:'to decide / solve (pf.)',ph:'reshit'},
-  'значить':{ru:'значить',vn:'có nghĩa là',en:'to mean / signify',ph:'znachit'},
-
-  // ── Прилагательные / Adjectives ──────────────────────
-  'большой':{ru:'большой',vn:'to / lớn',en:'big / large',ph:'bolshoy'},
-  'маленький':{ru:'маленький',vn:'nhỏ / bé',en:'small / little',ph:'malyenkiy'},
-  'новый':  {ru:'новый',vn:'mới',en:'new',ph:'novy'},
-  'старый': {ru:'старый',vn:'cũ / già',en:'old',ph:'stary'},
-  'хороший':{ru:'хороший',vn:'tốt / hay',en:'good',ph:'khoroshy'},
-  'плохой': {ru:'плохой',vn:'xấu / tệ',en:'bad',ph:'plakhoy'},
-  'красивый':{ru:'красивый',vn:'đẹp',en:'beautiful / handsome',ph:'krasivyy'},
-  'молодой':{ru:'молодой',vn:'trẻ',en:'young',ph:'molodoy'},
-  'другой': {ru:'другой',vn:'khác / người khác',en:'other / another',ph:'drugoy'},
-  'первый': {ru:'первый',vn:'đầu tiên / thứ nhất',en:'first',ph:'pyervy'},
-  'последний':{ru:'последний',vn:'cuối cùng / mới nhất',en:'last / latest',ph:'poslydniy'},
-  'следующий':{ru:'следующий',vn:'tiếp theo',en:'next / following',ph:'slyduyushiy'},
-  'разный': {ru:'разный',vn:'khác nhau / đa dạng',en:'different / various',ph:'razny'},
-  'важный': {ru:'важный',vn:'quan trọng',en:'important',ph:'vazhny'},
-  'главный':{ru:'главный',vn:'chính / chủ yếu',en:'main / chief',ph:'glavny'},
-  'полный': {ru:'полный',vn:'đầy / đầy đủ',en:'full / complete',ph:'polny'},
-  'целый':  {ru:'целый',vn:'cả / nguyên vẹn',en:'whole / entire',ph:'tselyy'},
-  'нужный': {ru:'нужный',vn:'cần thiết',en:'needed / necessary',ph:'nuzhny'},
-  'высокий':{ru:'высокий',vn:'cao',en:'tall / high',ph:'vysokiy'},
-  'низкий': {ru:'низкий',vn:'thấp',en:'low / short',ph:'nizkiy'},
-  'длинный':{ru:'длинный',vn:'dài',en:'long',ph:'dlinny'},
-  'короткий':{ru:'короткий',vn:'ngắn',en:'short',ph:'korotkiy'},
-  'широкий':{ru:'широкий',vn:'rộng',en:'wide / broad',ph:'shirokiy'},
-  'узкий':  {ru:'узкий',vn:'hẹp',en:'narrow',ph:'uzkiy'},
-  'сильный':{ru:'сильный',vn:'mạnh / khoẻ',en:'strong',ph:'silny'},
-  'слабый': {ru:'слабый',vn:'yếu / nhẹ',en:'weak',ph:'slaby'},
-  'лёгкий': {ru:'лёгкий',vn:'nhẹ / dễ',en:'light / easy',ph:'lyokhkiy'},
-  'трудный':{ru:'трудный',vn:'khó / vất vả',en:'difficult / hard',ph:'trudny'},
-  'свободный':{ru:'свободный',vn:'tự do / rảnh rỗi',en:'free / available',ph:'svobodny'},
-  'известный':{ru:'известный',vn:'nổi tiếng / có tiếng',en:'famous / known',ph:'izvyestny'},
-  'интересный':{ru:'интересный',vn:'thú vị / hay',en:'interesting',ph:'interesny'},
-  'популярный':{ru:'популярный',vn:'phổ biến',en:'popular',ph:'populyarny'},
-  'любимый':{ru:'любимый',vn:'yêu thích / cưng',en:'favourite / beloved',ph:'lyubimyy'},
-  'настоящий':{ru:'настоящий',vn:'thực sự / hiện tại',en:'real / present',ph:'nastoyashiy'},
-  'особый': {ru:'особый',vn:'đặc biệt / riêng',en:'special / particular',ph:'osoby'},
-
-  // ── Числа и время / Numbers & Time ──────────────────
-  'год':    {ru:'год',vn:'năm',en:'year',ph:'got'},
-  'лет':    {ru:'лет',vn:'năm (tuổi/năm)',en:'years (gen.pl.)',ph:'lyet'},
-  'месяц':  {ru:'месяц',vn:'tháng',en:'month',ph:'myesyats'},
-  'неделя': {ru:'неделя',vn:'tuần',en:'week',ph:'nedelya'},
-  'день':   {ru:'день',vn:'ngày / ban ngày',en:'day',ph:'dyen'},
-  'час':    {ru:'час',vn:'giờ / tiếng',en:'hour',ph:'chas'},
-  'минута': {ru:'минута',vn:'phút',en:'minute',ph:'minuta'},
-  'утро':   {ru:'утро',vn:'buổi sáng',en:'morning',ph:'utro'},
-  'вечер':  {ru:'вечер',vn:'buổi tối',en:'evening',ph:'vyecher'},
-  'ночь':   {ru:'ночь',vn:'đêm / ban đêm',en:'night',ph:'noch'},
-  'сегодня':{ru:'сегодня',vn:'hôm nay',en:'today',ph:'syegodnya'},
-  'завтра': {ru:'завтра',vn:'ngày mai',en:'tomorrow',ph:'zavtra'},
-  'вчера':  {ru:'вчера',vn:'hôm qua',en:'yesterday',ph:'fchera'},
-  'раньше': {ru:'раньше',vn:'trước đây / sớm hơn',en:'before / earlier',ph:'ranshe'},
-  'позже':  {ru:'позже',vn:'sau / muộn hơn',en:'later',ph:'pozhe'},
-  'сразу':  {ru:'сразу',vn:'ngay / liền',en:'immediately / at once',ph:'srazu'},
-
-  // ── Существительные / Common nouns ──────────────────
-  'жизнь':  {ru:'жизнь',vn:'cuộc sống / đời sống',en:'life',ph:'zhizn'},
-  'время':  {ru:'время',vn:'thời gian / thời điểm',en:'time',ph:'vremya'},
-  'место':  {ru:'место',vn:'nơi / chỗ / vị trí',en:'place / seat',ph:'myesto'},
-  'путь':   {ru:'путь',vn:'con đường / hành trình',en:'way / path',ph:'put'},
-  'часть':  {ru:'часть',vn:'phần / bộ phận',en:'part / portion',ph:'chast'},
-  'вопрос': {ru:'вопрос',vn:'câu hỏi / vấn đề',en:'question / issue',ph:'vopros'},
-  'ответ':  {ru:'ответ',vn:'câu trả lời',en:'answer',ph:'otvet'},
-  'пример': {ru:'пример',vn:'ví dụ / tấm gương',en:'example',ph:'primyer'},
-  'число':  {ru:'число',vn:'số / ngày (trong tháng)',en:'number / date',ph:'chislo'},
-  'результат':{ru:'результат',vn:'kết quả',en:'result',ph:'ryezultat'},
-  'проблема':{ru:'проблема',vn:'vấn đề / khó khăn',en:'problem',ph:'problema'},
-  'причина':{ru:'причина',vn:'lý do / nguyên nhân',en:'reason / cause',ph:'prichina'},
-  'цена':   {ru:'цена',vn:'giá / giá cả',en:'price',ph:'tsena'},
-  'роль':   {ru:'роль',vn:'vai trò',en:'role / part',ph:'rol'},
-  'система':{ru:'система',vn:'hệ thống',en:'system',ph:'sistema'},
-  'общество':{ru:'общество',vn:'xã hội',en:'society',ph:'obshchestvo'},
-  'власть': {ru:'власть',vn:'quyền lực / chính quyền',en:'power / authority',ph:'vlast'},
-  'закон':  {ru:'закон',vn:'luật / quy định',en:'law',ph:'zakon'},
-  'правило':{ru:'правило',vn:'quy tắc / luật lệ',en:'rule',ph:'pravilo'},
-  'связь':  {ru:'связь',vn:'liên kết / kết nối / liên lạc',en:'connection / communication',ph:'svyaz'},
-  'программа':{ru:'программа',vn:'chương trình',en:'programme',ph:'programma'},
-  'услуга': {ru:'услуга',vn:'dịch vụ',en:'service',ph:'usluga'},
-  'ситуация':{ru:'ситуация',vn:'tình huống / hoàn cảnh',en:'situation',ph:'situatsiya'},
-  'отношение':{ru:'отношение',vn:'mối quan hệ / thái độ',en:'relation / attitude',ph:'otnosheniye'},
-  'качество':{ru:'качество',vn:'chất lượng',en:'quality',ph:'kachestvo'},
-  'требование':{ru:'требование',vn:'yêu cầu / đòi hỏi',en:'requirement / demand',ph:'trebovaniye'},
-};
-
-/* Lookup in fallback dict — tries exact, then stripped form */
-function rdFallbackLookup(norm){
-  if(RD_FALLBACK[norm]) return RD_FALLBACK[norm];
-  // Also try without trailing case endings (simple trim)
-  for(var cut=1;cut<=4;cut++){
-    var stem = norm.slice(0,-cut);
-    if(stem.length>=3 && RD_FALLBACK[stem]) return RD_FALLBACK[stem];
-  }
-  return null;
+function App_rdClosePopup(){
+  var popup = document.getElementById('rd-popup');
+  if(popup) popup.style.display = 'none';
+  RD.currentWord = null;
 }
 
-/* ── AI translate for unknown words ─────────────────────────── */
+function App_rdSpeak(){
+  if(!RD.currentWord) return;
+  if('speechSynthesis' in window){
+    var u = new SpeechSynthesisUtterance(RD.currentWord);
+    u.lang = 'ru-RU'; u.rate = 0.85;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+}
+
+function App_rdGoLookup(){
+  if(!RD.currentWord) return;
+  App_rdClosePopup();
+  var el = document.getElementById('lk-input');
+  if(el){ el.value = RD.currentWord; }
+  nav('lookup');
+  setTimeout(function(){ App.lkSearch(RD.currentWord); }, 80);
+}
+
+/* ── AI word translation (unchanged) ────────────────────────── */
 function rdAiTranslate(word){
-  // Cancel any previous in-flight request
   if(rdAiTranslate._ctrl) try{ rdAiTranslate._ctrl.abort(); }catch(e){}
   rdAiTranslate._ctrl = (typeof AbortController!=='undefined') ? new AbortController() : null;
-
-  if(location.protocol !== 'https:'){
-    var box=document.getElementById('rdp-ai-box');
-    if(box) box.innerHTML='<div style="color:var(--com);font-size:13px;padding:10px 0;">Không có trong từ điển.<br><span style="color:rgba(255,255,255,.3);font-size:11px;">'+word+'</span></div>';
-    return;
-  }
+  var box = document.getElementById('rdp-ai-box');
+  if(box) box.innerHTML = '<div style="color:var(--com);font-size:13px;padding:8px 0;">Đang tra...</div>';
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
+    signal: rdAiTranslate._ctrl ? rdAiTranslate._ctrl.signal : undefined,
     body:JSON.stringify({
       model:'claude-sonnet-4-20250514',
       max_tokens:200,
       system:'Переводчик. Только JSON без markdown.',
-      messages:[{role:'user',content:'Переведи русское слово "'+word+'" на вьетнамский и английский. JSON: {"vn":"...","en":"...","ph":"...","note":"краткая заметка на вьетнамском до 8 слов"}'}]
+      messages:[{role:'user',content:'Переведи русское слово "'+word+'" на вьетнамский и английский. JSON: {"vn":"...","en":"...","ph":"...","note":"краткое пояснение на вьетнамском или null"}'}]
     })
   })
-  .then(function(r){return r.json();})
+  .then(function(r){ return r.json(); })
   .then(function(data){
-    var txt=(data.content&&data.content[0]&&data.content[0].text)||'';
-    txt=txt.replace(/^```[a-z]*\s*/m,'').replace(/\s*```$/m,'').trim();
-    var tr=JSON.parse(txt);
-    var box=document.getElementById('rdp-ai-box');
-    if(!box) return;
-    var pph=document.getElementById('rdp-ph');
-    if(pph&&tr.ph) pph.textContent='/ '+tr.ph+' /';
-    box.innerHTML='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;">'
-      +'<div style="font-size:22px;font-weight:700;color:var(--tx);">'+(tr.vn||'?')+'</div>'
-      +(tr.en?'<div style="font-size:12px;color:var(--com);margin-top:2px;">'+tr.en+'</div>':'')
-      +(tr.note?'<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;">'+tr.note+'</div>':'')
-      +'<div style="font-size:10px;color:rgba(255,159,10,.6);margin-top:8px;font-family:var(--mono);">✦ AI dịch</div>'
+    var txt=(data.content&&data.content[0]&&data.content[0].text)||'{}';
+    txt=txt.replace(/```[a-z]*\s*/g,'').replace(/```/g,'').trim();
+    var obj=JSON.parse(txt);
+    var box2=document.getElementById('rdp-ai-box');
+    if(!box2) return;
+    box2.innerHTML='<div style="margin-top:8px;">'
+      +'<div style="font-size:16px;font-weight:700;color:var(--cyn);">'+(obj.vn||'')+'</div>'
+      +(obj.en?'<div style="font-size:13px;color:var(--com);margin-top:2px;">'+obj.en+'</div>':'')
+      +(obj.ph?'<div style="font-size:12px;color:var(--txd);margin-top:2px;">'+obj.ph+'</div>':'')
+      +(obj.note?'<div style="font-size:11px;color:var(--com);margin-top:4px;font-style:italic;">'+obj.note+'</div>':'')
       +'</div>';
   })
-  .catch(function(err){
-    if(err && err.name === 'AbortError') return; // cancelled, ignore
-    var box=document.getElementById('rdp-ai-box');
-    if(box) box.innerHTML='<div style="color:var(--com);font-size:13px;padding:10px 0;">Không dịch được.<br><span style="color:rgba(255,255,255,.3);font-size:11px;">Thử tra trong từ điển.</span></div>';
+  .catch(function(){
+    var fb=rdFallbackLookup(word);
+    var box3=document.getElementById('rdp-ai-box');
+    if(box3) box3.innerHTML='<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||'Không tìm thấy')+'</div>';
   });
 }
+rdAiTranslate._ctrl = null;
 
-/* ── Popup controls ──────────────────────────────────────────── */
-function App_rdClosePopup(){
-  // Cancel any in-flight AI translation
-  if(typeof rdAiTranslate !== 'undefined' && rdAiTranslate._ctrl){
-    try{ rdAiTranslate._ctrl.abort(); } catch(e){}
-    rdAiTranslate._ctrl = null;
-  }
-  var pop = document.getElementById('rd-popup');
-  var bd  = document.getElementById('rd-popup-backdrop');
-  if(pop) pop.classList.remove('open');
-  if(bd)  bd.classList.remove('open');
-  var prev=document.querySelector('.rd-w.tapped');
-  if(prev) prev.classList.remove('tapped');
+/* ── Fallback dictionary (short list) ───────────────────────── */
+var _RD_FB = {"я":"tôi","ты":"bạn","он":"anh ấy","она":"cô ấy","мы":"chúng tôi","они":"họ","это":"đây/đó","не":"không","и":"và","в":"trong/ở","на":"trên","с":"với","что":"cái gì/rằng","как":"như thế nào","все":"tất cả","так":"như vậy","но":"nhưng","по":"theo","из":"từ","к":"đến","за":"sau/vì","от":"từ","до":"đến/trước","у":"ở/có","же":"chính","есть":"có/ăn","был":"đã là","быть":"là","один":"một","первый":"đầu tiên","большой":"lớn","маленький":"nhỏ","хороший":"tốt","новый":"mới","старый":"cũ/già","год":"năm","день":"ngày","время":"thời gian","человек":"người","дом":"nhà","город":"thành phố","страна":"đất nước","жизнь":"cuộc sống","работа":"công việc","слово":"từ","место":"chơi","дело":"việc"};
+function rdFallbackLookup(w){
+  var n=rdNorm(w);
+  return _RD_FB[n]||null;
 }
 
-function App_rdSpeak(){ if(RD.currentWord) speak(RD.currentWord); }
 
-function App_rdGoLookup(word){
-  App_rdClosePopup();
-  nav('lookup');
-  setTimeout(function(){
-    var inp=document.getElementById('lk-input');
-    if(inp){ inp.value=word; App.lkSearch(word); }
-  },200);
-}
-
-function App_rdRefresh(){
-  var btn = document.getElementById('rd-refresh-btn');
-  if(btn){ btn.classList.add('spinning'); btn.disabled=true; }
-  try{ localStorage.removeItem(rdTodayKey()); }catch(_){}
-  RD.articles=[]; RD.loading=false;
-  rdFetch();
-  // Re-enable after fetch settles (max 12s)
-  setTimeout(function(){
-    if(btn){ btn.classList.remove('spinning'); btn.disabled=false; }
-  }, 12000);
-}
 
 
 
@@ -11405,7 +10914,10 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   rdClosePopup:App_rdClosePopup,
   rdSpeak:App_rdSpeak,
   rdGoLookup:App_rdGoLookup,
-  rdRefresh:App_rdRefresh
+  rdOpenTopic:App_rdOpenTopic,
+  rdOpenStory:App_rdOpenStory,
+  rdBack:App_rdBack,
+  rdTrans:App_rdTrans
 };
 })();
 document.addEventListener('DOMContentLoaded',App.init);
