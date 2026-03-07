@@ -1096,6 +1096,7 @@ body::after{
     <div class="lvlBtn" id="lb-A2" onclick="App.setLevel('A2')"><div style="font-size:14px;font-weight:700;color:var(--txd);">A2</div><div style="font-size:9px;color:var(--com);">elementary</div></div>
     <div class="lvlBtn" id="lb-B1" onclick="App.setLevel('B1')"><div style="font-size:14px;font-weight:700;color:var(--txd);">B1</div><div style="font-size:9px;color:var(--com);">intermediate</div></div>
     <div class="lvlBtn" id="lb-B2" onclick="App.setLevel('B2')"><div style="font-size:14px;font-weight:700;color:var(--txd);">B2</div><div style="font-size:9px;color:var(--com);">upper-int.</div></div>
+    <div class="lvlBtn" id="lb-C1" onclick="App.setLevel('C1')"><div style="font-size:14px;font-weight:700;color:var(--txd);">C1</div><div style="font-size:9px;color:var(--com);">advanced</div></div>
   </div>
   <div style="margin:12px 16px 0;padding:14px;border-radius:18px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-shrink:0;box-shadow:0 1px 0 rgba(255,255,255,0.07) inset;" id="srs-hero" onclick="App.srsStart()">
     <div style="font-size:10px;color:var(--com);">// spaced_repetition.run()</div>
@@ -1377,7 +1378,7 @@ body::after{
 <!-- DAILY DONE SCREEN -->
 <div id="s-daily-done" class="screen">
   <div class="scrl" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;padding:32px 24px;">
-    <div style="font-size:72px;" id="dld-em">🏆</div>
+    <div style="font-size:72px;" id="dld-em" style="display:flex;align-items:center;justify-content:center;"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 2 20 2 20 6 16 6"/><path d="M8 6a4 4 0 0 0 4 4 4 4 0 0 0 4-4"/><line x1="12" y1="10" x2="12" y2="16"/><rect x="8" y="16" width="8" height="2" rx="1"/><line x1="6" y1="22" x2="18" y2="22"/></svg></div>
     <div style="font-size:26px;font-weight:900;color:#ff9f0a;font-family:var(--mono);" id="dld-title">Hoàn thành!</div>
     <div style="font-size:14px;color:var(--txd);text-align:center;line-height:1.6;" id="dld-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-top:8px;" id="dld-stats"></div>
@@ -5987,6 +5988,394 @@ const vocabularyDatabase = {
       { ru: 'Инновация', vn: 'Đổi mới / Sáng tạo', en: 'Innovation', ph: 'innovátsiya' },
     ],
   },
+    "🏢 Quản lý dự án & Môi trường làm việc nâng cao": [
+      { ru: 'Делегирование',  vn: 'Uỷ quyền',                  en: 'Delegation',         ph: 'delegirovaniye' },
+      { ru: 'Приоритизация',  vn: 'Ưu tiên hoá',               en: 'Prioritization',     ph: 'prioritizátsiya' },
+      { ru: 'Дедлайн',        vn: 'Hạn chót',                  en: 'Deadline',           ph: 'dedlayn' },
+      { ru: 'Компетентность', vn: 'Năng lực',                  en: 'Competence',         ph: 'kompetentnost\'' },
+      { ru: 'Эффективность',  vn: 'Hiệu quả',                  en: 'Efficiency',         ph: 'effektivnost\'' },
+      { ru: 'Инициатива',     vn: 'Sáng kiến / Chủ động',       en: 'Initiative',         ph: 'initsiátivy' },
+      { ru: 'Обратная связь', vn: 'Phản hồi',                  en: 'Feedback',           ph: 'obratnaya svyaz\'' },
+      { ru: 'Переговоры',     vn: 'Đàm phán',                  en: 'Negotiations',       ph: 'peregovory' },
+      { ru: 'Портфолио',      vn: 'Hồ sơ công việc',           en: 'Portfolio',          ph: 'portfólio' },
+      { ru: 'Мотивация',      vn: 'Động lực',                  en: 'Motivation',         ph: 'motivátsiya' },
+      { ru: 'Лидерство',      vn: 'Khả năng lãnh đạo',         en: 'Leadership',         ph: 'lídersvo' },
+      { ru: 'Корпоративный',  vn: 'Thuộc doanh nghiệp',        en: 'Corporate',          ph: 'korporativnyy' },
+    ],
+    "🎭 Nghệ thuật biểu diễn & Điện ảnh": [
+      { ru: 'Режиссёр',       vn: 'Đạo diễn',                  en: 'Director',           ph: 'rezhissyor' },
+      { ru: 'Сценарий',       vn: 'Kịch bản',                  en: 'Screenplay',         ph: 'stsenáriy' },
+      { ru: 'Премьера',       vn: 'Buổi ra mắt / Công chiếu',  en: 'Premiere',           ph: 'prem\'yéra' },
+      { ru: 'Аплодисменты',   vn: 'Tiếng vỗ tay',              en: 'Applause',           ph: 'aplodisménty' },
+      { ru: 'Репетиция',      vn: 'Buổi tập / Diễn thử',       en: 'Rehearsal',          ph: 'repetítsiya' },
+      { ru: 'Декорации',      vn: 'Cảnh nền / Trang trí sân khấu', en: 'Scenery / Decor', ph: 'dekorátsii' },
+      { ru: 'Образ',          vn: 'Hình tượng / Nhân vật',     en: 'Image / Character',  ph: 'óbraz' },
+      { ru: 'Импровизация',   vn: 'Ứng tấu / Ngẫu hứng',       en: 'Improvisation',      ph: 'improvizátsiya' },
+      { ru: 'Жанр',           vn: 'Thể loại',                  en: 'Genre',              ph: 'zhanr' },
+      { ru: 'Критика',        vn: 'Phê bình',                  en: 'Critique / Criticism',ph: 'krítika' },
+    ],
+    "🌿 Môi trường & Phát triển bền vững nâng cao": [
+      { ru: 'Биоразнообразие',vn: 'Đa dạng sinh học',          en: 'Biodiversity',       ph: 'bioraznoobráziye' },
+      { ru: 'Декарбонизация', vn: 'Phi carbon hoá',            en: 'Decarbonization',    ph: 'dekarbonizátsiya' },
+      { ru: 'Возобновляемый', vn: 'Có thể tái tạo',            en: 'Renewable',          ph: 'vozobnovlyáyemyy' },
+      { ru: 'Углеродный след',vn: 'Dấu chân carbon',           en: 'Carbon footprint',   ph: 'uglerodniy sled' },
+      { ru: 'Устойчивый',     vn: 'Bền vững',                  en: 'Sustainable',        ph: 'ustoychivyy' },
+      { ru: 'Экосистема',     vn: 'Hệ sinh thái',              en: 'Ecosystem',          ph: 'ekosistéma' },
+      { ru: 'Парниковый газ', vn: 'Khí nhà kính',              en: 'Greenhouse gas',     ph: 'parnikovyy gaz' },
+      { ru: 'Переработка',    vn: 'Tái chế',                   en: 'Recycling',          ph: 'pererabótka' },
+      { ru: 'Загрязнение',    vn: 'Ô nhiễm',                   en: 'Pollution',          ph: 'zagryazneniye' },
+      { ru: 'Климатический кризис', vn: 'Khủng hoảng khí hậu', en: 'Climate crisis',     ph: 'klimaticheskiy krizis' },
+      { ru: 'Нулевые выбросы',vn: 'Phát thải ròng bằng không', en: 'Net zero emissions', ph: 'nulevyye vybrósy' },
+    ],
+    "🧘 Sức khoẻ tâm thần & Phúc lợi cá nhân B2": [
+      { ru: 'Психотерапия',   vn: 'Liệu pháp tâm lý',          en: 'Psychotherapy',      ph: 'psikhoterapíya' },
+      { ru: 'Осознанность',   vn: 'Chánh niệm',                en: 'Mindfulness',        ph: 'osoznánnost\'' },
+      { ru: 'Выгорание',      vn: 'Kiệt sức / Burnout',         en: 'Burnout',            ph: 'vygorán︠i︡ye' },
+      { ru: 'Тревожность',    vn: 'Lo âu',                     en: 'Anxiety',            ph: 'trevózhnost\'' },
+      { ru: 'Устойчивость',   vn: 'Tính bền bỉ / Khả năng phục hồi', en: 'Resilience',   ph: 'ustoychivost\'' },
+      { ru: 'Самооценка',     vn: 'Lòng tự trọng / Tự đánh giá',en: 'Self-esteem',       ph: 'samootsénka' },
+      { ru: 'Эмпатия',        vn: 'Sự đồng cảm',               en: 'Empathy',            ph: 'empátiya' },
+      { ru: 'Границы',        vn: 'Ranh giới (cá nhân)',        en: 'Boundaries',         ph: 'granítsy' },
+      { ru: 'Принятие',       vn: 'Sự chấp nhận',              en: 'Acceptance',         ph: 'prinyátiye' },
+      { ru: 'Исцеление',      vn: 'Chữa lành / Hồi phục',       en: 'Healing',            ph: 'istseléniye' },
+    ],
+
+  C1: {
+   "🧠 Triết học & Tư duy trừu tượng": [
+      { ru: 'Сознание',       vn: 'Ý thức',                   en: 'Consciousness',      ph: 'soznániye' },
+      { ru: 'Бытие',          vn: 'Tồn tại / Bản thể',        en: 'Being / Existence',  ph: 'bytíye' },
+      { ru: 'Познание',       vn: 'Nhận thức',                 en: 'Cognition',          ph: 'poznániye' },
+      { ru: 'Абстракция',     vn: 'Trừu tượng',                en: 'Abstraction',        ph: 'abstrákt︠s︡iya' },
+      { ru: 'Парадокс',       vn: 'Nghịch lý',                 en: 'Paradox',            ph: 'parádoks' },
+      { ru: 'Диалектика',     vn: 'Biện chứng pháp',           en: 'Dialectics',         ph: 'dialéktika' },
+      { ru: 'Субъективный',   vn: 'Chủ quan',                  en: 'Subjective',         ph: 'sub"yektivnyy' },
+      { ru: 'Объективный',    vn: 'Khách quan',                 en: 'Objective',          ph: 'ob"yektivnyy' },
+      { ru: 'Категория',      vn: 'Phạm trù',                  en: 'Category',           ph: 'kategóriya' },
+      { ru: 'Феномен',        vn: 'Hiện tượng',                en: 'Phenomenon',         ph: 'fenomén' },
+      { ru: 'Онтология',      vn: 'Bản thể luận',              en: 'Ontology',           ph: 'ontológiya' },
+      { ru: 'Эпистемология',  vn: 'Nhận thức luận',            en: 'Epistemology',       ph: 'epistemológiya' },
+    ],
+    "📜 Ngôn ngữ học & Tu từ học": [
+      { ru: 'Метафора',       vn: 'Ẩn dụ',                    en: 'Metaphor',           ph: 'metáfora' },
+      { ru: 'Риторика',       vn: 'Tu từ học',                 en: 'Rhetoric',           ph: 'ritoríka' },
+      { ru: 'Семантика',      vn: 'Ngữ nghĩa học',             en: 'Semantics',          ph: 'semántika' },
+      { ru: 'Синтаксис',      vn: 'Cú pháp',                   en: 'Syntax',             ph: 'sintáksis' },
+      { ru: 'Прагматика',     vn: 'Ngữ dụng học',              en: 'Pragmatics',         ph: 'pragmátika' },
+      { ru: 'Дискурс',        vn: 'Diễn ngôn',                 en: 'Discourse',          ph: 'diskurs' },
+      { ru: 'Нарратив',       vn: 'Tự sự / Trần thuật',        en: 'Narrative',          ph: 'narrátiv' },
+      { ru: 'Интерпретация',  vn: 'Diễn giải',                 en: 'Interpretation',     ph: 'interpretátsiya' },
+      { ru: 'Контекст',       vn: 'Bối cảnh / Ngữ cảnh',       en: 'Context',            ph: 'kontékst' },
+      { ru: 'Аргументация',   vn: 'Lập luận',                  en: 'Argumentation',      ph: 'argumentátsiya' },
+    ],
+    "🏛️ Văn học Nga & Phong cách viết": [
+      { ru: 'Летопись',       vn: 'Biên niên sử',              en: 'Chronicle / Annals', ph: 'létopis\'' },
+      { ru: 'Эпиграф',        vn: 'Đề từ (trích dẫn đầu sách)',en: 'Epigraph',           ph: 'epigraf' },
+      { ru: 'Подтекст',       vn: 'Ý nghĩa ẩn / Ngầm ý',      en: 'Subtext',            ph: 'podtékst' },
+      { ru: 'Лирический',     vn: 'Trữ tình',                  en: 'Lyrical',            ph: 'liricheskiy' },
+      { ru: 'Трагический',    vn: 'Bi kịch',                   en: 'Tragic',             ph: 'tragicheskiy' },
+      { ru: 'Символизм',      vn: 'Chủ nghĩa tượng trưng',     en: 'Symbolism',          ph: 'simvolizm' },
+      { ru: 'Реализм',        vn: 'Chủ nghĩa hiện thực',       en: 'Realism',            ph: 'realizm' },
+      { ru: 'Авангард',       vn: 'Tiên phong / Avante-garde', en: 'Avant-garde',        ph: 'avangárd' },
+      { ru: 'Проза',          vn: 'Văn xuôi',                  en: 'Prose',              ph: 'próza' },
+      { ru: 'Поэзия',         vn: 'Thơ ca',                    en: 'Poetry',             ph: 'poezíya' },
+      { ru: 'Рукопись',       vn: 'Bản thảo / Thủ bản',        en: 'Manuscript',         ph: 'rúkopis\'' },
+    ],
+    "🔬 Khoa học nâng cao & Phương pháp luận": [
+      { ru: 'Гипотеза',       vn: 'Giả thuyết',                en: 'Hypothesis',         ph: 'gipóteza' },
+      { ru: 'Методология',    vn: 'Phương pháp luận',          en: 'Methodology',        ph: 'metodológiya' },
+      { ru: 'Парадигма',      vn: 'Hệ mẫu / Paradigm',         en: 'Paradigm',           ph: 'paradígma' },
+      { ru: 'Воспроизводимость', vn: 'Tính tái lặp',           en: 'Reproducibility',    ph: 'vosproizvodímost\'' },
+      { ru: 'Корреляция',     vn: 'Tương quan',                en: 'Correlation',        ph: 'korrelyátsiya' },
+      { ru: 'Эмпирический',   vn: 'Thực nghiệm',               en: 'Empirical',          ph: 'empirícheskiy' },
+      { ru: 'Дедукция',       vn: 'Suy diễn',                  en: 'Deduction',          ph: 'dedúktsiya' },
+      { ru: 'Индукция',       vn: 'Quy nạp',                   en: 'Induction',          ph: 'indúktsiya' },
+      { ru: 'Квантификация',  vn: 'Định lượng hoá',            en: 'Quantification',     ph: 'kvantifikátsiya' },
+      { ru: 'Детерминизм',    vn: 'Thuyết tất định',           en: 'Determinism',        ph: 'determinizm' },
+    ],
+    "⚖️ Luật học & Quyền con người nâng cao": [
+      { ru: 'Юрисдикция',     vn: 'Thẩm quyền tài phán',       en: 'Jurisdiction',       ph: 'yurisdíktsiya' },
+      { ru: 'Прецедент',      vn: 'Tiền lệ pháp',              en: 'Precedent',          ph: 'pretsedént' },
+      { ru: 'Иммунитет',      vn: 'Miễn trừ (pháp lý)',        en: 'Immunity',           ph: 'immunitét' },
+      { ru: 'Апелляция',      vn: 'Kháng cáo',                 en: 'Appeal',             ph: 'apellyátsiya' },
+      { ru: 'Легитимность',   vn: 'Tính hợp pháp / Chính danh',en: 'Legitimacy',         ph: 'legitimnost\'' },
+      { ru: 'Суверенитет',    vn: 'Chủ quyền',                 en: 'Sovereignty',        ph: 'suverenitet' },
+      { ru: 'Конституционный',vn: 'Thuộc hiến pháp',           en: 'Constitutional',     ph: 'konstitutsionniy' },
+      { ru: 'Обвиняемый',     vn: 'Bị cáo',                    en: 'Defendant',          ph: 'obvinyáyemyy' },
+      { ru: 'Прокурор',       vn: 'Công tố viên',              en: 'Prosecutor',         ph: 'prokurór' },
+      { ru: 'Вердикт',        vn: 'Phán quyết',                en: 'Verdict',            ph: 'verdíkt' },
+    ],
+    "🌐 Ngoại giao & Quan hệ quốc tế nâng cao": [
+      { ru: 'Дипломатия',     vn: 'Ngoại giao',                en: 'Diplomacy',          ph: 'diplomátiya' },
+      { ru: 'Санкции',        vn: 'Trừng phạt / Lệnh cấm vận', en: 'Sanctions',          ph: 'sánktsii' },
+      { ru: 'Переговоры',     vn: 'Đàm phán',                  en: 'Negotiations',       ph: 'peregovóry' },
+      { ru: 'Посредник',      vn: 'Trung gian',                en: 'Mediator',           ph: 'podrédnik' },
+      { ru: 'Ратификация',    vn: 'Phê chuẩn (hiệp ước)',      en: 'Ratification',       ph: 'ratifikátsiya' },
+      { ru: 'Многосторонний', vn: 'Đa phương',                 en: 'Multilateral',       ph: 'mnogostoronniy' },
+      { ru: 'Двусторонний',   vn: 'Song phương',               en: 'Bilateral',          ph: 'dvustoronniy' },
+      { ru: 'Протокол',       vn: 'Nghị định thư',             en: 'Protocol',           ph: 'protokól' },
+      { ru: 'Альянс',         vn: 'Liên minh',                 en: 'Alliance',           ph: 'al\'yáns' },
+      { ru: 'Консенсус',      vn: 'Đồng thuận',                en: 'Consensus',          ph: 'konsensus' },
+    ],
+    "🧬 Khoa học tự nhiên & Công nghệ tiên tiến": [
+      { ru: 'Алгоритм',       vn: 'Thuật toán',                en: 'Algorithm',          ph: 'algóritm' },
+      { ru: 'Нейронная сеть', vn: 'Mạng nơ-ron',               en: 'Neural network',     ph: 'neyronnaya set\'' },
+      { ru: 'Квантовый',      vn: 'Lượng tử',                  en: 'Quantum',            ph: 'kvántovyy' },
+      { ru: 'Биотехнология',  vn: 'Công nghệ sinh học',        en: 'Biotechnology',      ph: 'biotekhnológiya' },
+      { ru: 'Геном',          vn: 'Hệ gen',                    en: 'Genome',             ph: 'genóm' },
+      { ru: 'Нанотехнология', vn: 'Công nghệ nano',            en: 'Nanotechnology',     ph: 'nanotekhnológiya' },
+      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
+      { ru: 'Кибербезопасность', vn: 'An ninh mạng',           en: 'Cybersecurity',      ph: 'kiberbezopásnost\'' },
+      { ru: 'Блокчейн',       vn: 'Chuỗi khối',                en: 'Blockchain',         ph: 'blokchéyn' },
+      { ru: 'Облачные технологии', vn: 'Điện toán đám mây',    en: 'Cloud computing',    ph: 'oblachnyye tekhnológii' },
+    ],
+    "💡 Kinh tế chính trị & Tư tưởng xã hội": [
+      { ru: 'Идеология',      vn: 'Hệ tư tưởng',               en: 'Ideology',           ph: 'ideológiya' },
+      { ru: 'Либерализм',     vn: 'Chủ nghĩa tự do',           en: 'Liberalism',         ph: 'liberalizm' },
+      { ru: 'Консерватизм',   vn: 'Chủ nghĩa bảo thủ',         en: 'Conservatism',       ph: 'konservatizm' },
+      { ru: 'Популизм',       vn: 'Chủ nghĩa dân tuý',         en: 'Populism',           ph: 'populizm' },
+      { ru: 'Глобализация',   vn: 'Toàn cầu hoá',              en: 'Globalization',      ph: 'globalizátsiya' },
+      { ru: 'Монополия',      vn: 'Độc quyền',                 en: 'Monopoly',           ph: 'monopóliya' },
+      { ru: 'Инфляция',       vn: 'Lạm phát',                  en: 'Inflation',          ph: 'inflyátsiya' },
+      { ru: 'Рецессия',       vn: 'Suy thoái kinh tế',         en: 'Recession',          ph: 'retsessiya' },
+      { ru: 'Субсидия',       vn: 'Trợ cấp',                   en: 'Subsidy',            ph: 'subsidiya' },
+      { ru: 'Протекционизм',  vn: 'Chủ nghĩa bảo hộ',         en: 'Protectionism',      ph: 'protektsionizm' },
+      { ru: 'Приватизация',   vn: 'Tư nhân hoá',               en: 'Privatization',      ph: 'privatizátsiya' },
+    ],
+    "✍️ Viết học thuật & Biểu đạt chính xác": [
+      { ru: 'Тезис',          vn: 'Luận điểm',                 en: 'Thesis',             ph: 'tézis' },
+      { ru: 'Аргумент',       vn: 'Luận cứ',                   en: 'Argument',           ph: 'arguméntov' },
+      { ru: 'Вывод',          vn: 'Kết luận',                  en: 'Conclusion',         ph: 'vývod' },
+      { ru: 'Противоречие',   vn: 'Mâu thuẫn',                 en: 'Contradiction',      ph: 'protivoréchiye' },
+      { ru: 'Обобщение',      vn: 'Khái quát hoá',             en: 'Generalization',     ph: 'obobshcheniye' },
+      { ru: 'Уточнение',      vn: 'Làm rõ / Cụ thể hoá',       en: 'Clarification',      ph: 'utochneniye' },
+      { ru: 'Ссылка',         vn: 'Trích dẫn / Tham chiếu',    en: 'Reference / Link',   ph: 'ssylka' },
+      { ru: 'Цитата',         vn: 'Trích dẫn (lời nói)',        en: 'Quote / Citation',   ph: 'tsitáta' },
+      { ru: 'Формулировка',   vn: 'Cách diễn đạt / Phát biểu', en: 'Formulation',        ph: 'formuliróvka' },
+      { ru: 'Обоснование',    vn: 'Cơ sở / Lý do',             en: 'Justification',      ph: 'obosnóvaniye' },
+    ],
+    "🎓 Ngôn ngữ học thuật & Lập luận": [
+      { ru: 'Аргументировать', vn: 'Lập luận / Tranh luận', en: 'To argue', ph: 'argumentirovat' },
+      { ru: 'Обосновать', vn: 'Luận chứng / Chứng minh', en: 'To substantiate', ph: 'obosnovat' },
+      { ru: 'Опровергнуть', vn: 'Bác bỏ / Phản bác', en: 'To refute', ph: 'oprovergnut' },
+      { ru: 'Сформулировать', vn: 'Phát biểu / Diễn đạt', en: 'To formulate', ph: 'sformulirovat' },
+      { ru: 'Обобщить', vn: 'Khái quát hoá', en: 'To summarise', ph: 'obobshchit' },
+      { ru: 'Противоречие', vn: 'Mâu thuẫn', en: 'Contradiction', ph: 'protivorechiye' },
+      { ru: 'Предпосылка', vn: 'Tiền đề', en: 'Premise', ph: 'predposylka' },
+      { ru: 'Умозаключение', vn: 'Kết luận suy lý', en: 'Inference', ph: 'umozaklyucheniye' },
+      { ru: 'Парадокс', vn: 'Nghịch lý', en: 'Paradox', ph: 'paradoks' },
+      { ru: 'Риторика', vn: 'Tu từ học', en: 'Rhetoric', ph: 'ritorika' },
+      { ru: 'Аналогия', vn: 'Sự tương đồng / Loại suy', en: 'Analogy', ph: 'analogiya' },
+      { ru: 'Дискурс', vn: 'Diễn ngôn', en: 'Discourse', ph: 'diskurs' },
+      { ru: 'Концепция', vn: 'Khái niệm / Quan niệm', en: 'Concept', ph: 'kontseptsiya' },
+      { ru: 'Трактовать', vn: 'Diễn giải / Giải thích', en: 'To interpret', ph: 'traktovat' },
+      { ru: 'Абстрактный', vn: 'Trừu tượng', en: 'Abstract', ph: 'abstraktnyy' },
+      { ru: 'Категория', vn: 'Phạm trù', en: 'Category', ph: 'kategoriya' },
+      { ru: 'Постулат', vn: 'Nguyên lý cơ bản', en: 'Postulate', ph: 'postulat' },
+      { ru: 'Дедуктивный', vn: 'Diễn dịch', en: 'Deductive', ph: 'deduktivnyy' },
+      { ru: 'Индуктивный', vn: 'Quy nạp', en: 'Inductive', ph: 'induktivnyy' },
+      { ru: 'Методология', vn: 'Phương pháp luận', en: 'Methodology', ph: 'metodologiya' },
+    ],
+    "📖 Văn học & Phê bình văn học": [
+      { ru: 'Повествование', vn: 'Lối kể chuyện', en: 'Narrative', ph: 'povestvovaniye' },
+      { ru: 'Метафора', vn: 'Ẩn dụ', en: 'Metaphor', ph: 'metafora' },
+      { ru: 'Аллегория', vn: 'Ngụ ngôn / Ẩn dụ mở rộng', en: 'Allegory', ph: 'allegoriya' },
+      { ru: 'Эпитет', vn: 'Tính từ bổ nghĩa', en: 'Epithet', ph: 'epitet' },
+      { ru: 'Сатира', vn: 'Châm biếm', en: 'Satire', ph: 'satira' },
+      { ru: 'Ирония', vn: 'Mỉa mai / Sự mỉa mai', en: 'Irony', ph: 'ironiya' },
+      { ru: 'Символизм', vn: 'Chủ nghĩa tượng trưng', en: 'Symbolism', ph: 'simvolizm' },
+      { ru: 'Сюжет', vn: 'Cốt truyện', en: 'Plot', ph: 'syuzhet' },
+      { ru: 'Персонаж', vn: 'Nhân vật', en: 'Character', ph: 'personazh' },
+      { ru: 'Лирика', vn: 'Thơ trữ tình', en: 'Lyric poetry', ph: 'lirika' },
+      { ru: 'Проза', vn: 'Văn xuôi', en: 'Prose', ph: 'proza' },
+      { ru: 'Жанр', vn: 'Thể loại', en: 'Genre', ph: 'zhanr' },
+      { ru: 'Интерпретация', vn: 'Sự diễn giải', en: 'Interpretation', ph: 'interpretatsiya' },
+      { ru: 'Рецензия', vn: 'Bài phê bình', en: 'Review / Critique', ph: 'retsenziya' },
+      { ru: 'Автобиография', vn: 'Tự truyện', en: 'Autobiography', ph: 'avtobiografiya' },
+      { ru: 'Летопись', vn: 'Biên niên sử', en: 'Chronicle', ph: 'letopis' },
+      { ru: 'Эпос', vn: 'Sử thi', en: 'Epic', ph: 'epos' },
+      { ru: 'Стихотворение', vn: 'Bài thơ', en: 'Poem', ph: 'stikhotvoreniye' },
+      { ru: 'Авангард', vn: 'Tiên phong / Tiền vệ', en: 'Avant-garde', ph: 'avangard' },
+      { ru: 'Постмодернизм', vn: 'Chủ nghĩa hậu hiện đại', en: 'Postmodernism', ph: 'postmodernizm' },
+    ],
+    "🏛️ Luật pháp & Triết học chính trị C1": [
+      { ru: 'Суверенитет', vn: 'Chủ quyền', en: 'Sovereignty', ph: 'suverenitet' },
+      { ru: 'Юрисдикция', vn: 'Thẩm quyền pháp lý', en: 'Jurisdiction', ph: 'yurisdiktsiya' },
+      { ru: 'Прецедент', vn: 'Tiền lệ pháp', en: 'Precedent', ph: 'pretsedent' },
+      { ru: 'Легитимность', vn: 'Tính hợp pháp / Chính danh', en: 'Legitimacy', ph: 'legitimnost' },
+      { ru: 'Олигархия', vn: 'Chế độ thiểu số độc quyền', en: 'Oligarchy', ph: 'oligarkhiya' },
+      { ru: 'Анархизм', vn: 'Chủ nghĩa vô chính phủ', en: 'Anarchism', ph: 'anarkhizm' },
+      { ru: 'Тоталитаризм', vn: 'Chủ nghĩa toàn trị', en: 'Totalitarianism', ph: 'totalitarizm' },
+      { ru: 'Федерализм', vn: 'Chủ nghĩa liên bang', en: 'Federalism', ph: 'federalizm' },
+      { ru: 'Импичмент', vn: 'Luận tội / Bãi miễn', en: 'Impeachment', ph: 'impichment' },
+      { ru: 'Лоббирование', vn: 'Vận động hành lang', en: 'Lobbying', ph: 'lobbirovaniye' },
+      { ru: 'Абсолютизм', vn: 'Chủ nghĩa chuyên quyền', en: 'Absolutism', ph: 'absolyutizm' },
+      { ru: 'Гегемония', vn: 'Bá quyền', en: 'Hegemony', ph: 'gegemoniya' },
+      { ru: 'Цензура', vn: 'Kiểm duyệt', en: 'Censorship', ph: 'tsenzura' },
+      { ru: 'Репрессия', vn: 'Đàn áp', en: 'Repression', ph: 'repressiya' },
+      { ru: 'Плюрализм', vn: 'Chủ nghĩa đa nguyên', en: 'Pluralism', ph: 'plyuralizm' },
+      { ru: 'Правовое государство', vn: 'Nhà nước pháp quyền', en: 'Rule of law', ph: 'pravovoye gosudarstvo' },
+      { ru: 'Уголовное право', vn: 'Hình luật', en: 'Criminal law', ph: 'ugolovnoye pravo' },
+      { ru: 'Гражданское право', vn: 'Dân luật', en: 'Civil law', ph: 'grazhdanskoye pravo' },
+      { ru: 'Конституционный', vn: 'Theo hiến pháp', en: 'Constitutional', ph: 'konstitutsionnyy' },
+      { ru: 'Коррупция', vn: 'Tham nhũng', en: 'Corruption', ph: 'korruptsiya' },
+    ],
+    "💭 Triết học & Tư tưởng C1": [
+      { ru: 'Онтология', vn: 'Bản thể luận', en: 'Ontology', ph: 'ontologiya' },
+      { ru: 'Эпистемология', vn: 'Nhận thức luận', en: 'Epistemology', ph: 'epistemologiya' },
+      { ru: 'Экзистенциализм', vn: 'Chủ nghĩa hiện sinh', en: 'Existentialism', ph: 'egzistentsializm' },
+      { ru: 'Нигилизм', vn: 'Chủ nghĩa hư vô', en: 'Nihilism', ph: 'nigilizm' },
+      { ru: 'Утилитаризм', vn: 'Chủ nghĩa công lợi', en: 'Utilitarianism', ph: 'utilitarizm' },
+      { ru: 'Диалектика', vn: 'Biện chứng pháp', en: 'Dialectics', ph: 'dialektika' },
+      { ru: 'Детерминизм', vn: 'Thuyết tất định', en: 'Determinism', ph: 'determinizm' },
+      { ru: 'Феноменология', vn: 'Hiện tượng luận', en: 'Phenomenology', ph: 'fenomenologiya' },
+      { ru: 'Идеализм', vn: 'Chủ nghĩa duy tâm', en: 'Idealism', ph: 'idealizm' },
+      { ru: 'Материализм', vn: 'Chủ nghĩa duy vật', en: 'Materialism', ph: 'materializm' },
+      { ru: 'Метафизика', vn: 'Siêu hình học', en: 'Metaphysics', ph: 'metafizika' },
+      { ru: 'Скептицизм', vn: 'Chủ nghĩa hoài nghi', en: 'Scepticism', ph: 'skeptitsizm' },
+      { ru: 'Свобода воли', vn: 'Ý chí tự do', en: 'Free will', ph: 'svoboda voli' },
+      { ru: 'Нравственность', vn: 'Đạo đức / Phẩm hạnh', en: 'Morality', ph: 'nravstvennost' },
+      { ru: 'Трансцендентный', vn: 'Siêu việt', en: 'Transcendent', ph: 'transtsendentniy' },
+      { ru: 'Субъективный', vn: 'Chủ quan', en: 'Subjective', ph: 'subyektivnyy' },
+      { ru: 'Объективный', vn: 'Khách quan', en: 'Objective', ph: 'obyektivnyy' },
+      { ru: 'Сознание', vn: 'Ý thức', en: 'Consciousness', ph: 'soznaniye' },
+      { ru: 'Восприятие', vn: 'Sự nhận thức / Tri giác', en: 'Perception', ph: 'vospriyatiye' },
+      { ru: 'Справедливость', vn: 'Công bằng / Chính nghĩa', en: 'Justice', ph: 'spravedlivost' },
+    ],
+    "🧬 Khoa học & Công nghệ tiên tiến C1": [
+      { ru: 'Квантовый', vn: 'Lượng tử', en: 'Quantum', ph: 'kvantovyy' },
+      { ru: 'Нейросеть', vn: 'Mạng nơ-ron', en: 'Neural network', ph: 'neyroset' },
+      { ru: 'Биотехнология', vn: 'Công nghệ sinh học', en: 'Biotechnology', ph: 'biotekhnologiya' },
+      { ru: 'Геномика', vn: 'Bộ gen học', en: 'Genomics', ph: 'genomika' },
+      { ru: 'Наночастица', vn: 'Hạt nano', en: 'Nanoparticle', ph: 'nanochastitsa' },
+      { ru: 'Термодинамика', vn: 'Nhiệt động lực học', en: 'Thermodynamics', ph: 'termodinamika' },
+      { ru: 'Кибербезопасность', vn: 'An ninh mạng', en: 'Cybersecurity', ph: 'kiberbezopasnost' },
+      { ru: 'Блокчейн', vn: 'Chuỗi khối', en: 'Blockchain', ph: 'blokcheyn' },
+      { ru: 'Криптография', vn: 'Mật mã học', en: 'Cryptography', ph: 'kriptografiya' },
+      { ru: 'Биосфера', vn: 'Sinh quyển', en: 'Biosphere', ph: 'biosfera' },
+      { ru: 'Ядерный синтез', vn: 'Tổng hợp hạt nhân', en: 'Nuclear fusion', ph: 'yadernyy sintez' },
+      { ru: 'Автоматизация', vn: 'Tự động hoá', en: 'Automation', ph: 'avtomatizatsiya' },
+      { ru: 'Катализатор', vn: 'Chất xúc tác', en: 'Catalyst', ph: 'katalizator' },
+      { ru: 'Гипотеза', vn: 'Giả thuyết', en: 'Hypothesis', ph: 'gipoteza' },
+      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
+      { ru: 'Электромагнитный', vn: 'Điện từ', en: 'Electromagnetic', ph: 'elektromagnitnyy' },
+      { ru: 'Параллельный', vn: 'Song song / Đồng thời', en: 'Parallel', ph: 'parallelnyy' },
+      { ru: 'Синтез', vn: 'Tổng hợp', en: 'Synthesis', ph: 'sintez' },
+      { ru: 'Алгоритм', vn: 'Thuật toán', en: 'Algorithm', ph: 'algoritm' },
+      { ru: 'Экосистема', vn: 'Hệ sinh thái', en: 'Ecosystem', ph: 'ekosistema' },
+    ],
+    "💹 Kinh tế học & Tài chính C1": [
+      { ru: 'Ликвидность', vn: 'Tính thanh khoản', en: 'Liquidity', ph: 'likvidnost' },
+      { ru: 'Волатильность', vn: 'Biến động', en: 'Volatility', ph: 'volatilnost' },
+      { ru: 'Монетарная политика', vn: 'Chính sách tiền tệ', en: 'Monetary policy', ph: 'monetarnaya politika' },
+      { ru: 'Фискальная политика', vn: 'Chính sách tài khoá', en: 'Fiscal policy', ph: 'fiskalnaya politika' },
+      { ru: 'Рецессия', vn: 'Suy thoái kinh tế', en: 'Recession', ph: 'retsessiya' },
+      { ru: 'Стагфляция', vn: 'Đình lạm', en: 'Stagflation', ph: 'stagflyatsiya' },
+      { ru: 'Деривативы', vn: 'Công cụ phái sinh', en: 'Derivatives', ph: 'derivativy' },
+      { ru: 'Хеджирование', vn: 'Phòng ngừa rủi ro', en: 'Hedging', ph: 'khedzirovaniye' },
+      { ru: 'Протекционизм', vn: 'Chủ nghĩa bảo hộ', en: 'Protectionism', ph: 'protektsionizm' },
+      { ru: 'Монополия', vn: 'Độc quyền', en: 'Monopoly', ph: 'monopoliya' },
+      { ru: 'Эластичность', vn: 'Độ co giãn', en: 'Elasticity', ph: 'elastichnost' },
+      { ru: 'Амортизация', vn: 'Khấu hao', en: 'Depreciation', ph: 'amortizatsiya' },
+      { ru: 'Капитализация', vn: 'Vốn hoá thị trường', en: 'Capitalisation', ph: 'kapitalizatsiya' },
+      { ru: 'Дивиденды', vn: 'Cổ tức', en: 'Dividends', ph: 'dividendy' },
+      { ru: 'Субсидия', vn: 'Trợ cấp', en: 'Subsidy', ph: 'subsidiya' },
+      { ru: 'Дефицит бюджета', vn: 'Thâm hụt ngân sách', en: 'Budget deficit', ph: 'defitsit byudzheta' },
+      { ru: 'Мультипликатор', vn: 'Số nhân kinh tế', en: 'Multiplier', ph: 'multiplikator' },
+      { ru: 'Олигополия', vn: 'Độc quyền nhóm', en: 'Oligopoly', ph: 'oligopoliya' },
+      { ru: 'Конъюнктура', vn: 'Tình hình thị trường', en: 'Market conditions', ph: 'konyunktura' },
+      { ru: 'Портфель', vn: 'Danh mục đầu tư', en: 'Portfolio', ph: 'portfel' },
+    ],
+    "🎭 Mỹ học & Nghệ thuật C1": [
+      { ru: 'Эстетика', vn: 'Mỹ học', en: 'Aesthetics', ph: 'estetika' },
+      { ru: 'Импрессионизм', vn: 'Trường phái ấn tượng', en: 'Impressionism', ph: 'impressionizm' },
+      { ru: 'Абстракционизм', vn: 'Trường phái trừu tượng', en: 'Abstract art', ph: 'abstraktsionizm' },
+      { ru: 'Инсталляция', vn: 'Nghệ thuật sắp đặt', en: 'Installation art', ph: 'installyatsiya' },
+      { ru: 'Перформанс', vn: 'Nghệ thuật trình diễn', en: 'Performance art', ph: 'performans' },
+      { ru: 'Архетип', vn: 'Nguyên mẫu', en: 'Archetype', ph: 'arkhetip' },
+      { ru: 'Иконография', vn: 'Biểu tượng học', en: 'Iconography', ph: 'ikonografiya' },
+      { ru: 'Минимализм', vn: 'Chủ nghĩa tối giản', en: 'Minimalism', ph: 'minimalizm' },
+      { ru: 'Постмодернизм', vn: 'Hậu hiện đại', en: 'Postmodernism (art)', ph: 'postmodernizm' },
+      { ru: 'Скульптура', vn: 'Điêu khắc', en: 'Sculpture', ph: 'skulptura' },
+      { ru: 'Архитектура', vn: 'Kiến trúc', en: 'Architecture', ph: 'arkhitektura' },
+      { ru: 'Палитра', vn: 'Bảng màu', en: 'Palette', ph: 'palitra' },
+      { ru: 'Перспектива', vn: 'Phối cảnh / Viễn cảnh', en: 'Perspective', ph: 'perspektiva' },
+      { ru: 'Орнамент', vn: 'Hoa văn trang trí', en: 'Ornament', ph: 'ornament' },
+      { ru: 'Гармония', vn: 'Sự hài hoà', en: 'Harmony', ph: 'garmoniya' },
+      { ru: 'Экспрессия', vn: 'Sự biểu hiện', en: 'Expression', ph: 'ekspressiya' },
+      { ru: 'Авторство', vn: 'Quyền tác giả', en: 'Authorship', ph: 'avtorstvo' },
+      { ru: 'Композиция', vn: 'Bố cục', en: 'Composition', ph: 'kompozitsiya' },
+      { ru: 'Графика', vn: 'Đồ hoạ', en: 'Graphics', ph: 'grafika' },
+      { ru: 'Пространство', vn: 'Không gian nghệ thuật', en: 'Space (art)', ph: 'prostranstvo' },
+    ],
+    "🌏 Xã hội học & Nhân học C1": [
+      { ru: 'Социализация', vn: 'Xã hội hoá', en: 'Socialisation', ph: 'sotsializatsiya' },
+      { ru: 'Стереотип', vn: 'Định kiến / Khuôn mẫu', en: 'Stereotype', ph: 'stereotip' },
+      { ru: 'Дискриминация', vn: 'Phân biệt đối xử', en: 'Discrimination', ph: 'diskriminatsiya' },
+      { ru: 'Маргинализация', vn: 'Gạt ra ngoài lề', en: 'Marginalisation', ph: 'marginalizatsiya' },
+      { ru: 'Идентичность', vn: 'Bản sắc / Danh tính', en: 'Identity', ph: 'identichnost' },
+      { ru: 'Субкультура', vn: 'Tiểu văn hoá', en: 'Subculture', ph: 'subkultura' },
+      { ru: 'Диаспора', vn: 'Cộng đồng di cư', en: 'Diaspora', ph: 'diaspora' },
+      { ru: 'Неравенство', vn: 'Bất bình đẳng', en: 'Inequality', ph: 'neravenstvo' },
+      { ru: 'Феминизм', vn: 'Chủ nghĩa nữ quyền', en: 'Feminism', ph: 'feminizm' },
+      { ru: 'Глобализация', vn: 'Toàn cầu hoá', en: 'Globalisation', ph: 'globalizatsiya' },
+      { ru: 'Мультикультурализм', vn: 'Đa văn hoá', en: 'Multiculturalism', ph: 'multikulturalizm' },
+      { ru: 'Ксенофобия', vn: 'Bài ngoại', en: 'Xenophobia', ph: 'ksenofobiya' },
+      { ru: 'Толерантность', vn: 'Khoan dung', en: 'Tolerance', ph: 'tolerantnost' },
+      { ru: 'Консенсус', vn: 'Đồng thuận', en: 'Consensus', ph: 'konsensus' },
+      { ru: 'Нарратив', vn: 'Câu chuyện / Diễn ngôn', en: 'Narrative', ph: 'narrativ' },
+      { ru: 'Ассимиляция', vn: 'Đồng hoá', en: 'Assimilation', ph: 'assimilyatsiya' },
+      { ru: 'Интеграция', vn: 'Hội nhập', en: 'Integration', ph: 'integratsiya' },
+      { ru: 'Патриархат', vn: 'Chế độ gia trưởng', en: 'Patriarchy', ph: 'patriarkhat' },
+      { ru: 'Сегрегация', vn: 'Phân ly / Cách ly', en: 'Segregation', ph: 'segregatsiya' },
+      { ru: 'Мобильность', vn: 'Tính di động xã hội', en: 'Social mobility', ph: 'mobilnost' },
+    ],
+    "🩺 Y học & Sinh học C1": [
+      { ru: 'Иммунитет', vn: 'Miễn dịch', en: 'Immunity', ph: 'immunitet' },
+      { ru: 'Антитело', vn: 'Kháng thể', en: 'Antibody', ph: 'antitelo' },
+      { ru: 'Патоген', vn: 'Mầm bệnh', en: 'Pathogen', ph: 'patogen' },
+      { ru: 'Метаболизм', vn: 'Chuyển hoá', en: 'Metabolism', ph: 'metabolism' },
+      { ru: 'Хронический', vn: 'Mãn tính', en: 'Chronic', ph: 'khronicheskiy' },
+      { ru: 'Острый', vn: 'Cấp tính', en: 'Acute', ph: 'ostryy' },
+      { ru: 'Диагностика', vn: 'Chẩn đoán', en: 'Diagnostics', ph: 'diagnostika' },
+      { ru: 'Терапия', vn: 'Liệu pháp', en: 'Therapy', ph: 'terapiya' },
+      { ru: 'Хирургия', vn: 'Phẫu thuật', en: 'Surgery', ph: 'khirurgiya' },
+      { ru: 'Реабилитация', vn: 'Phục hồi chức năng', en: 'Rehabilitation', ph: 'reabilitatsiya' },
+      { ru: 'Эпидемия', vn: 'Dịch bệnh', en: 'Epidemic', ph: 'epidemiya' },
+      { ru: 'Пандемия', vn: 'Đại dịch', en: 'Pandemic', ph: 'pandemiya' },
+      { ru: 'Вакцинация', vn: 'Tiêm chủng', en: 'Vaccination', ph: 'vaktsinatsiya' },
+      { ru: 'Мутация', vn: 'Đột biến', en: 'Mutation', ph: 'mutatsiya' },
+      { ru: 'ДНК', vn: 'ADN', en: 'DNA', ph: 'de-en-ka' },
+      { ru: 'Нейромедиатор', vn: 'Chất dẫn truyền thần kinh', en: 'Neurotransmitter', ph: 'neyromediator' },
+      { ru: 'Гормон', vn: 'Hoóc-môn', en: 'Hormone', ph: 'gormon' },
+      { ru: 'Воспаление', vn: 'Viêm', en: 'Inflammation', ph: 'vospaleniye' },
+      { ru: 'Биохимия', vn: 'Sinh hoá', en: 'Biochemistry', ph: 'biokhimiya' },
+      { ru: 'Симптом', vn: 'Triệu chứng', en: 'Symptom', ph: 'simptom' },
+    ],
+    "✨ Khái niệm trừu tượng C1": [
+      { ru: 'Неоднозначность', vn: 'Tính mơ hồ / Hai nghĩa', en: 'Ambiguity', ph: 'neodnoznachnost' },
+      { ru: 'Нюанс', vn: 'Sắc thái / Khía cạnh tế nhị', en: 'Nuance', ph: 'nyuans' },
+      { ru: 'Взаимозависимость', vn: 'Sự phụ thuộc lẫn nhau', en: 'Interdependence', ph: 'vzaimozavisimost' },
+      { ru: 'Устойчивость', vn: 'Tính bền vững', en: 'Sustainability', ph: 'ustoychivost' },
+      { ru: 'Прозрачность', vn: 'Tính minh bạch', en: 'Transparency', ph: 'prozrachnost' },
+      { ru: 'Подотчётность', vn: 'Trách nhiệm giải trình', en: 'Accountability', ph: 'podotchotnost' },
+      { ru: 'Беспристрастный', vn: 'Vô tư / Không thiên vị', en: 'Impartial', ph: 'bespristrastnyy' },
+      { ru: 'Всеобъемлющий', vn: 'Toàn diện / Bao hàm', en: 'Comprehensive', ph: 'vseobemlyushchiy' },
+      { ru: 'Компетентность', vn: 'Năng lực', en: 'Competence', ph: 'kompetentnost' },
+      { ru: 'Инициатива', vn: 'Sáng kiến', en: 'Initiative', ph: 'initsiativa' },
+      { ru: 'Добросовестность', vn: 'Sự trung thực / Liêm chính', en: 'Integrity', ph: 'dobrosovestnost' },
+      { ru: 'Преодолевать', vn: 'Vượt qua / Khắc phục', en: 'To overcome', ph: 'preodolevat' },
+      { ru: 'Воздерживаться', vn: 'Kiềm chế / Không tham gia', en: 'To abstain', ph: 'vozderzivatsya' },
+      { ru: 'Предполагать', vn: 'Giả định / Dự tính', en: 'To presuppose', ph: 'predpolagat' },
+      { ru: 'Фигурально', vn: 'Theo nghĩa bóng', en: 'Figuratively', ph: 'figuralno' },
+      { ru: 'Буквально', vn: 'Theo nghĩa đen', en: 'Literally', ph: 'bukvalno' },
+      { ru: 'Сложность', vn: 'Sự phức tạp', en: 'Complexity', ph: 'slozhnost' },
+      { ru: 'Принципиальный', vn: 'Có nguyên tắc / Cơ bản', en: 'Principled / Fundamental', ph: 'printsipialnyy' },
+      { ru: 'Обусловливать', vn: 'Quy định / Phụ thuộc vào', en: 'To determine/condition', ph: 'obuslovlivat' },
+      { ru: 'Эффективность', vn: 'Hiệu quả', en: 'Efficiency', ph: 'effektivnost' },
+    ],
+
+  },
+
 };
 
 
@@ -6871,6 +7260,8 @@ const wordFamilies = {
       { word: 'Большая проблема', vn: 'Vấn đề lớn', ph: 'bol\'sháya probléma', type: 'CB' },
     ],
   },
+
+
 };
 
 
@@ -7690,7 +8081,7 @@ function _topicName(name,lang){
 
 function setLevel(lv){
   S.level=lv; save();
-  ['A1','A2','B1','B2'].forEach(l=>{
+  ['A1','A2','B1','B2','C1'].forEach(l=>{
     const b=document.getElementById('lb-'+l);if(!b)return;
     b.classList.toggle('on',l===lv);
     b.querySelector('div').style.color=l===lv?'var(--cyn)':'var(--txd)';
@@ -9257,7 +9648,7 @@ function dlRenderPhase1(body){
   var shown=DL.phaseStep>0;
   var p1pct=DL.words.length>0?Math.round((DL.wordIdx/DL.words.length)*100):0;
   body.innerHTML='<div style="padding:0 0 24px;">'
-    +'<div style="text-align:center;margin-bottom:10px;"><span class="dl-phase-badge" style="background:rgba(90,200,250,.12);color:var(--cyn);border:1px solid rgba(90,200,250,.3);">👁 Vòng 1 — Xem & ghi nhớ ('+(DL.wordIdx+1)+'/'+DL.words.length+')</span></div>'
+    +'<div style="text-align:center;margin-bottom:10px;"><span class="dl-phase-badge" style="background:rgba(90,200,250,.12);color:var(--cyn);border:1px solid rgba(90,200,250,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Vòng 1 — Xem & ghi nhớ ('+(DL.wordIdx+1)+'/'+DL.words.length+')</span></div>'
     +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 14px;"><div style="height:3px;background:var(--cyn);border-radius:2px;width:'+p1pct+'%;transition:width .3s;"></div></div>'
     +'<div class="dl-card" onclick="App.dlFlip()" style="cursor:pointer;margin-bottom:14px;">'
     +'<div style="font-size:36px;font-weight:900;font-family:var(--serif);letter-spacing:-.5px;">'+w.ru+'</div>'
@@ -9265,7 +9656,7 @@ function dlRenderPhase1(body){
     +(shown
       ?'<div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;margin-top:8px;"><div style="font-size:20px;font-weight:700;color:var(--tx);">'+w.vn+'</div>'
        +(w.en?'<div style="font-size:12px;color:var(--com);margin-top:4px;">'+w.en+'</div>':'')+'</div>'
-      :'<div style="font-size:13px;color:rgba(255,255,255,.25);padding:10px 0;">👆 Nhấn để xem nghĩa</div>')
+      :'<div style="font-size:13px;color:rgba(255,255,255,.25);padding:10px 0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a3 3 0 0 1 6 0v5"/><path d="M9 11H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/><line x1="12" y1="15" x2="12" y2="18"/></svg> Nhấn để xem nghĩa</div>')
     +'</div>'
     +(shown
       ?'<button class="btn" style="background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.4);color:#ff9f0a;" onclick="App.dlPhase1Next()">Đã nhớ → Từ tiếp theo ›</button>'
@@ -9291,7 +9682,7 @@ function dlRenderPhase2(body){
   var p2done=p2total-DL.q2.length;
   var p2pct=p2total>0?Math.round(p2done/p2total*100):0;
   body.innerHTML='<div style="padding:0 0 24px;">'
-    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(255,214,10,.10);color:var(--yel);border:1px solid rgba(255,214,10,.3);">🧠 Vòng 2 — Tiếng Nga → Nghĩa (còn '+DL.q2.length+' từ)</span></div>'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(255,214,10,.10);color:var(--yel);border:1px solid rgba(255,214,10,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.66z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.66z"/></svg> Vòng 2 — Tiếng Nga → Nghĩa (còn '+DL.q2.length+' từ)</span></div>'
     +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--yel);border-radius:2px;width:'+p2pct+'%;transition:width .3s;"></div></div>'
     +'<div class="dl-card" style="margin-bottom:16px;cursor:pointer;" onclick="App.dlSpeak2()">'
     +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// đây là từ gì?</div>'
@@ -9340,7 +9731,7 @@ function dlRenderPhase3(body){
   var p3done=p3total-DL.q3.length;
   var p3pct=p3total>0?Math.round(p3done/p3total*100):0;
   body.innerHTML='<div style="padding:0 0 24px;">'
-    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(52,199,89,.10);color:var(--grn);border:1px solid rgba(52,199,89,.3);">💪 Vòng 3 — Nghĩa → Tiếng Nga (còn '+DL.q3.length+' từ)</span></div>'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(52,199,89,.10);color:var(--grn);border:1px solid rgba(52,199,89,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Vòng 3 — Nghĩa → Tiếng Nga (còn '+DL.q3.length+' từ)</span></div>'
     +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--grn);border-radius:2px;width:'+p3pct+'%;transition:width .3s;"></div></div>'
     +'<div class="dl-card" style="margin-bottom:16px;">'
     +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// chọn tiếng Nga đúng:</div>'
@@ -9409,8 +9800,7 @@ function dlFinish(){
   var b=document.getElementById('daily-nav-badge');
   if(b){b.textContent='✓';b.style.display='inline-block';}
   var locked=DL.lockedKeys?DL.lockedKeys.length:0;
-  var em=locked>=7?'🏆':locked>=5?'🥈':'💪';
-  document.getElementById('dld-em').textContent=em;
+  var _emSVGs={'trophy':'<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 2 20 2 20 6 16 6"/><path d="M8 6a4 4 0 0 0 4 4 4 4 0 0 0 4-4"/><line x1="12" y1="10" x2="12" y2="16"/><rect x="8" y="16" width="8" height="2" rx="1"/><line x1="6" y1="22" x2="18" y2="22"/></svg>','medal':'<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#5ac8fa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="7"/><path d="M8.56 2.9A7 7 0 0 1 15.44 2.9L17 6H7z"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>','star':'<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'};var emKey=locked>=7?'trophy':locked>=5?'medal':'star';var emEl=document.getElementById('dld-em');if(emEl){emEl.style.fontSize='';emEl.innerHTML=_emSVGs[emKey];}
   document.getElementById('dld-title').textContent=locked>=7?'Hoàn hảo!':locked>=5?'Tốt lắm!':'Cố lên!';
   document.getElementById('dld-msg').textContent='Bạn đã học chắc '+locked+'/7 từ hôm nay. '
     +(locked<7?(7-locked)+' từ sẽ xuất hiện lại ngày mai.':'Tất cả đều vào SRS để ôn tập!');
@@ -9418,7 +9808,7 @@ function dlFinish(){
     {label:'Từ học chắc',val:locked+'/7',color:'var(--grn)'},
     {label:'Vào SRS',val:locked+' từ',color:'var(--cyn)'},
     {label:'Ôn lại sau',val:'1 ngày',color:'var(--yel)'},
-    {label:'Streak',val:dlStreak()+' ngày 🔥',color:'#ff9f0a'},
+    {label:'Streak',val:dlStreak()+'&nbsp;ngày&nbsp;<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',color:'#ff9f0a'},
   ];
   document.getElementById('dld-stats').innerHTML=stats.map(function(s){
     return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;text-align:center;">'
@@ -10471,7 +10861,7 @@ function lkInit() {
 function lkFilter(lvl) {
   _lkFilter = lvl;
   // Cập nhật chip active
-  ['all','A1','A2','B1','B2'].forEach(l => {
+  ['all','A1','A2','B1','B2','C1'].forEach(l => {
     const c = document.getElementById('lk-f-'+l);
     if (c) c.classList.toggle('on', l === lvl);
   });
@@ -11113,9 +11503,12 @@ document.addEventListener('DOMContentLoaded',App.init);
       hideGlow();
       var captured = el; el = null;
       setTimeout(function(){
-        rst(captured);
+        // nav() already clears prevEl styles in its RAF — don't call rst() here
+        // as it would briefly un-hide the screen before nav's RAF fires
         App.nav(dest, true);
         if(navigator.vibrate) navigator.vibrate([4, 16, 3]);
+        // Clean up after nav's RAF has run
+        requestAnimationFrame(function(){ rst(captured); });
       }, 230);
     } else {
       // Snap back
@@ -11547,3 +11940,226 @@ document.addEventListener('DOMContentLoaded',App.init);
 
 </body>
 </html>
+  C1: {
+
+    "🎓 Ngôn ngữ học thuật & Lập luận": [
+      { ru: 'Аргументировать', vn: 'Lập luận / Tranh luận', en: 'To argue', ph: 'argumentirovat' },
+      { ru: 'Обосновать', vn: 'Luận chứng / Chứng minh', en: 'To substantiate', ph: 'obosnovat' },
+      { ru: 'Опровергнуть', vn: 'Bác bỏ / Phản bác', en: 'To refute', ph: 'oprovergnut' },
+      { ru: 'Сформулировать', vn: 'Phát biểu / Diễn đạt', en: 'To formulate', ph: 'sformulirovat' },
+      { ru: 'Обобщить', vn: 'Khái quát hoá', en: 'To summarise', ph: 'obobshchit' },
+      { ru: 'Противоречие', vn: 'Mâu thuẫn', en: 'Contradiction', ph: 'protivorechiye' },
+      { ru: 'Предпосылка', vn: 'Tiền đề', en: 'Premise', ph: 'predposylka' },
+      { ru: 'Умозаключение', vn: 'Kết luận suy lý', en: 'Inference', ph: 'umozaklyucheniye' },
+      { ru: 'Парадокс', vn: 'Nghịch lý', en: 'Paradox', ph: 'paradoks' },
+      { ru: 'Риторика', vn: 'Tu từ học', en: 'Rhetoric', ph: 'ritorika' },
+      { ru: 'Аналогия', vn: 'Sự tương đồng / Loại suy', en: 'Analogy', ph: 'analogiya' },
+      { ru: 'Дискурс', vn: 'Diễn ngôn', en: 'Discourse', ph: 'diskurs' },
+      { ru: 'Концепция', vn: 'Khái niệm / Quan niệm', en: 'Concept', ph: 'kontseptsiya' },
+      { ru: 'Трактовать', vn: 'Diễn giải / Giải thích', en: 'To interpret', ph: 'traktovat' },
+      { ru: 'Абстрактный', vn: 'Trừu tượng', en: 'Abstract', ph: 'abstraktnyy' },
+      { ru: 'Категория', vn: 'Phạm trù', en: 'Category', ph: 'kategoriya' },
+      { ru: 'Постулат', vn: 'Nguyên lý cơ bản', en: 'Postulate', ph: 'postulat' },
+      { ru: 'Дедуктивный', vn: 'Diễn dịch', en: 'Deductive', ph: 'deduktivnyy' },
+      { ru: 'Индуктивный', vn: 'Quy nạp', en: 'Inductive', ph: 'induktivnyy' },
+      { ru: 'Методология', vn: 'Phương pháp luận', en: 'Methodology', ph: 'metodologiya' },
+    ],
+    "📜 Văn học & Phê bình": [
+      { ru: 'Повествование', vn: 'Lối kể chuyện', en: 'Narrative', ph: 'povestvovaniye' },
+      { ru: 'Метафора', vn: 'Ẩn dụ', en: 'Metaphor', ph: 'metafora' },
+      { ru: 'Аллегория', vn: 'Ngụ ngôn / Ẩn dụ mở rộng', en: 'Allegory', ph: 'allegoriya' },
+      { ru: 'Эпитет', vn: 'Tính từ bổ nghĩa', en: 'Epithet', ph: 'epitet' },
+      { ru: 'Сатира', vn: 'Châm biếm', en: 'Satire', ph: 'satira' },
+      { ru: 'Ирония', vn: 'Mỉa mai / Sự mỉa mai', en: 'Irony', ph: 'ironiya' },
+      { ru: 'Символизм', vn: 'Chủ nghĩa tượng trưng', en: 'Symbolism', ph: 'simvolizm' },
+      { ru: 'Сюжет', vn: 'Cốt truyện', en: 'Plot', ph: 'syuzhet' },
+      { ru: 'Персонаж', vn: 'Nhân vật', en: 'Character', ph: 'personazh' },
+      { ru: 'Лирика', vn: 'Thơ trữ tình', en: 'Lyric poetry', ph: 'lirika' },
+      { ru: 'Проза', vn: 'Văn xuôi', en: 'Prose', ph: 'proza' },
+      { ru: 'Жанр', vn: 'Thể loại', en: 'Genre', ph: 'zhanr' },
+      { ru: 'Интерпретация', vn: 'Sự diễn giải', en: 'Interpretation', ph: 'interpretatsiya' },
+      { ru: 'Рецензия', vn: 'Bài phê bình', en: 'Review / Critique', ph: 'retsenziya' },
+      { ru: 'Автобиография', vn: 'Tự truyện', en: 'Autobiography', ph: 'avtobiografiya' },
+      { ru: 'Летопись', vn: 'Biên niên sử', en: 'Chronicle', ph: 'letopis' },
+      { ru: 'Эпос', vn: 'Sử thi', en: 'Epic', ph: 'epos' },
+      { ru: 'Стихотворение', vn: 'Bài thơ', en: 'Poem', ph: 'stikhotvoreniye' },
+      { ru: 'Авангард', vn: 'Tiên phong / Tiền vệ', en: 'Avant-garde', ph: 'avangard' },
+      { ru: 'Постмодернизм', vn: 'Chủ nghĩa hậu hiện đại', en: 'Postmodernism', ph: 'postmodernizm' },
+    ],
+    "⚖️ Luật pháp & Triết học chính trị": [
+      { ru: 'Конституционный', vn: 'Theo hiến pháp', en: 'Constitutional', ph: 'konstitutsionnyy' },
+      { ru: 'Суверенитет', vn: 'Chủ quyền', en: 'Sovereignty', ph: 'suverenitet' },
+      { ru: 'Юрисдикция', vn: 'Thẩm quyền pháp lý', en: 'Jurisdiction', ph: 'yurisdiktsiya' },
+      { ru: 'Прецедент', vn: 'Tiền lệ pháp', en: 'Precedent', ph: 'pretsedent' },
+      { ru: 'Легитимность', vn: 'Tính hợp pháp / Chính danh', en: 'Legitimacy', ph: 'legitimnost' },
+      { ru: 'Олигархия', vn: 'Chế độ thiểu số độc quyền', en: 'Oligarchy', ph: 'oligarkhiya' },
+      { ru: 'Анархизм', vn: 'Chủ nghĩa vô chính phủ', en: 'Anarchism', ph: 'anarkhizm' },
+      { ru: 'Тоталитаризм', vn: 'Chủ nghĩa toàn trị', en: 'Totalitarianism', ph: 'totalitarizm' },
+      { ru: 'Федерализм', vn: 'Chủ nghĩa liên bang', en: 'Federalism', ph: 'federalizm' },
+      { ru: 'Гражданское право', vn: 'Dân luật', en: 'Civil law', ph: 'grazhdanskoye pravo' },
+      { ru: 'Уголовное право', vn: 'Hình luật', en: 'Criminal law', ph: 'ugolovnoye pravo' },
+      { ru: 'Правовое государство', vn: 'Nhà nước pháp quyền', en: 'Rule of law', ph: 'pravovoye gosudarstvo' },
+      { ru: 'Импичмент', vn: 'Luận tội / Bãi miễn', en: 'Impeachment', ph: 'impichment' },
+      { ru: 'Лоббирование', vn: 'Vận động hành lang', en: 'Lobbying', ph: 'lobbirovaniye' },
+      { ru: 'Коррупция', vn: 'Tham nhũng', en: 'Corruption', ph: 'korruptsiya' },
+      { ru: 'Абсолютизм', vn: 'Chủ nghĩa chuyên quyền', en: 'Absolutism', ph: 'absolyutizm' },
+      { ru: 'Гегемония', vn: 'Bá quyền', en: 'Hegemony', ph: 'gegemoniya' },
+      { ru: 'Цензура', vn: 'Kiểm duyệt', en: 'Censorship', ph: 'tsenzura' },
+      { ru: 'Репрессия', vn: 'Đàn áp', en: 'Repression', ph: 'repressiya' },
+      { ru: 'Плюрализм', vn: 'Chủ nghĩa đa nguyên', en: 'Pluralism', ph: 'plyuralizm' },
+    ],
+    "🧠 Triết học & Tư tưởng": [
+      { ru: 'Онтология', vn: 'Bản thể luận', en: 'Ontology', ph: 'ontologiya' },
+      { ru: 'Эпистемология', vn: 'Nhận thức luận', en: 'Epistemology', ph: 'epistemologiya' },
+      { ru: 'Экзистенциализм', vn: 'Chủ nghĩa hiện sinh', en: 'Existentialism', ph: 'egzistentsializm' },
+      { ru: 'Нигилизм', vn: 'Chủ nghĩa hư vô', en: 'Nihilism', ph: 'nigilizm' },
+      { ru: 'Утилитаризм', vn: 'Chủ nghĩa công lợi', en: 'Utilitarianism', ph: 'utilitarizm' },
+      { ru: 'Диалектика', vn: 'Biện chứng pháp', en: 'Dialectics', ph: 'dialektika' },
+      { ru: 'Детерминизм', vn: 'Thuyết tất định', en: 'Determinism', ph: 'determinizm' },
+      { ru: 'Субъективный', vn: 'Chủ quan', en: 'Subjective', ph: 'subyektivnyy' },
+      { ru: 'Объективный', vn: 'Khách quan', en: 'Objective', ph: 'obyektivnyy' },
+      { ru: 'Сознание', vn: 'Ý thức', en: 'Consciousness', ph: 'soznaniye' },
+      { ru: 'Восприятие', vn: 'Sự nhận thức / Tri giác', en: 'Perception', ph: 'vospriyatiye' },
+      { ru: 'Свобода воли', vn: 'Ý chí tự do', en: 'Free will', ph: 'svoboda voli' },
+      { ru: 'Нравственность', vn: 'Đạo đức / Phẩm hạnh', en: 'Morality', ph: 'nravstvennost' },
+      { ru: 'Справедливость', vn: 'Công bằng / Chính nghĩa', en: 'Justice', ph: 'spravedlivost' },
+      { ru: 'Трансцендентный', vn: 'Siêu việt', en: 'Transcendent', ph: 'transtsendentniy' },
+      { ru: 'Феноменология', vn: 'Hiện tượng luận', en: 'Phenomenology', ph: 'fenomenologiya' },
+      { ru: 'Идеализм', vn: 'Chủ nghĩa duy tâm', en: 'Idealism', ph: 'idealizm' },
+      { ru: 'Материализм', vn: 'Chủ nghĩa duy vật', en: 'Materialism', ph: 'materializm' },
+      { ru: 'Метафизика', vn: 'Siêu hình học', en: 'Metaphysics', ph: 'metafizika' },
+      { ru: 'Скептицизм', vn: 'Chủ nghĩa hoài nghi', en: 'Scepticism', ph: 'skeptitsizm' },
+    ],
+    "🔬 Khoa học & Công nghệ nâng cao": [
+      { ru: 'Квантовый', vn: 'Lượng tử', en: 'Quantum', ph: 'kvantovyy' },
+      { ru: 'Нейросеть', vn: 'Mạng nơ-ron', en: 'Neural network', ph: 'neyroset' },
+      { ru: 'Алгоритм', vn: 'Thuật toán', en: 'Algorithm', ph: 'algoritm' },
+      { ru: 'Биотехнология', vn: 'Công nghệ sinh học', en: 'Biotechnology', ph: 'biotekhnologiya' },
+      { ru: 'Геномика', vn: 'Bộ gen học', en: 'Genomics', ph: 'genomika' },
+      { ru: 'Наночастица', vn: 'Hạt nano', en: 'Nanoparticle', ph: 'nanochastitsa' },
+      { ru: 'Термодинамика', vn: 'Nhiệt động lực học', en: 'Thermodynamics', ph: 'termodinamika' },
+      { ru: 'Электромагнитный', vn: 'Điện từ', en: 'Electromagnetic', ph: 'elektromagnitnyy' },
+      { ru: 'Искусственный интеллект', vn: 'Trí tuệ nhân tạo', en: 'Artificial intelligence', ph: 'iskusstvennyy intellekt' },
+      { ru: 'Кибербезопасность', vn: 'An ninh mạng', en: 'Cybersecurity', ph: 'kiberbezopasnost' },
+      { ru: 'Блокчейн', vn: 'Chuỗi khối', en: 'Blockchain', ph: 'blokcheyn' },
+      { ru: 'Криптография', vn: 'Mật mã học', en: 'Cryptography', ph: 'kriptografiya' },
+      { ru: 'Экосистема', vn: 'Hệ sinh thái', en: 'Ecosystem', ph: 'ekosistema' },
+      { ru: 'Биосфера', vn: 'Sinh quyển', en: 'Biosphere', ph: 'biosfera' },
+      { ru: 'Ядерный синтез', vn: 'Tổng hợp hạt nhân', en: 'Nuclear fusion', ph: 'yadernyy sintez' },
+      { ru: 'Параллельный', vn: 'Song song', en: 'Parallel', ph: 'parallelnyy' },
+      { ru: 'Автоматизация', vn: 'Tự động hoá', en: 'Automation', ph: 'avtomatizatsiya' },
+      { ru: 'Синтез', vn: 'Tổng hợp', en: 'Synthesis', ph: 'sintez' },
+      { ru: 'Катализатор', vn: 'Chất xúc tác', en: 'Catalyst', ph: 'katalizator' },
+      { ru: 'Гипотеза', vn: 'Giả thuyết', en: 'Hypothesis', ph: 'gipoteza' },
+    ],
+    "🌐 Kinh tế học & Tài chính nâng cao": [
+      { ru: 'Ликвидность', vn: 'Tính thanh khoản', en: 'Liquidity', ph: 'likvidnost' },
+      { ru: 'Дивиденды', vn: 'Cổ tức', en: 'Dividends', ph: 'dividendy' },
+      { ru: 'Волатильность', vn: 'Biến động', en: 'Volatility', ph: 'volatilnost' },
+      { ru: 'Монетарная политика', vn: 'Chính sách tiền tệ', en: 'Monetary policy', ph: 'monetarnaya politika' },
+      { ru: 'Фискальная политика', vn: 'Chính sách tài khoá', en: 'Fiscal policy', ph: 'fiskalnaya politika' },
+      { ru: 'Рецессия', vn: 'Suy thoái kinh tế', en: 'Recession', ph: 'retsessiya' },
+      { ru: 'Стагфляция', vn: 'Đình lạm', en: 'Stagflation', ph: 'stagflyatsiya' },
+      { ru: 'Деривативы', vn: 'Công cụ phái sinh', en: 'Derivatives', ph: 'derivativy' },
+      { ru: 'Портфель', vn: 'Danh mục đầu tư', en: 'Portfolio', ph: 'portfel' },
+      { ru: 'Хеджирование', vn: 'Phòng ngừa rủi ro', en: 'Hedging', ph: 'khedzirovaniye' },
+      { ru: 'Субсидия', vn: 'Trợ cấp', en: 'Subsidy', ph: 'subsidiya' },
+      { ru: 'Протекционизм', vn: 'Chủ nghĩa bảo hộ', en: 'Protectionism', ph: 'protektsionizm' },
+      { ru: 'Дефицит бюджета', vn: 'Thâm hụt ngân sách', en: 'Budget deficit', ph: 'defitsit byudzheta' },
+      { ru: 'Мультипликатор', vn: 'Số nhân', en: 'Multiplier', ph: 'multiplikator' },
+      { ru: 'Монополия', vn: 'Độc quyền', en: 'Monopoly', ph: 'monopoliya' },
+      { ru: 'Олигополия', vn: 'Độc quyền nhóm', en: 'Oligopoly', ph: 'oligopoliya' },
+      { ru: 'Эластичность', vn: 'Độ co giãn', en: 'Elasticity', ph: 'elastichnost' },
+      { ru: 'Конъюнктура', vn: 'Tình hình thị trường', en: 'Market conditions', ph: 'konyunktura' },
+      { ru: 'Амортизация', vn: 'Khấu hao', en: 'Depreciation', ph: 'amortizatsiya' },
+      { ru: 'Капитализация', vn: 'Vốn hoá thị trường', en: 'Capitalisation', ph: 'kapitalizatsiya' },
+    ],
+    "🎨 Mỹ học & Nghệ thuật nâng cao": [
+      { ru: 'Эстетика', vn: 'Mỹ học', en: 'Aesthetics', ph: 'estetika' },
+      { ru: 'Авторство', vn: 'Quyền tác giả', en: 'Authorship', ph: 'avtorstvo' },
+      { ru: 'Композиция', vn: 'Bố cục', en: 'Composition', ph: 'kompozitsiya' },
+      { ru: 'Импрессионизм', vn: 'Trường phái ấn tượng', en: 'Impressionism', ph: 'impressionizm' },
+      { ru: 'Абстракционизм', vn: 'Trường phái trừu tượng', en: 'Abstract art', ph: 'abstraktsionizm' },
+      { ru: 'Инсталляция', vn: 'Nghệ thuật sắp đặt', en: 'Installation art', ph: 'installyatsiya' },
+      { ru: 'Перформанс', vn: 'Nghệ thuật trình diễn', en: 'Performance art', ph: 'performans' },
+      { ru: 'Архетип', vn: 'Nguyên mẫu', en: 'Archetype', ph: 'arkhetip' },
+      { ru: 'Иконография', vn: 'Biểu tượng học', en: 'Iconography', ph: 'ikonografiya' },
+      { ru: 'Палитра', vn: 'Bảng màu', en: 'Palette', ph: 'palitra' },
+      { ru: 'Перспектива', vn: 'Phối cảnh / Viễn cảnh', en: 'Perspective', ph: 'perspektiva' },
+      { ru: 'Скульптура', vn: 'Điêu khắc', en: 'Sculpture', ph: 'skulptura' },
+      { ru: 'Архитектура', vn: 'Kiến trúc', en: 'Architecture', ph: 'arkhitektura' },
+      { ru: 'Орнамент', vn: 'Hoa văn trang trí', en: 'Ornament', ph: 'ornament' },
+      { ru: 'Графика', vn: 'Đồ hoạ', en: 'Graphics', ph: 'grafika' },
+      { ru: 'Пространство', vn: 'Không gian', en: 'Space', ph: 'prostranstvo' },
+      { ru: 'Ритм', vn: 'Nhịp điệu', en: 'Rhythm', ph: 'ritm' },
+      { ru: 'Гармония', vn: 'Sự hài hoà', en: 'Harmony', ph: 'garmoniya' },
+      { ru: 'Экспрессия', vn: 'Sự biểu hiện', en: 'Expression', ph: 'ekspressiya' },
+      { ru: 'Минимализм', vn: 'Chủ nghĩa tối giản', en: 'Minimalism', ph: 'minimalizm' },
+    ],
+    "🌍 Xã hội học & Nhân học": [
+      { ru: 'Социализация', vn: 'Xã hội hoá', en: 'Socialisation', ph: 'sotsializatsiya' },
+      { ru: 'Стереотип', vn: 'Định kiến / Khuôn mẫu', en: 'Stereotype', ph: 'stereotip' },
+      { ru: 'Дискриминация', vn: 'Phân biệt đối xử', en: 'Discrimination', ph: 'diskriminatsiya' },
+      { ru: 'Маргинализация', vn: 'Gạt ra ngoài lề', en: 'Marginalisation', ph: 'marginalizatsiya' },
+      { ru: 'Идентичность', vn: 'Bản sắc / Danh tính', en: 'Identity', ph: 'identichnost' },
+      { ru: 'Субкультура', vn: 'Tiểu văn hoá', en: 'Subculture', ph: 'subkultura' },
+      { ru: 'Мобильность', vn: 'Tính di động xã hội', en: 'Social mobility', ph: 'mobilnost' },
+      { ru: 'Интеграция', vn: 'Hội nhập', en: 'Integration', ph: 'integratsiya' },
+      { ru: 'Ассимиляция', vn: 'Đồng hoá', en: 'Assimilation', ph: 'assimilyatsiya' },
+      { ru: 'Диаспора', vn: 'Cộng đồng di cư', en: 'Diaspora', ph: 'diaspora' },
+      { ru: 'Неравенство', vn: 'Bất bình đẳng', en: 'Inequality', ph: 'neravenstvo' },
+      { ru: 'Патриархат', vn: 'Chế độ gia trưởng', en: 'Patriarchy', ph: 'patriarkhat' },
+      { ru: 'Феминизм', vn: 'Chủ nghĩa nữ quyền', en: 'Feminism', ph: 'feminizm' },
+      { ru: 'Глобализация', vn: 'Toàn cầu hoá', en: 'Globalisation', ph: 'globalizatsiya' },
+      { ru: 'Мультикультурализм', vn: 'Đa văn hoá', en: 'Multiculturalism', ph: 'multikulturalizm' },
+      { ru: 'Ксенофобия', vn: 'Bài ngoại', en: 'Xenophobia', ph: 'ksenofobiya' },
+      { ru: 'Толерантность', vn: 'Khoan dung', en: 'Tolerance', ph: 'tolerantnost' },
+      { ru: 'Нарратив', vn: 'Câu chuyện / Diễn ngôn', en: 'Narrative', ph: 'narrativ' },
+      { ru: 'Консенсус', vn: 'Đồng thuận', en: 'Consensus', ph: 'konsensus' },
+      { ru: 'Сегрегация', vn: 'Phân ly / Cách ly', en: 'Segregation', ph: 'segregatsiya' },
+    ],
+    "💊 Y học & Sinh học nâng cao": [
+      { ru: 'Иммунитет', vn: 'Miễn dịch', en: 'Immunity', ph: 'immunitet' },
+      { ru: 'Антитело', vn: 'Kháng thể', en: 'Antibody', ph: 'antitelo' },
+      { ru: 'Патоген', vn: 'Mầm bệnh', en: 'Pathogen', ph: 'patogen' },
+      { ru: 'Метаболизм', vn: 'Chuyển hoá', en: 'Metabolism', ph: 'metabolism' },
+      { ru: 'Хронический', vn: 'Mãn tính', en: 'Chronic', ph: 'khronicheskiy' },
+      { ru: 'Острый', vn: 'Cấp tính', en: 'Acute', ph: 'ostryy' },
+      { ru: 'Диагностика', vn: 'Chẩn đoán', en: 'Diagnostics', ph: 'diagnostika' },
+      { ru: 'Симптом', vn: 'Triệu chứng', en: 'Symptom', ph: 'simptom' },
+      { ru: 'Терапия', vn: 'Liệu pháp', en: 'Therapy', ph: 'terapiya' },
+      { ru: 'Хирургия', vn: 'Phẫu thuật', en: 'Surgery', ph: 'khirurgiya' },
+      { ru: 'Реабилитация', vn: 'Phục hồi chức năng', en: 'Rehabilitation', ph: 'reabilitatsiya' },
+      { ru: 'Эпидемия', vn: 'Dịch bệnh', en: 'Epidemic', ph: 'epidemiya' },
+      { ru: 'Пандемия', vn: 'Đại dịch', en: 'Pandemic', ph: 'pandemiya' },
+      { ru: 'Вакцинация', vn: 'Tiêm chủng', en: 'Vaccination', ph: 'vaktsinatsiya' },
+      { ru: 'Мутация', vn: 'Đột biến', en: 'Mutation', ph: 'mutatsiya' },
+      { ru: 'ДНК', vn: 'ADN', en: 'DNA', ph: 'de-en-ka' },
+      { ru: 'Нейромедиатор', vn: 'Chất dẫn truyền thần kinh', en: 'Neurotransmitter', ph: 'neyromediator' },
+      { ru: 'Гормон', vn: 'Hoóc-môn', en: 'Hormone', ph: 'gormon' },
+      { ru: 'Воспаление', vn: 'Viêm', en: 'Inflammation', ph: 'vospaleniye' },
+      { ru: 'Биохимия', vn: 'Sinh hoá', en: 'Biochemistry', ph: 'biokhimiya' },
+    ],
+    "✨ Khái niệm trừu tượng & Biểu đạt C1": [
+      { ru: 'Неоднозначность', vn: 'Tính mơ hồ / Hai nghĩa', en: 'Ambiguity', ph: 'neodnoznachnost' },
+      { ru: 'Нюанс', vn: 'Sắc thái / Khía cạnh tế nhị', en: 'Nuance', ph: 'nyuans' },
+      { ru: 'Взаимозависимость', vn: 'Sự phụ thuộc lẫn nhau', en: 'Interdependence', ph: 'vzaimozavisimost' },
+      { ru: 'Устойчивость', vn: 'Tính bền vững', en: 'Sustainability', ph: 'ustoychivost' },
+      { ru: 'Прозрачность', vn: 'Tính minh bạch', en: 'Transparency', ph: 'prozrachnost' },
+      { ru: 'Подотчётность', vn: 'Trách nhiệm giải trình', en: 'Accountability', ph: 'podotchotnost' },
+      { ru: 'Беспристрастный', vn: 'Vô tư / Không thiên vị', en: 'Impartial', ph: 'bespristrastnyy' },
+      { ru: 'Всеобъемлющий', vn: 'Toàn diện / Bao hàm', en: 'Comprehensive', ph: 'vseobemlyushchiy' },
+      { ru: 'Компетентность', vn: 'Năng lực', en: 'Competence', ph: 'kompetentnost' },
+      { ru: 'Эффективность', vn: 'Hiệu quả', en: 'Efficiency', ph: 'effektivnost' },
+      { ru: 'Инициатива', vn: 'Sáng kiến', en: 'Initiative', ph: 'initsiativa' },
+      { ru: 'Добросовестность', vn: 'Sự trung thực / Liêm chính', en: 'Integrity', ph: 'dobrosovestnost' },
+      { ru: 'Преодолевать', vn: 'Vượt qua / Khắc phục', en: 'To overcome', ph: 'preodolevat' },
+      { ru: 'Воздерживаться', vn: 'Kiềm chế / Không tham gia', en: 'To abstain', ph: 'vozderzivatsya' },
+      { ru: 'Предполагать', vn: 'Giả định / Dự tính', en: 'To presuppose', ph: 'predpolagat' },
+      { ru: 'Фигурально', vn: 'Theo nghĩa bóng', en: 'Figuratively', ph: 'figuralno' },
+      { ru: 'Буквально', vn: 'Theo nghĩa đen', en: 'Literally', ph: 'bukvalno' },
+      { ru: 'Сложность', vn: 'Sự phức tạp', en: 'Complexity', ph: 'slozhnost' },
+      { ru: 'Принципиальный', vn: 'Có nguyên tắc / Cơ bản', en: 'Principled / Fundamental', ph: 'printsipialnyy' },
+      { ru: 'Обусловливать', vn: 'Quy định / Phụ thuộc vào', en: 'To determine/condition', ph: 'obuslovlivat' },
+    ],
+  }
