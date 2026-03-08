@@ -1185,7 +1185,7 @@ body::after{
       <div id="fc-hint" style="font-size:12px;color:var(--com);margin-top:20px;">// tap to reveal</div>
     </div>
     <div id="fc-wf-wrap" style="display:none;margin-bottom:10px;">
-      <button class="btn" id="fc-wf-btn" onclick="App.fcFamily()">🌿 // xem họ từ</button>
+      <button class="btn" id="fc-wf-btn" onclick="App.fcFamily()" data-i18n="fc.wf.btn">🌿 // xem họ từ</button>
       <div id="fc-wf-panel"></div>
     </div>
     <div style="display:flex;gap:8px;">
@@ -1253,7 +1253,7 @@ body::after{
       <div id="srs-hint" style="font-size:12px;color:var(--com);margin-top:20px;">// tap to reveal</div>
     </div>
     <div id="srs-rate" style="display:none;">
-      <div style="font-size:9px;color:var(--com);text-align:center;margin-bottom:8px;">// đánh giá mức độ nhớ:</div>
+      <div style="font-size:9px;color:var(--com);text-align:center;margin-bottom:8px;" data-i18n="srs.rate.label">// đánh giá mức độ nhớ:</div>
       <div class="srsRow">
         <div class="srsBtn p" onclick="App.srsRate(0)"><span id="srs-btn-again" style="font-size:13px;font-weight:700;">Again</span><span id="srs-btn-again-sub" style="font-size:9px;opacity:.7;">quên mất</span></div>
         <div class="srsBtn y" onclick="App.srsRate(1)"><span id="srs-btn-hard" style="font-size:13px;font-weight:700;">Hard</span><span id="srs-btn-hard-sub" style="font-size:9px;opacity:.7;">khó nhớ</span></div>
@@ -1299,8 +1299,8 @@ body::after{
 <div id="s-lookup" class="screen">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--cyn);margin-bottom:2px;">&gt; dictionary.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">TRA TỪ</div>
-    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count">// đang tải...</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);" data-i18n="lk.title">TRA TỪ</div>
+    <div style="font-size:10px;color:var(--com);margin-top:2px;" id="lk-count" data-i18n="vocab.loading">// đang tải...</div>
   </div>
   <div style="padding:12px 16px 0;flex-shrink:0;">
     <div style="position:relative;">
@@ -1313,7 +1313,7 @@ body::after{
         style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--com);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;display:none;">✕</button>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px;" id="lk-chips">
-      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')">Tất cả</button>
+      <button class="lk-chip on" id="lk-f-all" onclick="App.lkFilter('all')" data-i18n="lk.all">Tất cả</button>
       <button class="lk-chip" id="lk-f-A1"  onclick="App.lkFilter('A1')">A1</button>
       <button class="lk-chip" id="lk-f-A2"  onclick="App.lkFilter('A2')">A2</button>
       <button class="lk-chip" id="lk-f-B1"  onclick="App.lkFilter('B1')">B1</button>
@@ -1323,8 +1323,8 @@ body::after{
   <div class="scrl" style="padding-top:12px;" id="lk-results">
     <div id="lk-placeholder" style="text-align:center;padding:48px 20px;color:var(--com);">
       <div style="font-size:40px;margin-bottom:14px;">📖</div>
-      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;">Gõ để tra từ</div>
-      <div style="font-size:11px;">// Hỗ trợ: Nga · Việt · phiên âm</div>
+      <div style="font-size:13px;color:var(--txd);margin-bottom:6px;" data-i18n="lk.prompt">Gõ để tra từ</div>
+      <div style="font-size:11px;" data-i18n="lk.support">// Hỗ trợ: Nga · Việt · phiên âm</div>
     </div>
   </div>
 </div>
@@ -1332,7 +1332,7 @@ body::after{
 <div id="s-grammar" class="screen">
   <div style="background:rgba(6,8,13,0.65);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border-bottom:1px solid rgba(255,255,255,0.08);padding:14px 72px 14px 16px;flex-shrink:0;">
     <div style="font-size:10px;color:var(--yel);margin-bottom:2px;">&gt; grammar.exe --lang=ru</div>
-    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);">NGỮ PHÁP TIẾNG NGA</div>
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);" data-i18n="gram.main.title">NGỮ PHÁP TIẾNG NGA</div>
   </div>
   <div id="gram-tabs" style="display:flex;gap:5px;padding:10px 16px 9px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;">
     <button class="gram-tab" id="gt-motion"     onclick="App.gramTab('motion')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
@@ -1352,8 +1352,8 @@ body::after{
   <div id="daily-hub" style="display:flex;flex-direction:column;height:100%;">
     <div class="hdr">
       <div class="f1">
-        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;">&gt; today.exe</div>
-        <div class="hdr-title">Hôm nay</div>
+        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" data-i18n="term.today">&gt; today.exe</div>
+        <div class="hdr-title" data-i18n="daily.title">Hôm nay</div>
       </div>
       <div id="daily-hub-level" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;background:rgba(255,159,10,.12);color:#ff9f0a;border:1px solid rgba(255,159,10,.3);font-family:var(--mono);"></div>
     </div>
@@ -1367,17 +1367,17 @@ body::after{
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       </button>
       <div class="f1">
-        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" id="dl-header-sub">// 7 từ · hôm nay</div>
-        <div class="hdr-title" style="font-size:17px;" id="dl-header-title">Học hôm nay</div>
+        <div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:.5px;" id="dl-header-sub"></div>
+        <div class="hdr-title" style="font-size:17px;" id="dl-header-title" data-i18n="dl.header.title">Học hôm nay</div>
       </div>
       <div style="text-align:right;">
         <div style="font-size:18px;font-weight:800;color:#ff9f0a;font-family:var(--mono);" id="dl-score-num">0/7</div>
-        <div style="font-size:9px;color:var(--com);">từ chắc</div>
+        <div style="font-size:9px;color:var(--com);"><span data-i18n="dl.score">từ chắc</span></div>
       </div>
     </div>
     <div style="padding:10px 16px 6px;flex-shrink:0;display:flex;align-items:center;gap:6px;">
       <div style="display:flex;gap:5px;align-items:center;flex:1;" id="dl-dots"></div>
-      <div style="font-size:10px;color:var(--com);font-family:var(--mono);" id="dl-phase-lbl">vòng 1/3</div>
+      <div style="font-size:10px;color:var(--com);font-family:var(--mono);" id="dl-phase-lbl"><span id="dl-phase-lbl-txt"> </span></div>
     </div>
     <div class="scrl" id="dl-scrl" style="padding-top:8px;">
       <div id="dl-body"></div>
@@ -1390,13 +1390,13 @@ body::after{
 <div id="s-daily-done" class="screen">
   <div class="scrl" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;padding:32px 24px;">
     <div style="font-size:72px;" id="dld-em" style="display:flex;align-items:center;justify-content:center;"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 2 20 2 20 6 16 6"/><path d="M8 6a4 4 0 0 0 4 4 4 4 0 0 0 4-4"/><line x1="12" y1="10" x2="12" y2="16"/><rect x="8" y="16" width="8" height="2" rx="1"/><line x1="6" y1="22" x2="18" y2="22"/></svg></div>
-    <div style="font-size:26px;font-weight:900;color:#ff9f0a;font-family:var(--mono);" id="dld-title">Hoàn thành!</div>
+    <div style="font-size:26px;font-weight:900;color:#ff9f0a;font-family:var(--mono);" id="dld-title" data-i18n="dld.title">Hoàn thành!</div>
     <div style="font-size:14px;color:var(--txd);text-align:center;line-height:1.6;" id="dld-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-top:8px;" id="dld-stats"></div>
     <div style="width:100%;max-width:320px;background:rgba(255,159,10,0.08);border:1px solid rgba(255,159,10,0.3);border-radius:16px;padding:14px 16px;" id="dld-words"></div>
     <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;">
       <button class="btn" style="background:rgba(52,199,89,.12);border-color:rgba(52,199,89,.3);color:var(--grn);" onclick="App.srsStart()">📚 Ôn tập SRS ngay</button>
-      <button class="btn g" onclick="App.nav('vocab')">↩ Về trang chính</button>
+      <button class="btn g" onclick="App.nav('vocab')" data-i18n="dld.return">↩ Về trang chính</button>
     </div>
   </div>
 </div>
@@ -1407,8 +1407,8 @@ body::after{
   <!-- Header -->
   <div class="hdr">
     <div class="f1">
-      <div style="font-size:10px;color:var(--pnk);font-family:var(--mono);letter-spacing:.5px;">// đọc hiểu tiếng Nga</div>
-      <div class="hdr-title" id="rd-hdr-title">Đọc hiểu</div>
+      <div style="font-size:10px;color:var(--pnk);font-family:var(--mono);letter-spacing:.5px;" data-i18n="rd.label">// đọc hiểu tiếng Nga</div>
+      <div class="hdr-title" id="rd-hdr-title" data-i18n="rd.title">Đọc hiểu</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <div id="rd-level-badge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;background:rgba(255,55,95,.15);color:var(--pnk);border:1px solid rgba(255,55,95,.3);font-family:var(--mono);"></div>
@@ -1513,7 +1513,7 @@ body::after{
 
 <div id="net-status">
   <div id="net-dot"></div>
-  <span id="net-label">Đang kiểm tra...</span>
+  <span id="net-label" data-i18n="net.checking">Đang kiểm tra...</span>
 </div>
 <div id="toast"></div>
 <script>
@@ -7879,81 +7879,294 @@ function srsColor(l){return{new:'#79c0ff',learning:'#e3b341',young:'#39d353',mat
 // ═══ i18n LANGUAGE SYSTEM ════════════════════════════════════
 var i18n = {
   vi: {
-    // Bottom Nav
-    'nav.vocab': 'Từ vựng', 'nav.review': 'Ôn tập', 'nav.grammar': 'Ngữ pháp', 'nav.read': 'Đọc', 'nav.lookup': 'Tra từ', 'nav.daily': 'Hôm nay',
-    // Vocab screen
-    'vocab.loading': '// đang tải...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
-    'vocab.srs.algo': '// SM-2 algorithm',
-    // Levels
-    'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
+    'nav.vocab':'Từ vựng','nav.review':'Ôn tập','nav.grammar':'Ngữ pháp','nav.read':'Đọc','nav.lookup':'Tra từ','nav.daily':'Hôm nay','nav.road':'Lộ trình',
+    'vocab.loading':'// đang tải...','vocab.progress':'// tiến độ','vocab.topics':'// CHỦ ĐỀ','vocab.srs.algo':'// thuật toán SM-2',
+    'level.beginner':'cơ bản','level.elementary':'sơ cấp','level.intermediate':'trung cấp',
+    'topic.flashcard.sub':'// lật thẻ · xem họ từ','topic.quiz.sub':'// kiểm tra kiến thức',
+    'fc.vietnamese':'// tiếng việt','fc.english':'// tiếng anh','fc.hint':'// nhấn để lật',
+    'fc.family':'🌿 // xem họ từ','fc.prev':'← trước','fc.next':'tiếp →','fc.done':'✓ xong',
+    'srs.remaining':'','srs.rate':'// đánh giá mức độ nhớ:',
+    'srs.again':'Again','srs.again.sub':'quên mất',
+    'srs.hard':'Hard','srs.hard.sub':'khó nhớ',
+    'srs.good':'Good','srs.good.sub':'nhớ được',
+    'srs.easy':'Easy','srs.easy.sub':'dễ dàng',
+    'srs.complete':'// ÔN TẬP XONG','srs.retention':'tỉ lệ nhớ',
+    'srs.review_again':'ôn_lại()','srs.return':'về_trang_chủ()',
+    'srs.due':'từ cần ôn','srs.none':'Không có từ cần ôn','srs.nav':'ПОВТОР','srs.nav.due':'ÔN',
+    'quiz.translate':'// dịch sang tiếng Việt:',
+    'quiz.complete':'// KIỂM TRA XONG','quiz.retry':'thử_lại()','quiz.return':'quay_lại()',
+    'stories.title':'ĐỌC TIẾNG NGA','stories.sub':'// Truyện ngắn · Văn học · Lịch sử',
+    'stories.all':'Tất cả','stories.tales':'🧚 Truyện','stories.news':'📰 Tin',
+    'stories.words':'// TỪ TRONG ĐOẠN NÀY',
+    'gram.title':'ГРАММАТИКА','gram.cases':'6 Cách',
+    'gram.formation':'Từ loại','gram.conditional':'Điều kiện','gram.passive':'Bị động','gram.quiz':'Đố vui','gram.motion':'Đ.từ CĐ',
+    'donate.label':'☕ Ủng hộ',
+    'fc.wf.label':'Danh từ','fc.wf.verb':'Động từ','fc.wf.adj':'Tính từ','fc.wf.adv':'Trạng từ',
+    'vocab.sub':'đã học','topic.words':'từ',
+    'wf.see':'🌿 // xem họ từ','wf.hide':'🌿 // ẩn họ từ',
+    'fc.sub':'// lật thẻ · xem họ từ','quiz.sub':'// kiểm tra kiến thức',
+    'gram.wf.noun':'N · Danh từ','gram.wf.verb':'V · Động từ','gram.wf.adj':'A · Tính từ',
+    'gram.wf.noun2':'Danh từ','gram.wf.verb2':'Động từ','gram.wf.adj2':'Tính từ','gram.wf.adv2':'Trạng từ',
+    'wf.prefix':'// họ từ','wf.title':'HỌ TỪ',
+    // Daily hub
+    'daily.title':'Hôm nay',
+    'daily.label':'// HỌC HÔM NAY','daily.words':'từ mới',
+    'daily.start':'Bắt đầu →','daily.done':'Xong hôm nay!','daily.back':'Quay lại vào ngày mai',
+    'daily.pick':'Chọn từ','daily.add':'Thêm từ','daily.roadmap':'// LỘ TRÌNH',
+    // Roadmap stages
+    'stage.A1':'Cơ bản','stage.A2':'Sinh tồn','stage.B1':'Thông thạo','stage.B2':'Nâng cao','stage.C1':'Thành thạo',
+    'stage.cur':'← nay',
+    // Daily lesson
+    'dl.phase1':'Vòng 1 — Xem & ghi nhớ','dl.phase2':'Vòng 2 — Nga → Nghĩa','dl.phase3':'Vòng 3 — Nghĩa → Nga',
+    'dl.left':'còn','dl.score':'từ chắc','dl.flip':'Nhấn để xem nghĩa','dl.next':'Tiếp theo →',
+    'dl.phase.lbl':'vòng','dl.word.num':'Từ',
+    'dl.finish.title':'🎉 Hoàn thành!','dl.finish.sub':'từ đã học hôm nay',
+    'dl.finish.confirm':'Từ đã học','dl.finish.srs':'Ôn tập SRS','dl.finish.home':'Về trang chủ',
+    'dl.toast2':'✓ Xong vòng 2 — bắt đầu vòng 3!',
+    // Quick links
+    'ql.grammar':'Ngữ pháp','ql.read':'Đọc hiểu','ql.lookup':'Tra từ','ql.vocab':'Từ vựng',
+    // Read screen
+    'rd.title':'Đọc hiểu','rd.stories':'truyện','rd.mins':'phút',
+    'rd.tap':'Nhấn vào từ để tra nghĩa',
+    'rd.btn.ru':'🔤 Nga','rd.btn.vn':'🇻🇳 Việt','rd.btn.en':'🇬🇧 English',
+    'rd.trans.vn':'🇻🇳 Tiếng Việt','rd.trans.en':'🇬🇧 English',
+    // Lookup
+    'lk.placeholder':'Nhập từ tiếng Nga hoặc tiếng Việt...','lk.all':'Tất cả',
+    'lk.searching':'Đang tra...','lk.not_found':'Không tìm thấy',
+    'lk.no_dict':'Không có trong từ điển','lk.try':'// Thử phiên âm hoặc tiếng Việt',
+    'lk.results':'kết quả cho',
+    // Status
+    'net.on':'✓ Đã có mạng','net.off':'✗ Mất kết nối',
+    // Grammar cases table labels
+    'case.gender':'Giới tính','case.sg':'Số ít','case.pl':'Số nhiều',
+    'case.ending.m':'Đực (-∅ -й -ь)','case.ending.f1':'Cái (-а -я)','case.ending.f2':'Cái (-ь)',
+    'case.ending.n':'Trung (-о -е)','case.ending.adj.m':'Tính từ đực','case.ending.adj.f':'Tính từ cái',
+    'case.ending.adj.n':'Tính từ trung','case.ending.adj.mn':'Tính từ đực/trung',
+    'case.ending.mn':'Đực / Trung','case.ending.manim':'Đực VÔ SINH','case.ending.manim.adj':'TT đực vô sinh/trung',
+    'case.ending.mhum':'Đực HỮU SINH ⚠','case.ending.mhum.adj':'TT đực HỮU SINH ⚠',
+    'case.section.endings':'// ĐUÔI CẤU THÀNH','case.section.prep':'// GIỚI TỪ ĐI KÈM',
+    // Grammar word formation
+    'wf.section.sign':'// Ký hiệu loại từ',
+    // Passive/conditional labels
+    'cond.type1':'Loại 1 — Thực tế / Có thể xảy ra','cond.type2':'Loại 2 — Không thực / Giả định',
+    'cond.type3':'Loại 3 — Không thực / Trái thực tế','cond.concession':'Dù / Dù rằng — Nhượng bộ',
+    'passive.title':'// CÂU BỊ ĐỘNG',
+    'passive.type1':'1. Phân từ ngắn bị động','passive.type2':'2. Bị động phản thân -СЯ','passive.type3':'3. So sánh chủ động / bị động',
+    'passive.active':'CHỦ ĐỘNG','passive.passive':'BỊ ĐỘNG',
+    'passive.col.gender':'Giới/Số','passive.col.ending':'Đuôi','passive.col.example':'Ví dụ',
+    'passive.sg.m':'Đực số ít','passive.sg.f':'Cái số ít','passive.sg.n':'Trung số ít','passive.pl':'Số nhiều',
+    // Motion verbs
+    'motion.walk.title':'🚶 ĐI: идти / ходить','motion.drive.title':'🚗 ĐI (xe): ехать / ездить',
     // Topic screen
-    'topic.flashcard.sub': '// lật thẻ · xem họ từ', 'topic.quiz.sub': '// kiểm tra kiến thức',
-    // Flashcard
-    'fc.vietnamese': '// vietnamese', 'fc.english': '// english', 'fc.hint': '// tap to reveal',
-    'fc.family': '🌿 // xem họ từ', 'fc.prev': '← prev()', 'fc.next': 'next() →', 'fc.done': '✓ done()',
-    // SRS
-    'srs.remaining': '', 'srs.rate': '// đánh giá mức độ nhớ:',
-    'srs.again': 'Again', 'srs.again.sub': 'quên mất',
-    'srs.hard': 'Hard', 'srs.hard.sub': 'khó nhớ',
-    'srs.good': 'Good', 'srs.good.sub': 'nhớ được',
-    'srs.easy': 'Easy', 'srs.easy.sub': 'dễ dàng',
-    'srs.complete': '// SRS COMPLETE', 'srs.retention': 'retention rate',
-    'srs.review_again': 'review_again()', 'srs.return': 'return_home()',
-    // Quiz
-    'quiz.translate': '// translate to Vietnamese:',
-    'quiz.complete': '// QUIZ COMPLETE', 'quiz.retry': 'retry()', 'quiz.return': 'return()',
-    // Stories
-    'stories.title': 'ĐỌC TIẾNG NGA', 'stories.sub': '// Truyện thiếu nhi · Tin tức báo chí',
-    'stories.all': 'Tất cả', 'stories.tales': '🧚 Truyện', 'stories.news': '📰 Tin',
-    'stories.words': '// TỪ TRONG ĐOẠN NÀY',
-    // Grammar
-    'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cách',
-    'gram.formation': 'Từ loại', 'gram.conditional': 'Điều kiện', 'gram.passive': 'Bị động', 'gram.quiz': 'Đố vui', 'gram.motion': 'Đ.từ CĐ',
-    // Donate
-    'donate.label': '☕ Ủng hộ / Support dev',
-    // FC word family
-    'fc.wf.label': 'Danh từ', 'fc.wf.verb': 'Động từ', 'fc.wf.adj': 'Tính từ', 'fc.wf.adv': 'Trạng từ',
-    'srs.due': 'từ cần ôn tập', 'srs.none': 'Không có từ cần ôn',
-    'srs.nav': 'ПОВТОР', 'srs.nav.due': 'ÔN',
-    'vocab.sub': 'đã học',
-    'topic.words': 'từ',
-    'wf.see': '🌿 // xem họ từ', 'wf.hide': '🌿 // ẩn họ từ',
-    'fc.sub': '// lật thẻ · xem họ từ', 'quiz.sub': '// kiểm tra kiến thức',
-    'gram.wf.noun': 'N · Danh từ', 'gram.wf.verb': 'V · Động từ', 'gram.wf.adj': 'A · Tính từ',
-    'gram.wf.noun2': 'Danh từ', 'gram.wf.verb2': 'Động từ', 'gram.wf.adj2': 'Tính từ', 'gram.wf.adv2': 'Trạng từ',
+    'topic.learned':'học rồi','topic.words2':'từ',
+    // Word picker / add word modal
+    'picker.selected':'/7 từ đã chọn','picker.max':'Tối đa 7 từ mỗi ngày','picker.max.suffix':' (tối đa)',
+    'picker.updated':'Đã cập nhật từ hôm nay ✓','picker.learned':'✓ đã học',
+    'picker.my.words':'📝 Từ của tôi',
+    'addword.placeholder':'Nhập tiếng Nga và tiếng Việt','addword.exists':'Từ này đã có rồi',
+    'addword.deleted':'Đã xoá: ',
+    // SRS/FC  
+    'fc.seen':'✓ +1 từ đã xem · sẽ ôn sau 1 ngày',
+    'fc.done.back':'✓ Hết bài · quay lại',
+    'srs.need.more':'// cần luyện thêm 📖',
+    // Daily finish
+    'finish.congrats':'Cố lên!','finish.learned':'Bạn đã học chắc ','finish.of':'/7 từ hôm nay. ',
+    'finish.tomorrow':' từ sẽ xuất hiện lại ngày mai.','finish.srs.all':'Tất cả đều vào SRS để ôn tập!',
+    'finish.count.label':'Từ học chắc',
+    // Date
+    'day.0':'Chủ Nhật','day.1':'Thứ Hai','day.2':'Thứ Ba','day.3':'Thứ Tư','day.4':'Thứ Năm','day.5':'Thứ Sáu','day.6':'Thứ Bảy',
+    'month.0':'tháng 1','month.1':'tháng 2','month.2':'tháng 3','month.3':'tháng 4','month.4':'tháng 5','month.5':'tháng 6',
+    'month.6':'tháng 7','month.7':'tháng 8','month.8':'tháng 9','month.9':'tháng 10','month.10':'tháng 11','month.11':'tháng 12',
+    // All done level
+    'vocab.all.done':'🎉 Bạn đã học hết từ ở cấp này!',
+    // Add word modal
+    'aw.title':'➕ Thêm từ vựng',
+    'aw.phonetic':'PHIÊN ÂM (tuỳ chọn)',
+    'aw.english':'TIẾNG ANH (tuỳ chọn)',
+    'aw.ph.placeholder':'Ví dụ: privet',
+    'aw.btn.add':'✓ Thêm vào từ điển cá nhân',
+    'aw.btn.study':'✓ Học ngay',
+    // Word picker modal
+    'picker.title':'🗂️ Chọn từ hôm nay',
+    'picker.subtitle':'Chọn tối đa 7 từ để học',
+    // terminal labels
+    'term.today':'> today.exe',
+    'term.vocab':'> vocab.exe',
+    'term.grammar':'> grammar.exe',
+    'term.read':'> read.exe',
+    'term.lookup':'> search.exe',
+    // srs new
+    'srs.new':'· mới',
+    // lk count label
+    'lk.words':'từ',
+    // Lookup UI
+    'lk.title':'TRA TỪ','lk.placeholder':'Nhập từ tiếng Nga hoặc tiếng Việt...','lk.prompt':'Gõ để tra từ',
+    'lk.support':'// Hỗ trợ: Nga · Việt · phiên âm',
+    // Grammar main title
+    'gram.main.title':'NGỮ PHÁP TIẾNG NGA',
+    // Read screen label
+    'rd.label':'// đọc hiểu tiếng Nga',
+    // Daily lesson
+    'dl.header.title':'Học hôm nay','dld.title':'🎉 Hoàn thành!',
+    'dld.return':'↩ Về trang chính','dld.srs.btn':'Ôn tập SRS',
+    // Network checking
+    'net.checking':'Đang kiểm tra...',
+    // Picker search & confirm
+    'picker.search':'Tìm từ tiếng Nga hoặc tiếng Việt...','picker.confirm':'✓ Xác nhận',
+    // Add word modal fields
+    'aw.level':'CẤP ĐỘ','aw.topic':'CHỦ ĐỀ',
+    'aw.russian':'TIẾNG NGA *','aw.vietnamese':'TIẾNG VIỆT *','aw.submit':'✓ Thêm vào từ điển cá nhân',
+    // Misc
+    'fc.wf.btn':'🌿 // xem họ từ','srs.rate.label':'// đánh giá mức độ nhớ:',
+    'topic.back':'← quay lại',
+    // rd topics/list
+    'rd.back':'← Quay lại',
+    'rd.all.stories':'tất cả',
   },
   en: {
-    'nav.vocab': 'Vocab', 'nav.review': 'Review', 'nav.grammar': 'Grammar', 'nav.read': 'Read', 'nav.lookup': 'Search', 'nav.road': 'Roadmap', 'nav.daily': 'Today',
-    'vocab.loading': '// loading...', 'vocab.progress': '// progress', 'vocab.topics': '// TOPICS',
-    'vocab.srs.algo': '// SM-2 algorithm',
-    'level.beginner': 'beginner', 'level.elementary': 'elementary', 'level.intermediate': 'intermediate',
-    'topic.flashcard.sub': '// flip cards · see word family', 'topic.quiz.sub': '// test your knowledge',
-    'fc.vietnamese': '// vietnamese', 'fc.english': '// english', 'fc.hint': '// tap to reveal',
-    'fc.family': '🌿 // word family', 'fc.prev': '← prev()', 'fc.next': 'next() →', 'fc.done': '✓ done()',
-    'srs.remaining': 'remaining:', 'srs.rate': '// rate your memory:',
-    'srs.again': 'Again', 'srs.again.sub': 'forgot',
-    'srs.hard': 'Hard', 'srs.hard.sub': 'hard',
-    'srs.good': 'Good', 'srs.good.sub': 'got it',
-    'srs.easy': 'Easy', 'srs.easy.sub': 'easy',
-    'srs.complete': '// SRS COMPLETE', 'srs.retention': 'retention rate',
-    'srs.review_again': 'review_again()', 'srs.return': 'return_home()',
-    'quiz.translate': '// translate to English:',
-    'quiz.complete': '// QUIZ COMPLETE', 'quiz.retry': 'retry()', 'quiz.return': 'return()',
-    'stories.title': 'Read Russian', 'stories.sub': "// Children's stories · News articles",
-    'stories.all': 'All', 'stories.tales': '🧚 Stories', 'stories.news': '📰 News',
-    'stories.words': '// WORDS IN THIS PASSAGE',
-    'gram.title': 'ГРАММАТИКА', 'gram.cases': '6 Cases',
-    'gram.formation': 'Word types', 'gram.conditional': 'Conditional', 'gram.passive': 'Passive', 'gram.quiz': 'Quiz',
-    'donate.label': '☕ Support dev',
-    'fc.wf.label': 'Nouns', 'fc.wf.verb': 'Verbs', 'fc.wf.adj': 'Adjectives', 'fc.wf.adv': 'Adverbs',
-    'srs.due': 'words due for review', 'srs.none': 'Nothing to review',
-    'srs.nav': 'Review', 'srs.nav.due': 'Review',
-    'vocab.sub': 'words learned',
-    'topic.words': 'words',
-    'wf.see': '🌿 // word family', 'wf.hide': '🌿 // hide family',
-    'fc.sub': '// flip cards · word family', 'quiz.sub': '// test knowledge',
-    'gram.wf.noun': 'N · Noun', 'gram.wf.verb': 'V · Verb', 'gram.wf.adj': 'A · Adj',
-    'gram.wf.noun2': 'Noun', 'gram.wf.verb2': 'Verb', 'gram.wf.adj2': 'Adjective', 'gram.wf.adv2': 'Adverb',
+    'nav.vocab':'Vocab','nav.review':'Review','nav.grammar':'Grammar','nav.read':'Read','nav.lookup':'Search','nav.daily':'Today','nav.road':'Roadmap',
+    'vocab.loading':'// loading...','vocab.progress':'// progress','vocab.topics':'// TOPICS','vocab.srs.algo':'// SM-2 algorithm',
+    'level.beginner':'beginner','level.elementary':'elementary','level.intermediate':'intermediate',
+    'topic.flashcard.sub':'// flip cards · word family','topic.quiz.sub':'// test your knowledge',
+    'fc.vietnamese':'// vietnamese','fc.english':'// english','fc.hint':'// tap to reveal',
+    'fc.family':'🌿 // word family','fc.prev':'← prev','fc.next':'next →','fc.done':'✓ done',
+    'srs.remaining':'remaining:','srs.rate':'// rate your memory:',
+    'srs.again':'Again','srs.again.sub':'forgot',
+    'srs.hard':'Hard','srs.hard.sub':'hard',
+    'srs.good':'Good','srs.good.sub':'got it',
+    'srs.easy':'Easy','srs.easy.sub':'easy',
+    'srs.complete':'// SRS COMPLETE','srs.retention':'retention rate',
+    'srs.review_again':'review_again()','srs.return':'return_home()',
+    'srs.due':'words due','srs.none':'Nothing to review','srs.nav':'Review','srs.nav.due':'Review',
+    'quiz.translate':'// translate to English:',
+    'quiz.complete':'// QUIZ COMPLETE','quiz.retry':'retry()','quiz.return':'return()',
+    'stories.title':'Read Russian','stories.sub':'// Short stories · Literature · History',
+    'stories.all':'All','stories.tales':'🧚 Stories','stories.news':'📰 News',
+    'stories.words':'// WORDS IN THIS PASSAGE',
+    'gram.title':'ГРАММАТИКА','gram.cases':'6 Cases',
+    'gram.formation':'Word types','gram.conditional':'Conditional','gram.passive':'Passive','gram.quiz':'Quiz','gram.motion':'Motion V.',
+    'donate.label':'☕ Support',
+    'fc.wf.label':'Nouns','fc.wf.verb':'Verbs','fc.wf.adj':'Adjectives','fc.wf.adv':'Adverbs',
+    'vocab.sub':'words learned','topic.words':'words',
+    'wf.see':'🌿 // word family','wf.hide':'🌿 // hide family',
+    'fc.sub':'// flip cards · word family','quiz.sub':'// test knowledge',
+    'gram.wf.noun':'N · Noun','gram.wf.verb':'V · Verb','gram.wf.adj':'A · Adj',
+    'gram.wf.noun2':'Noun','gram.wf.verb2':'Verb','gram.wf.adj2':'Adjective','gram.wf.adv2':'Adverb',
+    'wf.prefix':'// word family','wf.title':'WORD FAMILY',
+    // Daily hub
+    'daily.title':'Today',
+    'daily.label':'// STUDY TODAY','daily.words':'new words',
+    'daily.start':'Start →','daily.done':'Done for today!','daily.back':'Come back tomorrow',
+    'daily.pick':'Pick words','daily.add':'Add word','daily.roadmap':'// ROADMAP',
+    // Roadmap stages
+    'stage.A1':'Beginner','stage.A2':'Elementary','stage.B1':'Intermediate','stage.B2':'Upper-int.','stage.C1':'Advanced',
+    'stage.cur':'← current',
+    // Daily lesson
+    'dl.phase1':'Round 1 — View & memorise','dl.phase2':'Round 2 — Ru → Meaning','dl.phase3':'Round 3 — Meaning → Ru',
+    'dl.left':'left','dl.score':'confirmed','dl.flip':'Tap to reveal','dl.next':'Next →',
+    'dl.phase.lbl':'round','dl.word.num':'Word',
+    'dl.finish.title':'🎉 Complete!','dl.finish.sub':'words studied today',
+    'dl.finish.confirm':'Words confirmed','dl.finish.srs':'SRS Review','dl.finish.home':'Go home',
+    'dl.toast2':'✓ Round 2 done — starting round 3!',
+    // Quick links
+    'ql.grammar':'Grammar','ql.read':'Reading','ql.lookup':'Search','ql.vocab':'Vocab',
+    // Read screen
+    'rd.title':'Reading','rd.stories':'stories','rd.mins':'min',
+    'rd.tap':'Tap a word to look it up',
+    'rd.btn.ru':'🔤 Russian','rd.btn.vn':'🇻🇳 Vietnamese','rd.btn.en':'🇬🇧 English',
+    'rd.trans.vn':'🇻🇳 Vietnamese','rd.trans.en':'🇬🇧 English',
+    // Lookup
+    'lk.placeholder':'Enter a word in Russian or English...','lk.all':'All',
+    'lk.searching':'Searching...','lk.not_found':'No results found',
+    'lk.no_dict':'Not in dictionary','lk.try':'// Try phonetic or English',
+    'lk.results':'results for',
+    // Status
+    'net.on':'✓ Connected','net.off':'✗ Disconnected',
+    // Grammar cases table labels
+    'case.gender':'Gender','case.sg':'Singular','case.pl':'Plural',
+    'case.ending.m':'Masc. (-∅ -й -ь)','case.ending.f1':'Fem. (-а -я)','case.ending.f2':'Fem. (-ь)',
+    'case.ending.n':'Neut. (-о -е)','case.ending.adj.m':'Adj. masc.','case.ending.adj.f':'Adj. fem.',
+    'case.ending.adj.n':'Adj. neut.','case.ending.adj.mn':'Adj. m./n.',
+    'case.ending.mn':'Masc. / Neut.','case.ending.manim':'Masc. INANIMATE','case.ending.manim.adj':'Adj. m. inanim.',
+    'case.ending.mhum':'Masc. ANIMATE ⚠','case.ending.mhum.adj':'Adj. m. animate ⚠',
+    'case.section.endings':'// CASE ENDINGS','case.section.prep':'// PREPOSITIONS USED',
+    // Grammar word formation
+    'wf.section.sign':'// Part of speech key',
+    // Passive/conditional labels
+    'cond.type1':'Type 1 — Real / Possible','cond.type2':'Type 2 — Unreal / Hypothetical',
+    'cond.type3':'Type 3 — Contrary to fact (past)','cond.concession':'Concession — Even if / Although',
+    'passive.title':'// PASSIVE VOICE',
+    'passive.type1':'1. Short passive participle (most common)','passive.type2':'2. Reflexive passive -СЯ','passive.type3':'3. Active vs passive comparison',
+    'passive.active':'ACTIVE','passive.passive':'PASSIVE',
+    'passive.col.gender':'Gender/No.','passive.col.ending':'Ending','passive.col.example':'Example',
+    'passive.sg.m':'Masc. sg.','passive.sg.f':'Fem. sg.','passive.sg.n':'Neut. sg.','passive.pl':'Plural',
+    // Motion verbs
+    'motion.walk.title':'🚶 WALK: идти / ходить','motion.drive.title':'🚗 DRIVE: ехать / ездить',
+    // Topic screen
+    'topic.learned':'learned','topic.words2':'words',
+    // Word picker / add word
+    'picker.selected':'/7 selected','picker.max':'Max 7 words per day','picker.max.suffix':' (max)',
+    'picker.updated':'Updated today\'s words ✓','picker.learned':'✓ learned',
+    'picker.my.words':'📝 My words',
+    'addword.placeholder':'Enter Russian and Vietnamese','addword.exists':'Word already exists',
+    'addword.deleted':'Deleted: ',
+    // SRS/FC
+    'fc.seen':'✓ +1 seen · review in 1 day',
+    'fc.done.back':'✓ All done · go back',
+    'srs.need.more':'// needs more practice 📖',
+    // Daily finish
+    'finish.congrats':'Keep it up!','finish.learned':'You confirmed ','finish.of':'/7 words today. ',
+    'finish.tomorrow':' word(s) will reappear tomorrow.','finish.srs.all':'All words queued for SRS review!',
+    'finish.count.label':'Words confirmed',
+    // Date
+    'day.0':'Sunday','day.1':'Monday','day.2':'Tuesday','day.3':'Wednesday','day.4':'Thursday','day.5':'Friday','day.6':'Saturday',
+    'month.0':'January','month.1':'February','month.2':'March','month.3':'April','month.4':'May','month.5':'June',
+    'month.6':'July','month.7':'August','month.8':'September','month.9':'October','month.10':'November','month.11':'December',
+    // All done level
+    'vocab.all.done':'🎉 You have mastered all words at this level!',
+    // Add word modal
+    'aw.title':'➕ Add vocabulary',
+    'aw.phonetic':'PHONETIC (optional)',
+    'aw.english':'ENGLISH (optional)',
+    'aw.ph.placeholder':'e.g. privet',
+    'aw.btn.add':'✓ Add to personal dictionary',
+    'aw.btn.study':'✓ Study now',
+    // Word picker modal
+    'picker.title':'🗂️ Choose words for today',
+    'picker.subtitle':'Choose up to 7 words to study',
+    // terminal labels
+    'term.today':'> today.exe',
+    'term.vocab':'> vocab.exe',
+    'term.grammar':'> grammar.exe',
+    'term.read':'> read.exe',
+    'term.lookup':'> search.exe',
+    // srs new
+    'srs.new':'· new',
+    // lk count label
+    'lk.words':'words',
+    // Lookup UI
+    'lk.title':'SEARCH','lk.placeholder':'Enter a word in Russian or English...','lk.prompt':'Type to search',
+    'lk.support':'// Supports: Russian · English · phonetic',
+    // Grammar main title
+    'gram.main.title':'RUSSIAN GRAMMAR',
+    // Read screen label
+    'rd.label':'// Russian reading',
+    // Daily lesson
+    'dl.header.title':'Study today','dld.title':'🎉 Complete!',
+    'dld.return':'↩ Home','dld.srs.btn':'SRS Review',
+    // Network checking
+    'net.checking':'Checking...',
+    // Picker search & confirm
+    'picker.search':'Search Russian or English...','picker.confirm':'✓ Confirm',
+    // Add word modal fields
+    'aw.level':'LEVEL','aw.topic':'TOPIC',
+    'aw.russian':'RUSSIAN *','aw.vietnamese':'TRANSLATION *','aw.submit':'✓ Add to personal dictionary',
+    // Misc
+    'fc.wf.btn':'🌿 // word family','srs.rate.label':'// rate your memory:',
+    'topic.back':'← back',
+    // rd topics/list
+    'rd.back':'← Back',
+    'rd.all.stories':'all',
   }
 };
 const App=(()=>{
@@ -8214,7 +8427,7 @@ function renderVocab(){
         </div>
       </div>
       <div style="font-size:11.5px;font-weight:700;margin:6px 0 2px;line-height:1.35;color:var(--tx);">${_topicName(name,S.lang)}</div>
-      <div style="font-size:9.5px;color:var(--com);">${ws.length} ${S.lang==='en'?'words':'từ'} · <span style="color:${done?'var(--grn)':'var(--com)'};">${m} ${S.lang==='en'?'learned':'học rồi'}</span></div>
+      <div style="font-size:9.5px;color:var(--com);">${ws.length} ${t('topic.words2')} · <span style="color:${done?'var(--grn)':'var(--com)'};">${m} ${t('topic.learned')}</span></div>
       <div class="pbar mt4" style="background:rgba(255,255,255,0.04);"><div class="pfill" style="background:linear-gradient(90deg,${_col},${_col}88);width:${p}%;box-shadow:0 0 8px ${_col}40;"></div></div>
       <div style="font-size:9px;color:${_col};margin-top:3px;font-weight:600;">${p}%</div>
     </div>`;
@@ -8406,7 +8619,7 @@ function srsRender(){
   document.getElementById('srs-rem').textContent=S.srsDeck.length-S.srsIdx;
   document.getElementById('srs-pb').style.width=`${(S.srsIdx/S.srsDeck.length)*100}%`;
   const bdg=document.getElementById('srs-badge');
-  bdg.textContent=lb+(cd?` · ${cd.interval}d`:' · new'); bdg.style.cssText=`background:${col}22;color:${col};`;
+  bdg.textContent=lb+(cd?` · ${cd.interval}d`:t('srs.new')); bdg.style.cssText=`background:${col}22;color:${col};`;
   var _tn2=S.lang==='en'?(topicNamesEN[cur.topicName]||cur.topicName):cur.topicName;
   document.getElementById('srs-topic').textContent=`// ${_tn2.split(' ').slice(0,2).join(' ')}`;
   document.getElementById('srs-ru').textContent=w.ru;
@@ -9388,6 +9601,7 @@ function setLang(lang){
   else if(cur==='quiz') qzRender();
   else if(cur==='shadow'){shadowRender();}
   else if(cur==='shplay'){shadowPlayRender();}
+  else if(cur==='daily'){ if(typeof renderDailyHub==='function') renderDailyHub(); }
   // SRS rate buttons
   const srsMap = [['again','again'],['hard','hard'],['good','good'],['easy','easy']];
   srsMap.forEach(([k])=>{
@@ -9420,11 +9634,21 @@ function setLang(lang){
   const vSub = document.getElementById('v-sub'); if(vSub && vSub.textContent.includes('tải')) vSub.textContent = t('vocab.loading');
   lkInit(); lkClear();
   var lkInp=document.getElementById('lk-input');
-  if(lkInp) lkInp.placeholder=lang==='en'?'Enter a word in Russian or Vietnamese...':'Введите слово на русском или вьетнамском...';
+  if(lkInp) lkInp.placeholder=t('lk.placeholder');
   var lkAll=document.getElementById('lk-f-all');
   if(lkAll) lkAll.textContent=lang==='en'?'All':'Все';
   if(S.topic){var tEl=document.getElementById('t-title');if(tEl)tEl.textContent=lang==='en'?(topicNamesEN[S.topic]||S.topic):S.topic;}
   renderVocab();
+  // Update read screen static labels
+  var rdSub = document.getElementById('rd-sub-label');
+  if(rdSub) rdSub.textContent = lang==='en'?'// Russian reading':'// đọc hiểu tiếng Nga';
+  var rdHdr = document.getElementById('rd-hdr-title');
+  if(rdHdr && RD && RD.view==='topics') rdHdr.textContent = lang==='en'?'Reading':'Đọc hiểu';
+  // Update aw-ph placeholder
+  var awPh = document.getElementById('aw-ph');
+  if(awPh) awPh.placeholder = t('aw.ph.placeholder');
+  // Re-render read screen if active
+  if(cur==='read'||cur==='daily') { if(typeof renderDailyHub==='function' && cur==='daily') renderDailyHub(); }
 }
 
 
@@ -9542,9 +9766,9 @@ function renderDailyHub(){
   if(lvlBadge) lvlBadge.textContent = curLvl;
 
   var d = new Date();
-  var days   = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
-  var months = ['tháng 1','tháng 2','tháng 3','tháng 4','tháng 5','tháng 6',
-                'tháng 7','tháng 8','tháng 9','tháng 10','tháng 11','tháng 12'];
+  var days   = [t('day.0'),t('day.1'),t('day.2'),t('day.3'),t('day.4'),t('day.5'),t('day.6')];
+  var months = [t('month.0'),t('month.1'),t('month.2'),t('month.3'),t('month.4'),t('month.5'),
+                t('month.6'),t('month.7'),t('month.8'),t('month.9'),t('month.10'),t('month.11')];
   var dateStr = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()];
 
   function lvlProgress(lvl){
@@ -9571,11 +9795,11 @@ function renderDailyHub(){
   var wCount = DL.words ? DL.words.length : 0;
 
   var stages = [
-    {level:'A1', color:'#5ac8fa', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20L10 4l10 16"/><line x1="6.5" y1="14" x2="17" y2="14"/></svg>', title:'Cơ bản'},
-    {level:'A2', color:'#34c759', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', title:'Sinh tồn'},
-    {level:'B1', color:'#ffd60a', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', title:'Thông thạo'},
-    {level:'B2', color:'#bf5af2', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>', title:'Nâng cao'},
-    {level:'C1', color:'#ff9f0a', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 16 12 16 20 16 20 6 16 6"/><rect x="8" y="16" width="8" height="5" rx="1"/><path d="M4 9H2m18 0h2M8 6V3m8 3V3"/></svg>', title:'Thành thạo'},
+    {level:'A1', color:'#5ac8fa', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20L10 4l10 16"/><line x1="6.5" y1="14" x2="17" y2="14"/></svg>', title:t('stage.A1')},
+    {level:'A2', color:'#34c759', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>', title:t('stage.A2')},
+    {level:'B1', color:'#ffd60a', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', title:t('stage.B1')},
+    {level:'B2', color:'#bf5af2', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>', title:t('stage.B2')},
+    {level:'C1', color:'#ff9f0a', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 16 12 16 20 16 20 6 16 6"/><rect x="8" y="16" width="8" height="5" rx="1"/><path d="M4 9H2m18 0h2M8 6V3m8 3V3"/></svg>', title:t('stage.C1')},
   ];
   var curIdx = 0;
   for(var si=0;si<stages.length;si++) if(stages[si].level===curLvl){curIdx=si;break;}
@@ -9593,23 +9817,23 @@ function renderDailyHub(){
        + 'border:1px solid rgba(255,159,10,.35);'
        + 'background:linear-gradient(135deg,rgba(255,159,10,.10),rgba(255,107,107,.04));'
        + 'box-shadow:0 1px 0 rgba(255,255,255,.07) inset;">'
-       + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// HỌC HÔM NAY</div>'
+       + '<div style="font-size:10px;color:#ff9f0a;font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">'+t('daily.label')+'</div>'
        + '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">'
        + '<div style="font-size:32px;font-weight:900;color:var(--tx);font-family:var(--hdisplay);line-height:1;">'
        + wCount+'</div>'
-       + '<div style="font-size:16px;font-weight:700;color:var(--txd);">từ mới</div>'
+       + '<div style="font-size:16px;font-weight:700;color:var(--txd);">'+t('daily.words')+'</div>'
        + '</div>'
        + '<div style="display:flex;align-items:center;justify-content:space-between;">'
-       + '<div style="font-size:12px;color:var(--com);">~'+Math.ceil(wCount*1.5)+' phút</div>'
-       + '<div style="font-size:13px;font-weight:700;color:#ff9f0a;">Bắt đầu →</div>'
+       + '<div style="font-size:12px;color:var(--com);">~'+Math.ceil(wCount*1.5)+' '+t('daily.mins').replace('{n}','').trim()+'</div>'
+       + '<div style="font-size:13px;font-weight:700;color:#ff9f0a;">'+t('daily.start')+'</div>'
        + '</div>'
        + '</div>';
   } else {
     h += '<div style="padding:20px;border-radius:20px;border:1px solid rgba(52,199,89,.25);'
        + 'background:rgba(52,199,89,.05);margin-bottom:12px;text-align:center;">'
        + '<div style="margin-bottom:10px;display:flex;justify-content:center;color:var(--grn);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7 12 10.5 15.5 17 9"/></svg></div>'
-       + '<div style="font-size:15px;font-weight:800;color:var(--grn);">Xong hôm nay!</div>'
-       + '<div style="font-size:12px;color:var(--com);margin-top:4px;">Quay lại vào ngày mai</div>'
+       + '<div style="font-size:15px;font-weight:800;color:var(--grn);">'+t('daily.done')+'</div>'
+       + '<div style="font-size:12px;color:var(--com);margin-top:4px;">'+t('daily.back')+'</div>'
        + '</div>';
   }
 
@@ -9618,19 +9842,19 @@ function renderDailyHub(){
      + '<div class="tch" onclick="App.openWordPicker()" style="flex:1;padding:13px 10px;border-radius:16px;'
      + 'border:1px solid rgba(90,200,250,.2);background:rgba(90,200,250,.05);text-align:center;">'
      + '<div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--cyn);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2.5"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg></div>'
-     + '<div style="font-size:11px;font-weight:700;color:var(--cyn);">Chọn từ</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--cyn);">'+t('daily.pick')+'</div>'
      + '</div>'
      + '<div class="tch" onclick="App.openAddWord()" style="flex:1;padding:13px 10px;border-radius:16px;'
      + 'border:1px solid rgba(52,199,89,.2);background:rgba(52,199,89,.05);text-align:center;">'
      + '<div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--grn);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>'
-     + '<div style="font-size:11px;font-weight:700;color:var(--grn);">Thêm từ</div>'
+     + '<div style="font-size:11px;font-weight:700;color:var(--grn);">'+t('daily.add')+'</div>'
      + '</div>'
      + '</div>';
 
   // ── Roadmap ────────────────────────────────────────────────
   h += '<div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);'
      + 'border-radius:20px;padding:16px;margin-bottom:12px;">'
-     + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:12px;">// LỘ TRÌNH</div>';
+     + '<div style="font-size:10px;color:var(--com);font-family:var(--mono);letter-spacing:1px;margin-bottom:12px;">'+t('daily.roadmap')+'</div>';
 
   for(var i=0;i<stages.length;i++){
     var st   = stages[i];
@@ -9659,7 +9883,7 @@ function renderDailyHub(){
        + '<div style="display:flex;align-items:center;gap:7px;">'
        + '<span style="color:'+(isCur?st.color:'var(--com)')+';display:flex;">'+st.icon+'</span>'
        + '<span style="font-size:13px;font-weight:700;color:'+(isCur?'var(--tx)':'var(--txd)')+';">'+st.title
-       + (isCur?' <span style="font-size:9px;font-family:var(--mono);color:'+st.color+';">← nay</span>':'')+'</span>'
+       + (isCur?' <span style="font-size:9px;font-family:var(--mono);color:'+st.color+';">'+t('stage.cur')+'</span>':'')+'</span>'
        + '</div>';
 
     if(pr.total > 0){
@@ -9682,10 +9906,10 @@ function renderDailyHub(){
 
   // Quick links
   var links = [
-    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7" y1="8" x2="11" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="14" y2="16"/><circle cx="15" cy="8" r="2.5"/></svg>', label:'Ngữ pháp', color:'var(--yel)', nav:"App.nav('grammar')"},
-    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5C5 3 9 3 12 4.5C15 3 19 3 22 4.5V20C19 18.5 15 18.5 12 20C9 18.5 5 18.5 2 20V4.5z"/><line x1="12" y1="4.5" x2="12" y2="20"/></svg>', label:'Đọc hiểu', color:'var(--pnk)', nav:"App.nav('read')"},
-    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg>', label:'Tra từ',   color:'var(--grn)', nav:"App.nav('lookup')"},
-    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>', label:'Từ vựng',  color:'var(--cyn)', nav:"App.nav('vocab')"},
+    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7" y1="8" x2="11" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="14" y2="16"/><circle cx="15" cy="8" r="2.5"/></svg>', label:t('ql.grammar'), color:'var(--yel)', nav:"App.nav('grammar')"},
+    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5C5 3 9 3 12 4.5C15 3 19 3 22 4.5V20C19 18.5 15 18.5 12 20C9 18.5 5 18.5 2 20V4.5z"/><line x1="12" y1="4.5" x2="12" y2="20"/></svg>', label:t('ql.read'), color:'var(--pnk)', nav:"App.nav('read')"},
+    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/></svg>', label:t('ql.lookup'), color:'var(--grn)', nav:"App.nav('lookup')"},
+    {icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>', label:t('ql.vocab'), color:'var(--cyn)', nav:"App.nav('vocab')"},
   ];
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
   for(var li=0;li<links.length;li++){
@@ -9737,7 +9961,7 @@ function dlUpdateHeader(){
   var locked=DL.lockedKeys?DL.lockedKeys.length:0;
   var el=document.getElementById('dl-score-num'); if(el) el.textContent=locked+'/7';
   var ph=document.getElementById('dl-phase-lbl');
-  var names=['','Vòng 1: Xem & nhớ','Vòng 2: Chọn nghĩa','Vòng 3: Chọn tiếng Nga'];
+  var names=['',t('dl.phase1'),t('dl.phase2'),t('dl.phase3')];
   if(ph) ph.textContent=names[DL.phase]||'';
 }
 
@@ -9759,7 +9983,7 @@ function dlRenderPhase1(body){
     // Xong vòng 1 → build q2 gồm tất cả 7 từ theo thứ tự ngẫu nhiên
     DL.q2=DL.words.slice().sort(function(){return Math.random()-.5;});
     DL.phase=2; DL.answered=false; dlSave();
-    showToast('✓ Xong vòng 1 — bắt đầu vòng 2!','cyn');
+    showToast('✓ '+t('dl.phase2')+'!','cyn');
     dlRender(); return;
   }
   var entry=DL.words[DL.wordIdx]; var w=entry.w;
@@ -9778,7 +10002,7 @@ function dlRenderPhase1(body){
     +'</div>'
     +(shown
       ?'<button class="btn" style="background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.4);color:#ff9f0a;" onclick="App.dlPhase1Next()">Đã nhớ → Từ tiếp theo ›</button>'
-      :'<div style="text-align:center;font-size:11px;color:var(--com);">Từ '+(DL.wordIdx+1)+' / '+DL.words.length+'</div>')
+      :'<div style="text-align:center;font-size:11px;color:var(--com);">'+t('dl.word.num')+' '+(DL.wordIdx+1)+' / '+DL.words.length+'</div>')
     +'</div>';
 }
 
@@ -9800,7 +10024,7 @@ function dlRenderPhase2(body){
   var p2done=p2total-DL.q2.length;
   var p2pct=p2total>0?Math.round(p2done/p2total*100):0;
   body.innerHTML='<div style="padding:0 0 24px;">'
-    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(255,214,10,.10);color:var(--yel);border:1px solid rgba(255,214,10,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.66z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.66z"/></svg> Vòng 2 — Tiếng Nga → Nghĩa (còn '+DL.q2.length+' từ)</span></div>'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(255,214,10,.10);color:var(--yel);border:1px solid rgba(255,214,10,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.44-4.66z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.44-4.66z"/></svg> '+t('dl.phase2')+' ('+t('dl.left')+' '+DL.q2.length+' từ)</span></div>'
     +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--yel);border-radius:2px;width:'+p2pct+'%;transition:width .3s;"></div></div>'
     +'<div class="dl-card" style="margin-bottom:16px;cursor:pointer;" onclick="App.dlSpeak2()">'
     +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// đây là từ gì?</div>'
@@ -9849,7 +10073,7 @@ function dlRenderPhase3(body){
   var p3done=p3total-DL.q3.length;
   var p3pct=p3total>0?Math.round(p3done/p3total*100):0;
   body.innerHTML='<div style="padding:0 0 24px;">'
-    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(52,199,89,.10);color:var(--grn);border:1px solid rgba(52,199,89,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Vòng 3 — Nghĩa → Tiếng Nga (còn '+DL.q3.length+' từ)</span></div>'
+    +'<div style="text-align:center;margin-bottom:8px;"><span class="dl-phase-badge" style="background:rgba(52,199,89,.10);color:var(--grn);border:1px solid rgba(52,199,89,.3);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> '+t('dl.phase3')+' ('+t('dl.left')+' '+DL.q3.length+' từ)</span></div>'
     +'<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:0 0 12px;"><div style="height:3px;background:var(--grn);border-radius:2px;width:'+p3pct+'%;transition:width .3s;"></div></div>'
     +'<div class="dl-card" style="margin-bottom:16px;">'
     +'<div style="font-size:14px;color:var(--com);margin-bottom:8px;font-family:var(--mono);">// chọn tiếng Nga đúng:</div>'
@@ -10000,14 +10224,14 @@ var RD = {
 
 /* ── Story database ──────────────────────────────────────────── */
 var RD_TOPICS = [
-  { id:'skazki',   icon:'🧚', name:'Cổ tích',   name_ru:'Сказки',      color:'rgba(191,90,242,',  border:'rgba(191,90,242,' },
-  { id:'literatura',icon:'📖',name:'Văn học',   name_ru:'Литература',   color:'rgba(255,159,10,',  border:'rgba(255,159,10,' },
-  { id:'istoriya', icon:'🏛️', name:'Lịch sử',   name_ru:'История',     color:'rgba(255,55,95,',   border:'rgba(255,55,95,'  },
-  { id:'nauka',    icon:'🔬', name:'Khoa học',  name_ru:'Наука',        color:'rgba(90,200,250,',  border:'rgba(90,200,250,' },
-  { id:'putesh',   icon:'🌍', name:'Du lịch',   name_ru:'Путешествия',  color:'rgba(52,199,89,',   border:'rgba(52,199,89,'  },
-  { id:'kultura',  icon:'🎭', name:'Văn hoá',   name_ru:'Культура',     color:'rgba(255,214,10,',  border:'rgba(255,214,10,' },
-  { id:'politika', icon:'🏛', name:'Chính trị & Triết học', name_ru:'Политика & Философия', color:'rgba(255,55,95,',  border:'rgba(255,55,95,' },
-  { id:'detskie',  icon:'🎒', name:'Thiếu nhi',  name_ru:'Для детей',   color:'rgba(255,159,10,',  border:'rgba(255,159,10,' },
+  { id:'skazki',   icon:'🧚', name:'Cổ tích',   name_en:'Folk Tales',          name_ru:'Сказки',      color:'rgba(191,90,242,',  border:'rgba(191,90,242,' },
+  { id:'literatura',icon:'📖',name:'Văn học',   name_en:'Literature',           name_ru:'Литература',  color:'rgba(255,159,10,',  border:'rgba(255,159,10,' },
+  { id:'istoriya', icon:'🏛️', name:'Lịch sử',   name_en:'History',              name_ru:'История',     color:'rgba(255,55,95,',   border:'rgba(255,55,95,'  },
+  { id:'nauka',    icon:'🔬', name:'Khoa học',  name_en:'Science',              name_ru:'Наука',       color:'rgba(90,200,250,',  border:'rgba(90,200,250,' },
+  { id:'putesh',   icon:'🌍', name:'Du lịch',   name_en:'Travel',               name_ru:'Путешествия', color:'rgba(52,199,89,',   border:'rgba(52,199,89,'  },
+  { id:'kultura',  icon:'🎭', name:'Văn hoá',   name_en:'Culture',              name_ru:'Культура',    color:'rgba(255,214,10,',  border:'rgba(255,214,10,' },
+  { id:'politika', icon:'🏛', name:'Chính trị & Triết học', name_en:'Politics & Philosophy', name_ru:'Политика & Философия', color:'rgba(255,55,95,',  border:'rgba(255,55,95,' },
+  { id:'detskie',  icon:'🎒', name:'Thiếu nhi', name_en:'For Children',         name_ru:'Для детей',   color:'rgba(255,159,10,',  border:'rgba(255,159,10,' },
 ];
 
 var RD_STORIES = {
@@ -10227,7 +10451,7 @@ function rdShowTopics(){
   RD.topicId = null;
 
   var hdr = document.getElementById('rd-hdr-title');
-  if(hdr) hdr.textContent = 'Đọc hiểu';
+  if(hdr) hdr.textContent = t('rd.title');
   var backBtn = document.getElementById('rd-back-btn');
   if(backBtn) backBtn.style.display = 'none';
 
@@ -10251,9 +10475,9 @@ function rdShowTopics(){
        + ' style="padding:16px;border-radius:18px;background:'+tp.color+'0.07);'
        + 'border:1px solid '+tp.border+'0.2);cursor:pointer;position:relative;overflow:hidden;">'
        + '<div style="font-size:28px;margin-bottom:8px;">'+tp.icon+'</div>'
-       + '<div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:2px;">'+tp.name+'</div>'
+       + '<div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:2px;">'+(S.lang==='en'&&tp.name_en?tp.name_en:tp.name)+'</div>'
        + '<div style="font-size:11px;color:var(--com);margin-bottom:8px;">'+tp.name_ru+'</div>'
-       + '<div style="font-size:11px;color:var(--txd);margin-bottom:8px;">'+stories.length+' truyện</div>'
+       + '<div style="font-size:11px;color:var(--txd);margin-bottom:8px;">'+stories.length+' '+t('rd.stories')+'</div>'
        + '<div style="display:flex;flex-wrap:wrap;gap:3px;">'+levelTags+'</div>'
        + '</div>';
   });
@@ -10269,7 +10493,7 @@ function App_rdOpenTopic(topicId){
   if(!tp) return;
 
   var hdr = document.getElementById('rd-hdr-title');
-  if(hdr) hdr.textContent = tp.icon+' '+tp.name;
+  if(hdr) hdr.textContent = tp.icon+' '+(S.lang==='en'&&tp.name_en?tp.name_en:tp.name);
   var backBtn = document.getElementById('rd-back-btn');
   if(backBtn) backBtn.style.display = '';
 
@@ -10289,7 +10513,7 @@ function App_rdOpenTopic(topicId){
        + '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px;">'+s.title+'</div>'
        + '<div style="display:flex;align-items:center;gap:8px;">'
        + '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
-       + '<span style="font-size:11px;color:var(--com);">'+wordCount+' từ · ~'+s.time+' phút</span>'
+       + '<span style="font-size:11px;color:var(--com);">'+wordCount+' từ · ~'+s.time+' '+t('rd.mins')+'</span>'
        + '</div></div>'
        + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
        + '</div>';
@@ -10334,7 +10558,7 @@ function rdRenderStory(){
     var tBg = curLang==='vn' ? 'rgba(90,200,250,0.06)' : 'rgba(52,199,89,0.06)';
     var tBrd = curLang==='vn' ? 'rgba(90,200,250,0.2)' : 'rgba(52,199,89,0.2)';
     var tCol = curLang==='vn' ? 'var(--cyn)' : 'var(--grn)';
-    var tLabel = curLang==='vn' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English';
+    var tLabel = curLang==='vn' ? t('rd.trans.vn') : t('rd.en');
     transHtml = '<div style="margin-top:12px;padding:14px 16px;border-radius:14px;background:'+tBg+';border:1px solid '+tBrd+';">'
       +'<div style="font-size:10px;font-weight:700;color:'+tCol+';font-family:var(--mono);letter-spacing:.5px;margin-bottom:8px;">'+tLabel+'</div>'
       +'<div style="font-size:15px;line-height:1.9;color:var(--txd);">'+s[curLang]+'</div>'
@@ -10356,11 +10580,11 @@ function rdRenderStory(){
     +'<div style="font-size:17px;line-height:1.85;color:var(--tx);">'+bodyHtml+'</div>'
     +transHtml
     +'<div style="display:flex;gap:4px;margin-top:14px;padding:4px;background:rgba(255,255,255,0.04);border-radius:12px;border:1px solid rgba(255,255,255,0.07);">'
-    +'<button class="tch" onclick="App.rdTrans(null)" style="'+(curLang===null?btnOn:btnOff)+'">🔤 Nga</button>'
-    +'<button class="tch" onclick="App.rdTrans(\'vn\')" style="'+(curLang==='vn'?btnOn:btnOff)+'">🇻🇳 Việt</button>'
+    +'<button class="tch" onclick="App.rdTrans(null)" style="'+(curLang===null?btnOn:btnOff)+'">'+t('rd.btn.ru')+'</button>'
+    +'<button class="tch" onclick="App.rdTrans(\'vn\')" style="'+(curLang==='vn'?btnOn:btnOff)+'">'+t('rd.btn.vn')+'</button>'
     +'<button class="tch" onclick="App.rdTrans(\'en\')" style="'+(curLang==='en'?btnOn:btnOff)+'">🇬🇧 English</button>'
     +'</div>'
-    +'<div style="margin-top:12px;font-size:11px;color:var(--com);text-align:center;">Nhấn vào từ để tra nghĩa</div>';
+    +'<div style="margin-top:12px;font-size:11px;color:var(--com);text-align:center;">'+t('rd.tap')+'</div>';
 
   content.onclick = function(e){
     var t = e.target;
@@ -10445,7 +10669,7 @@ function App_rdTap(id, word){
     rdAiTranslate(word);
   } else {
     var fb = rdFallbackLookup(word);
-    aiBox.innerHTML = '<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||'Không có trong từ điển')+'</div>';
+    aiBox.innerHTML = '<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||t('lk.not_found'))+'</div>';
   }
 }
 
@@ -10508,7 +10732,7 @@ function rdAiTranslate(word){
   .catch(function(){
     var fb=rdFallbackLookup(word);
     var box3=document.getElementById('rdp-ai-box');
-    if(box3) box3.innerHTML='<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||'Không tìm thấy')+'</div>';
+    if(box3) box3.innerHTML='<div style="color:var(--txd);font-size:14px;margin-top:8px;">'+(fb||t('lk.no_result'))+'</div>';
   });
 }
 rdAiTranslate._ctrl = null;
@@ -10535,7 +10759,7 @@ function lkInit() {
     }
   _lkTotal = n;
   const el = document.getElementById('lk-count');
-  if (el) el.textContent = `// ${n.toLocaleString()} ${(S.lang||'vi')==='en'?'words':'từ'} · A1–B2`;
+  if (el) el.textContent = `// ${n.toLocaleString()} ${t('lk.words')} · A1–B2`;
 }
 
 function lkFilter(lvl) {
@@ -10804,7 +11028,7 @@ function App_openWordPicker(){
   _pickerAll.forEach(function(x){ if(topics.indexOf(x.topic)<0) topics.push(x.topic); });
   var filterRow = document.getElementById('picker-filter-row');
   if(filterRow){
-    var chips = '<button data-f="" onclick="App.pickerFilter(this.dataset.f)" class="lk-chip on" id="pf-all">Tất cả</button>';
+    var chips = '<button data-f="" onclick="App.pickerFilter(this.dataset.f)" class="lk-chip on" id="pf-all">'+t('lk.all')+'</button>';
     topics.slice(0,8).forEach(function(t){
       var tClean = t.replace(/[^\wА-Яа-яёЁ\sÀ-ɏ]/g,'').trim().slice(0,18);
       chips += '<button data-f="'+t.replace(/"/g,'&quot;')+'" onclick="App.pickerFilter(this.dataset.f)" class="lk-chip" id="pf-'+encodeURIComponent(t)+'">'+tClean+'</button>';
@@ -11524,13 +11748,13 @@ document.addEventListener('DOMContentLoaded',App.init);
     <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 14px;"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div>
-        <div style="font-size:17px;font-weight:800;color:var(--tx);">🗂️ Chọn từ hôm nay</div>
-        <div style="font-size:11px;color:var(--com);margin-top:2px;" id="picker-subtitle">Chọn tối đa 7 từ để học</div>
+        <div style="font-size:17px;font-weight:800;color:var(--tx);" data-i18n="picker.title">🗂️ Chọn từ hôm nay</div>
+        <div style="font-size:11px;color:var(--com);margin-top:2px;" id="picker-subtitle" data-i18n="picker.subtitle">Chọn tối đa 7 từ để học</div>
       </div>
       <button onclick="App.closeModal()" style="background:rgba(255,255,255,.08);border:none;border-radius:10px;padding:6px 12px;color:var(--com);font-size:13px;">✕</button>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px;" id="picker-filter-row"></div>
-    <input id="picker-search" type="search" placeholder="Tìm từ tiếng Nga hoặc tiếng Việt..." 
+    <input id="picker-search" type="search" placeholder="Tìm từ tiếng Nga hoặc tiếng Việt..." id="picker-search-input" 
       oninput="App.pickerSearch(this.value)"
       style="width:100%;box-sizing:border-box;padding:10px 14px;border-radius:12px;
              border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);
@@ -11557,22 +11781,22 @@ document.addEventListener('DOMContentLoaded',App.init);
   transition:transform .32s cubic-bezier(0.34,1.56,0.64,1);">
   <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 16px;"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-    <div style="font-size:17px;font-weight:800;color:var(--tx);">➕ Thêm từ vựng</div>
+    <div style="font-size:17px;font-weight:800;color:var(--tx);" data-i18n="aw.title">➕ Thêm từ vựng</div>
     <button onclick="App.closeModal()" style="background:rgba(255,255,255,.08);border:none;border-radius:10px;padding:6px 12px;color:var(--com);font-size:13px;">✕</button>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px;">
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);">CẤP ĐỘ</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);" data-i18n="aw.level">CẤP ĐỘ</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;" id="aw-level-row">
-        <button data-lv="A1" onclick="App.awSetLevel('A1')" class="aw-lv-btn on" style="padding:10px 4px;border-radius:12px;border:1.5px solid #5ac8fa;background:rgba(90,200,250,.15);color:#5ac8fa;font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A1</span><span style="font-size:8px;opacity:.7;font-weight:600;">Cơ bản</span></button>
-        <button data-lv="A2" onclick="App.awSetLevel('A2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A2</span><span style="font-size:8px;opacity:.6;font-weight:600;">Sinh tồn</span></button>
-        <button data-lv="B1" onclick="App.awSetLevel('B1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B1</span><span style="font-size:8px;opacity:.6;font-weight:600;">Trung cấp</span></button>
-        <button data-lv="B2" onclick="App.awSetLevel('B2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B2</span><span style="font-size:8px;opacity:.6;font-weight:600;">Nâng cao</span></button>
-        <button data-lv="C1" onclick="App.awSetLevel('C1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>C1</span><span style="font-size:8px;opacity:.6;font-weight:600;">Thành thạo</span></button>
+        <button data-lv="A1" onclick="App.awSetLevel('A1')" class="aw-lv-btn on" style="padding:10px 4px;border-radius:12px;border:1.5px solid #5ac8fa;background:rgba(90,200,250,.15);color:#5ac8fa;font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A1</span><span style="font-size:8px;opacity:.7;font-weight:600;" data-i18n="stage.A1">Cơ bản</span></button>
+        <button data-lv="A2" onclick="App.awSetLevel('A2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>A2</span><span style="font-size:8px;opacity:.6;font-weight:600;" data-i18n="stage.A2">Sinh tồn</span></button>
+        <button data-lv="B1" onclick="App.awSetLevel('B1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B1</span><span style="font-size:8px;opacity:.6;font-weight:600;" data-i18n="stage.B1">Thông thạo</span></button>
+        <button data-lv="B2" onclick="App.awSetLevel('B2')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>B2</span><span style="font-size:8px;opacity:.6;font-weight:600;" data-i18n="stage.B2">Nâng cao</span></button>
+        <button data-lv="C1" onclick="App.awSetLevel('C1')" class="aw-lv-btn" style="padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--com);font-size:13px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;"><span>C1</span><span style="font-size:8px;opacity:.6;font-weight:600;" data-i18n="stage.C1">Thành thạo</span></button>
       </div>
     </div>
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);">CHỦ ĐỀ</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:6px;font-family:var(--mono);" data-i18n="aw.topic">CHỦ ĐỀ</div>
       <div id="aw-topic-wrap" style="position:relative;">
         <select id="aw-topic" style="width:100%;box-sizing:border-box;padding:11px 36px 11px 14px;
           border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
@@ -11584,28 +11808,28 @@ document.addEventListener('DOMContentLoaded',App.init);
       </div>
     </div>
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG NGA *</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);" data-i18n="aw.russian">TIẾNG NGA *</div>
       <input id="aw-ru" type="text" placeholder="Например: привет" autocomplete="off" autocorrect="off"
         style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
                border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
                color:var(--tx);font-size:16px;outline:none;">
     </div>
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG VIỆT *</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);" data-i18n="aw.vietnamese">TIẾNG VIỆT *</div>
       <input id="aw-vn" type="text" placeholder="Ví dụ: xin chào" autocomplete="off"
         style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
                border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
                color:var(--tx);font-size:16px;outline:none;">
     </div>
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">TIẾNG ANH (tuỳ chọn)</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);" data-i18n="aw.english">TIẾNG ANH (tuỳ chọn)</div>
       <input id="aw-en" type="text" placeholder="e.g. hello" autocomplete="off"
         style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
                border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
                color:var(--tx);font-size:16px;outline:none;">
     </div>
     <div>
-      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);">PHIÊN ÂM (tuỳ chọn)</div>
+      <div style="font-size:11px;color:var(--com);margin-bottom:5px;font-family:var(--mono);" data-i18n="aw.phonetic">PHIÊN ÂM (tuỳ chọn)</div>
       <input id="aw-ph" type="text" placeholder="Ví dụ: privet" autocomplete="off"
         style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;
                border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
@@ -11615,7 +11839,7 @@ document.addEventListener('DOMContentLoaded',App.init);
       style="width:100%;padding:14px;border-radius:14px;border:none;cursor:pointer;
              background:linear-gradient(135deg,rgba(52,199,89,.25),rgba(52,199,89,.15));
              border:1px solid rgba(52,199,89,.4);color:var(--grn);font-size:15px;font-weight:700;margin-top:4px;">
-      ✓ Thêm vào từ điển cá nhân
+      <span data-i18n="aw.submit">✓ Thêm vào từ điển cá nhân</span>
     </button>
     <div id="aw-custom-list" style="margin-top:6px;"></div>
   </div>
