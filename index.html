@@ -1171,7 +1171,7 @@ body::after{
       <button class="btn p" onclick="App.quizStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> quiz()</button>
       <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.quiz.sub">// kiểm tra kiến thức</div>
       <button class="btn" style="margin-top:8px;background:var(--pur)22;color:var(--pur);border:1.5px solid var(--pur)44;" onclick="App.dictStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> dictation()</button>
-      <div style="font-size:10px;color:var(--com);text-align:center;">// nghe · gõ lại · luyện chính tả</div>
+      <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="dict.topic.btn">// nghe · gõ lại · luyện chính tả</div>
     </div>
   </div>
 </div>
@@ -1192,62 +1192,41 @@ body::after{
 
     <!-- Play card -->
     <div style="background:var(--srf);border:1.5px solid var(--brd);border-radius:16px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
-      <div style="font-size:11px;color:var(--com);">// nghe từ rồi gõ lại tiếng Nga</div>
+      <div style="font-size:11px;color:var(--com);" data-i18n="dict.subtitle">// nghe từ rồi gõ lại tiếng Nga</div>
 
       <!-- Big play button -->
       <button id="dict-play-btn" onclick="App.dictSpeak()" style="width:72px;height:72px;border-radius:50%;background:var(--pur);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--pur)44;">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
-      <button onclick="App.dictSpeakSlow()" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 12px;color:var(--com);font-size:11px;cursor:pointer;">🐢 Phát chậm</button>
+      <button onclick="App.dictSpeakSlow()" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 12px;color:var(--com);font-size:11px;cursor:pointer;" data-i18n="dict.play.slow">🐢 Phát chậm</button>
 
       <!-- Hint area -->
       <div id="dict-hint" style="font-size:13px;color:var(--com);min-height:20px;"></div>
 
       <!-- Hint buttons -->
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-        <button onclick="App.dictHint(1)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;">💡 Phiên âm</button>
-        <button onclick="App.dictHint(2)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;">🔤 Chữ cái đầu</button>
-        <button onclick="App.dictHint(3)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;">👁️ Xem đáp án</button>
+        <button onclick="App.dictHint(1)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.ph">💡 Phiên âm</button>
+        <button onclick="App.dictHint(2)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.first">🔤 Chữ cái đầu</button>
+        <button onclick="App.dictHint(3)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.show">👁️ Xem đáp án</button>
       </div>
     </div>
 
     <!-- Input area -->
     <div style="background:var(--srf);border:1.5px solid var(--brd);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-      <div style="font-size:10px;color:var(--com);">// gõ từ tiếng Nga</div>
+      <div style="font-size:10px;color:var(--com);" data-i18n="dict.input.label">// gõ từ tiếng Nga</div>
       <input id="dict-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
         placeholder="Gõ tiếng Nga ở đây..."
         style="background:var(--bg);border:1.5px solid var(--brd);border-radius:10px;padding:12px 14px;font-size:20px;color:var(--tx);font-family:var(--serif);outline:none;width:100%;box-sizing:border-box;"
         onkeydown="if(event.key==='Enter')App.dictCheck()"
       />
-      <!-- Cyrillic soft keyboard -->
-      <div id="dict-kb" style="display:flex;flex-direction:column;gap:4px;">
-        <div style="font-size:10px;color:var(--com);margin-bottom:2px;">// bàn phím tiếng Nga</div>
-        <div style="display:flex;flex-wrap:wrap;gap:3px;">
-          <!-- Row 1 -->
-          <button class="kb-key" onclick="App.dictKbType('й')">й</button><button class="kb-key" onclick="App.dictKbType('ц')">ц</button><button class="kb-key" onclick="App.dictKbType('у')">у</button><button class="kb-key" onclick="App.dictKbType('к')">к</button><button class="kb-key" onclick="App.dictKbType('е')">е</button><button class="kb-key" onclick="App.dictKbType('н')">н</button><button class="kb-key" onclick="App.dictKbType('г')">г</button><button class="kb-key" onclick="App.dictKbType('ш')">ш</button><button class="kb-key" onclick="App.dictKbType('щ')">щ</button><button class="kb-key" onclick="App.dictKbType('з')">з</button><button class="kb-key" onclick="App.dictKbType('х')">х</button><button class="kb-key" onclick="App.dictKbType('ъ')">ъ</button>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:3px;">
-          <!-- Row 2 -->
-          <button class="kb-key" onclick="App.dictKbType('ф')">ф</button><button class="kb-key" onclick="App.dictKbType('ы')">ы</button><button class="kb-key" onclick="App.dictKbType('в')">в</button><button class="kb-key" onclick="App.dictKbType('а')">а</button><button class="kb-key" onclick="App.dictKbType('п')">п</button><button class="kb-key" onclick="App.dictKbType('р')">р</button><button class="kb-key" onclick="App.dictKbType('о')">о</button><button class="kb-key" onclick="App.dictKbType('л')">л</button><button class="kb-key" onclick="App.dictKbType('д')">д</button><button class="kb-key" onclick="App.dictKbType('ж')">ж</button><button class="kb-key" onclick="App.dictKbType('э')">э</button>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:3px;">
-          <!-- Row 3 -->
-          <button class="kb-key" onclick="App.dictKbType('я')">я</button><button class="kb-key" onclick="App.dictKbType('ч')">ч</button><button class="kb-key" onclick="App.dictKbType('с')">с</button><button class="kb-key" onclick="App.dictKbType('м')">м</button><button class="kb-key" onclick="App.dictKbType('и')">и</button><button class="kb-key" onclick="App.dictKbType('т')">т</button><button class="kb-key" onclick="App.dictKbType('ь')">ь</button><button class="kb-key" onclick="App.dictKbType('б')">б</button><button class="kb-key" onclick="App.dictKbType('ю')">ю</button><button class="kb-key" onclick="App.dictKbType('ё')">ё</button>
-          <button class="kb-key" onclick="App.dictKbDel()" style="background:var(--red)22;color:var(--red);flex:1;min-width:36px;">⌫</button>
-        </div>
-        <div style="display:flex;gap:3px;">
-          <button class="kb-key" onclick="App.dictKbType(' ')" style="flex:1;">пробел</button>
-          <button class="kb-key" onclick="App.dictKbType('-')">-</button>
-        </div>
-      </div>
     </div>
 
     <!-- Action buttons -->
     <div style="display:flex;gap:10px;">
-      <button class="btn" onclick="App.dictCheck()" style="flex:1;background:var(--pur);color:#fff;">✓ Kiểm tra</button>
-      <button id="dict-next-btn" class="btn" onclick="App.dictNext()" style="flex:1;display:none;">→ Tiếp theo</button>
+      <button class="btn" onclick="App.dictCheck()" style="flex:1;background:var(--pur);color:#fff;" data-i18n="dict.check">✓ Kiểm tra</button>
+      <button id="dict-next-btn" class="btn" onclick="App.dictNext()" style="flex:1;display:none;" data-i18n="dict.next">→ Tiếp theo</button>
     </div>
-    <button onclick="App.dictSkip()" style="background:none;border:none;color:var(--com);font-size:12px;cursor:pointer;text-align:center;padding:4px;">Bỏ qua từ này →</button>
+    <button onclick="App.dictSkip()" style="background:none;border:none;color:var(--com);font-size:12px;cursor:pointer;text-align:center;padding:4px;" data-i18n="dict.skip">Bỏ qua từ này →</button>
   </div>
 </div>
 
@@ -1255,13 +1234,13 @@ body::after{
 <div id="s-dict-done" class="screen">
   <div class="scrl" style="padding:24px;gap:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;">
     <div style="font-size:48px;">🎧</div>
-    <div style="font-size:22px;font-weight:700;color:var(--tx);">Hoàn thành!</div>
+    <div style="font-size:22px;font-weight:700;color:var(--tx);" data-i18n="dict.done.title">Hoàn thành!</div>
     <div id="dict-done-score" style="font-size:40px;font-weight:900;color:var(--pur);">0/0</div>
     <div id="dict-done-msg" style="font-size:14px;color:var(--txd);text-align:center;"></div>
     <div id="dict-done-mistakes" style="width:100%;background:var(--srf);border-radius:14px;padding:16px;display:none;"></div>
     <div style="display:flex;gap:10px;width:100%;">
-      <button class="btn p" onclick="App.dictStart()" style="flex:1;">🔄 Làm lại</button>
-      <button class="btn" onclick="App.nav('topic')" style="flex:1;">← Chủ đề</button>
+      <button class="btn p" onclick="App.dictStart()" style="flex:1;" data-i18n="dict.done.retry">🔄 Làm lại</button>
+      <button class="btn" onclick="App.nav('topic')" style="flex:1;" data-i18n="dict.done.back">← Chủ đề</button>
     </div>
   </div>
 </div>
@@ -8704,6 +8683,32 @@ var i18n = {
     // rd topics/list
     'rd.back':'← Quay lại',
     'rd.all.stories':'tất cả',
+    // dictation
+    'dict.subtitle':'// nghe từ rồi gõ lại tiếng Nga',
+    'dict.play.slow':'🐢 Phát chậm',
+    'dict.hint.ph':'💡 Phiên âm',
+    'dict.hint.first':'🔤 Chữ cái đầu',
+    'dict.hint.show':'👁️ Xem đáp án',
+    'dict.input.label':'// gõ từ tiếng Nga',
+    'dict.input.ph':'Gõ tiếng Nga ở đây...',
+    'dict.kb.label':'// bàn phím tiếng Nga',
+    'dict.check':'✓ Kiểm tra',
+    'dict.next':'→ Tiếp theo',
+    'dict.finish':'🏁 Kết quả',
+    'dict.skip':'Bỏ qua từ này →',
+    'dict.done.title':'Hoàn thành!',
+    'dict.done.mistakes':'// từ cần xem lại',
+    'dict.done.retry':'🔄 Làm lại',
+    'dict.done.back':'← Chủ đề',
+    'dict.correct':'✅ Đúng rồi!',
+    'dict.wrong':'❌ Sai! Đáp án đúng:',
+    'dict.typed':'← bạn gõ:',
+    'dict.msg.0':'Cần luyện thêm nhiều hơn 💪',
+    'dict.msg.1':'Khá tốt, cố lên! 📖',
+    'dict.msg.2':'Tốt lắm! 🌟',
+    'dict.msg.3':'Xuất sắc! 🏆',
+    'dict.msg.4':'Hoàn hảo! 🎯',
+    'dict.topic.btn':'// nghe · gõ lại · luyện chính tả',
   },
   en: {
     'nav.vocab':'Vocab','nav.review':'Review','nav.grammar':'Grammar','nav.read':'Read','nav.lookup':'Search','nav.daily':'Today','nav.road':'Roadmap',
@@ -8849,6 +8854,32 @@ var i18n = {
     // rd topics/list
     'rd.back':'← Back',
     'rd.all.stories':'all',
+    // dictation
+    'dict.subtitle':'// listen and type the Russian word',
+    'dict.play.slow':'🐢 Slow playback',
+    'dict.hint.ph':'💡 Pronunciation',
+    'dict.hint.first':'🔤 First letter',
+    'dict.hint.show':'👁️ Show answer',
+    'dict.input.label':'// type the Russian word',
+    'dict.input.ph':'Type Russian here...',
+    'dict.kb.label':'// Russian keyboard',
+    'dict.check':'✓ Check',
+    'dict.next':'→ Next',
+    'dict.finish':'🏁 Results',
+    'dict.skip':'Skip this word →',
+    'dict.done.title':'Completed!',
+    'dict.done.mistakes':'// words to review',
+    'dict.done.retry':'🔄 Try again',
+    'dict.done.back':'← Topic',
+    'dict.correct':'✅ Correct!',
+    'dict.wrong':'❌ Wrong! Correct answer:',
+    'dict.typed':'← you typed:',
+    'dict.msg.0':'Keep practising 💪',
+    'dict.msg.1':'Not bad, keep going! 📖',
+    'dict.msg.2':'Good job! 🌟',
+    'dict.msg.3':'Excellent! 🏆',
+    'dict.msg.4':'Perfect! 🎯',
+    'dict.topic.btn':'// listen · type · spelling practice',
   }
 };
 const App=(()=>{
@@ -9231,7 +9262,7 @@ function fcToggleAutoSpeak(){
 var dictState={idx:0,score:{c:0,t:0},checked:false,mistakes:[]};
 function dictStart(){
   const ws=vocabularyDatabase[S.level][S.topic];
-  if(!ws||!ws.length){showToast('Chủ đề này chưa có từ!');return;}
+  if(!ws||!ws.length){showToast(t('dict.notopic')||'Chủ đề này chưa có từ!');return;}
   dictState={idx:0,score:{c:0,t:0},checked:false,mistakes:[]};
   nav('dict');
   dictRender();
@@ -9250,7 +9281,9 @@ function dictRender(){
   const inp=document.getElementById('dict-input');
   inp.value='';inp.style.borderColor='var(--brd)';
   inp.removeAttribute('disabled');
+  inp.placeholder=t('dict.input.ph');
   document.getElementById('dict-next-btn').style.display='none';
+  document.getElementById('dict-next-btn').textContent=t('dict.next');
   document.getElementById('dict-play-btn').style.background='var(--pur)';
   dictState.checked=false;
 }
@@ -9312,19 +9345,19 @@ function dictCheck(){
     dictState.score.c++;
     inp.style.borderColor='var(--grn)';
     status.style.cssText='display:block;background:var(--grn)22;color:var(--grn);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;';
-    status.innerHTML='✅ Đúng rồi! &nbsp;<span style="font-weight:400;opacity:0.8;">'+meaning+'</span>';
+    status.innerHTML=t('dict.correct')+' &nbsp;<span style="font-weight:400;opacity:0.8;">'+meaning+'</span>';
   } else {
     inp.style.borderColor='var(--red)';
     status.style.cssText='display:block;background:var(--red)22;color:var(--red);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;';
-    status.innerHTML='❌ Sai! Đáp án đúng: <span style="font-family:var(--serif);font-size:16px;">'+w.ru+'</span>';
+    status.innerHTML=t('dict.wrong')+' <span style="font-family:var(--serif);font-size:16px;">'+w.ru+'</span>';
     dictState.mistakes.push({ru:w.ru,vn:w.vn,en:w.en,typed:inp.value.trim()});
     speak(w.ru);
   }
   document.getElementById('dict-score').textContent=`${dictState.score.c}/${dictState.score.t}`;
   const nextBtn=document.getElementById('dict-next-btn');
   nextBtn.style.display='block';
-  if(dictState.idx===ws.length-1){nextBtn.textContent='🏁 Kết quả';}
-  else{nextBtn.textContent='→ Tiếp theo';}
+  if(dictState.idx===ws.length-1){nextBtn.textContent=t('dict.finish');}
+  else{nextBtn.textContent=t('dict.next');}
 }
 function dictNext(){
   const ws=vocabularyDatabase[S.level][S.topic];
@@ -9344,16 +9377,16 @@ function dictDone(){
   const {c,t}=dictState.score;
   const pct=t>0?Math.round(c/t*100):0;
   document.getElementById('dict-done-score').textContent=c+'/'+t;
-  const msgs=['Cần luyện thêm nhiều hơn 💪','Khá tốt, cố lên! 📖','Tốt lắm! 🌟','Xuất sắc! 🏆','Hoàn hảo! 🎯'];
+  const msgs=[t('dict.msg.0'),t('dict.msg.1'),t('dict.msg.2'),t('dict.msg.3'),t('dict.msg.4')];
   const mi=pct<40?0:pct<60?1:pct<80?2:pct<100?3:4;
   document.getElementById('dict-done-msg').textContent=msgs[mi]+' ('+pct+'%)';
   const mistakesEl=document.getElementById('dict-done-mistakes');
   if(dictState.mistakes.length>0){
     mistakesEl.style.display='block';
     const isEN=(S.lang||'vi')==='en';
-    mistakesEl.innerHTML='<div style="font-size:11px;color:var(--com);margin-bottom:8px;">// từ cần xem lại</div>'+
+    mistakesEl.innerHTML='<div style="font-size:11px;color:var(--com);margin-bottom:8px;">'+t('dict.done.mistakes')+'</div>'+
       dictState.mistakes.map(m=>`<div style="padding:6px 0;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <div><span style="font-family:var(--serif);font-size:16px;font-weight:700;">${m.ru}</span> <span style="color:var(--com);font-size:11px;">← bạn gõ: ${m.typed||'(bỏ qua)'}</span></div>
+        <div><span style="font-family:var(--serif);font-size:16px;font-weight:700;">${m.ru}</span> <span style="color:var(--com);font-size:11px;">${t('dict.typed')} ${m.typed||'(bỏ qua)'}</span></div>
         <span style="font-size:12px;color:var(--txd);">${isEN?m.en:m.vn}</span>
       </div>`).join('')
   } else {mistakesEl.style.display='none';}
