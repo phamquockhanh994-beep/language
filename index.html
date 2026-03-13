@@ -50,24 +50,7 @@ button,a,.btn,.iBtn,.bBtn,.fcard,.qOpt,.srsBtn,.wChip,.tCard,.lvlBtn,.caseRow,.s
   -webkit-user-select:none;
   user-select:none;
   -webkit-touch-callout:none;
-}
-.kb-key{
-  min-width:28px;height:36px;padding:0 6px;
-  background:var(--srf);border:1px solid var(--brd);
-  border-radius:7px;color:var(--tx);font-size:15px;
-  cursor:pointer;font-family:var(--serif);
-  display:inline-flex;align-items:center;justify-content:center;
-  -webkit-tap-highlight-color:transparent;
-  transition:background 0.1s;
-}
-.kb-key:active{background:var(--pur)33;}
-.as-toggle{
-  display:inline-flex;align-items:center;gap:6px;
-  background:none;border:1px solid var(--brd);border-radius:8px;
-  padding:4px 10px;font-size:11px;color:var(--com);cursor:pointer;
-}
-.as-toggle.on{border-color:var(--pur);color:var(--pur);background:var(--pur)18;}
-/* Allow selection on text content */
+}/* Allow selection on text content */
 p,span,.sWord{-webkit-user-select:text;user-select:text;}
 
 /* 4. iOS 26 tap highlight: fully suppress */
@@ -1170,77 +1153,6 @@ body::after{
       <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.flashcard.sub">// lật thẻ · xem họ từ</div>
       <button class="btn p" onclick="App.quizStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> quiz()</button>
       <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.quiz.sub">// kiểm tra kiến thức</div>
-      <button class="btn" style="margin-top:8px;background:var(--pur)22;color:var(--pur);border:1.5px solid var(--pur)44;" onclick="App.dictStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> dictation()</button>
-      <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="dict.topic.btn">// nghe · gõ lại · luyện chính tả</div>
-    </div>
-  </div>
-</div>
-
-<!-- DICTATION SCREEN -->
-<div id="s-dict" class="screen">
-  <div class="hdr">
-    <button class="iBtn" onclick="App.nav('topic')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyn)" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button>
-    <div class="f1">
-      <div class="pbar" style="margin-bottom:4px;"><div class="pfill" id="dict-pb" style="background:var(--pur);width:0%"></div></div>
-      <div style="font-size:11px;color:var(--com);" id="dict-ctr">[1/1]</div>
-    </div>
-    <div style="font-size:11px;color:var(--com);padding:4px 8px;" id="dict-score">0/0</div>
-  </div>
-  <div class="scrl" style="padding:16px;gap:16px;display:flex;flex-direction:column;">
-    <!-- Status badge -->
-    <div id="dict-status" style="display:none;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;"></div>
-
-    <!-- Play card -->
-    <div style="background:var(--srf);border:1.5px solid var(--brd);border-radius:16px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
-      <div style="font-size:11px;color:var(--com);" data-i18n="dict.subtitle">// nghe từ rồi gõ lại tiếng Nga</div>
-
-      <!-- Big play button -->
-      <button id="dict-play-btn" onclick="App.dictSpeak()" style="width:72px;height:72px;border-radius:50%;background:var(--pur);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px var(--pur)44;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      </button>
-      <button onclick="App.dictSpeakSlow()" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 12px;color:var(--com);font-size:11px;cursor:pointer;" data-i18n="dict.play.slow">🐢 Phát chậm</button>
-
-      <!-- Hint area -->
-      <div id="dict-hint" style="font-size:13px;color:var(--com);min-height:20px;"></div>
-
-      <!-- Hint buttons -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-        <button onclick="App.dictHint(1)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.ph">💡 Phiên âm</button>
-        <button onclick="App.dictHint(2)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.first">🔤 Chữ cái đầu</button>
-        <button onclick="App.dictHint(3)" style="background:none;border:1px solid var(--brd);border-radius:8px;padding:4px 10px;color:var(--txd);font-size:11px;cursor:pointer;" data-i18n="dict.hint.show">👁️ Xem đáp án</button>
-      </div>
-    </div>
-
-    <!-- Input area -->
-    <div style="background:var(--srf);border:1.5px solid var(--brd);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-      <div style="font-size:10px;color:var(--com);" data-i18n="dict.input.label">// gõ từ tiếng Nga</div>
-      <input id="dict-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-        placeholder="Gõ tiếng Nga ở đây..."
-        style="background:var(--bg);border:1.5px solid var(--brd);border-radius:10px;padding:12px 14px;font-size:20px;color:var(--tx);font-family:var(--serif);outline:none;width:100%;box-sizing:border-box;"
-        onkeydown="if(event.key==='Enter')App.dictCheck()"
-      />
-    </div>
-
-    <!-- Action buttons -->
-    <div style="display:flex;gap:10px;">
-      <button class="btn" onclick="App.dictCheck()" style="flex:1;background:var(--pur);color:#fff;" data-i18n="dict.check">✓ Kiểm tra</button>
-      <button id="dict-next-btn" class="btn" onclick="App.dictNext()" style="flex:1;display:none;" data-i18n="dict.next">→ Tiếp theo</button>
-    </div>
-    <button onclick="App.dictSkip()" style="background:none;border:none;color:var(--com);font-size:12px;cursor:pointer;text-align:center;padding:4px;" data-i18n="dict.skip">Bỏ qua từ này →</button>
-  </div>
-</div>
-
-<!-- DICTATION DONE -->
-<div id="s-dict-done" class="screen">
-  <div class="scrl" style="padding:24px;gap:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;">
-    <div style="font-size:48px;">🎧</div>
-    <div style="font-size:22px;font-weight:700;color:var(--tx);" data-i18n="dict.done.title">Hoàn thành!</div>
-    <div id="dict-done-score" style="font-size:40px;font-weight:900;color:var(--pur);">0/0</div>
-    <div id="dict-done-msg" style="font-size:14px;color:var(--txd);text-align:center;"></div>
-    <div id="dict-done-mistakes" style="width:100%;background:var(--srf);border-radius:14px;padding:16px;display:none;"></div>
-    <div style="display:flex;gap:10px;width:100%;">
-      <button class="btn p" onclick="App.dictStart()" style="flex:1;" data-i18n="dict.done.retry">🔄 Làm lại</button>
-      <button class="btn" onclick="App.nav('topic')" style="flex:1;" data-i18n="dict.done.back">← Chủ đề</button>
     </div>
   </div>
 </div>
@@ -5664,6 +5576,317 @@ const vocabularyDatabase = {
       { ru: 'Координаты',      vn: 'Tọa độ (số nhiều)',               en: 'Coordinates (plural)',         ph: 'koordinátï' },
       { ru: 'Вашингтон',       vn: 'Washington D.C. (thủ đô Mỹ)',     en: 'Washington D.C.',              ph: 'Vashingтon' },
     ],
+    "🧬 Наука & Исследования B1 (Science & Research)": [
+      { ru: 'Организм', vn: 'Sinh vật / Cơ thể', en: 'Organism', ph: 'organizm' },
+      { ru: 'Вирус', vn: 'Vi-rút', en: 'Virus', ph: 'vírus' },
+      { ru: 'Бактерия', vn: 'Vi khuẩn', en: 'Bacteria', ph: 'baktériya' },
+      { ru: 'Побочный эффект', vn: 'Tác dụng phụ', en: 'Side effect', ph: 'pobóchny effekt' },
+    ],
+
+    "🌱 Экология & Окружающая среда B1 (Ecology)": [
+      { ru: 'Свалка', vn: 'Bãi rác', en: 'Landfill / Dump', ph: 'svалка' },
+      { ru: 'Парниковый газ', vn: 'Khí nhà kính', en: 'Greenhouse gas', ph: 'parnikóvy gaz' },
+      { ru: 'Возобновляемый', vn: 'Tái tạo / Có thể tái tạo', en: 'Renewable', ph: 'vozobnovlyayemy' },
+      { ru: 'Солнечная панель', vn: 'Tấm pin mặt trời', en: 'Solar panel', ph: 'sólnechnaya panél\'' },
+      { ru: 'Экологичный', vn: 'Thân thiện môi trường', en: 'Eco-friendly', ph: 'ekologíchny' },
+    ],
+
+    "🧠 Психология & Поведение B1 (Psychology & Behaviour)": [
+      { ru: 'Поведение', vn: 'Hành vi', en: 'Behaviour', ph: 'povedeniye' },
+      { ru: 'Привычка', vn: 'Thói quen', en: 'Habit', ph: 'privýchka' },
+      { ru: 'Зависимость', vn: 'Nghiện / Sự phụ thuộc', en: 'Addiction / Dependence', ph: 'zavísímost\'' },
+      { ru: 'Характер', vn: 'Tính cách', en: 'Character / Personality', ph: 'kharácter' },
+      { ru: 'Личность', vn: 'Nhân cách', en: 'Personality', ph: 'líchnost\'' },
+      { ru: 'Подсознание', vn: 'Tiềm thức', en: 'Subconscious', ph: 'podznaniye' },
+      { ru: 'Манипуляция', vn: 'Thao túng', en: 'Manipulation', ph: 'manipulyátsiya' },
+    ],
+
+    "📰 СМИ & Коммуникация B1 (Media & Communication)": [
+      { ru: 'Фейк', vn: 'Tin giả', en: 'Fake (news)', ph: 'feyk' },
+      { ru: 'Подписчик', vn: 'Người đăng ký / Subscriber', en: 'Subscriber', ph: 'podpíshchik' },
+      { ru: 'Контент', vn: 'Nội dung', en: 'Content', ph: 'kontént' },
+      { ru: 'Блогер', vn: 'Blogger', en: 'Blogger', ph: 'blóger' },
+      { ru: 'Редакция', vn: 'Toà soạn', en: 'Editorial office', ph: 'redáktsiya' },
+    ],
+
+    "⚖️ Право & Гражданство B1 (Law & Citizenship)": [
+      { ru: 'Права человека', vn: 'Quyền con người', en: 'Human rights', ph: 'práva chelovéka' },
+      { ru: 'Свобода слова', vn: 'Tự do ngôn luận', en: 'Freedom of speech', ph: 'svobóda slóva' },
+      { ru: 'Залог', vn: 'Tiền bảo lãnh', en: 'Bail', ph: 'zalog' },
+      { ru: 'Апелляция', vn: 'Kháng cáo', en: 'Appeal', ph: 'apellyátsiya' },
+    ],
+
+    "🏭 Промышленность & Экономика B1 (Industry & Economy)": [
+      { ru: 'Отрасль', vn: 'Ngành (công nghiệp)', en: 'Industry / Sector', ph: 'ótrasl\'' },
+      { ru: 'Биржа', vn: 'Sàn giao dịch', en: 'Stock exchange', ph: 'birzha' },
+      { ru: 'Льгота', vn: 'Ưu đãi / Miễn giảm', en: 'Benefit / Privilege', ph: 'l\'góta' },
+      { ru: 'Тариф', vn: 'Thuế quan / Biểu giá', en: 'Tariff / Rate', ph: 'tarif' },
+    ],
+
+    "✍️ Động từ học thuật B1 (Academic Verbs)": [
+      { ru: 'Синтезировать', vn: 'Tổng hợp', en: 'To synthesise', ph: 'sintezírovat\'' },
+      { ru: 'Классифицировать', vn: 'Phân loại', en: 'To classify', ph: 'klassifitsírovat\'' },
+      { ru: 'Характеризовать', vn: 'Đặc trưng hoá / Mô tả', en: 'To characterise', ph: 'kharakterizovat\'' },
+      { ru: 'Иллюстрировать', vn: 'Minh hoạ', en: 'To illustrate', ph: 'illustrírovat\'' },
+      { ru: 'Интерпретировать', vn: 'Giải thích / Diễn giải', en: 'To interpret', ph: 'interpretírovat\'' },
+      { ru: 'Прогнозировать', vn: 'Dự báo', en: 'To forecast / predict', ph: 'prognozírovat\'' },
+      { ru: 'Опровергать', vn: 'Bác bỏ', en: 'To refute / disprove', ph: 'oprovergát\'' },
+      { ru: 'Ссылаться', vn: 'Trích dẫn / Dẫn nguồn', en: 'To refer / cite', ph: 'ssylát\'sya' },
+    ],
+    "🏙️ Городская жизнь & Инфраструктура B1 (Urban Life)": [
+      { ru: 'Мэр', vn: 'Thị trưởng', en: 'Mayor', ph: 'mer' },
+      { ru: 'Муниципалитет', vn: 'Chính quyền địa phương', en: 'Municipality', ph: 'munitsipаlítet' },
+      { ru: 'Канализация', vn: 'Hệ thống thoát nước', en: 'Sewage system', ph: 'kanalizátsiya' },
+      { ru: 'Водопровод', vn: 'Đường ống nước', en: 'Water supply / Plumbing', ph: 'vodoprobot' },
+      { ru: 'Электросеть', vn: 'Mạng lưới điện', en: 'Power grid', ph: 'elektroset\'' },
+      { ru: 'Общественный транспорт', vn: 'Giao thông công cộng', en: 'Public transport', ph: 'obshchestvenny transport' },
+      { ru: 'Пригородный', vn: 'Ngoại ô / Vùng ven', en: 'Suburban', ph: 'prigorodny' },
+      { ru: 'Снос', vn: 'Phá dỡ', en: 'Demolition', ph: 'snos' },
+      { ru: 'Благоустройство', vn: 'Chỉnh trang đô thị', en: 'Urban improvement', ph: 'blagoustróystvo' },
+    ],
+
+    "🎓 Образование & Карьера B1 (Education & Career)": [
+      { ru: 'Переподготовка', vn: 'Đào tạo lại', en: 'Retraining', ph: 'perepodgotóvka' },
+      { ru: 'Повышение квалификации', vn: 'Nâng cao trình độ', en: 'Professional development', ph: 'povysheniye kvalifikátsii' },
+      { ru: 'Портфолио', vn: 'Hồ sơ năng lực', en: 'Portfolio', ph: 'portfolío' },
+      { ru: 'Рекомендация', vn: 'Thư giới thiệu', en: 'Recommendation', ph: 'rekomendátsiya' },
+      { ru: 'Испытательный срок', vn: 'Thời gian thử việc', en: 'Probationary period', ph: 'ispytátelny srok' },
+      { ru: 'Фриланс', vn: 'Làm tự do / Freelance', en: 'Freelance', ph: 'frilans' },
+    ],
+
+    "🌍 Глобализация & Культура B1 (Globalisation & Culture)": [
+      { ru: 'Диаспора', vn: 'Cộng đồng hải ngoại', en: 'Diaspora', ph: 'diáspora' },
+      { ru: 'Мультикультурный', vn: 'Đa văn hoá', en: 'Multicultural', ph: 'mul\'tikul\'túrny' },
+      { ru: 'Толерантность', vn: 'Sự khoan dung', en: 'Tolerance', ph: 'tolerántnost\'' },
+      { ru: 'Дискриминация', vn: 'Phân biệt đối xử', en: 'Discrimination', ph: 'diskriminatsiya' },
+      { ru: 'Стереотип', vn: 'Định kiến / Khuôn mẫu', en: 'Stereotype', ph: 'stereotíp' },
+      { ru: 'Предрассудок', vn: 'Thành kiến', en: 'Prejudice', ph: 'predrassúdok' },
+      { ru: 'Ценности', vn: 'Các giá trị', en: 'Values', ph: 'tsennosti' },
+      { ru: 'Менталитет', vn: 'Tư duy / Quan niệm', en: 'Mentality', ph: 'mentalitét' },
+      { ru: 'Самобытность', vn: 'Bản sắc riêng', en: 'Identity / Uniqueness', ph: 'samobytnоst\'' },
+      { ru: 'Ассимиляция', vn: 'Đồng hoá', en: 'Assimilation', ph: 'assimilyátsiya' },
+    ],
+
+    "💡 Абстрактные понятия B1 (Abstract Concepts)": [
+      { ru: 'Закономерность', vn: 'Quy luật', en: 'Pattern / Regularity', ph: 'zakonómérnost\'' },
+      { ru: 'Взаимосвязь', vn: 'Mối liên hệ', en: 'Interconnection', ph: 'vzaimosváz\'' },
+      { ru: 'Устойчивость', vn: 'Tính bền vững', en: 'Sustainability / Stability', ph: 'ustoychivost\'' },
+      { ru: 'Ограничение', vn: 'Hạn chế', en: 'Limitation / Constraint', ph: 'ogranicheniye' },
+      { ru: 'Альтернатива', vn: 'Lựa chọn thay thế', en: 'Alternative', ph: 'al\'ternativa' },
+      { ru: 'Трансформация', vn: 'Sự chuyển đổi', en: 'Transformation', ph: 'transformátsiya' },
+    ],
+    "🗣️ Риторика & Аргументация B1 (Rhetoric & Argumentation)": [
+      { ru: 'Тезис', vn: 'Luận điểm', en: 'Thesis / Argument', ph: 'tezis' },
+      { ru: 'Довод', vn: 'Lý lẽ / Luận cứ', en: 'Argument / Reason', ph: 'dovod' },
+      { ru: 'Опровержение', vn: 'Phản bác', en: 'Refutation', ph: 'oproverzheniye' },
+      { ru: 'Приводить пример', vn: 'Đưa ra ví dụ', en: 'To give an example', ph: 'privodit\' primer' },
+      { ru: 'Позиция', vn: 'Lập trường', en: 'Position / Stance', ph: 'pozítsiya' },
+      { ru: 'Обоснование', vn: 'Cơ sở lý luận', en: 'Justification / Reasoning', ph: 'obosnovaniye' },
+      { ru: 'Дискуссия', vn: 'Cuộc thảo luận', en: 'Discussion / Debate', ph: 'diskússiya' },
+      { ru: 'Консенсус', vn: 'Đồng thuận', en: 'Consensus', ph: 'konsensus' },
+      { ru: 'Критика', vn: 'Phê bình', en: 'Criticism', ph: 'krítika' },
+    ],
+
+    "🔬 Технологии & Инновации B1 (Technology & Innovation)": [
+      { ru: 'Автоматизация', vn: 'Tự động hoá', en: 'Automation', ph: 'avtomatizátsiya' },
+      { ru: 'Роботизация', vn: 'Robot hoá', en: 'Robotisation', ph: 'robotizátsiya' },
+      { ru: 'Цифровизация', vn: 'Số hoá', en: 'Digitalisation', ph: 'tsifrovizátsiya' },
+      { ru: 'Патент', vn: 'Bằng sáng chế', en: 'Patent', ph: 'patént' },
+      { ru: 'Прототип', vn: 'Nguyên mẫu', en: 'Prototype', ph: 'protótip' },
+      { ru: 'Платформа', vn: 'Nền tảng', en: 'Platform', ph: 'platfórma' },
+      { ru: 'Утечка данных', vn: 'Rò rỉ dữ liệu', en: 'Data breach / Data leak', ph: 'utéchka dannykh' },
+    ],
+
+    "💬 Полезные выражения B1 (Useful Expressions)": [
+      { ru: 'С одной стороны', vn: 'Một mặt', en: 'On the one hand', ph: 's odnóy storóny' },
+      { ru: 'Несмотря на это', vn: 'Mặc dù vậy', en: 'Despite this', ph: 'nesmotryá na eto' },
+      { ru: 'В результате', vn: 'Kết quả là', en: 'As a result', ph: 'v rezultáte' },
+      { ru: 'Что касается', vn: 'Về vấn đề', en: 'As for / Regarding', ph: 'shto kasáyetsya' },
+      { ru: 'По сравнению с', vn: 'So sánh với', en: 'Compared to', ph: 'po sravnéniyu s' },
+    ],
+    "🧬 Медицина & Здоровье продвинутый B1 (Advanced Health)": [
+      { ru: 'Воспаление', vn: 'Viêm', en: 'Inflammation', ph: 'vospaléniye' },
+      { ru: 'Рана', vn: 'Vết thương', en: 'Wound', ph: 'rána' },
+      { ru: 'Перелом', vn: 'Gãy xương', en: 'Fracture', ph: 'perelom' },
+      { ru: 'Ушиб', vn: 'Bầm tím / Bị đập', en: 'Bruise / Contusion', ph: 'ushíb' },
+      { ru: 'Вывих', vn: 'Trật khớp', en: 'Dislocation / Sprain', ph: 'výwikh' },
+      { ru: 'Ожог', vn: 'Vết bỏng', en: 'Burn', ph: 'ozhog' },
+      { ru: 'Обморок', vn: 'Ngất xỉu', en: 'Faint / Fainting', ph: 'óbmorok' },
+      { ru: 'Реанимация', vn: 'Hồi sức cấp cứu', en: 'Resuscitation / ICU', ph: 'reanimattsiya' },
+    ],
+
+    "🌾 Природа & Окружающий мир B1 (Nature)": [
+      { ru: 'Водопад', vn: 'Thác nước', en: 'Waterfall', ph: 'vodopád' },
+      { ru: 'Пещера', vn: 'Hang động', en: 'Cave', ph: 'peshchéra' },
+      { ru: 'Утёс', vn: 'Vách đá', en: 'Cliff', ph: 'utyós' },
+      { ru: 'Цунами', vn: 'Sóng thần', en: 'Tsunami', ph: 'tsunámi' },
+      { ru: 'Биосфера', vn: 'Sinh quyển', en: 'Biosphere', ph: 'biosféra' },
+      { ru: 'Сезон', vn: 'Mùa', en: 'Season', ph: 'syézon' },
+    ],
+
+    "🎨 Искусство & Творчество B1 (Art & Creativity)": [
+      { ru: 'Пейзаж', vn: 'Phong cảnh (tranh)', en: 'Landscape (painting)', ph: 'peyzázh' },
+      { ru: 'Портрет', vn: 'Chân dung', en: 'Portrait', ph: 'portret' },
+      { ru: 'Натюрморт', vn: 'Tĩnh vật', en: 'Still life', ph: 'natyurmort' },
+      { ru: 'Фреска', vn: 'Tranh bích hoạ', en: 'Fresco', ph: 'frеska' },
+      { ru: 'Виолончель', vn: 'Đàn cello', en: 'Cello', ph: 'violonchel\'' },
+      { ru: 'Флейта', vn: 'Sáo', en: 'Flute', ph: 'fleyta' },
+      { ru: 'Хореография', vn: 'Biên đạo múa', en: 'Choreography', ph: 'khoreografiya' },
+      { ru: 'Либретто', vn: 'Lời kịch opera', en: 'Libretto', ph: 'libretto' },
+      { ru: 'Сценарий', vn: 'Kịch bản', en: 'Screenplay / Script', ph: 'stsenáriy' },
+    ],
+
+    "🏛️ История & Политика B1 (History & Politics)": [
+      { ru: 'Монархия', vn: 'Chế độ quân chủ', en: 'Monarchy', ph: 'monárkhiya' },
+      { ru: 'Диктатура', vn: 'Chế độ độc tài', en: 'Dictatorship', ph: 'diktatura' },
+      { ru: 'Оппозиция', vn: 'Phe đối lập', en: 'Opposition', ph: 'oppozítsiya' },
+      { ru: 'Союз', vn: 'Liên minh', en: 'Union / Alliance', ph: 'soyuz' },
+    ],
+
+    "💼 Бизнес & Предпринимательство B1 (Business)": [
+      { ru: 'Инвестор', vn: 'Nhà đầu tư', en: 'Investor', ph: 'investór' },
+      { ru: 'Акционер', vn: 'Cổ đông', en: 'Shareholder', ph: 'aktsionyer' },
+      { ru: 'Слияние', vn: 'Sáp nhập', en: 'Merger', ph: 'sliyániye' },
+      { ru: 'Банкротство', vn: 'Phá sản', en: 'Bankruptcy', ph: 'bankrotstvo' },
+      { ru: 'Франшиза', vn: 'Nhượng quyền', en: 'Franchise', ph: 'franshíza' },
+      { ru: 'Логистика', vn: 'Hậu cần / Logistics', en: 'Logistics', ph: 'logístika' },
+      { ru: 'Маркетинг', vn: 'Tiếp thị', en: 'Marketing', ph: 'marketíng' },
+      { ru: 'Брend', vn: 'Thương hiệu', en: 'Brand', ph: 'brend' },
+      { ru: 'Рынок сбыта', vn: 'Thị trường tiêu thụ', en: 'Sales market', ph: 'rynok sbyta' },
+    ],
+
+    "🔧 Практические глаголы B1 (Practical Verbs)": [
+      { ru: 'Устанавливать', vn: 'Cài đặt / Thiết lập', en: 'To install / set up', ph: 'ustanavlivat\'' },
+      { ru: 'Настраивать', vn: 'Điều chỉnh / Cài đặt', en: 'To configure / adjust', ph: 'nastraivat\'' },
+      { ru: 'Запускать', vn: 'Khởi động / Chạy', en: 'To launch / start', ph: 'zapuskat\'' },
+      { ru: 'Завершать', vn: 'Hoàn thành / Kết thúc', en: 'To complete / finish', ph: 'zavershat\'' },
+      { ru: 'Внедрять', vn: 'Triển khai', en: 'To implement', ph: 'vnedryat\'' },
+      { ru: 'Разрабатывать', vn: 'Phát triển / Nghiên cứu', en: 'To develop', ph: 'razrabatyvat\'' },
+      { ru: 'Редактировать', vn: 'Chỉnh sửa', en: 'To edit', ph: 'redaktirovat\'' },
+      { ru: 'Архивировать', vn: 'Lưu trữ', en: 'To archive', ph: 'arkhivirovat\'' },
+      { ru: 'Синхронизировать', vn: 'Đồng bộ hoá', en: 'To synchronise', ph: 'sinkhronizirovat\'' },
+      { ru: 'Экспортировать', vn: 'Xuất (dữ liệu)', en: 'To export', ph: 'eksportirovat\'' },
+      { ru: 'Импортировать', vn: 'Nhập (dữ liệu)', en: 'To import', ph: 'importirovat\'' },
+      { ru: 'Отслеживать', vn: 'Theo dõi', en: 'To track / monitor', ph: 'otslezhivat\'' },
+    ],
+
+    "🗺️ Путешествия & Культура B1 (Travel & Culture)": [
+      { ru: 'Таможенная декларация', vn: 'Tờ khai hải quan', en: 'Customs declaration', ph: 'tamozhennaya deklaratsiya' },
+      { ru: 'Пограничный контроль', vn: 'Kiểm soát biên giới', en: 'Border control', ph: 'pogranichny kontrol\'' },
+      { ru: 'Экскурсовод', vn: 'Hướng dẫn viên', en: 'Tour guide', ph: 'ekskursovod' },
+      { ru: 'Культурный обмен', vn: 'Giao lưu văn hoá', en: 'Cultural exchange', ph: 'kul\'turny obmyen' },
+      { ru: 'Языковой барьер', vn: 'Rào cản ngôn ngữ', en: 'Language barrier', ph: 'yazykovoy bar\'yer' },
+      { ru: 'Местный житель', vn: 'Người dân địa phương', en: 'Local resident', ph: 'myestny zhitel\'' },
+      { ru: 'Кухня народов мира', vn: 'Ẩm thực thế giới', en: 'World cuisine', ph: 'kukhnya narodov mira' },
+      { ru: 'Этикет', vn: 'Phép lịch sự / Nghi thức', en: 'Etiquette', ph: 'etiket' },
+    ],
+    "🏛️ История & Цивилизация B1 (History & Civilisation)": [
+      { ru: 'Восстание', vn: 'Cuộc nổi dậy', en: 'Uprising / Rebellion', ph: 'vossstániye' },
+      { ru: 'Завоевание', vn: 'Sự chinh phục', en: 'Conquest', ph: 'zavoyevániye' },
+      { ru: 'Артефакт', vn: 'Hiện vật / Đồ tạo tác', en: 'Artefact', ph: 'artyfakt' },
+      { ru: 'Феодализм', vn: 'Chế độ phong kiến', en: 'Feudalism', ph: 'feodalizm' },
+    ],
+
+    "🎨 Искусство & Творчество B1 (Art & Creativity)": [
+      { ru: 'Стиль', vn: 'Phong cách', en: 'Style', ph: 'stil\'' },
+      { ru: 'Произведение', vn: 'Tác phẩm', en: 'Work (of art/literature)', ph: 'proizvedeniye' },
+      { ru: 'Воплощать', vn: 'Thể hiện / Hiện thực hoá', en: 'To embody / realise', ph: 'voploshchat\'' },
+      { ru: 'Импровизация', vn: 'Ứng tấu / Ứng khẩu', en: 'Improvisation', ph: 'improvizátsiya' },
+      { ru: 'Критик', vn: 'Nhà phê bình', en: 'Critic', ph: 'krítik' },
+    ],
+
+    "🌐 Язык & Лингвистика B1 (Language & Linguistics)": [
+      { ru: 'Произношение', vn: 'Phát âm', en: 'Pronunciation', ph: 'proiznosheniye' },
+      { ru: 'Грамматика', vn: 'Ngữ pháp', en: 'Grammar', ph: 'grámmatika' },
+      { ru: 'Лексика', vn: 'Từ vựng', en: 'Vocabulary / Lexis', ph: 'lyéksika' },
+      { ru: 'Диалект', vn: 'Phương ngữ', en: 'Dialect', ph: 'dialyékt' },
+      { ru: 'Акцент', vn: 'Giọng / Trọng âm', en: 'Accent', ph: 'aktsent' },
+      { ru: 'Антоним', vn: 'Từ trái nghĩa', en: 'Antonym', ph: 'antoním' },
+      { ru: 'Фразеологизм', vn: 'Thành ngữ', en: 'Idiom / Set phrase', ph: 'frazeologízm' },
+      { ru: 'Пословица', vn: 'Tục ngữ', en: 'Proverb', ph: 'poslóvitsa' },
+      { ru: 'Двуязычный', vn: 'Song ngữ', en: 'Bilingual', ph: 'dvuyazýchny' },
+      { ru: 'Родной язык', vn: 'Tiếng mẹ đẻ', en: 'Mother tongue', ph: 'rodnóy yazyk' },
+      { ru: 'Иностранный язык', vn: 'Ngoại ngữ', en: 'Foreign language', ph: 'inostrány yazyk' },
+      { ru: 'Толковый словарь', vn: 'Từ điển giải thích', en: 'Explanatory dictionary', ph: 'tolkóvy slovar\'' },
+    ],
+
+    "💻 Цифровые технологии B1 (Digital Technology)": [
+      { ru: 'База данных', vn: 'Cơ sở dữ liệu', en: 'Database', ph: 'báza dannykh' },
+      { ru: 'Резервная копия', vn: 'Bản sao lưu', en: 'Backup', ph: 'rezervnaya kopiya' },
+      { ru: 'Шифрование', vn: 'Mã hoá', en: 'Encryption', ph: 'shifrovániye' },
+      { ru: 'Хакер', vn: 'Tin tặc', en: 'Hacker', ph: 'khaker' },
+      { ru: 'Фишинг', vn: 'Lừa đảo trực tuyến', en: 'Phishing', ph: 'físhing' },
+      { ru: 'Дополненная реальность', vn: 'Thực tế tăng cường', en: 'Augmented reality', ph: 'dopolnennaya real\'nost\'' },
+      { ru: 'Цифровой след', vn: 'Dấu vết kỹ thuật số', en: 'Digital footprint', ph: 'tsifrovoy slyed' },
+      { ru: 'Разработчик', vn: 'Nhà phát triển', en: 'Developer', ph: 'razrabótchik' },
+    ],
+
+    "🤝 Переговоры & Деловое общение B1 (Negotiation & Business)": [
+      { ru: 'Сделка', vn: 'Thương vụ / Giao dịch', en: 'Deal / Transaction', ph: 'sdyelka' },
+      { ru: 'Условие', vn: 'Điều kiện', en: 'Condition / Term', ph: 'usloviye' },
+      { ru: 'Риск', vn: 'Rủi ro', en: 'Risk', ph: 'risk' },
+      { ru: 'Целевая аудитория', vn: 'Đối tượng mục tiêu', en: 'Target audience', ph: 'tselevaya auditoriya' },
+      { ru: 'Стратегия', vn: 'Chiến lược', en: 'Strategy', ph: 'strategiya' },
+    ],
+
+    "🌿 Природа & Путешествия B1 (Nature & Travel)": [
+      { ru: 'Ледник', vn: 'Sông băng', en: 'Glacier', ph: 'lyednik' },
+      { ru: 'Фауна', vn: 'Động vật hoang dã', en: 'Fauna', ph: 'fauna' },
+      { ru: 'Флора', vn: 'Thực vật', en: 'Flora', ph: 'flora' },
+      { ru: 'Хищник', vn: 'Động vật ăn thịt', en: 'Predator', ph: 'khíshchnik' },
+      { ru: 'Добыча', vn: 'Con mồi', en: 'Prey', ph: 'dobýcha' },
+      { ru: 'Миграция животных', vn: 'Di cư động vật', en: 'Animal migration', ph: 'migratsiya zhivotnykh' },
+      { ru: 'Охрана природы', vn: 'Bảo vệ thiên nhiên', en: 'Nature conservation', ph: 'okhrana prirody' },
+    ],
+
+    "💬 Сложные глаголы B1 (Complex Verbs)": [
+      { ru: 'Воздействовать', vn: 'Tác động lên', en: 'To have an effect on', ph: 'vozdeystvovat\'' },
+      { ru: 'Осуществлять', vn: 'Thực hiện / Tiến hành', en: 'To carry out / implement', ph: 'osushchestvlyat\'' },
+      { ru: 'Преодолевать', vn: 'Vượt qua', en: 'To overcome', ph: 'preodolevat\'' },
+      { ru: 'Выявлять', vn: 'Phát hiện / Xác định', en: 'To identify / reveal', ph: 'vyyavlyat\'' },
+      { ru: 'Сопровождать', vn: 'Đi kèm / Đồng hành', en: 'To accompany', ph: 'soprovozhdат\'' },
+      { ru: 'Накапливать', vn: 'Tích luỹ', en: 'To accumulate', ph: 'nakáplivat\'' },
+      { ru: 'Распространять', vn: 'Phổ biến / Lan truyền', en: 'To spread / distribute', ph: 'rasprostranYat\'' },
+      { ru: 'Ограничивать', vn: 'Hạn chế', en: 'To limit / restrict', ph: 'ogranichivat\'' },
+      { ru: 'Регулировать', vn: 'Điều chỉnh / Quản lý', en: 'To regulate', ph: 'regulirovat\'' },
+    ],
+    "🧪 Научный метод B1 (Scientific Method)": [
+      { ru: 'Наблюдение', vn: 'Quan sát', en: 'Observation', ph: 'nablyudeniye' },
+      { ru: 'Измерение', vn: 'Đo lường', en: 'Measurement', ph: 'izmeréniye' },
+      { ru: 'Точность', vn: 'Độ chính xác', en: 'Accuracy / Precision', ph: 'tóchnost\'' },
+      { ru: 'Погрешность', vn: 'Sai số', en: 'Error / Margin', ph: 'pogréshnost\'' },
+      { ru: 'Цитировать', vn: 'Trích dẫn', en: 'To cite / quote', ph: 'tsitirovát\'' },
+      { ru: 'Рецензировать', vn: 'Phản biện', en: 'To peer-review', ph: 'retsenzirovat\'' },
+    ],
+
+    "🏋️ Здоровый образ жизни B1 (Healthy Lifestyle)": [
+      { ru: 'Калория', vn: 'Calo', en: 'Calorie', ph: 'kaloriya' },
+      { ru: 'Углевод', vn: 'Carbohydrate / Tinh bột', en: 'Carbohydrate', ph: 'uglevod' },
+      { ru: 'Жир', vn: 'Chất béo', en: 'Fat', ph: 'zhir' },
+      { ru: 'Обмен веществ', vn: 'Trao đổi chất', en: 'Metabolism', ph: 'obmen veshchestv' },
+      { ru: 'Выносливость', vn: 'Sức bền', en: 'Endurance / Stamina', ph: 'vynoslivost\'' },
+      { ru: 'Гибкость', vn: 'Sự dẻo dai', en: 'Flexibility', ph: 'gibkost\'' },
+    ],
+
+    "📊 Статистика & Данные B1 (Statistics & Data)": [
+      { ru: 'Статистика', vn: 'Thống kê', en: 'Statistics', ph: 'statistika' },
+      { ru: 'Процент', vn: 'Phần trăm', en: 'Percentage', ph: 'protsent' },
+      { ru: 'Доля', vn: 'Tỷ trọng / Phần', en: 'Share / Proportion', ph: 'dolya' },
+      { ru: 'Среднее значение', vn: 'Giá trị trung bình', en: 'Average / Mean', ph: 'sredneye znachéniye' },
+      { ru: 'Максимум', vn: 'Giá trị tối đa', en: 'Maximum', ph: 'máksimum' },
+      { ru: 'Минимум', vn: 'Giá trị tối thiểu', en: 'Minimum', ph: 'mínimum' },
+      { ru: 'График', vn: 'Biểu đồ / Đồ thị', en: 'Graph / Chart', ph: 'gráfik' },
+      { ru: 'Диаграмма', vn: 'Sơ đồ', en: 'Diagram', ph: 'diagramma' },
+      { ru: 'Выборка', vn: 'Mẫu (thống kê)', en: 'Sample', ph: 'výborka' },
+      { ru: 'Корреляция', vn: 'Tương quan', en: 'Correlation', ph: 'korrelyátsiya' },
+      { ru: 'Прогноз', vn: 'Dự báo', en: 'Forecast / Prognosis', ph: 'prognoz' },
+    ],
+  
+  
+  
+  
+  
+  
 
   // ════════════════════════════════════════════════════════════════
 
@@ -8827,32 +9050,6 @@ var i18n = {
     // rd topics/list
     'rd.back':'← Quay lại',
     'rd.all.stories':'tất cả',
-    // dictation
-    'dict.subtitle':'// nghe từ rồi gõ lại tiếng Nga',
-    'dict.play.slow':'🐢 Phát chậm',
-    'dict.hint.ph':'💡 Phiên âm',
-    'dict.hint.first':'🔤 Chữ cái đầu',
-    'dict.hint.show':'👁️ Xem đáp án',
-    'dict.input.label':'// gõ từ tiếng Nga',
-    'dict.input.ph':'Gõ tiếng Nga ở đây...',
-    'dict.kb.label':'// bàn phím tiếng Nga',
-    'dict.check':'✓ Kiểm tra',
-    'dict.next':'→ Tiếp theo',
-    'dict.finish':'🏁 Kết quả',
-    'dict.skip':'Bỏ qua từ này →',
-    'dict.done.title':'Hoàn thành!',
-    'dict.done.mistakes':'// từ cần xem lại',
-    'dict.done.retry':'🔄 Làm lại',
-    'dict.done.back':'← Chủ đề',
-    'dict.correct':'✅ Đúng rồi!',
-    'dict.wrong':'❌ Sai! Đáp án đúng:',
-    'dict.typed':'← bạn gõ:',
-    'dict.msg.0':'Cần luyện thêm nhiều hơn 💪',
-    'dict.msg.1':'Khá tốt, cố lên! 📖',
-    'dict.msg.2':'Tốt lắm! 🌟',
-    'dict.msg.3':'Xuất sắc! 🏆',
-    'dict.msg.4':'Hoàn hảo! 🎯',
-    'dict.topic.btn':'// nghe · gõ lại · luyện chính tả',
   },
   en: {
     'nav.vocab':'Vocab','nav.review':'Review','nav.grammar':'Grammar','nav.read':'Read','nav.lookup':'Search','nav.daily':'Today','nav.road':'Roadmap',
@@ -8998,32 +9195,6 @@ var i18n = {
     // rd topics/list
     'rd.back':'← Back',
     'rd.all.stories':'all',
-    // dictation
-    'dict.subtitle':'// listen and type the Russian word',
-    'dict.play.slow':'🐢 Slow playback',
-    'dict.hint.ph':'💡 Pronunciation',
-    'dict.hint.first':'🔤 First letter',
-    'dict.hint.show':'👁️ Show answer',
-    'dict.input.label':'// type the Russian word',
-    'dict.input.ph':'Type Russian here...',
-    'dict.kb.label':'// Russian keyboard',
-    'dict.check':'✓ Check',
-    'dict.next':'→ Next',
-    'dict.finish':'🏁 Results',
-    'dict.skip':'Skip this word →',
-    'dict.done.title':'Completed!',
-    'dict.done.mistakes':'// words to review',
-    'dict.done.retry':'🔄 Try again',
-    'dict.done.back':'← Topic',
-    'dict.correct':'✅ Correct!',
-    'dict.wrong':'❌ Wrong! Correct answer:',
-    'dict.typed':'← you typed:',
-    'dict.msg.0':'Keep practising 💪',
-    'dict.msg.1':'Not bad, keep going! 📖',
-    'dict.msg.2':'Good job! 🌟',
-    'dict.msg.3':'Excellent! 🏆',
-    'dict.msg.4':'Perfect! 🎯',
-    'dict.topic.btn':'// listen · type · spelling practice',
   }
 };
 const App=(()=>{
@@ -9057,8 +9228,8 @@ function saveSRS(){try{localStorage.setItem('sd',JSON.stringify(S.srsData));}cat
 function speak(t){if(!t||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=0.85;window.speechSynthesis.speak(u);}
 
 // NAV
-const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read','dict','dict-done'];
-const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read',dict:'bn-vocab','dict-done':'bn-vocab'};
+const SCREENS=['vocab','topic','fc','quiz','qzdone','srs','srsdone','lookup','grammar','case','ag','hd','gd','ez','daily','daily-done','read'];
+const NAVMAP={vocab:'bn-vocab',srs:'bn-vocab',srsdone:'bn-vocab',grammar:'bn-grammar',case:'bn-grammar',lookup:'bn-lookup',fc:'bn-vocab',quiz:'bn-vocab',qzdone:'bn-vocab',daily:'bn-daily','daily-done':'bn-daily',read:'bn-read'};
 // Nav depth hierarchy — dùng để detect forward / back / tab-switch
 const NAV_DEPTH = {vocab:0,lookup:0,grammar:0,srs:1,srsdone:1,topic:1,fc:2,quiz:2,qzdone:2,case:1,daily:0,'daily-done':1,read:0};
 
@@ -9403,139 +9574,6 @@ function fcToggleAutoSpeak(){
 }
 
 // DICTATION
-var dictState={idx:0,score:{c:0,t:0},checked:false,mistakes:[]};
-function dictStart(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  if(!ws||!ws.length){showToast(t('dict.notopic')||'Chủ đề này chưa có từ!');return;}
-  dictState={idx:0,score:{c:0,t:0},checked:false,mistakes:[]};
-  nav('dict');
-  dictRender();
-  setTimeout(()=>App.dictSpeak(),600);
-}
-function dictRender(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  const w=ws[dictState.idx];
-  if(!w)return;
-  const pct=(dictState.idx/ws.length)*100;
-  document.getElementById('dict-pb').style.width=pct+'%';
-  document.getElementById('dict-ctr').textContent=`[${dictState.idx+1}/${ws.length}]`;
-  document.getElementById('dict-score').textContent=`${dictState.score.c}/${dictState.score.t}`;
-  document.getElementById('dict-hint').textContent='';
-  document.getElementById('dict-status').style.display='none';
-  const inp=document.getElementById('dict-input');
-  inp.value='';inp.style.borderColor='var(--brd)';
-  inp.removeAttribute('disabled');
-  inp.placeholder=t('dict.input.ph');
-  document.getElementById('dict-next-btn').style.display='none';
-  document.getElementById('dict-next-btn').textContent=t('dict.next');
-  document.getElementById('dict-play-btn').style.background='var(--pur)';
-  dictState.checked=false;
-}
-function dictSpeak(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  const w=ws[dictState.idx];if(!w)return;
-  speak(w.ru);
-  const btn=document.getElementById('dict-play-btn');
-  if(btn){btn.style.background='var(--grn)';setTimeout(()=>{btn.style.background='var(--pur)';},1200);}
-}
-function dictSpeakSlow(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  const w=ws[dictState.idx];if(!w)return;
-  if(!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(w.ru);
-  u.lang='ru-RU';u.rate=0.55;
-  window.speechSynthesis.speak(u);
-}
-function dictHint(level){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  const w=ws[dictState.idx];if(!w)return;
-  const hintEl=document.getElementById('dict-hint');
-  if(level===1) hintEl.textContent='📖 /'+w.ph+'/';
-  else if(level===2) hintEl.textContent='🔤 '+w.ru[0].toUpperCase()+'...  ('+w.ru.length+' ký tự)';
-  else if(level===3) hintEl.textContent='👁️ '+w.ru;
-}
-function dictKbType(ch){
-  const inp=document.getElementById('dict-input');
-  if(!inp||inp.disabled)return;
-  const s=inp.selectionStart||inp.value.length;
-  const e=inp.selectionEnd||inp.value.length;
-  inp.value=inp.value.slice(0,s)+ch+inp.value.slice(e);
-  inp.selectionStart=inp.selectionEnd=s+ch.length;
-  inp.focus();
-}
-function dictKbDel(){
-  const inp=document.getElementById('dict-input');
-  if(!inp||inp.disabled)return;
-  const s=inp.selectionStart;const e=inp.selectionEnd;
-  if(s!==e){inp.value=inp.value.slice(0,s)+inp.value.slice(e);}
-  else if(s>0){inp.value=inp.value.slice(0,s-1)+inp.value.slice(s);inp.selectionStart=inp.selectionEnd=s-1;}
-  inp.focus();
-}
-function dictCheck(){
-  if(dictState.checked)return;
-  const ws=vocabularyDatabase[S.level][S.topic];
-  const w=ws[dictState.idx];if(!w)return;
-  const inp=document.getElementById('dict-input');
-  const userVal=inp.value.trim().toLowerCase();
-  const correct=w.ru.toLowerCase();
-  const isEN=(S.lang||'vi')==='en';
-  const meaning=isEN?w.en:w.vn;
-  const status=document.getElementById('dict-status');
-  dictState.checked=true;
-  dictState.score.t++;
-  inp.disabled=true;
-  if(userVal===correct){
-    dictState.score.c++;
-    inp.style.borderColor='var(--grn)';
-    status.style.cssText='display:block;background:var(--grn)22;color:var(--grn);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;';
-    status.innerHTML=t('dict.correct')+' &nbsp;<span style="font-weight:400;opacity:0.8;">'+meaning+'</span>';
-  } else {
-    inp.style.borderColor='var(--red)';
-    status.style.cssText='display:block;background:var(--red)22;color:var(--red);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;';
-    status.innerHTML=t('dict.wrong')+' <span style="font-family:var(--serif);font-size:16px;">'+w.ru+'</span>';
-    dictState.mistakes.push({ru:w.ru,vn:w.vn,en:w.en,typed:inp.value.trim()});
-    speak(w.ru);
-  }
-  document.getElementById('dict-score').textContent=`${dictState.score.c}/${dictState.score.t}`;
-  const nextBtn=document.getElementById('dict-next-btn');
-  nextBtn.style.display='block';
-  if(dictState.idx===ws.length-1){nextBtn.textContent=t('dict.finish');}
-  else{nextBtn.textContent=t('dict.next');}
-}
-function dictNext(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  if(dictState.idx>=ws.length-1){dictDone();return;}
-  dictState.idx++;
-  dictRender();
-  setTimeout(()=>App.dictSpeak(),400);
-}
-function dictSkip(){
-  const ws=vocabularyDatabase[S.level][S.topic];
-  if(dictState.idx>=ws.length-1){dictDone();return;}
-  dictState.idx++;
-  dictRender();
-  setTimeout(()=>App.dictSpeak(),400);
-}
-function dictDone(){
-  const {c,t}=dictState.score;
-  const pct=t>0?Math.round(c/t*100):0;
-  document.getElementById('dict-done-score').textContent=c+'/'+t;
-  const msgs=[t('dict.msg.0'),t('dict.msg.1'),t('dict.msg.2'),t('dict.msg.3'),t('dict.msg.4')];
-  const mi=pct<40?0:pct<60?1:pct<80?2:pct<100?3:4;
-  document.getElementById('dict-done-msg').textContent=msgs[mi]+' ('+pct+'%)';
-  const mistakesEl=document.getElementById('dict-done-mistakes');
-  if(dictState.mistakes.length>0){
-    mistakesEl.style.display='block';
-    const isEN=(S.lang||'vi')==='en';
-    mistakesEl.innerHTML='<div style="font-size:11px;color:var(--com);margin-bottom:8px;">'+t('dict.done.mistakes')+'</div>'+
-      dictState.mistakes.map(m=>`<div style="padding:6px 0;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <div><span style="font-family:var(--serif);font-size:16px;font-weight:700;">${m.ru}</span> <span style="color:var(--com);font-size:11px;">${t('dict.typed')} ${m.typed||'(bỏ qua)'}</span></div>
-        <span style="font-size:12px;color:var(--txd);">${isEN?m.en:m.vn}</span>
-      </div>`).join('')
-  } else {mistakesEl.style.display='none';}
-  nav('dict-done');
-}
 
 // QUIZ
 function quizStart(){S.qzIdx=0;S.qzScore={c:0,t:0};S.qzAnswered=false;genOpts();qzRender();nav('quiz');}
@@ -10567,11 +10605,16 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_deferredPr
 })();
 
 // SERVICE WORKER
+// SERVICE WORKER — unregister all & clear all caches on every load
 if('serviceWorker' in navigator){
-  const swCode=`const C='ru-v8';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll([location.href])).then(()=>self.skipWaiting()));});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(cached=>{if(cached)return cached;return fetch(e.request).then(res=>{if(res&&res.status===200){const cl=res.clone();caches.open(C).then(c=>c.put(e.request,cl));}return res;}).catch(()=>caches.match(e.request));}));});`;
-  const blob=new Blob([swCode],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob),{scope:'./'}).catch(()=>{});
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+  });
+  if(window.caches){
+    caches.keys().then(keys=>keys.forEach(k=>caches.delete(k)));
+  }
 }
+
 
 
 function t(key){ return (i18n[S.lang||'vi'][key]) || (i18n['vi'][key]) || key; }
@@ -11249,6 +11292,9 @@ var RD_TOPICS = [
   { id:'detskie',
     icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
     name:'Thiếu nhi', name_en:'For Children', name_ru:'Для детей', color:'rgba(255,159,10,', border:'rgba(255,159,10,' },
+  { id:'romans',
+    icon:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    name:'Tiểu thuyết', name_en:'Novels', name_ru:'Романы', color:'rgba(191,90,242,', border:'rgba(191,90,242,' },
 ];
 
 var RD_STORIES = {
@@ -11442,6 +11488,151 @@ var RD_STORIES = {
       vn:'Masha đến thư viện lần đầu tiên trong đời. Thủ thư Nina Sergeyevna đón cô bé với nụ cười. «Em muốn đăng ký thẻ không?» — cô hỏi. «Vâng», — Masha trả lời. Nina Sergeyevna giải thích cách thư viện hoạt động. Tất cả sách được sắp xếp theo chủ đề và đặt trên giá. Mỗi cuốn sách có thẻ mô tả. Độc giả chọn sách, thủ thư ghi lại tên sách và ngày mượn. Sách cần trả lại sau hai tuần. «Nếu em thích và không muốn trả thì sao?» — Masha hỏi. Thủ thư cười: «Thì em có thể mượn lại! Thư viện có hàng nghìn cuốn sách. Đọc sách có nghĩa là du lịch qua những thế giới trọn vẹn mà không cần rời khỏi nhà». Masha chọn một cuốn sách về động vật và hứa sẽ trả đúng hạn.',
       en:'Masha came to the library for the first time in her life. The librarian Nina Sergeyevna greeted her with a smile. «Would you like to sign up?» she asked. «Yes», replied Masha. Nina Sergeyevna explained how the library works. All the books are sorted by subject and placed on shelves. Each book has a card with a description. A reader chooses a book, the librarian records its title and the date. The book must be returned within two weeks. «What if I like it and don\'t want to return it?» asked Masha. The librarian laughed: «Then you can borrow it again! The library has thousands of books. Reading means travelling through whole worlds without leaving home.» Masha chose a book about animals and promised to return it on time.' },
   ],
+
+  romans: [
+    {
+      id:'kd1', level:'B1', book:'Капитанская дочка', bookVn:'Cô con gái viên đại uý', bookEn:"The Captain's Daughter",
+      bookAuthor:'А.С. Пушкин', bookAuthorVn:'A.S. Pushkin', bookYear:'1836',
+      chapter:1, chapterTitle:'Сержант гвардии', chapterTitleVn:'Hạ sĩ quan cận vệ', chapterTitleEn:'The Sergeant of the Guards',
+      title:'Капитанская дочка · Гл. 1', time:6,
+      body:'Отец мой Андрей Петрович Гринёв служил при графе Минихе. Когда мне исполнилось шестнадцать лет, отец решил отправить меня на военную службу — не в Петербург в гвардию, а в далёкий Оренбург. Со мной поехал мой дядька Савельич, который следил за мной с детства.\n\nПо дороге в Оренбург мы попали в сильную метель. Снег был такой густой, что ничего не было видно. Вдруг мы увидели человека на дороге — невысокого, широкоплечего, лет сорока, с чёрной бородой и умным лицом. Он показал нам дорогу до постоялого двора.\n\nУтром я подарил незнакомцу свой заячий тулуп в знак благодарности. Савельич был очень недоволен этим подарком. Тогда я ещё не знал, что этот человек — Пугачёв, и что наша встреча изменит всю мою жизнь.',
+      vn:'Cha tôi Andrei Petrovich Grinyov từng phục vụ dưới quyền bá tước Munnich. Khi tôi mười sáu tuổi, cha quyết định gửi tôi đi quân ngũ — không phải đến Petersburg vào lực lượng cận vệ, mà đến Orenburg xa xôi. Người hầu Savelyich đi cùng tôi.\n\nTrên đường, chúng tôi gặp bão tuyết dữ dội. Bỗng xuất hiện một người đàn ông — vai rộng, khoảng bốn mươi tuổi, râu đen, gương mặt thông minh. Ông ta chỉ đường cho chúng tôi đến quán trọ.\n\nSáng hôm sau tôi tặng người lạ chiếc áo lông thỏ của mình để tỏ lòng biết ơn. Savelyich rất không hài lòng. Lúc đó tôi chưa biết người đàn ông đó chính là Pugachev, và cuộc gặp gỡ này sẽ thay đổi cả cuộc đời tôi.',
+      en:"My father Andrei Petrovich Grinyov had served under Count Munnich. When I turned sixteen, he decided to send me into military service — not to Petersburg and the Guards, but to distant Orenburg. My manservant Savelyich accompanied me. On the road we were caught in a terrible blizzard. A stranger appeared — stocky, about forty, with a black beard and clever eyes — and guided us to an inn. Next morning I gave him my hareskin coat as thanks, much to Savelyich's displeasure. I didn't yet know that this man was Pugachev, and that our meeting would change my whole life.",
+      words:[
+        {ru:'военная служба',vn:'quân ngũ',en:'military service',ph:'voyennaya sluzhba'},
+        {ru:'метель',vn:'bão tuyết',en:'blizzard',ph:'metyel\''},
+        {ru:'дядька',vn:'người hầu',en:'manservant',ph:'dyadka'},
+        {ru:'постоялый двор',vn:'quán trọ',en:'inn',ph:'postoyaly dvor'},
+        {ru:'тулуп',vn:'áo lông',en:'sheepskin coat',ph:'tulup'},
+        {ru:'благодарность',vn:'lòng biết ơn',en:'gratitude',ph:'blagodarnost\''},
+        {ru:'незнакомец',vn:'người lạ',en:'stranger',ph:'neznakomets'},
+      ]
+    },
+    {
+      id:'kd2', level:'B1', book:'Капитанская дочка', bookVn:'Cô con gái viên đại uý', bookEn:"The Captain's Daughter",
+      bookAuthor:'А.С. Пушкин', bookAuthorVn:'A.S. Pushkin', bookYear:'1836',
+      chapter:2, chapterTitle:'Крепость', chapterTitleVn:'Pháo đài', chapterTitleEn:'The Fortress',
+      title:'Капитанская дочка · Гл. 2', time:6,
+      body:'Белогорская крепость оказалась скромным укреплённым селом на берегу реки — деревянный забор, несколько домов, старая пушка во дворе. Я был разочарован.\n\nКомендант крепости капитан Миронов был добрым стариком. Его жена Василиса Егоровна управляла всем хозяйством. Их дочь Маша была тихой и скромной девушкой — покраснела при знакомстве и почти ничего не сказала. Но у неё были добрые глаза.\n\nЯ познакомился с офицером Швабриным. Он был образован и остроумен, но злобен. Он отзывался о Маше неуважительно, и это мне сразу не понравилось. Служба в крепости была спокойной и однообразной, но постепенно я привыкал к новой жизни.',
+      vn:'Pháo đài Belogorsk hoá ra chỉ là một ngôi làng nhỏ được củng cố bên bờ sông — hàng rào gỗ, vài ngôi nhà, khẩu súng cũ ngoài sân. Tôi thất vọng.\n\nChỉ huy đại uý Mironov là ông già tốt bụng. Vợ ông Vasilisa Yegorovna quản lý mọi thứ. Con gái Masha dịu dàng và khiêm tốn — đỏ mặt khi được giới thiệu và gần như không nói gì. Nhưng cô có đôi mắt hiền lành.\n\nTôi gặp sĩ quan Shvabrin — có học thức và thông minh, nhưng độc ác. Hắn nói về Masha thiếu tôn trọng và tôi không ưa hắn ngay từ đầu.',
+      en:'The Belogorsk fortress turned out to be a modest fortified village on a riverbank — a wooden fence, a few houses, an old cannon. I was disappointed. The commandant Captain Mironov was a kindly old man; his wife Vasilisa Yegorovna ran everything. Their daughter Masha was quiet and gentle, blushing at our introduction. I also met the officer Shvabrin — educated and witty, but malicious. He spoke of Masha without respect, and I disliked him at once.',
+      words:[
+        {ru:'крепость',vn:'pháo đài',en:'fortress',ph:'krepost\''},
+        {ru:'комендант',vn:'chỉ huy',en:'commandant',ph:'komendant'},
+        {ru:'разочарован',vn:'thất vọng',en:'disappointed',ph:'razocharovan'},
+        {ru:'скромный',vn:'khiêm tốn',en:'modest',ph:'skromny'},
+        {ru:'злобный',vn:'độc ác',en:'malicious',ph:'zlobny'},
+        {ru:'однообразный',vn:'đơn điệu',en:'monotonous',ph:'odnoobrazny'},
+      ]
+    },
+    {
+      id:'kd3', level:'B1', book:'Капитанская дочка', bookVn:'Cô con gái viên đại uý', bookEn:"The Captain's Daughter",
+      bookAuthor:'А.С. Пушкин', bookAuthorVn:'A.S. Pushkin', bookYear:'1836',
+      chapter:3, chapterTitle:'Поединок', chapterTitleVn:'Cuộc đấu kiếm', chapterTitleEn:'The Duel',
+      title:'Капитанская дочка · Гл. 3', time:5,
+      body:'Постепенно я полюбил Машу. Мы часто разговаривали, и я написал ей стихи — неловкие, но искренние. Швабрин прочитал их и стал насмехаться. Он говорил, что Маша недостойна таких чувств. Я не стерпел оскорбления и вызвал его на дуэль.\n\nМы дрались на шпагах у реки. Швабрин был опытным фехтовальщиком. Когда я обернулся на крик Савельича, Швабрин воспользовался моментом и ранил меня в плечо. Я потерял сознание.\n\nНесколько дней я лежал в постели. Маша ухаживала за мной. Когда мне стало лучше, я попросил её руки. Она согласилась, но сказала: без благословения родителей не выйдет замуж. Я написал отцу — ответ был жёстким: отказ.',
+      vn:'Dần dần tôi yêu Masha. Tôi viết thơ cho cô — vụng về nhưng chân thành. Shvabrin chế nhạo và nói Masha không xứng. Tôi không chịu được và thách đấu.\n\nChúng tôi đấu kiếm bên sông. Shvabrin lão luyện. Khi tôi quay nghe tiếng kêu của Savelyich, hắn nhân cơ đâm vào vai tôi. Tôi ngất đi.\n\nMasha chăm sóc tôi mấy ngày. Khi hồi phục tôi cầu hôn. Cô đồng ý nhưng cần sự chúc phúc của cha mẹ. Tôi viết thư cho cha — câu trả lời là từ chối.',
+      en:'Gradually I fell in love with Masha. I wrote her clumsy but sincere poems. Shvabrin mocked them and said she was unworthy of such feelings. I challenged him to a duel. He was a skilled swordsman; when I turned at Savelyich\'s cry, he wounded my shoulder. Masha nursed me back to health. When I recovered I proposed — she accepted, but needed her parents\' blessing. My father\'s reply was a firm refusal.',
+      words:[
+        {ru:'дуэль',vn:'quyết đấu',en:'duel',ph:'duel\''},
+        {ru:'шпага',vn:'kiếm đấu',en:'sword',ph:'shpaga'},
+        {ru:'ранить',vn:'làm bị thương',en:'to wound',ph:'ranit\''},
+        {ru:'оскорбление',vn:'sự xúc phạm',en:'insult',ph:'oskorbleniye'},
+        {ru:'насмехаться',vn:'chế nhạo',en:'to mock',ph:'nasmekhat\'sya'},
+        {ru:'благословение',vn:'sự chúc phúc',en:'blessing',ph:'blagosloveniye'},
+        {ru:'ухаживать',vn:'chăm sóc',en:'to care for',ph:'ukhazhivat\''},
+      ]
+    },
+    {
+      id:'kd4', level:'B1', book:'Капитанская дочка', bookVn:'Cô con gái viên đại uý', bookEn:"The Captain's Daughter",
+      bookAuthor:'А.С. Пушкин', bookAuthorVn:'A.S. Pushkin', bookYear:'1836',
+      chapter:4, chapterTitle:'Пугачёвщина', chapterTitleVn:'Cuộc nổi dậy Pugachev', chapterTitleEn:"Pugachev's Rebellion",
+      title:'Капитанская дочка · Гл. 4', time:7,
+      body:'Однажды ночью нас разбудил шум — войска Пугачёва окружили крепость. Утром пришло его письмо с требованием сдаться. Капитан Миронов отказался.\n\nШтурм был стремительным. Силы были неравны. Пугачёвцы ворвались в крепость. Капитана Миронова схватили и повесили. Василиса Егоровна была убита. Тех, кто не хотел присягать Пугачёву, казнили.\n\nКогда привели меня, Пугачёв вдруг узнал во мне того молодого человека, которому он показывал дорогу в метель и который подарил ему тулуп. Он помнил мою доброту. «Отпустить», — сказал он. Швабрин перешёл на сторону Пугачёва. Маша спряталась у попадьи и сказалась больной.',
+      vn:'Một đêm nọ chúng tôi bị đánh thức — quân Pugachev bao vây pháo đài. Đại uý Mironov từ chối đầu hàng. Cuộc tấn công nhanh chóng áp đảo. Mironov bị bắt và treo cổ. Vasilisa Yegorovna bị giết. Ai không chịu tuyên thệ đều bị hành quyết.\n\nKhi người ta dẫn tôi ra, Pugachev nhận ra tôi — người trẻ đã tặng ông chiếc áo lông trong bão tuyết. Ông nhớ lòng tốt của tôi. "Tha cho hắn," ông nói.\n\nShvabrin phản bội và theo phe Pugachev. Masha trốn ở nhà cha xứ, giả bệnh.',
+      en:"One night Pugachev's forces surrounded the fortress. Captain Mironov refused to surrender. The assault was swift and overwhelming — Mironov was hanged, his wife killed. Those who refused to swear allegiance were executed. When I was brought forward, Pugachev recognised me as the young man who had guided him in the blizzard and given him his coat. He remembered my kindness. 'Release him,' he said. Shvabrin defected to Pugachev's side. Masha hid at the priest's house, feigning illness.",
+      words:[
+        {ru:'окружить',vn:'bao vây',en:'to surround',ph:'okruzhit\''},
+        {ru:'штурм',vn:'cuộc tấn công',en:'assault',ph:'shturm'},
+        {ru:'сдаться',vn:'đầu hàng',en:'to surrender',ph:'sdat\'sya'},
+        {ru:'повесить',vn:'treo cổ',en:'to hang',ph:'povesit\''},
+        {ru:'присягать',vn:'tuyên thệ',en:'to swear allegiance',ph:'prisyagat\''},
+        {ru:'казнить',vn:'hành quyết',en:'to execute',ph:'kaznit\''},
+        {ru:'перешёл на сторону',vn:'phản bội / theo phe',en:'defected to',ph:'pereshyol na storonu'},
+      ]
+    },
+    {
+      id:'kd5', level:'B1', book:'Капитанская дочка', bookVn:'Cô con gái viên đại uý', bookEn:"The Captain's Daughter",
+      bookAuthor:'А.С. Пушкин', bookAuthorVn:'A.S. Pushkin', bookYear:'1836',
+      chapter:5, chapterTitle:'Спасение', chapterTitleVn:'Giải cứu', chapterTitleEn:'The Rescue',
+      title:'Капитанская дочка · Гл. 5', time:7,
+      body:'Я узнал, что Швабрин держит Машу под стражей и хочет силой жениться на ней. Единственный, кто мог помочь — Пугачёв. Я пришёл к нему и рассказал всё. «Кто обижает сироту — тот мой враг», — сказал он и лично приехал в крепость, освободил Машу и наказал Швабрина.\n\nМы уехали вместе, но по дороге нас остановили правительственные войска. Меня арестовали за связь с Пугачёвым. Швабрин, теперь уже пленник, дал против меня ложные показания.\n\nТогда Маша поехала к самой императрице Екатерине II и рассказала ей всю правду. Императрица помиловала меня. Мы поженились, отец наконец дал своё благословение. Пугачёв был схвачен и казнён. Говорят, перед смертью он узнал меня в толпе и кивнул — знак от человека жестокого и великодушного одновременно.',
+      vn:'Tôi biết Shvabrin đang giam Masha và muốn cưỡng hôn. Người duy nhất có thể giúp là Pugachev. Tôi đến và kể hết. "Kẻ nào ức hiếp trẻ mồ côi là kẻ thù của ta," ông nói rồi đích thân giải cứu Masha và trừng phạt Shvabrin.\n\nTrên đường về tôi bị quân chính phủ bắt vì liên hệ với Pugachev. Shvabrin khai sai về tôi. Masha đến gặp nữ hoàng Catherine II và nói hết sự thật. Nữ hoàng ân xá cho tôi.\n\nChúng tôi kết hôn. Cha cuối cùng cũng chúc phúc. Pugachev bị bắt và hành quyết. Người ta nói trước khi chết ông nhận ra tôi trong đám đông và gật đầu.',
+      en:"I learned Shvabrin was holding Masha captive and wanted to force her to marry him. I went to Pugachev and told him everything. 'Whoever harms an orphan is my enemy,' he said, and personally rode to free Masha. On our way back I was arrested for consorting with Pugachev. Shvabrin gave false testimony against me. Then Masha went to Empress Catherine II herself and told her the truth — I was pardoned. We married; my father finally gave his blessing. Pugachev was captured and executed. They say before his death he recognised me in the crowd and nodded.",
+      words:[
+        {ru:'под стражей',vn:'bị canh giữ',en:'under guard',ph:'pod strazey'},
+        {ru:'сирота',vn:'trẻ mồ côi',en:'orphan',ph:'sirota'},
+        {ru:'освободить',vn:'giải cứu',en:'to free',ph:'osvobodit\''},
+        {ru:'арестовать',vn:'bắt giữ',en:'to arrest',ph:'arestovat\''},
+        {ru:'помиловать',vn:'ân xá',en:'to pardon',ph:'pomilovat\''},
+        {ru:'показания',vn:'lời khai',en:'testimony',ph:'pokazaniya'},
+        {ru:'великодушный',vn:'rộng lượng',en:'magnanimous',ph:'velikodushny'},
+      ]
+    },
+    {
+      id:'mm1', level:'B1', book:'Муму', bookVn:'Mumu', bookEn:'Mumu',
+      bookAuthor:'И.С. Тургенев', bookAuthorVn:'I.S. Turgenev', bookYear:'1852',
+      chapter:1, chapterTitle:'Герасим', chapterTitleVn:'Gerasim', chapterTitleEn:'Gerasim',
+      title:'Муму · Часть 1', time:6,
+      body:'В одном из переулков Москвы жила барыня-вдова, окружённая многочисленной дворней. Среди её слуг выделялся Герасим — дворник, глухонемой от рождения. Его привезли из деревни. Он был огромного роста и необыкновенно силён — работал за четверых. Но говорить не мог, только мычал. Слуги его боялись и уважали.\n\nОдно время Герасим полюбил прачку Татьяну — тихую, робкую женщину. Он оберегал её и приносил подарки. Но барыня приказала выдать Татьяну замуж за башмачника Капитона — пьяницу и бездельника. Герасим не мог помешать этому.\n\nОн стоял и смотрел, как его мечту уводят прочь. В его глазах были слёзы. С тех пор Герасим стал ещё более молчаливым и мрачным. Он был одинок в огромном шумном городе.',
+      vn:'Ở một con hẻm Moscow sống bà chủ góa phụ với đông đảo người hầu. Nổi bật trong số đó là Gerasim — người gác sân, câm điếc từ khi sinh. Đưa từ làng lên, anh cao lớn, khoẻ phi thường — làm việc bằng bốn người. Người hầu vừa sợ vừa kính.\n\nMột thời gian Gerasim yêu cô giặt đồ Tatyana — dịu dàng, rụt rè. Nhưng bà chủ gả Tatyana cho người thợ đóng giày Kapiton — kẻ say rượu lười biếng. Gerasim không ngăn được.\n\nAnh đứng nhìn giấc mơ bị dẫn đi, mắt rơi lệ. Từ đó anh trở nên lặng lẽ và u ám hơn — cô đơn giữa thành phố ồn ào.',
+      en:'In a Moscow lane lived a widowed noblewoman with many servants. Among them stood out Gerasim — the deaf-mute yard-keeper, brought from the village. He was enormous and immensely strong, doing the work of four men. The other servants both feared and respected him. For a time he loved a laundress named Tatyana, gentle and timid, and brought her gifts. But the mistress ordered Tatyana married off to a drunken cobbler. Gerasim could not stop it. He watched his dream led away, tears in his eyes. From then on he was more silent and gloomy, lonely in the vast noisy city.',
+      words:[
+        {ru:'барыня',vn:'bà chủ quý tộc',en:'noblewoman / mistress',ph:'barynya'},
+        {ru:'глухонемой',vn:'câm điếc',en:'deaf-mute',ph:'glukhonemy'},
+        {ru:'дворник',vn:'người gác sân',en:'yard-keeper',ph:'dvornik'},
+        {ru:'прачка',vn:'người giặt đồ',en:'laundress',ph:'prachka'},
+        {ru:'пьяница',vn:'kẻ say rượu',en:'drunkard',ph:'p\'yanitsa'},
+        {ru:'оберегать',vn:'che chở',en:'to protect',ph:'oberegat\''},
+        {ru:'мрачный',vn:'u ám',en:'gloomy',ph:'mrachny'},
+      ]
+    },
+    {
+      id:'mm2', level:'B1', book:'Муму', bookVn:'Mumu', bookEn:'Mumu',
+      bookAuthor:'И.С. Тургенев', bookAuthorVn:'I.S. Turgenev', bookYear:'1852',
+      chapter:2, chapterTitle:'Маленькая собачка', chapterTitleVn:'Con chó nhỏ', chapterTitleEn:'The Little Dog',
+      title:'Муму · Часть 2', time:6,
+      body:'Однажды осенней ночью Герасим шёл по берегу Москвы-реки. Вдруг он увидел в воде маленького щенка — тот тонул в холодной воде. Герасим вытащил его и положил за пазуху, чтобы согреть.\n\nЩенок оказался девочкой. Герасим принёс её домой, вскормил молоком и назвал Муму. Собачка выросла красивой — белая, с чёрными пятнами на ушах. Она привязалась к Герасиму и не отходила от него ни на шаг.\n\nВпервые за долгое время Герасим улыбался. Он ухаживал за Муму, кормил её лучшей едой. Муму отвечала ему преданной любовью — виляла хвостом, лизала руки, радостно лаяла, когда он возвращался. Это была его единственная радость в одиноком мире.',
+      vn:'Một đêm thu Gerasim đi dọc sông Moscow. Anh thấy trong nước một chú chó con đang chìm. Gerasim vớt lên, giữ trong áo sưởi ấm.\n\nChó con là cái. Gerasim đặt tên Mumu. Nó lớn lên xinh đẹp — trắng, đốm đen trên tai. Nó gắn bó với Gerasim, không rời anh một bước.\n\nLần đầu sau thời gian dài, Gerasim mỉm cười. Anh chăm sóc Mumu, cho ăn đồ ngon nhất. Mumu đáp lại bằng tình yêu trung thành — vẫy đuôi, liếm tay, sủa mừng khi anh về. Đây là niềm vui duy nhất của anh.',
+      en:'One autumn night Gerasim walked along the Moscow River. He saw a small puppy drowning in the cold water. He pulled her out and warmed her inside his coat. The puppy was a female. He named her Mumu and raised her on milk. She grew up beautiful — white with black spots on her ears. She attached herself to Gerasim and never left his side. For the first time in a long while, Gerasim smiled. Mumu repaid him with devoted love — wagging her tail, licking his hands, barking joyfully when he returned. She was his only joy in a lonely world.',
+      words:[
+        {ru:'щенок',vn:'chó con',en:'puppy',ph:'shchenok'},
+        {ru:'тонуть',vn:'chìm',en:'to drown',ph:'tonut\''},
+        {ru:'вскормить',vn:'nuôi',en:'to rear / feed',ph:'vskormit\''},
+        {ru:'привязаться',vn:'gắn bó',en:'to become attached',ph:'privyazat\'sya'},
+        {ru:'преданный',vn:'trung thành',en:'loyal / devoted',ph:'predanny'},
+        {ru:'вилять хвостом',vn:'vẫy đuôi',en:'to wag its tail',ph:'vilyat\' khvostom'},
+      ]
+    },
+    {
+      id:'mm3', level:'B1', book:'Муму', bookVn:'Mumu', bookEn:'Mumu',
+      bookAuthor:'И.С. Тургенев', bookAuthorVn:'I.S. Turgenev', bookYear:'1852',
+      chapter:3, chapterTitle:'Прощание', chapterTitleVn:'Lời từ biệt', chapterTitleEn:'Farewell',
+      title:'Муму · Часть 3', time:7,
+      body:'Однажды барыня увидела Муму и потребовала познакомиться. Но Муму при чужих людях начала лаять. Барыня рассердилась: «Уберите эту собаку!» Слуги продали Муму. Но Муму сбежала и вернулась к Герасиму.\n\nБарыня снова увидела собаку и потребовала уничтожить её. Слуги объяснили Герасиму знаками: собаку нужно убить. Герасим понял. Всю ночь он не спал, сидел рядом с Муму.\n\nУтром Герасим взял Муму на руки и пошёл к реке. В лодке он привязал к её шее кирпичи. Муму смотрела на него доверчиво и виляла хвостом. Герасим отвернулся и опустил её в воду. Был слышен плеск — и тишина.\n\nТой же ночью Герасим собрал вещи и ушёл пешком в деревню. Никто не смог его остановить. В деревне он живёт до сих пор — работает за четверых, угрюм и молчалив. Собак больше не заводит.',
+      vn:'Bà chủ thấy Mumu và muốn làm quen. Nhưng Mumu thấy người lạ sủa vang. Bà nổi giận: "Dẹp con chó đó đi!" Người hầu bán Mumu đi. Nhưng Mumu trốn về với Gerasim.\n\nBà chủ lại thấy và đòi tiêu diệt. Người hầu ra hiệu cho Gerasim: phải giết chó. Anh hiểu. Cả đêm anh không ngủ, ngồi bên Mumu.\n\nSáng hôm sau Gerasim bế Mumu ra sông. Trên thuyền anh buộc gạch vào cổ nó. Mumu nhìn anh tin tưởng, vẫy đuôi. Gerasim quay mặt và thả nó xuống. Có tiếng tung toé — rồi im lặng.\n\nĐêm đó Gerasim thu đồ và đi bộ về làng. Không ai ngăn được. Ở làng anh sống đến tận bây giờ — làm việc bằng bốn người, lặng lẽ và u ám. Anh không nuôi chó nữa.',
+      en:"One day the mistress saw Mumu and tried to pet her. Mumu barked at the stranger. The mistress was furious: 'Get rid of that dog!' The servants sold her away, but Mumu escaped and returned. The mistress demanded the dog be destroyed. The servants gestured to Gerasim: the dog must be killed. He understood. He sat with Mumu all night without sleeping. In the morning he carried her to the river, tied bricks to her neck. Mumu looked at him trustingly, wagging her tail. He turned away and lowered her into the water. There was a splash — then silence. That night Gerasim packed his things and walked back to his village. No one could stop him. He lives there still — working as hard as ever, silent and gloomy. He keeps no dogs.",
+      words:[
+        {ru:'рассердиться',vn:'nổi giận',en:'to get angry',ph:'rasserditsya'},
+        {ru:'уничтожить',vn:'tiêu diệt',en:'to destroy',ph:'unichtozhit\''},
+        {ru:'кирпич',vn:'viên gạch',en:'brick',ph:'kirpich'},
+        {ru:'доверчиво',vn:'tin tưởng',en:'trustingly',ph:'doverchivo'},
+        {ru:'плеск',vn:'tiếng tung toé',en:'splash',ph:'plesk'},
+        {ru:'отвернуться',vn:'quay mặt đi',en:'to turn away',ph:'otvernut\'sya'},
+        {ru:'угрюмый',vn:'ủ rũ',en:'gloomy / sullen',ph:'ugryumy'},
+      ]
+    },
+  ],
 };
 ;
 
@@ -11520,21 +11711,68 @@ function App_rdOpenTopic(topicId){
 
   var stories = RD_STORIES[topicId]||[];
   var h = '';
-  stories.forEach(function(s){
-    var lvlColor = {A1:'var(--grn)',A2:'var(--cyn)',B1:'var(--yel)',B2:'var(--pnk)'}[s.level]||'var(--com)';
-    var wordCount = s.body.split(/\s+/).length;
-    h += '<div class="tch" onclick="App.rdOpenStory(\''+topicId+'\',\''+s.id+'\')"'
-       + ' style="padding:14px 16px;border-radius:16px;background:rgba(255,255,255,0.04);'
-       + 'border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">'
-       + '<div style="flex:1;min-width:0;">'
-       + '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px;">'+s.title+'</div>'
-       + '<div style="display:flex;align-items:center;gap:8px;">'
-       + '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
-       + '<span style="font-size:11px;color:var(--com);">'+wordCount+' '+t('topic.words')+' · ~'+s.time+' '+t('rd.mins')+'</span>'
-       + '</div></div>'
-       + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
-       + '</div>';
-  });
+
+  // Group by book if stories have book field
+  var hasBooks = stories.some(function(s){ return s.book; });
+  if(hasBooks){
+    var books = {};
+    var bookOrder = [];
+    stories.forEach(function(s){
+      if(!books[s.book]){ books[s.book]=[];bookOrder.push(s.book); }
+      books[s.book].push(s);
+    });
+    bookOrder.forEach(function(bookName){
+      var chs = books[bookName];
+      var s0 = chs[0];
+      var isEN = (S.lang||'vi')==='en';
+      var bTitle = isEN ? (s0.bookEn||bookName) : (s0.bookVn||bookName);
+      var bAuthor = isEN ? (s0.bookAuthor||'') : (s0.bookAuthorVn||s0.bookAuthor||'');
+      var lvlColor = {A1:'var(--grn)',A2:'var(--cyn)',B1:'var(--yel)',B2:'var(--pnk)'}[s0.level]||'var(--com)';
+      var tpColor = tp ? tp.color+'0.7)' : 'var(--com)';
+      // Book card header
+      h += '<div style="border-radius:18px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,0.1);">';
+      h += '<div style="padding:16px;background:rgba(255,255,255,0.05);display:flex;gap:14px;align-items:flex-start;">';
+      h += '<div style="width:48px;height:64px;border-radius:8px;background:'+tpColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📖</div>';
+      h += '<div style="flex:1;min-width:0;">';
+      h += '<div style="font-size:16px;font-weight:800;color:var(--tx);line-height:1.3;margin-bottom:4px;">'+bTitle+'</div>';
+      h += '<div style="font-size:12px;color:var(--txd);margin-bottom:6px;">'+bAuthor+(s0.bookYear?' · '+s0.bookYear:'')+'</div>';
+      h += '<div style="display:flex;align-items:center;gap:6px;">';
+      h += '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s0.level+'</span>';
+      h += '<span style="font-size:11px;color:var(--com);">'+chs.length+' '+(isEN?'chapters':'chương')+'</span>';
+      h += '</div></div></div>';
+      // Chapters list
+      chs.forEach(function(s){
+        var isEN2 = (S.lang||'vi')==='en';
+        var chLabel = isEN2 ? (s.chapterTitleEn||s.chapterTitle) : (s.chapterTitleVn||s.chapterTitle);
+        h += '<div class="tch" onclick="App.rdOpenStory(\''+topicId+'\',\''+s.id+'\')"'
+           + ' style="padding:12px 16px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);cursor:pointer;display:flex;align-items:center;gap:10px;">';
+        h += '<div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:var(--com);">'+s.chapter+'</div>';
+        h += '<div style="flex:1;min-width:0;">';
+        h += '<div style="font-size:14px;font-weight:600;color:var(--tx);">'+chLabel+'</div>';
+        h += '<div style="font-size:11px;color:var(--com);">~'+s.time+' '+ t('rd.mins')+'</div>';
+        h += '</div>';
+        h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+        h += '</div>';
+      });
+      h += '</div>';
+    });
+  } else {
+    stories.forEach(function(s){
+      var lvlColor = {A1:'var(--grn)',A2:'var(--cyn)',B1:'var(--yel)',B2:'var(--pnk)'}[s.level]||'var(--com)';
+      var wordCount = s.body.split(/\s+/).length;
+      h += '<div class="tch" onclick="App.rdOpenStory(\''+topicId+'\',\''+s.id+'\')"'
+         + ' style="padding:14px 16px;border-radius:16px;background:rgba(255,255,255,0.04);'
+         + 'border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">'
+         + '<div style="flex:1;min-width:0;">'
+         + '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px;">'+s.title+'</div>'
+         + '<div style="display:flex;align-items:center;gap:8px;">'
+         + '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
+         + '<span style="font-size:11px;color:var(--com);">'+wordCount+' '+t('topic.words')+' · ~'+s.time+' '+t('rd.mins')+'</span>'
+         + '</div></div>'
+         + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
+         + '</div>';
+    });
+  }
   document.getElementById('rd-story-list').innerHTML = h;
 }
 
@@ -12265,7 +12503,6 @@ function App_deleteCustomWord(i){
 
 return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF,
   fcStart,fcFlip,fcFamily,fcNav,fcMaster,speakFC,fcToggleAutoSpeak,
-  dictStart,dictSpeak,dictSpeakSlow,dictHint,dictKbType,dictKbDel,dictCheck,dictNext,dictSkip,
   quizStart,qzAnswer,speakQZ,
   closeModal:App_closeModal, openWordPicker:App_openWordPicker,
   pickerFilter:App_pickerFilter, pickerSearch:App_pickerSearch,
@@ -12862,5 +13099,4 @@ document.addEventListener('DOMContentLoaded',App.init);
     <div id="aw-custom-list" style="margin-top:6px;"></div>
   </div>
 </div>
-
 >
