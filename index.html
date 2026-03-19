@@ -1340,7 +1340,7 @@ body::after{
     <button class="gram-tab" id="gt-form"       onclick="App.gramTab('formation')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
     <button class="gram-tab" id="gt-conditional" onclick="App.gramTab('conditional')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
     <button class="gram-tab" id="gt-passive"    onclick="App.gramTab('passive')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
-    <button class="gram-tab" id="gt-quiz"       onclick="App.gramTab('quiz')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Đố vui</span></button>
+
   </div>
   <div class="scrl" style="padding-top:14px;" id="gram-body"></div>
 </div>
@@ -8385,8 +8385,128 @@ const wordFamilies = {
 // TRẮC NGHIỆM ГРАММАТИКА — 6 CÁCH BIẾN CÁCH & CHUYỂN ĐỔI TỪ LOẠI
 // ══════════════════════════════════════════════════════════════════════
 
-const grammarQuizData = {
-  cases: [
+// ══════════════════════════════════════════════════════════════════════
+// BIẾN CÁCH SỐ ÍT / SỐ NHIỀU — luyện tập theo từng cách
+// Mỗi câu: cho dạng gốc + ngữ cảnh → chọn dạng đúng
+// type: 'sg' = số ít, 'pl' = số nhiều
+// caseId: 1–6
+// ══════════════════════════════════════════════════════════════════════
+const caseDeclineQuiz = [
+
+  // ════════════════════ CÁCH 1 — Именительный ════════════════════
+  // Số ít
+  { caseId:1, type:'sg', base:'стол', gender:'m', q:'Chủ ngữ số ít: "столь" hay "стол"?\n→ ___ стоит у окна. (Chiếc bàn đứng cạnh cửa sổ.)', a:'стол', opts:['стол','стола','столу','столом'], exp:'Danh từ đực kết thúc phụ âm: Cách 1 số ít KHÔNG thêm đuôi (dạng gốc). → стол' },
+  { caseId:1, type:'sg', base:'книга', gender:'f', q:'"___ лежит на столе." (Cuốn sách nằm trên bàn.) — книга ở Cách 1 số ít:', a:'Книга', opts:['Книга','Книги','Книге','Книгу'], exp:'Danh từ cái đuôi -а: Cách 1 số ít giữ nguyên -а. → Книга' },
+  { caseId:1, type:'sg', base:'окно', gender:'n', q:'"___ открыто." (Cửa sổ đang mở.) — окно ở Cách 1 số ít:', a:'Окно', opts:['Окно','Окна','Окне','Окном'], exp:'Danh từ trung đuôi -о: Cách 1 số ít giữ nguyên -о. → Окно' },
+  { caseId:1, type:'sg', base:'учитель', gender:'m', q:'"___ объясняет урок." (Giáo viên giảng bài.) — учитель ở Cách 1 số ít:', a:'Учитель', opts:['Учитель','Учителя','Учителю','Учителем'], exp:'Danh từ đực đuôi -ь: Cách 1 số ít giữ nguyên -ь. → Учитель' },
+  { caseId:1, type:'sg', base:'девушка', gender:'f', q:'"___ красиво поёт." (Cô gái hát hay.) — девушка ở Cách 1 số ít:', a:'Девушка', opts:['Девушка','Девушки','Девушке','Девушку'], exp:'Danh từ cái đuôi -а: Cách 1 số ít = dạng gốc. → Девушка' },
+  { caseId:1, type:'sg', base:'здание', gender:'n', q:'"___ очень старое." (Tòa nhà rất cũ.) — здание ở Cách 1 số ít:', a:'Здание', opts:['Здание','Здания','Зданию','Зданием'], exp:'Danh từ trung đuôi -ие: Cách 1 số ít giữ nguyên. → Здание' },
+  // Số nhiều
+  { caseId:1, type:'pl', base:'стол', gender:'m', q:'"___ стоят у стены." (Những chiếc bàn đứng cạnh tường.) — стол ở Cách 1 số nhiều:', a:'Столы', opts:['Столы','Столов','Столам','Столами'], exp:'Danh từ đực kết thúc phụ âm cứng: Cách 1 số nhiều + -ы. → столы' },
+  { caseId:1, type:'pl', base:'книга', gender:'f', q:'"___ лежат на полке." (Những cuốn sách nằm trên kệ.) — книга ở Cách 1 số nhiều:', a:'Книги', opts:['Книги','Книг','Книгам','Книгами'], exp:'Danh từ cái đuôi -га/-ка/-ха: C1 số nhiều đổi -а → -и (quy tắc chính tả). → книги' },
+  { caseId:1, type:'pl', base:'окно', gender:'n', q:'"___ открыты." (Các cửa sổ đang mở.) — окно ở Cách 1 số nhiều:', a:'Окна', opts:['Окна','Окон','Окнам','Окнами'], exp:'Danh từ trung đuôi -о: Cách 1 số nhiều đổi -о → -а. → окна' },
+  { caseId:1, type:'pl', base:'учитель', gender:'m', q:'"___ пришли в класс." (Các giáo viên vào lớp.) — учитель ở Cách 1 số nhiều:', a:'Учителя', opts:['Учителя','Учителей','Учителям','Учителями'], exp:'Ряд danh từ đực đuôi -ь/-тель: C1 số nhiều + -я (bất quy tắc). → учителя' },
+  { caseId:1, type:'pl', base:'здание', gender:'n', q:'"___ снесли." (Những tòa nhà đã bị phá dỡ.) — здание ở Cách 1 số nhiều:', a:'Здания', opts:['Здания','Зданий','Зданиям','Зданиями'], exp:'Danh từ trung đuôi -ие: C1 số nhiều đổi -ие → -ия. → здания' },
+  { caseId:1, type:'pl', base:'студент', gender:'m', q:'"___ сдали экзамен." (Các sinh viên thi xong.) — студент ở Cách 1 số nhiều:', a:'Студенты', opts:['Студенты','Студентов','Студентам','Студентами'], exp:'Danh từ đực kết thúc phụ âm cứng: +ы. → студенты' },
+  { caseId:1, type:'pl', base:'слово', gender:'n', q:'"___ написаны на доске." (Các từ được viết trên bảng.) — слово ở Cách 1 số nhiều:', a:'Слова', opts:['Слова','Слов','Словам','Словами'], exp:'Danh từ trung -о → số nhiều C1: -а. → слова' },
+  { caseId:1, type:'pl', base:'город', gender:'m', q:'"Большие ___ шумные." (Các thành phố lớn thì ồn ào.) — город ở Cách 1 số nhiều:', a:'города', opts:['города','городы','городов','городах'], exp:'город → города: số nhiều bất quy tắc dùng -а (nhấn trọng âm chuyển). → города' },
+  { caseId:1, type:'pl', base:'имя', gender:'n', q:'"Все ___ написаны." (Tất cả tên đều được viết.) — имя ở Cách 1 số nhiều:', a:'имена', opts:['имена','имени','именам','именами'], exp:'Danh từ trung bất quy tắc: имя → имена (gốc расширяется: имен-). → имена' },
+
+  // ════════════════════ CÁCH 2 — Родительный ════════════════════
+  // Số ít
+  { caseId:2, type:'sg', base:'стол', gender:'m', q:'"Нет ___." (Không có bàn.) — стол ở Cách 2 số ít:', a:'стола', opts:['стола','стол','столу','столом'], exp:'Danh từ đực kết thúc phụ âm cứng: C2 số ít + -а. → стола' },
+  { caseId:2, type:'sg', base:'книга', gender:'f', q:'"Нет ___." (Không có sách.) — книга ở Cách 2 số ít:', a:'книги', opts:['книги','книга','книге','книгу'], exp:'Danh từ cái đuôi -а: C2 số ít đổi -а → -ы/-и. книга → книги (quy tắc chính tả: г→и). → книги' },
+  { caseId:2, type:'sg', base:'окно', gender:'n', q:'"Нет ___." (Không có cửa sổ.) — окно ở Cách 2 số ít:', a:'окна', opts:['окна','окно','окне','окном'], exp:'Danh từ trung đuôi -о: C2 số ít đổi -о → -а. → окна' },
+  { caseId:2, type:'sg', base:'учитель', gender:'m', q:'"Нет ___." (Không có giáo viên.) — учитель ở Cách 2 số ít:', a:'учителя', opts:['учителя','учитель','учителю','учителем'], exp:'Danh từ đực đuôi -ь (mềm): C2 số ít + -я. → учителя' },
+  { caseId:2, type:'sg', base:'тетрадь', gender:'f', q:'"Нет ___." (Không có vở.) — тетрадь ở Cách 2 số ít:', a:'тетради', opts:['тетради','тетрадь','тетради','тетрадью'], exp:'Danh từ cái đuôi -ь: C2 số ít đổi -ь → -и. → тетради' },
+  { caseId:2, type:'sg', base:'здание', gender:'n', q:'"Нет ___." (Không có tòa nhà.) — здание ở Cách 2 số ít:', a:'здания', opts:['здания','здание','зданию','зданием'], exp:'Danh từ trung đuôi -ие: C2 số ít đổi -ие → -ия. → здания' },
+  { caseId:2, type:'sg', base:'время', gender:'n', q:'"У меня нет ___." (Tôi không có thời gian.) — время ở Cách 2 số ít:', a:'времени', opts:['времени','время','времени','временем'], exp:'Danh từ trung bất quy tắc (đuôi -мя): C2 số ít = времени. Gốc mở rộng: времен-. → времени' },
+  // Số nhiều
+  { caseId:2, type:'pl', base:'стол', gender:'m', q:'"Много ___." (Nhiều bàn.) — стол ở Cách 2 số nhiều:', a:'столов', opts:['столов','столы','столам','столами'], exp:'Danh từ đực kết thúc phụ âm cứng: C2 số nhiều + -ов. → столов' },
+  { caseId:2, type:'pl', base:'книга', gender:'f', q:'"Мало ___." (Ít sách.) — книга ở Cách 2 số nhiều:', a:'книг', opts:['книг','книги','книгам','книгами'], exp:'Danh từ cái đuôi -га: C2 số nhiều "rỗng" (zero ending) — bỏ -а, không thêm gì. → книг' },
+  { caseId:2, type:'pl', base:'окно', gender:'n', q:'"Несколько ___." (Vài cửa sổ.) — окно ở Cách 2 số nhiều:', a:'окон', opts:['окон','окна','окнам','окнами'], exp:'Danh từ trung đuôi -но: C2 số nhiều bỏ -о và thêm "fleece vowel" о. → окон' },
+  { caseId:2, type:'pl', base:'студент', gender:'m', q:'"Пять ___." (Năm sinh viên.) — студент ở Cách 2 số nhiều:', a:'студентов', opts:['студентов','студенты','студентам','студентами'], exp:'Danh từ đực kết thúc phụ âm cứng: C2 số nhiều + -ов. → студентов' },
+  { caseId:2, type:'pl', base:'учитель', gender:'m', q:'"Много ___." (Nhiều giáo viên.) — учитель ở Cách 2 số nhiều:', a:'учителей', opts:['учителей','учителя','учителям','учителями'], exp:'Danh từ đực đuôi -ль (mềm): C2 số nhiều + -ей. → учителей' },
+  { caseId:2, type:'pl', base:'тетрадь', gender:'f', q:'"Нет ___." (Không có vở nào.) — тетрадь ở Cách 2 số nhiều:', a:'тетрадей', opts:['тетрадей','тетради','тетрадям','тетрадями'], exp:'Danh từ cái đuôi -ь: C2 số nhiều + -ей. → тетрадей' },
+  { caseId:2, type:'pl', base:'место', gender:'n', q:'"Нет свободных ___." (Không có chỗ trống.) — место ở Cách 2 số nhiều:', a:'мест', opts:['мест','места','местам','местами'], exp:'Danh từ trung đuôi -то: C2 số nhiều "rỗng" — bỏ -о, không thêm. → мест' },
+  { caseId:2, type:'pl', base:'слово', gender:'n', q:'"Я не знаю этих ___." (Tôi không biết những từ này.) — слово ở Cách 2 số nhiều:', a:'слов', opts:['слов','слова','словам','словами'], exp:'Danh từ trung đuôi -во: C2 số nhiều "rỗng" — bỏ -о. → слов' },
+  { caseId:2, type:'pl', base:'день', gender:'m', q:'"Несколько ___." (Vài ngày.) — день ở Cách 2 số nhiều:', a:'дней', opts:['дней','дни','дням','днями'], exp:'Danh từ đực đuôi -нь: C2 số nhiều + -ей. → дней' },
+
+  // ════════════════════ CÁCH 3 — Дательный ════════════════════
+  // Số ít
+  { caseId:3, type:'sg', base:'стол', gender:'m', q:'"Я подхожу к ___." (Tôi đến gần chiếc bàn.) — стол ở Cách 3 số ít:', a:'столу', opts:['столу','стол','стола','столом'], exp:'Danh từ đực kết thúc phụ âm cứng: C3 số ít + -у. → столу' },
+  { caseId:3, type:'sg', base:'книга', gender:'f', q:'"Я подхожу к ___." (Tôi đến gần cuốn sách.) — книга ở Cách 3 số ít:', a:'книге', opts:['книге','книга','книги','книгу'], exp:'Danh từ cái đuôi -а: C3 số ít đổi -а → -е. → книге' },
+  { caseId:3, type:'sg', base:'окно', gender:'n', q:'"Я подхожу к ___." (Tôi đến gần cửa sổ.) — окно ở Cách 3 số ít:', a:'окну', opts:['окну','окно','окна','окном'], exp:'Danh từ trung đuôi -о: C3 số ít đổi -о → -у. → окну' },
+  { caseId:3, type:'sg', base:'учитель', gender:'m', q:'"Я помогаю ___." (Tôi giúp đỡ thầy giáo.) — учитель ở Cách 3 số ít:', a:'учителю', opts:['учителю','учитель','учителя','учителем'], exp:'Danh từ đực đuôi -ль (mềm): C3 số ít + -ю. → учителю' },
+  { caseId:3, type:'sg', base:'тетрадь', gender:'f', q:'"Я дал ручку ___." (Tôi đưa bút cho cái vở.) — тетрадь ở Cách 3 số ít:', a:'тетради', opts:['тетради','тетрадь','тетрадей','тетрадью'], exp:'Danh từ cái đuôi -ь: C3 số ít đổi -ь → -и. → тетради' },
+  { caseId:3, type:'sg', base:'здание', gender:'n', q:'"Я иду к ___." (Tôi đi đến tòa nhà.) — здание ở Cách 3 số ít:', a:'зданию', opts:['зданию','здание','здания','зданием'], exp:'Danh từ trung đuôi -ие: C3 số ít đổi -ие → -ию. → зданию' },
+  { caseId:3, type:'sg', base:'мама', gender:'f', q:'"Я звоню ___." (Tôi gọi điện cho mẹ.) — мама ở Cách 3 số ít:', a:'маме', opts:['маме','мама','мамы','маму'], exp:'Danh từ cái đuôi -а: C3 số ít đổi -а → -е. → маме' },
+  // Số nhiều
+  { caseId:3, type:'pl', base:'студент', gender:'m', q:'"Учитель объясняет ___." (Giáo viên giải thích cho các sinh viên.) — студент ở Cách 3 số nhiều:', a:'студентам', opts:['студентам','студенты','студентов','студентами'], exp:'Danh từ đực: C3 số nhiều + -ам. → студентам' },
+  { caseId:3, type:'pl', base:'книга', gender:'f', q:'"Я раздал тетради ___." (Tôi phát vở cho các cuốn sách.) — книга ở Cách 3 số nhiều:', a:'книгам', opts:['книгам','книги','книг','книгами'], exp:'Danh từ cái đuôi -а: C3 số nhiều đổi -а → -ам. → книгам' },
+  { caseId:3, type:'pl', base:'окно', gender:'n', q:'"Я подхожу к ___." (Tôi đến gần các cửa sổ.) — окно ở Cách 3 số nhiều:', a:'окнам', opts:['окнам','окна','окон','окнами'], exp:'Danh từ trung đuôi -о: C3 số nhiều đổi -а → -ам (từ dạng C1 số nhiều). → окнам' },
+  { caseId:3, type:'pl', base:'учитель', gender:'m', q:'"Директор дал задание ___." (Hiệu trưởng giao việc cho các thầy.) — учитель ở Cách 3 số nhiều:', a:'учителям', opts:['учителям','учителя','учителей','учителями'], exp:'Danh từ đực đuôi mềm -ль: C3 số nhiều + -ям. → учителям' },
+  { caseId:3, type:'pl', base:'день', gender:'m', q:'"По ___." (Từng ngày / Theo các ngày.) — день ở Cách 3 số nhiều:', a:'дням', opts:['дням','дни','дней','днями'], exp:'Danh từ đực đuôi mềm -нь: C3 số nhiều + -ям. → дням' },
+  { caseId:3, type:'pl', base:'здание', gender:'n', q:'"Я подхожу к ___." (Tôi đến gần các tòa nhà.) — здание ở Cách 3 số nhiều:', a:'зданиям', opts:['зданиям','здания','зданий','зданиями'], exp:'Danh từ trung đuôi -ие: C3 số nhiều đổi -ия → -иям. → зданиям' },
+  { caseId:3, type:'pl', base:'ребёнок', gender:'m', q:'"Мы даём подарки ___." (Chúng tôi tặng quà cho các em nhỏ.) — ребёнок ở Cách 3 số nhiều:', a:'детям', opts:['детям','ребятам','ребёнкам','детей'], exp:'ребёнок → дети (bất quy tắc). C3 số nhiều: детям (gốc: дет- + -ям). → детям' },
+
+  // ════════════════════ CÁCH 4 — Винительный ════════════════════
+  // Số ít
+  { caseId:4, type:'sg', base:'стол', gender:'m', q:'"Я вижу ___ (vô sinh)." (Tôi thấy chiếc bàn.) — стол ở Cách 4 số ít:', a:'стол', opts:['стол','стола','столу','столом'], exp:'Danh từ đực VÔ SINH kết thúc phụ âm: C4 số ít = C1 (không đổi). → стол' },
+  { caseId:4, type:'sg', base:'студент', gender:'m', q:'"Я вижу ___ (hữu sinh)." (Tôi thấy sinh viên.) — студент ở Cách 4 số ít:', a:'студента', opts:['студента','студент','студенту','студентом'], exp:'⚠ Danh từ đực HỮU SINH: C4 số ít = C2 → + -а. → студента' },
+  { caseId:4, type:'sg', base:'книга', gender:'f', q:'"Я читаю ___." (Tôi đọc cuốn sách.) — книга ở Cách 4 số ít:', a:'книгу', opts:['книгу','книга','книги','книгой'], exp:'Danh từ cái đuôi -а: C4 số ít đổi -а → -у. → книгу' },
+  { caseId:4, type:'sg', base:'неделя', gender:'f', q:'"Через ___." (Sau một tuần.) — неделя ở Cách 4 số ít:', a:'неделю', opts:['неделю','неделя','недели','неделей'], exp:'Danh từ cái đuôi -я (mềm): C4 số ít đổi -я → -ю. → неделю' },
+  { caseId:4, type:'sg', base:'окно', gender:'n', q:'"Я вижу ___." (Tôi thấy cửa sổ.) — окно ở Cách 4 số ít:', a:'окно', opts:['окно','окна','окну','окном'], exp:'Danh từ trung: C4 số ít = C1 (không đổi). → окно' },
+  { caseId:4, type:'sg', base:'собака', gender:'f', q:'"Я вижу ___." (Tôi thấy con chó.) — собака ở Cách 4 số ít:', a:'собаку', opts:['собаку','собака','собаки','собакой'], exp:'Danh từ cái đuôi -а: C4 số ít đổi -а → -у. (Lưu ý: đây là cái, không theo quy tắc hữu sinh của đực.) → собаку' },
+  { caseId:4, type:'sg', base:'кошка', gender:'f', q:'"Я люблю ___." (Tôi yêu con mèo.) — кошка ở Cách 4 số ít:', a:'кошку', opts:['кошку','кошка','кошки','кошкой'], exp:'Danh từ cái đuôi -а: C4 số ít đổi -а → -у. → кошку' },
+  // Số nhiều
+  { caseId:4, type:'pl', base:'стол', gender:'m', q:'"Я вижу ___ (vô sinh, số nhiều)." (Tôi thấy những chiếc bàn.) — стол ở Cách 4 số nhiều:', a:'столы', opts:['столы','столов','столам','столами'], exp:'Danh từ đực VÔ SINH: C4 số nhiều = C1 số nhiều → столы. → столы' },
+  { caseId:4, type:'pl', base:'студент', gender:'m', q:'"Я вижу ___ (hữu sinh, số nhiều)." (Tôi thấy các sinh viên.) — студент ở Cách 4 số nhiều:', a:'студентов', opts:['студентов','студенты','студентам','студентами'], exp:'⚠ Danh từ đực HỮU SINH: C4 số nhiều = C2 số nhiều → + -ов. → студентов' },
+  { caseId:4, type:'pl', base:'книга', gender:'f', q:'"Я читаю ___." (Tôi đọc những cuốn sách.) — книга ở Cách 4 số nhiều:', a:'книги', opts:['книги','книг','книгам','книгами'], exp:'Danh từ cái VÔ SINH: C4 số nhiều = C1 số nhiều → книги. → книги' },
+  { caseId:4, type:'pl', base:'окно', gender:'n', q:'"Я вижу ___." (Tôi thấy những cửa sổ.) — окно ở Cách 4 số nhiều:', a:'окна', opts:['окна','окон','окнам','окнами'], exp:'Danh từ trung VÔ SINH: C4 số nhiều = C1 số nhiều → окна. → окна' },
+  { caseId:4, type:'pl', base:'кошка', gender:'f', q:'"Я люблю ___." (Tôi yêu những con mèo.) — кошка ở Cách 4 số nhiều:', a:'кошек', opts:['кошек','кошки','кошкам','кошками'], exp:'Danh từ cái HỮU SINH: C4 số nhiều = C2 số nhiều (koshek, "rỗng" + fleece). → кошек' },
+  { caseId:4, type:'pl', base:'слово', gender:'n', q:'"Я знаю эти ___." (Tôi biết những từ này.) — слово ở Cách 4 số nhiều:', a:'слова', opts:['слова','слов','словам','словами'], exp:'Danh từ trung VÔ SINH: C4 số nhiều = C1 số nhiều → слова. → слова' },
+  { caseId:4, type:'pl', base:'учитель', gender:'m', q:'"Мы уважаем ___." (Chúng tôi kính trọng các thầy giáo.) — учитель ở Cách 4 số nhiều:', a:'учителей', opts:['учителей','учителя','учителям','учителями'], exp:'Danh từ đực HỮU SINH đuôi -ль: C4 số nhiều = C2 số nhiều → + -ей. → учителей' },
+
+  // ════════════════════ CÁCH 5 — Творительный ════════════════════
+  // Số ít
+  { caseId:5, type:'sg', base:'стол', gender:'m', q:'"Он сидит за ___." (Anh ấy ngồi sau chiếc bàn.) — стол ở Cách 5 số ít:', a:'столом', opts:['столом','стол','стола','столу'], exp:'Danh từ đực kết thúc phụ âm cứng: C5 số ít + -ом. → столом' },
+  { caseId:5, type:'sg', base:'книга', gender:'f', q:'"Он машет ___." (Anh ấy vẫy cuốn sách.) — книга ở Cách 5 số ít:', a:'книгой', opts:['книгой','книга','книги','книгу'], exp:'Danh từ cái đuôi -а: C5 số ít đổi -а → -ой. → книгой' },
+  { caseId:5, type:'sg', base:'окно', gender:'n', q:'"Перед ___." (Trước cửa sổ.) — окно ở Cách 5 số ít:', a:'окном', opts:['окном','окно','окна','окну'], exp:'Danh từ trung đuôi -о: C5 số ít đổi -о → -ом. → окном' },
+  { caseId:5, type:'sg', base:'учитель', gender:'m', q:'"Он стал ___." (Anh ấy trở thành giáo viên.) — учитель ở Cách 5 số ít:', a:'учителем', opts:['учителем','учитель','учителя','учителю'], exp:'Danh từ đực đuôi -ль (mềm): C5 số ít + -ем. → учителем' },
+  { caseId:5, type:'sg', base:'ручка', gender:'f', q:'"Я пишу ___." (Tôi viết bằng cái bút.) — ручка ở Cách 5 số ít:', a:'ручкой', opts:['ручкой','ручка','ручки','ручку'], exp:'Danh từ cái đuôi -а: C5 số ít đổi -а → -ой. → ручкой' },
+  { caseId:5, type:'sg', base:'тетрадь', gender:'f', q:'"Между партой и ___." (Giữa bàn học và cuốn vở.) — тетрадь ở Cách 5 số ít:', a:'тетрадью', opts:['тетрадью','тетрадь','тетради','тетрадей'], exp:'Danh từ cái đuôi -ь: C5 số ít đổi -ь → -ью. → тетрадью' },
+  { caseId:5, type:'sg', base:'друг', gender:'m', q:'"Я иду с ___." (Tôi đi cùng người bạn.) — друг ở Cách 5 số ít:', a:'другом', opts:['другом','друг','друга','другу'], exp:'Danh từ đực kết thúc phụ âm cứng: C5 số ít + -ом. → другом' },
+  // Số nhiều
+  { caseId:5, type:'pl', base:'стол', gender:'m', q:'"Над ___." (Phía trên những chiếc bàn.) — стол ở Cách 5 số nhiều:', a:'столами', opts:['столами','столов','столам','столы'], exp:'Danh từ đực: C5 số nhiều + -ами. → столами' },
+  { caseId:5, type:'pl', base:'книга', gender:'f', q:'"Он работает с ___." (Anh ấy làm việc với những cuốn sách.) — книга ở Cách 5 số nhiều:', a:'книгами', opts:['книгами','книги','книг','книгам'], exp:'Danh từ cái đuôi -а: C5 số nhiều đổi -и → -ами. → книгами' },
+  { caseId:5, type:'pl', base:'окно', gender:'n', q:'"Между ___." (Giữa những cửa sổ.) — окно ở Cách 5 số nhiều:', a:'окнами', opts:['окнами','окон','окнам','окна'], exp:'Danh từ trung đuôi -но: C5 số nhiều + -ами. → окнами' },
+  { caseId:5, type:'pl', base:'учитель', gender:'m', q:'"Мы пришли с ___." (Chúng tôi đến cùng các thầy giáo.) — учитель ở Cách 5 số nhiều:', a:'учителями', opts:['учителями','учителей','учителям','учителя'], exp:'Danh từ đực đuôi mềm -ль: C5 số nhiều + -ями. → учителями' },
+  { caseId:5, type:'pl', base:'друг', gender:'m', q:'"Я путешествую с ___." (Tôi đi du lịch cùng những người bạn.) — друг ở Cách 5 số nhiều:', a:'друзьями', opts:['друзьями','друзьев','друзьям','друзья'], exp:'друг → друзья (bất quy tắc). C5 số nhiều: друзьями (gốc друзь- + -ями). → друзьями' },
+  { caseId:5, type:'pl', base:'ребёнок', gender:'m', q:'"Она играет с ___." (Cô ấy chơi với những em nhỏ.) — ребёнок ở Cách 5 số nhiều:', a:'детьми', opts:['детьми','детей','детям','дети'], exp:'ребёнок → дети (bất quy tắc). C5 số nhiều: детьми (gốc бất quy tắc). → детьми' },
+  { caseId:5, type:'pl', base:'день', gender:'m', q:'"Между ___." (Giữa những ngày.) — день ở Cách 5 số nhiều:', a:'днями', opts:['днями','дней','дням','дни'], exp:'Danh từ đực đuôi mềm: C5 số nhiều + -ями. → днями' },
+
+  // ════════════════════ CÁCH 6 — Предложный ════════════════════
+  // Số ít
+  { caseId:6, type:'sg', base:'стол', gender:'m', q:'"Книга на ___." (Sách (nằm) trên bàn.) — стол ở Cách 6 số ít:', a:'столе', opts:['столе','стол','стола','столом'], exp:'Danh từ đực kết thúc phụ âm cứng: C6 số ít + -е. → столе' },
+  { caseId:6, type:'sg', base:'книга', gender:'f', q:'"Я читаю о ___." (Tôi đọc về cuốn sách.) — книга ở Cách 6 số ít:', a:'книге', opts:['книге','книга','книги','книгу'], exp:'Danh từ cái đuôi -а: C6 số ít đổi -а → -е. → книге' },
+  { caseId:6, type:'sg', base:'окно', gender:'n', q:'"Солнце в ___." (Mặt trời trong cửa sổ.) — окно ở Cách 6 số ít:', a:'окне', opts:['окне','окно','окна','окном'], exp:'Danh từ trung đuôi -о: C6 số ít đổi -о → -е. → окне' },
+  { caseId:6, type:'sg', base:'учитель', gender:'m', q:'"Он думает об ___." (Anh ấy nghĩ đến thầy giáo.) — учитель ở Cách 6 số ít:', a:'учителе', opts:['учителе','учитель','учителя','учителем'], exp:'Danh từ đực đuôi -ль (mềm): C6 số ít + -е. → учителе' },
+  { caseId:6, type:'sg', base:'тетрадь', gender:'f', q:'"Я написал в ___." (Tôi viết vào cuốn vở.) — тетрадь ở Cách 6 số ít:', a:'тетради', opts:['тетради','тетрадь','тетрадей','тетрадью'], exp:'Danh từ cái đuôi -ь: C6 số ít đổi -ь → -и. → тетради' },
+  { caseId:6, type:'sg', base:'здание', gender:'n', q:'"В ___." (Ở trong tòa nhà.) — здание ở Cách 6 số ít:', a:'здании', opts:['здании','здание','здания','зданием'], exp:'Danh từ trung đuôi -ие: C6 số ít đổi -ие → -ии. → здании' },
+  { caseId:6, type:'sg', base:'Россия', gender:'f', q:'"Я живу в ___." (Tôi sống ở Nga.) — Россия ở Cách 6 số ít:', a:'России', opts:['России','Россия','Россий','Россией'], exp:'Danh từ cái đuôi -ия: C6 số ít đổi -ия → -ии. → России' },
+  { caseId:6, type:'sg', base:'лес', gender:'m', q:'"Мы гуляли в ___." (Chúng tôi dạo trong rừng.) — лес ở Cách 6 số ít:', a:'лесу', opts:['лесу','лесе','лес','лесом'], exp:'Một số danh từ đực 1 âm tiết: C6 số ít dùng -у (nhấn trọng âm). Ví dụ: лес→лесу, сад→саду, берег→берегу. → лесу' },
+  // Số nhiều
+  { caseId:6, type:'pl', base:'стол', gender:'m', q:'"На ___." (Trên những chiếc bàn.) — стол ở Cách 6 số nhiều:', a:'столах', opts:['столах','столы','столов','столами'], exp:'Danh từ đực: C6 số nhiều + -ах. → столах' },
+  { caseId:6, type:'pl', base:'книга', gender:'f', q:'"В ___." (Trong những cuốn sách.) — книга ở Cách 6 số nhiều:', a:'книгах', opts:['книгах','книги','книг','книгами'], exp:'Danh từ cái đuôi -а: C6 số nhiều đổi -а → -ах. → книгах' },
+  { caseId:6, type:'pl', base:'окно', gender:'n', q:'"На ___." (Trên các cửa sổ.) — окно ở Cách 6 số nhiều:', a:'окнах', opts:['окнах','окна','окон','окнами'], exp:'Danh từ trung: C6 số nhiều + -ах. → окнах' },
+  { caseId:6, type:'pl', base:'учитель', gender:'m', q:'"Он думает об ___." (Anh ấy nghĩ đến các thầy giáo.) — учитель ở Cách 6 số nhiều:', a:'учителях', opts:['учителях','учителя','учителей','учителями'], exp:'Danh từ đực đuôi mềm -ль: C6 số nhiều + -ях. → учителях' },
+  { caseId:6, type:'pl', base:'здание', gender:'n', q:'"В ___." (Trong những tòa nhà.) — здание ở Cách 6 số nhiều:', a:'зданиях', opts:['зданиях','здания','зданий','зданиями'], exp:'Danh từ trung đuôi -ие: C6 số nhiều đổi -ия → -иях. → зданиях' },
+  { caseId:6, type:'pl', base:'день', gender:'m', q:'"В эти ___." (Trong những ngày này.) — день ở Cách 6 số nhiều:', a:'днях', opts:['днях','дни','дней','днями'], exp:'Danh từ đực đuôi mềm: C6 số nhiều + -ях. → днях' },
+  { caseId:6, type:'pl', base:'слово', gender:'n', q:'"В его ___." (Trong những lời của anh ấy.) — слово ở Cách 6 số nhiều:', a:'словах', opts:['словах','слова','слов','словами'], exp:'Danh từ trung đуôи -во: C6 số nhiều + -ах. → словах' },
+];
+
+const caseQuizData = [
     // ─── CÁCH 1 ───────────────────────────────────────────────────────
     { q: 'Дом đóng vai trò CHỦ NGỮ. Dùng cách nào?', a: 'Cách 1 — Именительный', opts: ['Cách 1 — Именительный','Cách 2 — Родительный','Cách 3 — Дательный','Cách 4 — Винительный'], exp: 'Cách 1 (Именительный) dùng cho chủ ngữ — ai/cái gì thực hiện hành động. Câu hỏi: КТО? ЧТО?' },
     { q: 'Кто это? — ___ студент. Điền từ "студент" vào đúng cách:', a: 'Это студент', opts: ['Это студент','Это студента','Это студенту','Это студентом'], exp: 'Cách 1 không thay đổi đuôi của danh từ giống đực kết thúc bằng phụ âm.' },
@@ -8460,9 +8580,9 @@ const grammarQuizData = {
     { q: 'С ТОЧКИ ЗРЕНИЯ ЭКОНОМИКИ — từ ЭКОНОМИКА ở cách mấy?', a: 'Cách 2', opts: ['Cách 1','Cách 2','Cách 5','Cách 6'], exp: 'С точки зрения + Cách 2: với quan điểm của kinh tế học. ЭКОНОМИКА → ЭКОНОМИКИ.' },
     { q: '"Благодаря ПОМОЩИ друга." Từ ПОМОЩЬ ở cách mấy?', a: 'Cách 3 — sau БЛАГОДАРЯ', opts: ['Cách 2','Cách 3 — sau БЛАГОДАРЯ','Cách 4','Cách 5'], exp: 'БЛАГОДАРЯ (nhờ có) + Cách 3. ПОМОЩЬ → ПОМОЩИ (C3).' },
     { q: 'Trong kinh tế: "Анализ РЫНКА ТРУДА" — РЫНОК ТРУДА đều ở cách mấy?', a: 'РЫНКА (C2), ТРУДА (C2)', opts: ['РЫНКА (C2), ТРУДА (C2)','РЫНОК (C1), ТРУДА (C2)','РЫНКА (C2), ТРУД (C1)','Cả hai C1'], exp: 'Анализ (C1) + ЧЕГО? → Cách 2. РЫНОК → РЫНКА, ТРУД → ТРУДА. Chuỗi sở hữu.' },
-  ],
+];
 
-  formation: [
+const formationQuizData = [
     // ─── DANH TỪ → TÍNH TỪ ───────────────────────────────────────
     { q: '"ЭКОНОМИКА" → Tính từ?', a: 'ЭКОНОМИЧЕСКИЙ', opts: ['ЭКОНОМИЧЕСКИЙ','ЭКОНОМИЧНО','ЭКОНОМИТЬ','ЭКОНОМИСТ'], exp: 'Hậu tố -ИЧЕСКИЙ tạo tính từ từ danh từ khoa học: экономика → экономический.' },
     { q: '"ФИНАНСЫ" → Tính từ?', a: 'ФИНАНСОВЫЙ', opts: ['ФИНАНСОВЫЙ','ФИНАНСОВО','ФИНАНСИСТ','ФИНАНСИТЬ'], exp: 'ФИНАНСЫ → ФИНАНСОВЫЙ (финансовый кризис = khủng hoảng tài chính).' },
@@ -8492,8 +8612,7 @@ const grammarQuizData = {
     { q: '"ИНФЛЯЦИЯ" → Động từ (gây ra)?', a: 'ИНФЛИРОВАТЬ / НАГНЕТАТЬ ИНФЛЯЦИЮ', opts: ['ИНФЛИРОВАТЬ / НАГНЕТАТЬ ИНФЛЯЦИЮ','ИНФЛЯЦИОННЫЙ','ИНФЛЯЦИОНИСТ','ДЕИНФЛИРОВАТЬ'], exp: 'Trong kinh tế học tiếng Nga thường dùng cụm: нагнетать инфляцию, бороться с инфляцией.' },
     { q: '"ЛИБЕРАЛИЗАЦИЯ" — phân tích hậu tố:', a: 'либерал + -ИЗА- + -ЦИЯ', opts: ['либерал + -ИЗА- + -ЦИЯ','либер + -АЛИЗАЦИЯ','либераль + -НЫЙ','либерализ + -АЦИ'], exp: 'либерал (liberal) → либерализировать (tự do hóa) → либерализация (sự tự do hóa).' },
     { q: 'Từ "ПРОИЗВОДИТЕЛЬНОСТЬ" được tạo từ cơ sở nào?', a: 'ПРОИЗВОДИТЬ + -ТЕЛЬНОСТЬ', opts: ['ПРОИЗВОДИТЬ + -ТЕЛЬНОСТЬ','ПРОИЗВЕДЕНИЕ + -НОСТЬ','ПРОИЗВОДНЫЙ + -ОСТЬ','ПРОДУКТ + -ИВНОСТЬ'], exp: 'производить → производительный → производительность = năng suất lao động.' },
-  ],
-};
+];
 
 // ══════════════════════════════════════════════════════════════════════
 // ГРАММАТИКА — 6 CÁCH BIẾN CÁCH TIẾNG NGA (ПАДЕЖИ)
@@ -9842,8 +9961,8 @@ function gramTab(t){
   const activeBtn=document.getElementById('gt-'+(t==='formation'?'form':t));
   if(activeBtn) activeBtn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
 
-  if(t==='cases')renderCases();
-  else if(t==='formation')renderFormation();
+  if(t==='cases'){S.caseTab='theory'; renderCases();}
+  else if(t==='formation'){S.formTab='theory'; renderFormation();}
   else if(t==='conditional')renderConditional();
   else if(t==='passive')renderPassive();
   else if(t==='motion')renderMotion();
@@ -9862,55 +9981,283 @@ function renderCases(){
 }
 function openCase(id){
   S.selCase=caseData.find(c=>c.id===id);
+  if(S.caseTab===undefined) S.caseTab='theory';
+  // Reset quiz state when opening a new case
+  if(S._caseQId!==id){ S._caseQId=id; S._caseQIdx=0; S._caseQSel=null; S._caseQScore={c:0,t:0}; S._caseQShuffled=[]; }
   const c=S.selCase;
   document.getElementById('case-hdr').innerHTML=`<div style="display:flex;align-items:center;gap:10px;"><div style="background:${c.color}22;border:1px solid ${c.color};border-radius:6px;padding:4px 10px;font-size:17px;font-weight:700;font-family:var(--serif);color:${c.color};">${c.abbr}</div><div><div style="font-size:14px;font-weight:700;font-family:var(--serif);color:${c.color};">${c.name}</div><div style="font-size:10px;color:var(--com);">${(S.lang||'vi')==='en'?(c.nameEn||c.nameVn||''):(c.nameVn||'')}</div></div></div>`;
-  let h=`<div style="background:${c.color}10;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid ${c.color}50;border-radius:20px;padding:24px;margin-bottom:14px;text-align:center;box-shadow:0 0 40px ${c.color}12 inset, 0 1px 0 rgba(255,255,255,0.08) inset;">
-    <div style="font-size:40px;font-weight:700;font-family:var(--serif);color:${c.color};margin-bottom:6px;">${c.abbr}</div>
-    <div style="font-size:16px;font-weight:700;font-family:var(--serif);color:${c.color};">${c.name}</div>
-    <div style="font-size:13px;color:var(--txd);margin-top:4px;">${(S.lang||'vi')==='en'?(c.nameEn||c.nameVn||''):(c.nameVn||'')}</div>
-    <div style="font-size:15px;color:${c.color};margin-top:10px;">${c.question}</div>
-    <div style="font-size:12px;color:var(--com);margin-top:4px;">${(S.lang||'vi')==='en'?(c.questionEn||''):(c.questionVn||'')}</div>
-    <div class="divdr"></div>
-    <div style="font-size:12px;color:var(--txd);line-height:1.6;">${(S.lang||'vi')==='en'?(c.roleEn||c.role||''):(c.role||'')}</div>
+  const isEN=(S.lang||'vi')==='en';
+  const tab=S.caseTab||'theory';
+  // ── Tab switcher ──────────────────────────────────────────────
+  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;">
+    ${[['theory',isEN?'📖 Theory':'📖 Lý thuyết'],['exercise',isEN?'✏️ Exercises':'✏️ Bài tập']].map(([k,l])=>`<button onclick="App.setCaseTab('${k}')" style="flex:1;padding:10px 4px;border-radius:10px;font-size:12px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${tab===k?c.color+'80':'rgba(255,255,255,0.1)'};background:${tab===k?c.color+'15':'rgba(255,255,255,0.04)'};color:${tab===k?c.color:'var(--com)'};">${l}</button>`).join('')}
   </div>`;
-  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${(S.lang||'vi')==='en'?'// ENDINGS':'// ĐUÔI CẤU THÀNH'}</div><div style="background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:13px;overflow:hidden;"><table class="eTable"><tr><th>${(S.lang||'vi')==='en'?'Gender':'Giới tính'}</th><th>${(S.lang||'vi')==='en'?'Singular':'Số ít'}</th><th>${(S.lang||'vi')==='en'?'Plural':'Số nhiều'}</th></tr>${(c.endings||[]).map(e=>`<tr><td style="color:var(--com);">${_lbl(e.label)}</td><td style="font-weight:700;color:${c.color};">${e.sg}</td><td style="font-weight:700;color:${c.color};">${e.pl}</td></tr>`).join('')}</table></div></div>`;
-  if(c.prepositions?.length){h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${(S.lang||'vi')==='en'?'// PREPOSITIONS':'// GIỚI TỪ ĐI KÈM'}</div>`;c.prepositions.forEach(p=>{h+=`<div style="display:flex;gap:12px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.09);border-radius:13px;padding:12px 14px;margin-bottom:6px;align-items:flex-start;"><div style="background:${c.color}22;border:1px solid ${c.color};border-radius:10px;padding:6px 12px;font-size:16px;font-family:var(--serif);font-weight:700;color:${c.color};flex-shrink:0;">${p.p}</div><div><div style="font-size:12px;">${(S.lang||'vi')==='en'?(p.en||p.vn):p.vn}</div><div style="font-size:11px;color:var(--com);font-style:italic;margin-top:2px;">${p.ex}</div></div></div>`;});h+='</div>';}
-  h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${(S.lang||'vi')==='en'?'// EXAMPLES':'// VÍ DỤ'}</div>`;
-  (c.examples||[]).forEach(ex=>{h+=`<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:14px;margin-bottom:8px;"><div style="font-size:15px;font-family:var(--serif);margin-bottom:4px;line-height:1.5;">${ex.ru.split(ex.hi).join(`<span style="color:${c.color};font-weight:700;">${ex.hi}</span>`)}</div><div style="font-size:12px;color:var(--txd);">${(S.lang||'vi')==='en'?(ex.en||ex.vn):ex.vn}</div></div>`;});
-  h+='</div>';
-  h+=`<div style="margin-bottom:20px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${(S.lang||'vi')==='en'?'// TIPS':'// MẸO NHỚ'}</div>`;
-  (()=>{
-  var _tips=c.tips||[];
-  var _isEN=(S.lang||'vi')==='en';
-  for(var _i=0;_i<_tips.length;_i+=2){
-    var _t=_isEN&&_tips[_i+1]?_tips[_i+1]:_tips[_i];
-    h+=`<div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;padding:10px 12px;background:rgba(240,192,64,0.05);border:1px solid rgba(240,192,64,0.15);border-radius:12px;"><span style="font-size:14px;margin-top:1px;flex-shrink:0;">💡</span><span style="font-size:12px;color:var(--txd);line-height:1.6;flex:1;">${_t}</span></div>`;
+  if(tab==='theory'){
+    // ── Lý thuyết ─────────────────────────────────────────────
+    h+=`<div style="background:${c.color}10;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid ${c.color}50;border-radius:20px;padding:24px;margin-bottom:14px;text-align:center;box-shadow:0 0 40px ${c.color}12 inset, 0 1px 0 rgba(255,255,255,0.08) inset;">
+      <div style="font-size:40px;font-weight:700;font-family:var(--serif);color:${c.color};margin-bottom:6px;">${c.abbr}</div>
+      <div style="font-size:16px;font-weight:700;font-family:var(--serif);color:${c.color};">${c.name}</div>
+      <div style="font-size:13px;color:var(--txd);margin-top:4px;">${isEN?(c.nameEn||c.nameVn||''):(c.nameVn||'')}</div>
+      <div style="font-size:15px;color:${c.color};margin-top:10px;">${c.question}</div>
+      <div style="font-size:12px;color:var(--com);margin-top:4px;">${isEN?(c.questionEn||''):(c.questionVn||'')}</div>
+      <div class="divdr"></div>
+      <div style="font-size:12px;color:var(--txd);line-height:1.6;">${isEN?(c.roleEn||c.role||''):(c.role||'')}</div>
+    </div>`;
+    h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${isEN?'// ENDINGS':'// ĐUÔI CẤU THÀNH'}</div><div style="background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:13px;overflow:hidden;"><table class="eTable"><tr><th>${isEN?'Gender':'Giới tính'}</th><th>${isEN?'Singular':'Số ít'}</th><th>${isEN?'Plural':'Số nhiều'}</th></tr>${(c.endings||[]).map(e=>`<tr><td style="color:var(--com);">${_lbl(e.label)}</td><td style="font-weight:700;color:${c.color};">${e.sg}</td><td style="font-weight:700;color:${c.color};">${e.pl}</td></tr>`).join('')}</table></div></div>`;
+    if(c.prepositions?.length){h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${isEN?'// PREPOSITIONS':'// GIỚI TỪ ĐI KÈM'}</div>`;c.prepositions.forEach(p=>{h+=`<div style="display:flex;gap:12px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.09);border-radius:13px;padding:12px 14px;margin-bottom:6px;align-items:flex-start;"><div style="background:${c.color}22;border:1px solid ${c.color};border-radius:10px;padding:6px 12px;font-size:16px;font-family:var(--serif);font-weight:700;color:${c.color};flex-shrink:0;">${p.p}</div><div><div style="font-size:12px;">${isEN?(p.en||p.vn):p.vn}</div><div style="font-size:11px;color:var(--com);font-style:italic;margin-top:2px;">${p.ex}</div></div></div>`;});h+='</div>';}
+    h+=`<div style="margin-bottom:14px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${isEN?'// EXAMPLES':'// VÍ DỤ'}</div>`;
+    (c.examples||[]).forEach(ex=>{h+=`<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:13px;padding:14px;margin-bottom:8px;"><div style="font-size:15px;font-family:var(--serif);margin-bottom:4px;line-height:1.5;">${ex.ru.split(ex.hi).join(`<span style="color:${c.color};font-weight:700;">${ex.hi}</span>`)}</div><div style="font-size:12px;color:var(--txd);">${isEN?(ex.en||ex.vn):ex.vn}</div></div>`;});
+    h+='</div>';
+    h+=`<div style="margin-bottom:20px;"><div style="font-size:10px;color:var(--com);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${isEN?'// TIPS':'// MẸO NHỚ'}</div>`;
+    (()=>{var _tips=c.tips||[];for(var _i=0;_i<_tips.length;_i+=2){var _t=isEN&&_tips[_i+1]?_tips[_i+1]:_tips[_i];h+=`<div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;padding:10px 12px;background:rgba(240,192,64,0.05);border:1px solid rgba(240,192,64,0.15);border-radius:12px;"><span style="font-size:14px;margin-top:1px;flex-shrink:0;">💡</span><span style="font-size:12px;color:var(--txd);line-height:1.6;flex:1;">${_t}</span></div>`;}})();
+    h+='</div>';
+  } else {
+    // ── Bài tập — 2 sub-tabs ──────────────────────────────────
+    if(!S._caseExSub) S._caseExSub='decline';
+    const sub=S._caseExSub;
+    // Sub-tab switcher
+    h+=`<div style="display:flex;gap:6px;margin-bottom:14px;">
+      ${[['decline',isEN?'🔡 Declension':'🔡 Biến cách'],['context',isEN?'💬 In context':'💬 Ngữ cảnh']].map(([k,l])=>`<button onclick="App._caseExSubSwitch('${k}')" style="flex:1;padding:8px 4px;border-radius:8px;font-size:11px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${sub===k?c.color+'80':'rgba(255,255,255,0.08)'};background:${sub===k?c.color+'18':'rgba(255,255,255,0.03)'};color:${sub===k?c.color:'var(--com)'};">${l}</button>`).join('')}
+    </div>`;
+
+    if(sub==='decline'){
+      // ── Biến cách số ít / số nhiều (caseDeclineQuiz) ──────────
+      const dqs=caseDeclineQuiz.filter(q=>q.caseId===c.id);
+      // Init / reset state per case
+      if(!S._cdShuffled||S._cdShuffled.length===0||S._cdCaseId!==c.id){
+        S._cdCaseId=c.id; S._cdShuffled=[...dqs].sort(()=>Math.random()-.5);
+        S._cdIdx=0; S._cdSel=null; S._cdScore={c:0,t:0};
+      }
+      const allD=S._cdShuffled;
+      const dDone=S._cdIdx>=allD.length;
+      // Filter buttons: all / sg / pl
+      const dFilt=S._cdFilt||'all';
+      h+=`<div style="display:flex;gap:6px;margin-bottom:10px;">
+        ${[['all',isEN?'All':'Tất cả'],['sg',isEN?'Singular':'Số ít'],['pl',isEN?'Plural':'Số nhiều']].map(([k,l])=>`<button onclick="App._cdFilter('${k}')" style="flex:1;padding:6px 2px;border-radius:8px;font-size:10px;font-weight:700;font-family:var(--mono);cursor:pointer;border:1px solid ${dFilt===k?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.08)'};background:${dFilt===k?'rgba(255,255,255,0.10)':'transparent'};color:${dFilt===k?'var(--tx)':'var(--com)'};">${l}</button>`).join('')}
+      </div>`;
+      const filtD=dFilt==='all'?allD:allD.filter(q=>q.type===dFilt);
+      const fIdx=S._cdFiltIdx||0;
+      const fDone=fIdx>=filtD.length;
+      const fScore=S._cdFiltScore||{c:0,t:0};
+      h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:10px;color:var(--com);">${isEN?'// declension drill':'// luyện biến cách'} · ${filtD.length} ${isEN?'questions':'câu'}</span><span style="font-size:11px;color:var(--grn);font-family:var(--mono);">${fScore.c}/${fScore.t}</span></div>`;
+      if(fDone||filtD.length===0){
+        const p=filtD.length>0?Math.round(fScore.c/filtD.length*100):0;
+        h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:28px;text-align:center;">
+          <div style="font-size:48px;margin-bottom:10px;">${filtD.length===0?'🔍':p>=80?'🏆':p>=60?'🥈':'💪'}</div>
+          <div style="font-size:${filtD.length===0?15:36}px;font-weight:700;color:${c.color};margin-bottom:8px;">${filtD.length===0?(isEN?'No questions for this filter':'Không có câu hỏi cho bộ lọc này'):S._cdFiltScore.c+'/'+filtD.length+' · '+p+'%'}</div>
+          ${filtD.length>0?`<button class="btn p mt12" onclick="App._cdRetry()">retry()</button>`:''}
+        </div>`;
+      } else {
+        const dq=filtD[fIdx];
+        h+=`<div class="pbar mb10"><div class="pfill" style="background:${c.color};width:${(fIdx/filtD.length)*100}%"></div></div>`;
+        // Badge: số ít / số nhiều
+        const badge=dq.type==='sg'?(isEN?'SG · Singular':'SG · Số ít'):(isEN?'PL · Plural':'PL · Số nhiều');
+        const badgeCol=dq.type==='sg'?'var(--cyn)':'var(--pur)';
+        h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:9px;font-weight:700;font-family:var(--mono);padding:3px 8px;border-radius:6px;border:1px solid ${badgeCol}60;color:${badgeCol};background:${badgeCol}12;">${badge}</span>
+          <span style="font-size:9px;color:var(--com);font-family:var(--mono);">${isEN?'// base form:':'// dạng gốc:'} <span style="color:var(--tx);font-size:12px;font-family:var(--serif);">${dq.base}</span></span>
+        </div>`;
+        h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid ${c.color}40;border-radius:16px;padding:18px;margin-bottom:14px;">
+          <div style="font-size:10px;color:${c.color};margin-bottom:8px;font-family:var(--display);">// ${isEN?'choose correct form':'chọn dạng đúng'} — câu ${fIdx+1}/${filtD.length}</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.6;white-space:pre-wrap;">${dq.q}</div>
+        </div>`;
+        h+=dq.opts.map((o,i)=>{
+          const isC=o===dq.a,isSel=o===S._cdSel;
+          let bc='var(--bord)',bg='var(--surf)',tc='var(--tx)';
+          if(S._cdSel){if(isC){bc='rgba(61,220,92,0.5)';bg='rgba(61,220,92,0.08)';tc='var(--grn)';}else if(isSel){bc='rgba(255,107,107,0.5)';bg='rgba(255,107,107,0.08)';tc='var(--pnk)';}}
+          const icon=S._cdSel?(isC?'✓':(isSel?'✗':['A','B','C','D'][i])):['A','B','C','D'][i];
+          return`<div onclick="App._cdAnswer(${i})" style="border:1px solid ${bc};background:${bg};backdrop-filter:blur(16px);border-radius:14px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:52px;box-shadow:0 1px 0 rgba(255,255,255,0.05) inset;">
+            <div style="width:26px;height:26px;border-radius:50%;background:${bc}18;border:1px solid ${bc};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${bc};flex-shrink:0;">${icon}</div>
+            <div style="font-size:14px;font-weight:700;color:${tc};flex:1;font-family:var(--serif);">${o}</div>
+          </div>`;
+        }).join('');
+        if(S._cdSel){h+=`<div style="background:${c.color}08;border:1px solid ${c.color}30;border-radius:14px;padding:14px;margin-top:4px;"><div style="font-size:10px;color:${c.color};margin-bottom:4px;">// ${isEN?'explanation':'giải thích'}</div><div style="font-size:12px;color:var(--txd);line-height:1.7;">${dq.exp}</div></div>`;}
+      }
+
+    } else {
+      // ── Ngữ cảnh (caseQuizData — câu hỏi cũ) ─────────────────
+      const _caseOffsets=[0,8,19,27,35,43,60];
+      const qs=caseQuizData.slice(_caseOffsets[c.id-1], _caseOffsets[c.id]);
+      if(!S._caseQShuffled||S._caseQShuffled.length===0) S._caseQShuffled=[...qs].sort(()=>Math.random()-.5);
+      const allQ=S._caseQShuffled;
+      const done=S._caseQIdx>=allQ.length;
+      h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:10px;color:var(--com);">${isEN?'// context quiz':'// câu hỏi ngữ cảnh'} · ${c.name}</span><span style="font-size:11px;color:var(--grn);font-family:var(--mono);">${S._caseQScore.c}/${S._caseQScore.t}</span></div>`;
+      if(done){
+        const p=allQ.length>0?Math.round(S._caseQScore.c/allQ.length*100):0;
+        h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:28px;text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.08) inset;">
+          <div style="font-size:48px;margin-bottom:10px;">${p>=80?'🏆':p>=60?'🥈':'💪'}</div>
+          <div style="font-size:40px;font-weight:700;color:${c.color};margin-bottom:8px;">${S._caseQScore.c}/${allQ.length} · ${p}%</div>
+          <button class="btn p mt12" onclick="App._caseQRetry()">retry()</button>
+        </div>`;
+      } else {
+        const q=allQ[S._caseQIdx];
+        h+=`<div class="pbar mb12"><div class="pfill" style="background:${c.color};width:${(S._caseQIdx/allQ.length)*100}%"></div></div>`;
+        h+=`<div style="font-size:10px;color:var(--com);margin-bottom:6px;">${isEN?'// question':'// câu'} ${S._caseQIdx+1}/${allQ.length}</div>`;
+        h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 0 rgba(255,255,255,0.07) inset;"><div style="font-size:10px;color:${c.color};margin-bottom:6px;font-family:var(--display);">// q_${S._caseQIdx+1}</div><div style="font-size:15px;font-weight:700;line-height:1.5;">${trGramQ(q.q)}</div></div>`;
+        h+=q.opts.map((o,i)=>{
+          const isC=o===q.a,isSel=o===S._caseQSel;
+          let bc='var(--bord)',bg='var(--surf)',tc='var(--tx)';
+          if(S._caseQSel){if(isC){bc='rgba(61,220,92,0.5)';bg='rgba(61,220,92,0.08)';tc='var(--grn)';}else if(isSel){bc='rgba(255,107,107,0.5)';bg='rgba(255,107,107,0.08)';tc='var(--pnk)';}}
+          const icon=S._caseQSel?(isC?'✓':(isSel?'✗':['A','B','C','D'][i])):['A','B','C','D'][i];
+          return`<div onclick="App._caseQAnswer(${i})" style="border:1px solid ${bc};background:${bg};backdrop-filter:blur(16px);border-radius:14px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:52px;transition:transform 0.1s;box-shadow:0 1px 0 rgba(255,255,255,0.05) inset;">
+            <div style="width:26px;height:26px;border-radius:50%;background:${bc}18;border:1px solid ${bc};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${bc};flex-shrink:0;">${icon}</div>
+            <div style="font-size:13px;color:${tc};flex:1;line-height:1.4;font-family:var(--display);">${trGram(o)}</div>
+          </div>`;
+        }).join('');
+        if(S._caseQSel){h+=`<div style="background:rgba(110,198,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(110,198,255,0.25);border-radius:14px;padding:14px;margin-top:4px;"><div style="font-size:10px;color:var(--cyn);margin-bottom:4px;">${isEN?'// explanation':'// giải thích'}</div><div style="font-size:12px;color:var(--txd);line-height:1.6;">${trGram(q.exp)}</div></div>`;}
+      }
+    }
   }
-})();
-  h+='</div>';
   document.getElementById('case-body').innerHTML=h;
   nav('case');
 }
+function setCaseTab(tab){
+  S.caseTab=tab;
+  if(tab==='exercise'){
+    S._caseExSub='decline';
+    S._caseQShuffled=[]; S._caseQIdx=0; S._caseQSel=null; S._caseQScore={c:0,t:0};
+    S._cdShuffled=[]; S._cdIdx=0; S._cdSel=null; S._cdScore={c:0,t:0}; S._cdFiltIdx=0; S._cdFiltScore={c:0,t:0}; S._cdFilt='all'; S._cdCaseId=null;
+  }
+  openCase(S.selCase.id);
+}
+function _caseExSubSwitch(sub){
+  S._caseExSub=sub;
+  // reset sub-state
+  if(sub==='decline'){ S._cdShuffled=[]; S._cdIdx=0; S._cdSel=null; S._cdScore={c:0,t:0}; S._cdFiltIdx=0; S._cdFiltScore={c:0,t:0}; S._cdFilt='all'; S._cdCaseId=null; }
+  else { S._caseQShuffled=[]; S._caseQIdx=0; S._caseQSel=null; S._caseQScore={c:0,t:0}; }
+  openCase(S.selCase.id);
+}
+function _cdFilter(f){
+  S._cdFilt=f; S._cdFiltIdx=0; S._cdSel=null; S._cdFiltScore={c:0,t:0};
+  openCase(S.selCase.id);
+}
+function _cdAnswer(optIdx){
+  if(S._cdSel)return;
+  const c=S.selCase;
+  const dqs=caseDeclineQuiz.filter(q=>q.caseId===c.id);
+  if(!S._cdShuffled||S._cdShuffled.length===0||S._cdCaseId!==c.id){
+    S._cdCaseId=c.id; S._cdShuffled=[...dqs].sort(()=>Math.random()-.5);
+  }
+  const filt=S._cdFilt||'all';
+  const filtD=filt==='all'?S._cdShuffled:S._cdShuffled.filter(q=>q.type===filt);
+  const fIdx=S._cdFiltIdx||0;
+  const dq=filtD[fIdx];
+  const opt=dq.opts[optIdx];
+  const ok=opt===dq.a;
+  S._cdSel=opt;
+  if(!S._cdFiltScore) S._cdFiltScore={c:0,t:0};
+  S._cdFiltScore.t++; if(ok)S._cdFiltScore.c++;
+  openCase(c.id);
+  setTimeout(()=>{
+    if((S._cdFiltIdx||0)<filtD.length-1){S._cdFiltIdx=(S._cdFiltIdx||0)+1;}else{S._cdFiltIdx=filtD.length;}
+    S._cdSel=null; openCase(c.id);
+  },1400);
+}
+function _cdRetry(){
+  const c=S.selCase;
+  const dqs=caseDeclineQuiz.filter(q=>q.caseId===c.id);
+  S._cdShuffled=[...dqs].sort(()=>Math.random()-.5);
+  S._cdIdx=0; S._cdSel=null; S._cdFiltIdx=0; S._cdFiltScore={c:0,t:0}; S._cdCaseId=c.id;
+  openCase(c.id);
+}
+function _caseQAnswer(optIdx){
+  if(S._caseQSel)return;
+  const allQ=S._caseQShuffled;
+  const opt=allQ[S._caseQIdx].opts[optIdx];
+  const ok=opt===allQ[S._caseQIdx].a;
+  S._caseQSel=opt; S._caseQScore.t++; if(ok)S._caseQScore.c++;
+  openCase(S.selCase.id);
+  setTimeout(()=>{if(S._caseQIdx<allQ.length-1){S._caseQIdx++;S._caseQSel=null;}else{S._caseQIdx++;}openCase(S.selCase.id);},1400);
+}
+function _caseQRetry(){
+  const c=S.selCase;
+  const _caseOffsets=[0,8,19,27,35,43,60];
+  const qs=caseQuizData.slice(_caseOffsets[c.id-1], _caseOffsets[c.id]);
+  S._caseQShuffled=[...qs].sort(()=>Math.random()-.5);
+  S._caseQIdx=0; S._caseQSel=null; S._caseQScore={c:0,t:0};
+  openCase(c.id);
+}
 function renderFormation(){
-  const types=[{k:'noun',l:'N',c:'#58a6ff',bg:'#0d1a2a'},{k:'verb',l:'V',c:'#39d353',bg:'#0d2318'},{k:'adj',l:'A',c:'#bc8cff',bg:'#1a0d2a'},{k:'adv',l:t('fc.wf.adv'),c:'#e3b341',bg:'#1a1400'}];
-  let h='<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;"><div style="font-size:10px;color:var(--yel);font-weight:700;margin-bottom:8px;font-family:var(--display);letter-spacing:1px;">'+(S.lang==='en'?'// Word type legend':'// Ký hiệu loại từ')+'</div><div style="display:flex;flex-wrap:wrap;gap:8px;">';
-  types.forEach(t=>{h+=`<div style="display:flex;align-items:center;gap:4px;"><span style="background:${t.bg};border:1px solid ${t.c};border-radius:3px;padding:1px 5px;font-size:10px;font-weight:700;color:${t.c};">${t.l}</span><span style="font-size:10px;color:var(--com);">${(S.lang||'vi')==='en'?(t.l==='N'?'Noun':t.l==='V'?'Verb':t.l==='A'?'Adj':'Adv'):(t.l==='N'?'Danh từ':t.l==='V'?'Động từ':t.l==='A'?'Tính từ':'Trạng từ')}</span></div>`;});
-  h+='</div></div>';
-  wordFormationData.forEach(item=>{
-    h+=`<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid ${item.color}40;border-radius:18px;padding:16px;margin-bottom:10px;box-shadow:0 0 30px ${item.color}08 inset, 0 1px 0 rgba(255,255,255,0.06) inset;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div style="background:${item.color}22;border:1px solid ${item.color};border-radius:6px;padding:5px 12px;"><div style="font-size:15px;font-weight:700;color:${item.color};">${item.root}</div></div>
-        <div><div style="font-size:12px;color:${item.color};">${(S.lang||'vi')==='en'?(item.rootEn||item.rootVn):item.rootVn}</div><div style="font-size:10px;color:var(--com);margin-top:2px;">${types.map(t=>item[t.k]?.length>0?`${t.l}:${item[t.k].length}`:null).filter(Boolean).join('  ')}</div></div>
-      </div>`;
-    types.forEach(({k,l,c,bg})=>{
-      const items=item[k]; if(!items?.length)return;
-      h+=`<div style="margin-bottom:8px;"><div style="font-size:10px;color:${c};font-weight:700;margin-bottom:6px;">${l}</div>`;
-      items.forEach(w=>{h+=`<div style="display:flex;align-items:center;background:${c}08;backdrop-filter:blur(14px);border:1px solid ${c}28;border-radius:11px;padding:10px 12px;margin-bottom:5px;gap:8px;"><span style="font-family:var(--serif);font-size:15px;flex:1;">${w.w}</span><div style="text-align:right;flex-shrink:0;"><div style="font-size:11px;color:var(--com);">${(S.lang||'vi')==='en'?(w.en||w.vn):w.vn}</div><div style="font-size:9px;color:${c};border:1px solid ${c}44;border-radius:2px;padding:1px 4px;display:inline-block;margin-top:2px;">${w.suf}</div></div></div>`;});
+  const isEN=(S.lang||'vi')==='en';
+  if(S.formTab===undefined) S.formTab='theory';
+  const tab=S.formTab||'theory';
+  const accentColor='#bc8cff';
+  // ── Tab switcher ──────────────────────────────────────────────
+  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;">
+    ${[['theory',isEN?'📖 Theory':'📖 Lý thuyết'],['exercise',isEN?'✏️ Exercises':'✏️ Bài tập']].map(([k,l])=>`<button onclick="App.setFormTab('${k}')" style="flex:1;padding:10px 4px;border-radius:10px;font-size:12px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${tab===k?accentColor+'80':'rgba(255,255,255,0.1)'};background:${tab===k?accentColor+'15':'rgba(255,255,255,0.04)'};color:${tab===k?accentColor:'var(--com)'};">${l}</button>`).join('')}
+  </div>`;
+  if(tab==='theory'){
+    const types=[{k:'noun',l:'N',c:'#58a6ff',bg:'#0d1a2a'},{k:'verb',l:'V',c:'#39d353',bg:'#0d2318'},{k:'adj',l:'A',c:'#bc8cff',bg:'#1a0d2a'},{k:'adv',l:t('fc.wf.adv'),c:'#e3b341',bg:'#1a1400'}];
+    h+='<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.09);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset;"><div style="font-size:10px;color:var(--yel);font-weight:700;margin-bottom:8px;font-family:var(--display);letter-spacing:1px;">'+(isEN?'// Word type legend':'// Ký hiệu loại từ')+'</div><div style="display:flex;flex-wrap:wrap;gap:8px;">';
+    types.forEach(t=>{h+=`<div style="display:flex;align-items:center;gap:4px;"><span style="background:${t.bg};border:1px solid ${t.c};border-radius:3px;padding:1px 5px;font-size:10px;font-weight:700;color:${t.c};">${t.l}</span><span style="font-size:10px;color:var(--com);">${isEN?(t.l==='N'?'Noun':t.l==='V'?'Verb':t.l==='A'?'Adj':'Adv'):(t.l==='N'?'Danh từ':t.l==='V'?'Động từ':t.l==='A'?'Tính từ':'Trạng từ')}</span></div>`;});
+    h+='</div></div>';
+    wordFormationData.forEach(item=>{
+      h+=`<div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid ${item.color}40;border-radius:18px;padding:16px;margin-bottom:10px;box-shadow:0 0 30px ${item.color}08 inset, 0 1px 0 rgba(255,255,255,0.06) inset;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <div style="background:${item.color}22;border:1px solid ${item.color};border-radius:6px;padding:5px 12px;"><div style="font-size:15px;font-weight:700;color:${item.color};">${item.root}</div></div>
+          <div><div style="font-size:12px;color:${item.color};">${isEN?(item.rootEn||item.rootVn):item.rootVn}</div><div style="font-size:10px;color:var(--com);margin-top:2px;">${types.map(t=>item[t.k]?.length>0?`${t.l}:${item[t.k].length}`:null).filter(Boolean).join('  ')}</div></div>
+        </div>`;
+      types.forEach(({k,l,c,bg})=>{
+        const items=item[k]; if(!items?.length)return;
+        h+=`<div style="margin-bottom:8px;"><div style="font-size:10px;color:${c};font-weight:700;margin-bottom:6px;">${l}</div>`;
+        items.forEach(w=>{h+=`<div style="display:flex;align-items:center;background:${c}08;backdrop-filter:blur(14px);border:1px solid ${c}28;border-radius:11px;padding:10px 12px;margin-bottom:5px;gap:8px;"><span style="font-family:var(--serif);font-size:15px;flex:1;">${w.w}</span><div style="text-align:right;flex-shrink:0;"><div style="font-size:11px;color:var(--com);">${isEN?(w.en||w.vn):w.vn}</div><div style="font-size:9px;color:${c};border:1px solid ${c}44;border-radius:2px;padding:1px 4px;display:inline-block;margin-top:2px;">${w.suf}</div></div></div>`;});
+        h+='</div>';
+      });
       h+='</div>';
     });
-    h+='</div>';
-  });
+  } else {
+    // ── Bài tập ────────────────────────────────────────────────
+    if(!S._formQShuffled||S._formQShuffled.length===0) S._formQShuffled=[...formationQuizData].sort(()=>Math.random()-.5);
+    if(!S._formQScore) S._formQScore={c:0,t:0};
+    if(S._formQIdx===undefined) S._formQIdx=0;
+    const allQ=S._formQShuffled;
+    const done=S._formQIdx>=allQ.length;
+    h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:10px;color:var(--com);">${isEN?'// word formation exercises':'// bài tập từ loại'}</span><span style="font-size:11px;color:var(--grn);font-family:var(--mono);">${S._formQScore.c}/${S._formQScore.t}</span></div>`;
+    if(done){
+      const p=allQ.length>0?Math.round(S._formQScore.c/allQ.length*100):0;
+      h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:28px;text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.08) inset;">
+        <div style="font-size:48px;margin-bottom:10px;">${p>=80?'🏆':p>=60?'🥈':'💪'}</div>
+        <div style="font-size:40px;font-weight:700;color:${accentColor};margin-bottom:8px;">${S._formQScore.c}/${allQ.length} · ${p}%</div>
+        <button class="btn p mt12" onclick="App._formQRetry()">retry()</button>
+      </div>`;
+    } else {
+      const q=allQ[S._formQIdx];
+      h+=`<div class="pbar mb12"><div class="pfill" style="background:${accentColor};width:${(S._formQIdx/allQ.length)*100}%"></div></div>`;
+      h+=`<div style="font-size:10px;color:var(--com);margin-bottom:6px;">${isEN?'// question':'// câu'} ${S._formQIdx+1}/${allQ.length}</div>`;
+      h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 0 rgba(255,255,255,0.07) inset;"><div style="font-size:10px;color:${accentColor};margin-bottom:6px;font-family:var(--display);">// q_${S._formQIdx+1}</div><div style="font-size:15px;font-weight:700;line-height:1.5;">${trGramQ(q.q)}</div></div>`;
+      h+=q.opts.map((o,i)=>{
+        const isC=o===q.a,isSel=o===S._formQSel;
+        let bc='var(--bord)',bg='var(--surf)',tc='var(--tx)';
+        if(S._formQSel){if(isC){bc='rgba(61,220,92,0.5)';bg='rgba(61,220,92,0.08)';tc='var(--grn)';}else if(isSel){bc='rgba(255,107,107,0.5)';bg='rgba(255,107,107,0.08)';tc='var(--pnk)';}}
+        const icon=S._formQSel?(isC?'✓':(isSel?'✗':['A','B','C','D'][i])):['A','B','C','D'][i];
+        return`<div onclick="App._formQAnswer(${i})" style="border:1px solid ${bc};background:${bg};backdrop-filter:blur(16px);border-radius:14px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:52px;transition:transform 0.1s;box-shadow:0 1px 0 rgba(255,255,255,0.05) inset;">
+          <div style="width:26px;height:26px;border-radius:50%;background:${bc}18;border:1px solid ${bc};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${bc};flex-shrink:0;">${icon}</div>
+          <div style="font-size:13px;color:${tc};flex:1;line-height:1.4;font-family:var(--display);">${trGram(o)}</div>
+        </div>`;
+      }).join('');
+      if(S._formQSel){h+=`<div style="background:rgba(188,140,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(188,140,255,0.25);border-radius:14px;padding:14px;margin-top:4px;"><div style="font-size:10px;color:${accentColor};margin-bottom:4px;">${isEN?'// explanation':'// giải thích'}</div><div style="font-size:12px;color:var(--txd);line-height:1.6;">${trGram(q.exp)}</div></div>`;}
+    }
+  }
   setGramBody(h);
+}
+function setFormTab(tab){
+  S.formTab=tab;
+  if(tab==='exercise'){ S._formQShuffled=[]; S._formQIdx=0; S._formQSel=null; S._formQScore={c:0,t:0}; }
+  renderFormation();
+}
+function _formQAnswer(optIdx){
+  if(S._formQSel)return;
+  const allQ=S._formQShuffled;
+  const opt=allQ[S._formQIdx].opts[optIdx];
+  const ok=opt===allQ[S._formQIdx].a;
+  S._formQSel=opt; S._formQScore.t++; if(ok)S._formQScore.c++;
+  renderFormation();
+  setTimeout(()=>{if(S._formQIdx<allQ.length-1){S._formQIdx++;S._formQSel=null;}else{S._formQIdx++;}renderFormation();},1400);
+}
+function _formQRetry(){
+  S._formQShuffled=[...formationQuizData].sort(()=>Math.random()-.5);
+  S._formQIdx=0; S._formQSel=null; S._formQScore={c:0,t:0};
+  renderFormation();
 }
 
 // CONDITIONAL SENTENCES
@@ -10173,7 +10520,7 @@ function renderPassive(){
 
 function gqReset(type){
   const t=type||S.gqType;
-  const src=t==='cases'?grammarQuizData.cases:grammarQuizData.formation;
+  const src=t==='cases'?caseQuizData:formationQuizData;
   S.gqShuffled=[...src].sort(()=>Math.random()-.5);
   S.gqIdx=0; S.gqSel=null; S.gqScore={c:0,t:0};
 }
@@ -10535,9 +10882,9 @@ function App_motionAnswer(i){
 
 
 function renderGQ(){
-  const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?grammarQuizData.cases:grammarQuizData.formation);
+  const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?caseQuizData:formationQuizData);
   const done=S.gqIdx>=allQ.length;
-  let h=`<div style="display:flex;gap:8px;margin-bottom:16px;">${[['cases',`⚖️ ${(S.lang||'vi')==='en'?'6 Cases':'6 Cách'} (${grammarQuizData.cases.length})`],['formation',`🔄 ${(S.lang||'vi')==='en'?'Word Types':'Từ loại'} (${grammarQuizData.formation.length})`]].map(([t,l])=>`<button onclick="App.gqSwitch('${t}')" style="flex:1;padding:10px 4px;border-radius:6px;border:1px solid ${S.gqType===t?'var(--pnk)':'var(--bord)'};background:${S.gqType===t?'rgba(255,107,107,0.1)':'rgba(255,255,255,0.04)'};color:${S.gqType===t?'var(--pnk)':'var(--com)'};font-family:var(--display);font-size:11px;font-weight:600;cursor:pointer;backdrop-filter:blur(16px);box-shadow:${S.gqType===t?'0 0 16px rgba(255,107,107,0.12) inset':'none'};">${l}</button>`).join('')}</div>`;
+  let h=`<div style="display:flex;gap:8px;margin-bottom:16px;">${[['cases',`⚖️ ${(S.lang||'vi')==='en'?'6 Cases':'6 Cách'} (${caseQuizData.length})`],['formation',`🔄 ${(S.lang||'vi')==='en'?'Word Types':'Từ loại'} (${formationQuizData.length})`]].map(([t,l])=>`<button onclick="App.gqSwitch('${t}')" style="flex:1;padding:10px 4px;border-radius:6px;border:1px solid ${S.gqType===t?'var(--pnk)':'var(--bord)'};background:${S.gqType===t?'rgba(255,107,107,0.1)':'rgba(255,255,255,0.04)'};color:${S.gqType===t?'var(--pnk)':'var(--com)'};font-family:var(--display);font-size:11px;font-weight:600;cursor:pointer;backdrop-filter:blur(16px);box-shadow:${S.gqType===t?'0 0 16px rgba(255,107,107,0.12) inset':'none'};">${l}</button>`).join('')}</div>`;
   if(done){
     const p=allQ.length>0?Math.round(S.gqScore.c/allQ.length*100):0;
     h+=`<div style="background:rgba(255,255,255,0.05);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.12);border-radius:22px;padding:28px;text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.08) inset;">
@@ -10568,7 +10915,7 @@ function renderGQ(){
 function gqSwitch(t){S.gqType=t;gqReset(t);renderGQ();}
 function gqAnswer(optIdx){
   if(S.gqSel)return;
-  const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?grammarQuizData.cases:grammarQuizData.formation);
+  const allQ=S.gqShuffled.length>0?S.gqShuffled:(S.gqType==='cases'?caseQuizData:formationQuizData);
   const opt=allQ[S.gqIdx].opts[optIdx];
   const ok=opt===allQ[S.gqIdx].a;
   S.gqSel=opt; S.gqScore.t++; if(ok)S.gqScore.c++;
@@ -12510,6 +12857,9 @@ return{nav,navSilent,setLevel,selectTopic,srsStart,srsReveal,srsRate,toggleSrsWF
   openAddWord:App_openAddWord, submitAddWord:App_submitAddWord, awSetLevel:App_awSetLevel,
   deleteCustomWord:App_deleteCustomWord,
   gramTab,openCase,renderGQ,gqReset,gqSwitch,gqAnswer,renderCases,
+  setCaseTab,_caseQAnswer,_caseQRetry,
+  _caseExSubSwitch,_cdFilter,_cdAnswer,_cdRetry,
+  setFormTab,_formQAnswer,_formQRetry,
   lkSearch,lkFilter,lkClear,
   setLang,init,
   dailyStart:App_dailyStart,
