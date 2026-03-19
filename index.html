@@ -1056,6 +1056,139 @@ body::after{
   animation: spin .7s linear infinite; margin: 0 auto 16px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIFIED DESIGN SYSTEM — Icon, Tab, Font consistency
+   iOS · iPadOS · Android
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Gram-tab: align stroke-width with nav icons (1.5) ── */
+.gram-tab svg { stroke-width: 1.5; width: 14px; height: 14px; }
+
+/* ── Unified segment tab (Lý thuyết / Bài tập) ── */
+.seg-tabs {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-shrink: 0;
+}
+.seg-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 8px; border-radius: 12px;
+  font-family: var(--display); font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.04); color: var(--com);
+  transition: background .16s var(--ease-out), border-color .16s var(--ease-out),
+              color .16s var(--ease-out), box-shadow .16s ease,
+              transform .12s var(--spring);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; min-height: 44px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+  transform: translateZ(0); will-change: transform;
+}
+.seg-tab:active { transform: scale3d(0.94,0.94,1); opacity: .75; }
+.seg-tab svg { width: 14px; height: 14px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .7; transition: opacity .15s ease; }
+.seg-tab.on svg { opacity: 1; }
+
+/* Sub-tab (smaller, secondary) */
+.sub-tabs { display: flex; gap: 5px; margin-bottom: 12px; }
+.sub-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 8px 6px; border-radius: 10px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .3px;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.07);
+  background: transparent; color: var(--com);
+  transition: background .14s ease, border-color .14s ease, color .14s ease, transform .10s var(--spring);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; min-height: 36px;
+  transform: translateZ(0);
+}
+.sub-tab:active { transform: scale3d(0.92,0.92,1); }
+.sub-tab svg { width: 11px; height: 11px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Filter chips (All / Số ít / Số nhiều) */
+.filter-chips { display: flex; gap: 5px; margin-bottom: 10px; }
+.filter-chip {
+  flex: 1; padding: 7px 4px; border-radius: 9px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .2px;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.07);
+  background: transparent; color: var(--com); text-align: center;
+  transition: background .13s ease, border-color .13s ease, color .13s ease, transform .09s var(--spring);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transform: translateZ(0);
+}
+.filter-chip:active { transform: scale3d(0.90,0.90,1); }
+.filter-chip.on { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.09); color: var(--tx); }
+
+/* ── SVG icon helper class ── */
+.ico { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ico svg { stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── iPad / large screen layout ── */
+@media (min-width: 768px) {
+  #app { max-width: 600px; margin: 0 auto; }
+  #bnav-wrap { max-width: 560px; }
+  .scrl { padding-left: 24px; padding-right: 24px; }
+  .hdr { padding: 16px 24px; }
+  #gram-tabs { padding: 10px 24px 9px; }
+  .gram-tab { font-size: 13px; padding: 8px 16px; }
+  .bLbl { font-size: 11px; }
+  .seg-tab { font-size: 13px; padding: 11px 10px; min-height: 48px; }
+  .sub-tab { font-size: 11px; min-height: 40px; }
+}
+@media (min-width: 1024px) {
+  #app { max-width: 680px; }
+}
+
+/* ── Android: force font anti-aliasing + remove tap delay ── */
+@supports not (-webkit-backdrop-filter: blur(1px)) {
+  /* Android fallback: solid bg instead of frosted glass */
+  #bnav { background: rgba(10,12,22,0.96); }
+  .hdr  { background: rgba(6,8,13,0.96); }
+  .gram-tab { background: rgba(255,255,255,0.06); }
+}
+/* Android Chrome: remove 300ms tap delay */
+* { touch-action: manipulation; }
+button, [role="button"], .bBtn, .gram-tab, .seg-tab, .sub-tab, .filter-chip,
+.caseRow, .tCard, .qOpt, .srsBtn, .fcard {
+  touch-action: manipulation;
+}
+/* Re-allow scrolling on scrollable containers */
+.scrl, #gram-tabs, #picker-list { touch-action: pan-y; }
+#gram-tabs { touch-action: pan-x; }
+
+/* ── Minimum touch targets — WCAG 2.5.5 (44×44px) ── */
+.iBtn { min-width: 44px; min-height: 44px; }
+.lt-btn { min-height: 36px; min-width: 44px; }
+.seg-tab, .btn { min-height: 44px; }
+.gram-tab { min-height: 36px; }
+
+/* ── Font rendering — Cyrillic on Android ── */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: local('Roboto');
+}
+/* Android Cyrillic fallback stack */
+:root {
+  --serif: 'New York', 'PT Serif', 'Georgia Pro', Georgia, serif;
+  --display: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  --body:    'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  --mono:    'SF Mono', 'Roboto Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+}
+
+/* ── Prevent text inflation on Android ── */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* ── iOS status bar spacing (Dynamic Island / notch) ── */
+#lang-toggle { top: max(env(safe-area-inset-top, 0px) + 8px, 12px); }
+#toast { top: max(env(safe-area-inset-top, 0px) + 52px, 60px); }
+
+/* ── Haptic feedback visual cue (Android) ── */
+@media (hover: none) and (pointer: coarse) {
+  .bBtn:active   { background: rgba(255,255,255,0.08); }
+  .seg-tab:active { background: rgba(255,255,255,0.10); }
+  .gram-tab:active { background: rgba(255,255,255,0.12); }
+}
 </style>
 </head>
 <body>
@@ -1149,9 +1282,9 @@ body::after{
   </div>
   <div class="scrl">
     <div class="card mt8" style="display:flex;flex-direction:column;gap:10px;">
-      <button class="btn g" onclick="App.fcStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 2H8L6 6H18L16 2Z"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="12" y1="10" x2="12" y2="16"/></svg> flashcard()</button>
+      <button class="btn g" onclick="App.fcStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 2H8L6 6H18L16 2Z"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="12" y1="10" x2="12" y2="16"/></svg> flashcard()</button>
       <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.flashcard.sub">// lật thẻ · xem họ từ</div>
-      <button class="btn p" onclick="App.quizStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> quiz()</button>
+      <button class="btn p" onclick="App.quizStart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> quiz()</button>
       <div style="font-size:10px;color:var(--com);text-align:center;" data-i18n="topic.quiz.sub">// kiểm tra kiến thức</div>
     </div>
   </div>
@@ -1165,7 +1298,7 @@ body::after{
       <div class="pbar" style="margin-bottom:4px;"><div class="pfill" id="fc-pb" style="background:var(--grn);width:0%"></div></div>
       <div style="font-size:11px;color:var(--com);" id="fc-ctr">[1/1]</div>
     </div>
-    <button class="iBtn" onclick="App.speakFC()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+    <button class="iBtn" onclick="App.speakFC()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
     <button id="fc-autospeak-btn" class="as-toggle" onclick="App.fcToggleAutoSpeak()" title="Tự động đọc">🔊 Auto</button>
   </div>
   <div class="scrl">
@@ -1234,7 +1367,7 @@ body::after{
       <div class="pbar" style="margin-bottom:4px;"><div class="pfill" id="srs-pb" style="background:var(--grn);width:0%"></div></div>
       <div style="font-size:11px;color:var(--com);"> <span id="srs-rem" style="color:var(--yel);font-weight:700;">0</span></div>
     </div>
-    <button class="iBtn" onclick="App.speakSRS()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg></button>
+    <button class="iBtn" onclick="App.speakSRS()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--com)" stroke-width="1.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg></button>
   </div>
   <div class="scrl">
     <div class="fcard" onclick="App.srsReveal()">
@@ -1335,11 +1468,11 @@ body::after{
     <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;font-family:var(--display);" data-i18n="gram.main.title">NGỮ PHÁP TIẾNG NGA</div>
   </div>
   <div id="gram-tabs" style="display:flex;gap:5px;padding:10px 16px 9px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;">
-    <button class="gram-tab" id="gt-motion"     onclick="App.gramTab('motion')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
-    <button class="gram-tab" id="gt-cases"      onclick="App.gramTab('cases')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12l7 5 7-5"/></svg><span>6 Cách</span></button>
-    <button class="gram-tab" id="gt-form"       onclick="App.gramTab('formation')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg><span>Từ loại</span></button>
-    <button class="gram-tab" id="gt-conditional" onclick="App.gramTab('conditional')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Điều kiện</span></button>
-    <button class="gram-tab" id="gt-passive"    onclick="App.gramTab('passive')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
+    <button class="gram-tab" id="gt-motion"     onclick="App.gramTab('motion')"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span>Chuyển động</span></button>
+    <button class="gram-tab" id="gt-cases"      onclick="App.gramTab('cases')"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>6 Cách</span></button>
+    <button class="gram-tab" id="gt-form"       onclick="App.gramTab('formation')"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a5.5 5.5 0 0 0 11 0"/><path d="M5 19h14"/><path d="M12 14v5"/></svg><span>Từ loại</span></button>
+    <button class="gram-tab" id="gt-conditional" onclick="App.gramTab('conditional')"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Điều kiện</span></button>
+    <button class="gram-tab" id="gt-passive"    onclick="App.gramTab('passive')"><svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span>Bị động</span></button>
 
   </div>
   <div class="scrl" style="padding-top:14px;" id="gram-body"></div>
@@ -1472,37 +1605,44 @@ body::after{
 <div id="bnav">
   <div id="bnav-indicator"></div>
   <button class="bBtn on" id="bn-vocab" onclick="App.nav('vocab')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg></span><span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg></span>
+    <span class="bLbl" id="bn-vocab-lbl">Từ vựng</span>
   </button>
 
   <button class="bBtn" id="bn-grammar" onclick="App.nav('grammar')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
-      <line x1="7" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="7" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="15" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
-      <line x1="13" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-grammar-lbl">Ngữ pháp</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+      <path d="M2 17l10 5 10-5"/>
+      <path d="M2 12l10 5 10-5"/>
+    </svg></span>
+    <span class="bLbl" id="bn-grammar-lbl">Ngữ pháp</span>
   </button>
+
   <button class="bBtn" id="bn-lookup" onclick="App.nav('lookup')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="10.5" y1="7.5" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg></span><span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.35-4.35"/>
+      <line x1="8" y1="11" x2="14" y2="11"/>
+      <line x1="11" y1="8" x2="11" y2="14"/>
+    </svg></span>
+    <span class="bLbl" id="bn-lookup-lbl">Tra từ</span>
   </button>
+
   <button class="bBtn" id="bn-read" onclick="App.nav('read')">
-    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5C5 3 9 3 12 4.5C15 3 19 3 22 4.5V20C19 18.5 15 18.5 12 20C9 18.5 5 18.5 2 20V4.5z"/><line x1="12" y1="4.5" x2="12" y2="20"/></svg></span><span class="bLbl" id="bn-read-lbl">Đọc</span>
+    <span class="bIcon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 4.5C5 3 9 3 12 4.5C15 3 19 3 22 4.5V20C19 18.5 15 18.5 12 20C9 18.5 5 18.5 2 20V4.5z"/>
+      <line x1="12" y1="4.5" x2="12" y2="20"/>
+    </svg></span>
+    <span class="bLbl" id="bn-read-lbl">Đọc</span>
   </button>
+
   <button class="bBtn" id="bn-daily" onclick="App.nav('daily')" style="position:relative;">
-    <span class="bIcon" style="position:relative;display:inline-block;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M8 3.5L12 1.5L16 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+    <span class="bIcon" style="position:relative;display:inline-flex;align-items:center;justify-content:center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7v5l3 3"/>
+        <path d="M8 3.5L12 1.5L16 3.5"/>
+      </svg>
       <span id="daily-nav-badge" style="display:none;position:absolute;top:-4px;right:-6px;background:#ff9f0a;color:#000;font-size:9px;font-weight:800;border-radius:8px;padding:1px 4px;font-family:var(--mono);min-width:14px;text-align:center;line-height:14px;"></span>
     </span>
     <span class="bLbl" id="bn-daily-lbl">Hôm nay</span>
@@ -8504,6 +8644,98 @@ const caseDeclineQuiz = [
   { caseId:6, type:'pl', base:'здание', gender:'n', q:'"В ___." (Trong những tòa nhà.) — здание ở Cách 6 số nhiều:', a:'зданиях', opts:['зданиях','здания','зданий','зданиями'], exp:'Danh từ trung đuôi -ие: C6 số nhiều đổi -ия → -иях. → зданиях' },
   { caseId:6, type:'pl', base:'день', gender:'m', q:'"В эти ___." (Trong những ngày này.) — день ở Cách 6 số nhiều:', a:'днях', opts:['днях','дни','дней','днями'], exp:'Danh từ đực đuôi mềm: C6 số nhiều + -ях. → днях' },
   { caseId:6, type:'pl', base:'слово', gender:'n', q:'"В его ___." (Trong những lời của anh ấy.) — слово ở Cách 6 số nhiều:', a:'словах', opts:['словах','слова','слов','словами'], exp:'Danh từ trung đуôи -во: C6 số nhiều + -ах. → словах' },
+
+  // ════════ CÁCH 1 — Thêm: tính từ, từ vựng mới, bất quy tắc ════════
+  { caseId:1, type:'sg', base:'новый стол', gender:'m', q:'Điền tính từ + danh từ: "___ стоит здесь." (Chiếc bàn mới đứng ở đây.)', a:'Новый стол', opts:['Новый стол','Нового стола','Новому столу','Новым столом'], exp:'C1 số ít đực: tính từ đuôi -ый + danh từ không đổi. → Новый стол' },
+  { caseId:1, type:'sg', base:'красивая девушка', gender:'f', q:'"___ улыбается." (Cô gái xinh đẹp đang mỉm cười.)', a:'Красивая девушка', opts:['Красивая девушка','Красивой девушки','Красивой девушке','Красивую девушку'], exp:'C1 số ít cái: tính từ -ая + danh từ -а. → Красивая девушка' },
+  { caseId:1, type:'sg', base:'большое окно', gender:'n', q:'"___ закрыто." (Cửa sổ to đang đóng.)', a:'Большое окно', opts:['Большое окно','Большого окна','Большому окну','Большим окном'], exp:'C1 số ít trung: tính từ -ое + danh từ -о. → Большое окно' },
+  { caseId:1, type:'sg', base:'брат', gender:'m', q:'"Мой ___ — студент." (Anh trai tôi là sinh viên.) — брат ở C1 số ít:', a:'брат', opts:['брат','брата','брату','братом'], exp:'Danh từ đực kết thúc phụ âm: C1 số ít không đổi. → брат' },
+  { caseId:1, type:'sg', base:'мать', gender:'f', q:'"___ дома." (Mẹ ở nhà.) — мать ở C1 số ít:', a:'Мать', opts:['Мать','Матери','Матерью','Мать'], exp:'Danh từ bất quy tắc мать: C1 số ít = мать (gốc матер- chỉ xuất hiện ở các cách khác). → Мать' },
+  { caseId:1, type:'sg', base:'путь', gender:'m', q:'"___ долгий." (Con đường dài.) — путь ở C1 số ít:', a:'Путь', opts:['Путь','Пути','Путём','Путям'], exp:'путь — danh từ đực đặc biệt (склонение III). C1 số ít = путь. → Путь' },
+  { caseId:1, type:'pl', base:'новый стол', gender:'m', q:'"___ стоят здесь." (Những chiếc bàn mới đứng ở đây.)', a:'Новые столы', opts:['Новые столы','Новых столов','Новым столам','Новыми столами'], exp:'C1 số nhiều: tính từ -ые + danh từ đực -ы. → Новые столы' },
+  { caseId:1, type:'pl', base:'красивая девушка', gender:'f', q:'"___ поют." (Những cô gái xinh đẹp đang hát.)', a:'Красивые девушки', opts:['Красивые девушки','Красивых девушек','Красивым девушкам','Красивыми девушками'], exp:'C1 số nhiều: tính từ -ые + danh từ cái -и. → Красивые девушки' },
+  { caseId:1, type:'pl', base:'большое окно', gender:'n', q:'"___ открыты." (Những cửa sổ to đang mở.)', a:'Большие окна', opts:['Большие окна','Больших окон','Большим окнам','Большими окнами'], exp:'C1 số nhiều: tính từ -ие (quy tắc chính tả г→и) + danh từ trung -а. → Большие окна' },
+  { caseId:1, type:'pl', base:'мать', gender:'f', q:'"___ пришли." (Những người mẹ đã đến.) — мать ở C1 số nhiều:', a:'матери', opts:['матери','матерей','матерям','матерями'], exp:'мать → матери (bất quy tắc, gốc матер- + -и). → матери' },
+  { caseId:1, type:'pl', base:'друг', gender:'m', q:'"___ пришли." (Những người bạn đã đến.) — друг ở C1 số nhiều:', a:'друзья', opts:['друзья','друзей','друзьям','другами'], exp:'друг → друзья (bất quy tắc). → друзья' },
+  { caseId:1, type:'pl', base:'человек', gender:'m', q:'"___ работают здесь." (Những người này làm việc ở đây.) — человек ở C1 số nhiều:', a:'люди', opts:['люди','человеки','людей','людям'], exp:'человек → люди (bất quy tắc hoàn toàn). → люди' },
+
+  // ════════ CÁCH 2 — Thêm: tính từ, đại từ, số đếm, từ vựng mới ════════
+  { caseId:2, type:'sg', base:'новый стол', gender:'m', q:'"Нет ___." (Không có chiếc bàn mới.)', a:'нового стола', opts:['нового стола','новый стол','новому столу','новым столом'], exp:'C2 số ít đực: tính từ -ого + danh từ -а. → нового стола' },
+  { caseId:2, type:'sg', base:'красивая девушка', gender:'f', q:'"Нет ___." (Không có cô gái xinh đẹp.)', a:'красивой девушки', opts:['красивой девушки','красивая девушка','красивой девушке','красивую девушку'], exp:'C2 số ít cái: tính từ -ой + danh từ -и. → красивой девушки' },
+  { caseId:2, type:'sg', base:'большое окно', gender:'n', q:'"Нет ___." (Không có cửa sổ to.)', a:'большого окна', opts:['большого окна','большое окно','большому окну','большим окном'], exp:'C2 số ít trung: tính từ -ого + danh từ -а. → большого окна' },
+  { caseId:2, type:'sg', base:'чай', gender:'m', q:'"Стакан ___." (Một cốc trà.) — чай ở C2 số ít:', a:'чая', opts:['чая','чай','чаю','чаем'], exp:'чай (đực, đuôi -й): C2 số ít bỏ -й + -я. → чая' },
+  { caseId:2, type:'sg', base:'мать', gender:'f', q:'"Нет ___." (Không có mẹ.) — мать ở C2 số ít:', a:'матери', opts:['матери','мать','матерью','матерям'], exp:'мать (bất quy tắc): C2 số ít = матери. → матери' },
+  { caseId:2, type:'sg', base:'имя', gender:'n', q:'"Нет ___." (Không có tên.) — имя ở C2 số ít:', a:'имени', opts:['имени','имя','именам','именем'], exp:'Danh từ trung đuôi -мя: C2 số ít = имени (gốc имен-). → имени' },
+  { caseId:2, type:'sg', base:'день', gender:'m', q:'"До следующего ___." (Đến ngày hôm sau.) — день ở C2 số ít:', a:'дня', opts:['дня','день','дню','днём'], exp:'день (đực, gốc дн- mềm): C2 số ít = дня. → дня' },
+  { caseId:2, type:'sg', base:'путь', gender:'m', q:'"До конца ___." (Đến cuối con đường.) — путь ở C2 số ít:', a:'пути', opts:['пути','путь','путём','путём'], exp:'путь (đặc biệt): C2 số ít = пути. → пути' },
+  { caseId:2, type:'pl', base:'новый стол', gender:'m', q:'"Нет ___." (Không có những chiếc bàn mới.)', a:'новых столов', opts:['новых столов','новые столы','новым столам','новыми столами'], exp:'C2 số nhiều đực: tính từ -ых + danh từ -ов. → новых столов' },
+  { caseId:2, type:'pl', base:'красивая девушка', gender:'f', q:'"Нет ___." (Không có những cô gái xinh đẹp.)', a:'красивых девушек', opts:['красивых девушек','красивые девушки','красивым девушкам','красивыми девушками'], exp:'C2 số nhiều cái: tính từ -ых + danh từ rỗng + fleece. → красивых девушек' },
+  { caseId:2, type:'pl', base:'большое окно', gender:'n', q:'"Нет ___." (Không có những cửa sổ to.)', a:'больших окон', opts:['больших окон','большие окна','большим окнам','большими окнами'], exp:'C2 số nhiều trung: tính từ -их + danh từ rỗng+fleece → больших окон' },
+  { caseId:2, type:'pl', base:'человек', gender:'m', q:'"Много ___." (Nhiều người.) — человек ở C2 số nhiều:', a:'людей', opts:['людей','человеков','людям','людьми'], exp:'человек → люди → C2 số nhiều = людей (bất quy tắc). → людей' },
+  { caseId:2, type:'pl', base:'друг', gender:'m', q:'"Нет ___." (Không có bạn bè.) — друг ở C2 số nhiều:', a:'друзей', opts:['друзей','друзья','друзьям','другов'], exp:'друг → друзья → C2 số nhiều = друзей. → друзей' },
+  { caseId:2, type:'pl', base:'мать', gender:'f', q:'"Нет ___." (Không có những người mẹ.) — мать ở C2 số nhiều:', a:'матерей', opts:['матерей','матери','матерям','матерями'], exp:'мать (bất quy tắc): C2 số nhiều = матерей. → матерей' },
+  { caseId:2, type:'pl', base:'ребёнок', gender:'m', q:'"Много ___." (Nhiều trẻ em.) — ребёнок ở C2 số nhiều:', a:'детей', opts:['детей','ребёнков','дети','детям'], exp:'ребёнок → дети → C2 số nhiều = детей (bất quy tắc). → детей' },
+
+  // ════════ CÁCH 3 — Thêm: tính từ, đại từ, từ vựng mới ════════
+  { caseId:3, type:'sg', base:'новый стол', gender:'m', q:'"Я подхожу к ___." (Tôi đến gần chiếc bàn mới.)', a:'новому столу', opts:['новому столу','нового стола','новый стол','новым столом'], exp:'C3 số ít đực: tính từ -ому + danh từ -у. → новому столу' },
+  { caseId:3, type:'sg', base:'красивая девушка', gender:'f', q:'"Я помогаю ___." (Tôi giúp cô gái xinh đẹp.)', a:'красивой девушке', opts:['красивой девушке','красивую девушку','красивой девушки','красивой девушкой'], exp:'C3 số ít cái: tính từ -ой + danh từ -е. → красивой девушке' },
+  { caseId:3, type:'sg', base:'большое окно', gender:'n', q:'"Я подхожу к ___." (Tôi đến gần cửa sổ to.)', a:'большому окну', opts:['большому окну','большое окно','большого окна','большим окном'], exp:'C3 số ít trung: tính từ -ому + danh từ -у. → большому окну' },
+  { caseId:3, type:'sg', base:'врач', gender:'m', q:'"Я иду к ___." (Tôi đi gặp bác sĩ.) — врач ở C3 số ít:', a:'врачу', opts:['врачу','врача','врач','врачом'], exp:'врач (đực): C3 số ít + -у. → врачу' },
+  { caseId:3, type:'sg', base:'мать', gender:'f', q:'"Я пишу ___." (Tôi viết thư cho mẹ.) — мать ở C3 số ít:', a:'матери', opts:['матери','мать','матерью','матерям'], exp:'мать (bất quy tắc): C3 số ít = матери. → матери' },
+  { caseId:3, type:'sg', base:'имя', gender:'n', q:'"Дайте ___ герою." (Hãy đặt tên cho nhân vật.) — имя ở C3 số ít:', a:'имени', opts:['имени','имя','именам','именем'], exp:'Danh từ trung đuôi -мя: C3 số ít = имени. → имени' },
+  { caseId:3, type:'sg', base:'ребёнок', gender:'m', q:'"Дайте конфету ___." (Hãy cho đứa trẻ kẹo.) — ребёнок ở C3 số ít:', a:'ребёнку', opts:['ребёнку','ребёнка','ребёнок','ребёнком'], exp:'ребёнок (đực): C3 số ít + -у. → ребёнку' },
+  { caseId:3, type:'pl', base:'новый стол', gender:'m', q:'"Я подхожу к ___." (Tôi đến gần những chiếc bàn mới.)', a:'новым столам', opts:['новым столам','новых столов','новые столы','новыми столами'], exp:'C3 số nhiều đực: tính từ -ым + danh từ -ам. → новым столам' },
+  { caseId:3, type:'pl', base:'красивая девушка', gender:'f', q:'"Я помогаю ___." (Tôi giúp những cô gái xinh đẹp.)', a:'красивым девушкам', opts:['красивым девушкам','красивых девушек','красивые девушки','красивыми девушками'], exp:'C3 số nhiều cái: tính từ -ым + danh từ -ам. → красивым девушкам' },
+  { caseId:3, type:'pl', base:'человек', gender:'m', q:'"Я помогаю ___." (Tôi giúp mọi người.) — человек ở C3 số nhiều:', a:'людям', opts:['людям','людей','люди','людьми'], exp:'человек → люди → C3 số nhiều = людям. → людям' },
+  { caseId:3, type:'pl', base:'ребёнок', gender:'m', q:'"Я читаю книгу ___." (Tôi đọc sách cho các em nhỏ.) — ребёнок ở C3 số nhiều:', a:'детям', opts:['детям','детей','дети','детьми'], exp:'ребёнок → дети → C3 số nhiều = детям. → детям' },
+  { caseId:3, type:'pl', base:'путь', gender:'m', q:'"По ___." (Theo những con đường.) — путь ở C3 số nhiều:', a:'путям', opts:['путям','путей','пути','путями'], exp:'путь (đặc biệt): C3 số nhiều + -ям. → путям' },
+
+  // ════════ CÁCH 4 — Thêm: tính từ, hữu sinh/vô sinh, số đếm ════════
+  { caseId:4, type:'sg', base:'новый стол', gender:'m', q:'"Я вижу ___ (vô sinh)." (Tôi thấy chiếc bàn mới.)', a:'новый стол', opts:['новый стол','нового стола','новому столу','новым столом'], exp:'C4 số ít đực VÔ SINH: tính từ + danh từ giữ nguyên như C1. → новый стол' },
+  { caseId:4, type:'sg', base:'новый студент', gender:'m', q:'"Я вижу ___ (hữu sinh)." (Tôi thấy sinh viên mới.)', a:'нового студента', opts:['нового студента','новый студент','новому студенту','новым студентом'], exp:'⚠ C4 số ít đực HỮU SINH = C2: tính từ -ого + danh từ -а. → нового студента' },
+  { caseId:4, type:'sg', base:'красивую девушку', gender:'f', q:'"Я вижу ___." (Tôi thấy cô gái xinh đẹp.)', a:'красивую девушку', opts:['красивую девушку','красивой девушки','красивой девушке','красивой девушкой'], exp:'C4 số ít cái: tính từ -ую + danh từ -у. → красивую девушку' },
+  { caseId:4, type:'sg', base:'большое окно', gender:'n', q:'"Я вижу ___." (Tôi thấy cửa sổ to.)', a:'большое окно', opts:['большое окно','большого окна','большому окну','большим окном'], exp:'C4 số ít trung VÔ SINH = C1. → большое окно' },
+  { caseId:4, type:'sg', base:'врач', gender:'m', q:'"Я вижу ___." (Tôi thấy bác sĩ.) — врач ở C4 số ít:', a:'врача', opts:['врача','врач','врачу','врачом'], exp:'⚠ врач là HỮU SINH: C4 số ít = C2 → + -а. → врача' },
+  { caseId:4, type:'sg', base:'мать', gender:'f', q:'"Я люблю ___." (Tôi yêu mẹ.) — мать ở C4 số ít:', a:'мать', opts:['мать','матери','матерью','матерям'], exp:'мать (bất quy tắc): C4 số ít = мать (đồng dạng C1 cho cái -ь). → мать' },
+  { caseId:4, type:'sg', base:'время', gender:'n', q:'"Я трачу ___." (Tôi tiêu tốn thời gian.) — время ở C4 số ít:', a:'время', opts:['время','времени','временем','временам'], exp:'Danh từ trung đuôi -мя: C4 số ít = C1 = время (vô sinh). → время' },
+  { caseId:4, type:'pl', base:'новый стол', gender:'m', q:'"Я вижу ___ (vô sinh, số nhiều)." (Tôi thấy những chiếc bàn mới.)', a:'новые столы', opts:['новые столы','новых столов','новым столам','новыми столами'], exp:'C4 số nhiều đực VÔ SINH = C1 số nhiều. → новые столы' },
+  { caseId:4, type:'pl', base:'новый студент', gender:'m', q:'"Я вижу ___ (hữu sinh, số nhiều)." (Tôi thấy các sinh viên mới.)', a:'новых студентов', opts:['новых студентов','новые студенты','новым студентам','новыми студентами'], exp:'⚠ C4 số nhiều đực HỮU SINH = C2 số nhiều: tính từ -ых + danh từ -ов. → новых студентов' },
+  { caseId:4, type:'pl', base:'красивая девушка', gender:'f', q:'"Я вижу ___." (Tôi thấy những cô gái xinh đẹp.)', a:'красивых девушек', opts:['красивых девушек','красивые девушки','красивым девушкам','красивыми девушками'], exp:'⚠ C4 số nhiều cái HỮU SINH = C2 số nhiều. → красивых девушек' },
+  { caseId:4, type:'pl', base:'человек', gender:'m', q:'"Я вижу ___." (Tôi thấy mọi người.) — человек ở C4 số nhiều:', a:'людей', opts:['людей','люди','людям','людьми'], exp:'⚠ HỮU SINH: C4 số nhiều = C2 số nhiều = людей. → людей' },
+  { caseId:4, type:'pl', base:'ребёнок', gender:'m', q:'"Я вижу ___." (Tôi thấy các em nhỏ.) — ребёнок ở C4 số nhiều:', a:'детей', opts:['детей','дети','детям','детьми'], exp:'⚠ HỮU SINH: C4 số nhiều = C2 số nhiều = детей. → детей' },
+
+  // ════════ CÁCH 5 — Thêm: tính từ, công cụ cụ thể, thời gian ════════
+  { caseId:5, type:'sg', base:'новый стол', gender:'m', q:'"Он сидит за ___." (Anh ấy ngồi sau chiếc bàn mới.)', a:'новым столом', opts:['новым столом','нового стола','новому столу','новый стол'], exp:'C5 số ít đực: tính từ -ым + danh từ -ом. → новым столом' },
+  { caseId:5, type:'sg', base:'красивая девушка', gender:'f', q:'"Он разговаривает с ___." (Anh ấy nói chuyện với cô gái xinh đẹp.)', a:'красивой девушкой', opts:['красивой девушкой','красивую девушку','красивой девушки','красивой девушке'], exp:'C5 số ít cái: tính từ -ой + danh từ -ой. → красивой девушкой' },
+  { caseId:5, type:'sg', base:'большое окно', gender:'n', q:'"Перед ___." (Trước cửa sổ to.)', a:'большим окном', opts:['большим окном','большое окно','большого окна','большому окну'], exp:'C5 số ít trung: tính từ -им + danh từ -ом. → большим окном' },
+  { caseId:5, type:'sg', base:'врач', gender:'m', q:'"Он стал ___." (Anh ấy trở thành bác sĩ.) — врач ở C5 số ít:', a:'врачом', opts:['врачом','врача','врачу','врач'], exp:'C5 số ít đực kết thúc phụ âm cứng: + -ом. → врачом' },
+  { caseId:5, type:'sg', base:'мать', gender:'f', q:'"Она стала ___." (Cô ấy trở thành người mẹ.) — мать ở C5 số ít:', a:'матерью', opts:['матерью','мать','матери','матерям'], exp:'мать (bất quy tắc): C5 số ít = матерью. → матерью' },
+  { caseId:5, type:'sg', base:'имя', gender:'n', q:'"С ___." (Với cái tên.) — имя ở C5 số ít:', a:'именем', opts:['именем','имени','имя','именам'], exp:'Danh từ trung đuôi -мя: C5 số ít = именем (gốc имен- + -ем). → именем' },
+  { caseId:5, type:'sg', base:'зима', gender:'f', q:'"___." (Vào mùa đông. — thời gian C5) — зима ở C5 số ít:', a:'Зимой', opts:['Зимой','Зиму','Зимы','Зиме'], exp:'Thời gian C5 (mùa/thời điểm): зима → зимой (+ -ой). → зимой' },
+  { caseId:5, type:'sg', base:'утро', gender:'n', q:'"___." (Vào buổi sáng.) — утро ở C5 số ít:', a:'Утром', opts:['Утром','Утра','Утру','Утре'], exp:'Thời gian C5 (buổi): утро → утром (+ -ом). → утром' },
+  { caseId:5, type:'pl', base:'новый стол', gender:'m', q:'"Над ___." (Phía trên những chiếc bàn mới.)', a:'новыми столами', opts:['новыми столами','новых столов','новым столам','новые столы'], exp:'C5 số nhiều đực: tính từ -ыми + danh từ -ами. → новыми столами' },
+  { caseId:5, type:'pl', base:'красивая девушка', gender:'f', q:'"Он работает с ___." (Anh ấy làm việc với những cô gái xinh đẹp.)', a:'красивыми девушками', opts:['красивыми девушками','красивых девушек','красивым девушкам','красивые девушки'], exp:'C5 số nhiều cái: tính từ -ыми + danh từ -ами. → красивыми девушками' },
+  { caseId:5, type:'pl', base:'человек', gender:'m', q:'"Он работает с ___." (Anh ấy làm việc với mọi người.) — человек ở C5 số nhiều:', a:'людьми', opts:['людьми','людей','людям','люди'], exp:'человек → люди → C5 số nhiều = людьми (bất quy tắc). → людьми' },
+  { caseId:5, type:'pl', base:'ребёнок', gender:'m', q:'"Она играет с ___." (Cô ấy chơi với các em.) — ребёнок ở C5 số nhiều:', a:'детьми', opts:['детьми','детей','детям','дети'], exp:'ребёнок → дети → C5 số nhiều = детьми (bất quy tắc). → детьми' },
+  { caseId:5, type:'pl', base:'мать', gender:'f', q:'"Разговор с ___." (Cuộc nói chuyện với những người mẹ.) — мать ở C5 số nhiều:', a:'матерями', opts:['матерями','матерей','матерям','матери'], exp:'мать (bất quy tắc): C5 số nhiều = матерями. → матерями' },
+
+  // ════════ CÁCH 6 — Thêm: tính từ, địa điểm, chủ đề ════════
+  { caseId:6, type:'sg', base:'новый стол', gender:'m', q:'"Книга на ___." (Sách trên chiếc bàn mới.)', a:'новом столе', opts:['новом столе','нового стола','новому столу','новым столом'], exp:'C6 số ít đực: tính từ -ом + danh từ -е. → новом столе' },
+  { caseId:6, type:'sg', base:'красивая девушка', gender:'f', q:'"Он думает о ___." (Anh ấy nghĩ về cô gái xinh đẹp.)', a:'красивой девушке', opts:['красивой девушке','красивую девушку','красивой девушки','красивой девушкой'], exp:'C6 số ít cái: tính từ -ой + danh từ -е. → красивой девушке' },
+  { caseId:6, type:'sg', base:'большое окно', gender:'n', q:'"На ___." (Trên cửa sổ to.)', a:'большом окне', opts:['большом окне','большое окно','большого окна','большим окном'], exp:'C6 số ít trung: tính từ -ом + danh từ -е. → большом окне' },
+  { caseId:6, type:'sg', base:'врач', gender:'m', q:'"Он думает о ___." (Anh ấy nghĩ đến bác sĩ.) — врач ở C6 số ít:', a:'враче', opts:['враче','врача','врачу','врачом'], exp:'C6 số ít đực: + -е. → враче' },
+  { caseId:6, type:'sg', base:'путь', gender:'m', q:'"На ___." (Trên con đường.) — путь ở C6 số ít:', a:'пути', opts:['пути','пути','путём','путям'], exp:'путь (đặc biệt): C6 số ít = пути. → пути' },
+  { caseId:6, type:'sg', base:'имя', gender:'n', q:'"В ___." (Trong cái tên.) — имя ở C6 số ít:', a:'имени', opts:['имени','имя','именам','именем'], exp:'Danh từ trung đuôi -мя: C6 số ít = имени. → имени' },
+  { caseId:6, type:'sg', base:'мать', gender:'f', q:'"Он думает о ___." (Anh ấy nghĩ đến mẹ.) — мать ở C6 số ít:', a:'матери', opts:['матери','мать','матерью','матерям'], exp:'мать (bất quy tắc): C6 số ít = матери. → матери' },
+  { caseId:6, type:'sg', base:'сад', gender:'m', q:'"Мы гуляли в ___." (Chúng tôi dạo trong vườn.) — сад ở C6 số ít:', a:'саду', opts:['саду','саде','сада','садом'], exp:'Một số danh từ đực 1 âm tiết: C6 số ít -у (nhấn âm). Ví dụ: сад→саду, берег→берегу, нос→носу. → саду' },
+  { caseId:6, type:'sg', base:'море', gender:'n', q:'"На ___." (Ở biển.) — море ở C6 số ít:', a:'море', opts:['море','моря','морю','морем'], exp:'море (trung đuôi -е mềm): C6 số ít = море (không đổi, vì -е là đuôi C6). → море' },
+  { caseId:6, type:'pl', base:'новый стол', gender:'m', q:'"На ___." (Trên những chiếc bàn mới.)', a:'новых столах', opts:['новых столах','новые столы','новым столам','новыми столами'], exp:'C6 số nhiều đực: tính từ -ых + danh từ -ах. → новых столах' },
+  { caseId:6, type:'pl', base:'красивая девушка', gender:'f', q:'"Он думает о ___." (Anh ấy nghĩ về những cô gái xinh đẹp.)', a:'красивых девушках', opts:['красивых девушках','красивых девушек','красивым девушкам','красивыми девушками'], exp:'C6 số nhiều cái: tính từ -ых + danh từ -ах. → красивых девушках' },
+  { caseId:6, type:'pl', base:'большое окно', gender:'n', q:'"На ___." (Trên những cửa sổ to.)', a:'больших окнах', opts:['больших окнах','большие окна','большим окнам','большими окнами'], exp:'C6 số nhiều trung: tính từ -их + danh từ -ах. → больших окнах' },
+  { caseId:6, type:'pl', base:'человек', gender:'m', q:'"Он думает о ___." (Anh ấy nghĩ về mọi người.) — человек ở C6 số nhiều:', a:'людях', opts:['людях','людей','людям','людьми'], exp:'человек → люди → C6 số nhiều = людях. → людях' },
+  { caseId:6, type:'pl', base:'ребёнок', gender:'m', q:'"Он думает о ___." (Anh ấy nghĩ đến các em nhỏ.) — ребёнок ở C6 số nhiều:', a:'детях', opts:['детях','детей','детям','детьми'], exp:'ребёнок → дети → C6 số nhiều = детях. → детях' },
+  { caseId:6, type:'pl', base:'мать', gender:'f', q:'"Он думает о ___." (Anh ấy nghĩ đến những người mẹ.) — мать ở C6 số nhiều:', a:'матерях', opts:['матерях','матерей','матерям','матерями'], exp:'мать (bất quy tắc): C6 số nhiều = матерях. → матерях' },
+  { caseId:6, type:'pl', base:'имя', gender:'n', q:'"В ___." (Trong những cái tên.) — имя ở C6 số nhiều:', a:'именах', opts:['именах','имени','именам','именами'], exp:'Danh từ trung đuôi -мя: C6 số nhiều = именах. → именах' },
 ];
 
 const caseQuizData = [
@@ -8580,6 +8812,55 @@ const caseQuizData = [
     { q: 'С ТОЧКИ ЗРЕНИЯ ЭКОНОМИКИ — từ ЭКОНОМИКА ở cách mấy?', a: 'Cách 2', opts: ['Cách 1','Cách 2','Cách 5','Cách 6'], exp: 'С точки зрения + Cách 2: với quan điểm của kinh tế học. ЭКОНОМИКА → ЭКОНОМИКИ.' },
     { q: '"Благодаря ПОМОЩИ друга." Từ ПОМОЩЬ ở cách mấy?', a: 'Cách 3 — sau БЛАГОДАРЯ', opts: ['Cách 2','Cách 3 — sau БЛАГОДАРЯ','Cách 4','Cách 5'], exp: 'БЛАГОДАРЯ (nhờ có) + Cách 3. ПОМОЩЬ → ПОМОЩИ (C3).' },
     { q: 'Trong kinh tế: "Анализ РЫНКА ТРУДА" — РЫНОК ТРУДА đều ở cách mấy?', a: 'РЫНКА (C2), ТРУДА (C2)', opts: ['РЫНКА (C2), ТРУДА (C2)','РЫНОК (C1), ТРУДА (C2)','РЫНКА (C2), ТРУД (C1)','Cả hai C1'], exp: 'Анализ (C1) + ЧЕГО? → Cách 2. РЫНОК → РЫНКА, ТРУД → ТРУДА. Chuỗi sở hữu.' },
+
+    // ─── BỔ SUNG CÁCH 1 ───────────────────────────────────────────
+    { q: '"___ — моя подруга." Điền: ОНА hay ЕЁ hay ЕЙ?', a: 'Она', opts: ['Она','Её','Ей','С ней'], exp: 'Chủ ngữ của câu → C1. ОНА = C1 của ОНА. → Она' },
+    { q: '"КТО это?" — đây là câu hỏi của cách nào?', a: 'Cách 1', opts: ['Cách 1','Cách 2','Cách 4','Cách 6'], exp: 'КТО? ЧТО? là câu hỏi đặc trưng của Cách 1 — chủ ngữ của câu.' },
+    { q: '"Это ___ город." Điền: большой / большого / большому?', a: 'большой', opts: ['большой','большого','большому','большим'], exp: 'Vị ngữ danh từ "это X" dùng C1. Tính từ đực C1 số ít: большой. → большой город' },
+    { q: 'Trong tiếng Nga, chủ ngữ của câu luôn ở cách mấy?', a: 'Cách 1 — Именительный', opts: ['Cách 1 — Именительный','Cách 3','Cách 4','Cách 6'], exp: 'Chủ ngữ (подлежащее) luôn ở Cách 1. Đây là quy tắc bất biến trong ngữ pháp Nga.' },
+    { q: '"Мама и папа — ___." Chọn đúng: учителя / учители / учителей?', a: 'учителя', opts: ['учителя','учители','учителей','учителям'], exp: 'Vị ngữ danh từ C1. учитель → số nhiều bất quy tắc C1: учителя (không phải учители). → учителя' },
+
+    // ─── BỔ SUNG CÁCH 2 ───────────────────────────────────────────
+    { q: '"Три ___." (Ba cuốn sách.) — книга ở C2 số ít hay số nhiều?', a: 'Книги (C2 số ít)', opts: ['Книги (C2 số ít)','Книг (C2 số nhiều)','Книгам (C3)','Книгами (C5)'], exp: '2, 3, 4 + C2 số ít: три книги, два стола. 5+ + C2 số nhiều: пять книг.' },
+    { q: '"Двадцать один ___." (21 sinh viên.) — студент ở cách và số nào?', a: 'студент (C1 số ít)', opts: ['студент (C1 số ít)','студента (C2 số ít)','студентов (C2 số nhiều)','студентам (C3)'], exp: '21, 31, 41... (kết thúc bằng 1) + C1 số ít: двадцать один студент.' },
+    { q: '"Без ___." (Không có đường.) — сахар ở C2 số ít:', a: 'сахара', opts: ['сахара','сахар','сахару','сахаром'], exp: 'БЕЗ (không có) + C2. сахар → сахара. → без сахара' },
+    { q: '"Около ___." (Gần nhà ga.) — вокзал ở C2 số ít:', a: 'вокзала', opts: ['вокзала','вокзал','вокзалу','вокзалом'], exp: 'ОКОЛО (gần) + C2. вокзал → вокзала. → около вокзала' },
+    { q: '"Вместо ___." (Thay vì cô giáo.) — учительница ở C2 số ít:', a: 'учительницы', opts: ['учительницы','учительнице','учительницу','учительницей'], exp: 'ВМЕСТО (thay vì) + C2. учительница → учительницы (đuôi -а → -ы). → вместо учительницы' },
+    { q: 'Sau ВСЕ/ВСЯ/ВЕСЬ dùng cách nào khi phủ định?', a: 'Cách 2', opts: ['Cách 1','Cách 2','Cách 4','Cách 6'], exp: 'Phủ định НИЧЕГО (không gì): câu phủ định tổng quát. Sau "ничего нет" → cách 2.' },
+
+    // ─── BỔ SUNG CÁCH 3 ───────────────────────────────────────────
+    { q: '"Мне ___ лет." (Tôi ___ tuổi.) — МНЕ là dạng C3 của đại từ nào?', a: 'Я', opts: ['Я','ТЫ','ОН','МЫ'], exp: 'Я → МНЕ (C3). Diễn đạt tuổi: Мне 20 лет.' },
+    { q: '"Кому ты звонишь?" — ТЫ đang hỏi về ai?', a: 'Về người nhận cuộc gọi — C3', opts: ['Về người nhận cuộc gọi — C3','Về chủ thể — C1','Về đối tượng trực tiếp — C4','Về vị trí — C6'], exp: 'КОМУ? — câu hỏi C3 (tặng cách). Звонить + КОМУ (C3).' },
+    { q: '"Я рад ___." (Tôi vui vì anh ấy đến.) — ЕМУ là C3 của đại từ nào?', a: 'ОН / ОНО', opts: ['ОН / ОНО','ОНА','ОНИ','МЫ'], exp: 'ОН/ОНО → ЕМУ (C3). ОНА → ЕЙ. ОНИ → ИМ. МЫ → НАМ.' },
+    { q: '"По ___." (Dọc theo con phố.) — улица ở C3 số ít:', a: 'улице', opts: ['улице','улицу','улицы','улицей'], exp: 'ПО (dọc theo) + C3. улица (cái, -а) → улице (C3 số ít). → по улице' },
+    { q: '"Навстречу ___." (Tiến về phía gió.) — ветер ở C3 số ít:', a: 'ветру', opts: ['ветру','ветра','ветром','ветре'], exp: 'НАВСТРЕЧУ (tiến đến gặp) + C3. ветер → ветру. → навстречу ветру' },
+    { q: '"Вопреки ___." (Bất chấp quy định.) — правило ở C3 số ít:', a: 'правилу', opts: ['правилу','правила','правилом','правиле'], exp: 'ВОПРЕКИ (bất chấp) + C3. правило (trung, -о) → правилу. → вопреки правилу' },
+
+    // ─── BỔ SUNG CÁCH 4 ───────────────────────────────────────────
+    { q: '"В ___ я читаю." (Vào thứ Tư tôi đọc sách.) — среда ở C4:', a: 'среду', opts: ['среду','среды','среде','средой'], exp: 'Ngày trong tuần + В → C4. среда → среду (cái, -а → -у). → в среду' },
+    { q: '"Я жду ___." (Tôi chờ bạn bè.) — друзья ở C4 số nhiều:', a: 'друзей', opts: ['друзей','друзья','друзьям','друзьями'], exp: '⚠ HỮU SINH: C4 số nhiều = C2 số nhiều. друзья → друзей. → жду друзей' },
+    { q: '"Через ___." (Sau một năm.) — год ở C4 số ít:', a: 'год', opts: ['год','года','году','годом'], exp: 'ЧЕРЕЗ + C4. год (đực VÔ SINH) → год (C4 = C1). → через год' },
+    { q: '"Видеть ___ в кино." (Xem phim ở rạp.) — фильм ở C4 số ít:', a: 'фильм', opts: ['фильм','фильма','фильму','фильмом'], exp: 'Видеть + C4 (VÔ SINH đực = C1). фильм → фильм. → видеть фильм' },
+    { q: '"Я люблю ___." (Tôi yêu mùa hè.) — лето ở C4 số ít:', a: 'лето', opts: ['лето','лета','лету','летом'], exp: 'Любить + C4 (VÔ SINH trung = C1). лето → лето. → люблю лето' },
+    { q: '"Они просят ___." (Họ nhờ giúp đỡ.) — помощь ở C4 số ít:', a: 'помощь', opts: ['помощь','помощи','помощью','помощей'], exp: 'Просить + C4. помощь (cái -ь, VÔ SINH) → C4 = C1 = помощь. → просят помощь' },
+
+    // ─── BỔ SUNG CÁCH 5 ───────────────────────────────────────────
+    { q: '"Быть ___." (Trở thành kỹ sư.) — инженер ở C5 số ít:', a: 'инженером', opts: ['инженером','инженера','инженеру','инженер'], exp: 'Быть/стать/работать + C5 (nghề nghiệp). инженер → инженером. → быть инженером' },
+    { q: '"Она работает ___." (Cô ấy làm bác sĩ.) — врач ở C5 số ít:', a: 'врачом', opts: ['врачом','врача','врачу','врач'], exp: 'Работать + C5 (nghề nghiệp). врач → врачом. → работает врачом' },
+    { q: '"Лететь над ___." (Bay qua thành phố.) — город ở C5 số ít:', a: 'городом', opts: ['городом','города','городу','городе'], exp: 'НАД (phía trên) + C5. город → городом. → над городом' },
+    { q: '"Перед ___." (Trước bài kiểm tra.) — экзамен ở C5 số ít:', a: 'экзаменом', opts: ['экзаменом','экзамена','экзамену','экзамене'], exp: 'ПЕРЕД (trước mặt / trước khi) + C5. экзамен → экзаменом. → перед экзаменом' },
+    { q: '"Под ___." (Dưới mặt trời.) — солнце ở C5 số ít:', a: 'солнцем', opts:['солнцем','солнца','солнцу','солнце'], exp: 'ПОД (phía dưới) + C5. солнце (trung) → солнцем. → под солнцем' },
+    { q: '"Она стала ___." (Cô ấy trở thành giáo viên.) — учительница ở C5 số ít:', a: 'учительницей', opts: ['учительницей','учительницу','учительницы','учительнице'], exp: 'Стать + C5. учительница (cái, -а) → учительницей. → стала учительницей' },
+    { q: '"Зимой ___." В каком падеже слово ЗИМОЙ?', a: 'Cách 5 — thời gian', opts: ['Cách 1','Cách 2','Cách 5 — thời gian','Cách 6'], exp: 'Thời gian theo mùa/buổi dùng C5 không cần giới từ: зимой, летом, утром, вечером.' },
+
+    // ─── BỔ SUNG CÁCH 6 ───────────────────────────────────────────
+    { q: '"На ___." (Trên tầng một.) — этаж ở C6 số ít:', a: 'первом этаже', opts: ['первом этаже','первый этаж','первого этажа','первому этажу'], exp: 'НА + C6 (vị trí). первый этаж → первом этаже (tính từ + danh từ đực C6). → на первом этаже' },
+    { q: '"В ___." (Ở trong bể bơi.) — бассейн ở C6 số ít:', a: 'бассейне', opts: ['бассейне','бассейна','бассейну','бассейном'], exp: 'В + C6 = ở tại. бассейн (đực) → бассейне. → в бассейне' },
+    { q: '"О ___." (Về âm nhạc.) — музыка ở C6 số ít:', a: 'музыке', opts: ['музыке','музыку','музыки','музыкой'], exp: 'О + C6 (về chủ đề). музыка (cái, -а) → музыке. → о музыке' },
+    { q: '"При ___." (Dưới thời Sa hoàng.) — царь ở C6 số ít:', a: 'царе', opts: ['царе','царя','царю','царём'], exp: 'ПРИ (dưới thời / khi có) + C6. царь (đực, -ь) → царе. → при царе' },
+    { q: '"В ___." (Ở trong rừng taiga.) — тайга ở C6 số ít:', a: 'тайге', opts: ['тайге','тайгу','тайги','тайгой'], exp: 'В + C6. тайга (cái, -а) → тайге. → в тайге' },
+    { q: '"Цветы в ___." (Hoa trong bình.) — ваза ở C6 số ít:', a: 'вазе', opts: ['вазе','вазу','вазы','вазой'], exp: 'В + C6. ваза → вазе. → в вазе' },
+    { q: '"На ___ написано…" (Trên biển hiệu có ghi...) — вывеска ở C6 số ít:', a: 'вывеске', opts: ['вывеске','вывеску','вывески','вывеской'], exp: 'НА + C6. вывеска (cái, -а) → вывеске. → на вывеске' },
 ];
 
 const formationQuizData = [
@@ -9989,8 +10270,8 @@ function openCase(id){
   const isEN=(S.lang||'vi')==='en';
   const tab=S.caseTab||'theory';
   // ── Tab switcher ──────────────────────────────────────────────
-  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;">
-    ${[['theory',isEN?'📖 Theory':'📖 Lý thuyết'],['exercise',isEN?'✏️ Exercises':'✏️ Bài tập']].map(([k,l])=>`<button onclick="App.setCaseTab('${k}')" style="flex:1;padding:10px 4px;border-radius:10px;font-size:12px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${tab===k?c.color+'80':'rgba(255,255,255,0.1)'};background:${tab===k?c.color+'15':'rgba(255,255,255,0.04)'};color:${tab===k?c.color:'var(--com)'};">${l}</button>`).join('')}
+  let h=`<div class="seg-tabs">
+    ${[['theory',isEN?'Theory':'Lý thuyết','<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'],['exercise',isEN?'Exercises':'Bài tập','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>']].map(([k,l,p])=>`<button class="seg-tab${tab===k?' on':''}" onclick="App.setCaseTab('${k}')" style="${tab===k?`border-color:${c.color}60;background:${c.color}12;color:${c.color};box-shadow:0 0 18px ${c.color}18 inset,0 1px 0 rgba(255,255,255,.08) inset;`:''}""><svg viewBox="0 0 24 24">${p}</svg>${l}</button>`).join('')}
   </div>`;
   if(tab==='theory'){
     // ── Lý thuyết ─────────────────────────────────────────────
@@ -10016,8 +10297,8 @@ function openCase(id){
     if(!S._caseExSub) S._caseExSub='decline';
     const sub=S._caseExSub;
     // Sub-tab switcher
-    h+=`<div style="display:flex;gap:6px;margin-bottom:14px;">
-      ${[['decline',isEN?'🔡 Declension':'🔡 Biến cách'],['context',isEN?'💬 In context':'💬 Ngữ cảnh']].map(([k,l])=>`<button onclick="App._caseExSubSwitch('${k}')" style="flex:1;padding:8px 4px;border-radius:8px;font-size:11px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${sub===k?c.color+'80':'rgba(255,255,255,0.08)'};background:${sub===k?c.color+'18':'rgba(255,255,255,0.03)'};color:${sub===k?c.color:'var(--com)'};">${l}</button>`).join('')}
+    h+=`<div class="sub-tabs">
+      ${[['decline',isEN?'Declension':'Biến cách','<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>'],['context',isEN?'In context':'Ngữ cảnh','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>']].map(([k,l,p])=>`<button class="sub-tab${sub===k?' on':''}" onclick="App._caseExSubSwitch('${k}')" style="${sub===k?`border-color:${c.color}60;background:${c.color}12;color:${c.color};`:''}""><svg viewBox="0 0 24 24">${p}</svg>${l}</button>`).join('')}
     </div>`;
 
     if(sub==='decline'){
@@ -10032,8 +10313,8 @@ function openCase(id){
       const dDone=S._cdIdx>=allD.length;
       // Filter buttons: all / sg / pl
       const dFilt=S._cdFilt||'all';
-      h+=`<div style="display:flex;gap:6px;margin-bottom:10px;">
-        ${[['all',isEN?'All':'Tất cả'],['sg',isEN?'Singular':'Số ít'],['pl',isEN?'Plural':'Số nhiều']].map(([k,l])=>`<button onclick="App._cdFilter('${k}')" style="flex:1;padding:6px 2px;border-radius:8px;font-size:10px;font-weight:700;font-family:var(--mono);cursor:pointer;border:1px solid ${dFilt===k?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.08)'};background:${dFilt===k?'rgba(255,255,255,0.10)':'transparent'};color:${dFilt===k?'var(--tx)':'var(--com)'};">${l}</button>`).join('')}
+      h+=`<div class="filter-chips">
+        ${[['all',isEN?'All':'Tất cả'],['sg',isEN?'SG · Singular':'SG · Số ít'],['pl',isEN?'PL · Plural':'PL · Số nhiều']].map(([k,l])=>`<button class="filter-chip${dFilt===k?' on':''}" onclick="App._cdFilter('${k}')">${l}</button>`).join('')}
       </div>`;
       const filtD=dFilt==='all'?allD:allD.filter(q=>q.type===dFilt);
       const fIdx=S._cdFiltIdx||0;
@@ -10076,7 +10357,7 @@ function openCase(id){
 
     } else {
       // ── Ngữ cảnh (caseQuizData — câu hỏi cũ) ─────────────────
-      const _caseOffsets=[0,8,19,27,35,43,60];
+      const _caseOffsets=[0,13,30,44,58,73,97];
       const qs=caseQuizData.slice(_caseOffsets[c.id-1], _caseOffsets[c.id]);
       if(!S._caseQShuffled||S._caseQShuffled.length===0) S._caseQShuffled=[...qs].sort(()=>Math.random()-.5);
       const allQ=S._caseQShuffled;
@@ -10171,7 +10452,7 @@ function _caseQAnswer(optIdx){
 }
 function _caseQRetry(){
   const c=S.selCase;
-  const _caseOffsets=[0,8,19,27,35,43,60];
+  const _caseOffsets=[0,13,30,44,58,73,97];
   const qs=caseQuizData.slice(_caseOffsets[c.id-1], _caseOffsets[c.id]);
   S._caseQShuffled=[...qs].sort(()=>Math.random()-.5);
   S._caseQIdx=0; S._caseQSel=null; S._caseQScore={c:0,t:0};
@@ -10183,8 +10464,8 @@ function renderFormation(){
   const tab=S.formTab||'theory';
   const accentColor='#bc8cff';
   // ── Tab switcher ──────────────────────────────────────────────
-  let h=`<div style="display:flex;gap:8px;margin-bottom:14px;">
-    ${[['theory',isEN?'📖 Theory':'📖 Lý thuyết'],['exercise',isEN?'✏️ Exercises':'✏️ Bài tập']].map(([k,l])=>`<button onclick="App.setFormTab('${k}')" style="flex:1;padding:10px 4px;border-radius:10px;font-size:12px;font-weight:700;font-family:var(--display);cursor:pointer;border:1px solid ${tab===k?accentColor+'80':'rgba(255,255,255,0.1)'};background:${tab===k?accentColor+'15':'rgba(255,255,255,0.04)'};color:${tab===k?accentColor:'var(--com)'};">${l}</button>`).join('')}
+  let h=`<div class="seg-tabs">
+    ${[['theory',isEN?'Theory':'Lý thuyết','<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'],['exercise',isEN?'Exercises':'Bài tập','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>']].map(([k,l,p])=>`<button class="seg-tab${tab===k?' on':''}" onclick="App.setFormTab('${k}')" style="${tab===k?`border-color:${accentColor}60;background:${accentColor}12;color:${accentColor};box-shadow:0 0 18px ${accentColor}18 inset,0 1px 0 rgba(255,255,255,.08) inset;`:''}""><svg viewBox="0 0 24 24">${p}</svg>${l}</button>`).join('')}
   </div>`;
   if(tab==='theory'){
     const types=[{k:'noun',l:'N',c:'#58a6ff',bg:'#0d1a2a'},{k:'verb',l:'V',c:'#39d353',bg:'#0d2318'},{k:'adj',l:'A',c:'#bc8cff',bg:'#1a0d2a'},{k:'adv',l:t('fc.wf.adv'),c:'#e3b341',bg:'#1a1400'}];
@@ -10754,14 +11035,439 @@ var motionData = {
       opts:['ходите','идите','пойдите','приходите'], ans:1,
       exp:'«Идите за мной» — mệnh lệnh thức, đang đi theo hướng cụ thể ngay bây giờ. «Пойдёмте» cũng dùng được.' },
 
+    // ══════════════════════════════════════════════════════
+    // NHÓM 8: идти / ходить — phân biệt sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Ты куда? — Я ___ на почту, отправить посылку.',
+      opts:['иду','хожу','пойду','прихожу'], ans:0,
+      exp:'«Идти» — đang đi lúc nói chuyện, hướng cụ thể (на почту). «Хожу» = thói quen lặp lại.' },
+    { type:'choose', q:'Раньше я ___ на работу пешком, но теперь езжу на метро.',
+      opts:['шёл','ходил','пошёл','приходил'], ans:1,
+      exp:'«Ходил» — thói quen trong quá khứ đã thay đổi. «Шёл» chỉ đang đi tại một thời điểm cụ thể.' },
+    { type:'choose', q:'Смотри, Ваня ___ по улице и смеётся.',
+      opts:['ходит','идёт','пойдёт','приходит'], ans:1,
+      exp:'«Идёт» — đang đi lúc quan sát, một hướng cụ thể trên phố. «Ходит» dùng khi đi lại qua lại.' },
+    { type:'choose', q:'Я очень устал — весь день ___.',
+      opts:['шёл','ходил','иду','хожу'], ans:1,
+      exp:'«Ходил» — đi lại suốt cả ngày (nhiều chiều, không theo một hướng cố định).' },
+    { type:'choose', q:'Куда ___ эта дорога? — В деревню.',
+      opts:['идёт','ходит','пойдёт','приходит'], ans:0,
+      exp:'«Идти» dùng cho con đường/lối đi hướng đến một nơi cụ thể. Đây là nghĩa bóng của «идти».' },
+    { type:'choose', q:'Дождь ___ уже несколько часов.',
+      opts:['идёт','ходит','пойдёт','приходит'], ans:0,
+      exp:'«Идти» dùng cho mưa/tuyết: дождь идёт, снег идёт. Đây là thành ngữ cố định.' },
+    { type:'choose', q:'Часы ___? — Да, идут нормально.',
+      opts:['идут','ходят','пойдут','приходят'], ans:0,
+      exp:'«Идти» dùng cho đồng hồ chạy: часы идут / не идут. Thành ngữ cố định.' },
+    { type:'choose', q:'Спектакль ___ три часа.',
+      opts:['идёт','ходит','пойдёт','уходит'], ans:0,
+      exp:'«Идти» dùng cho vở diễn/phim đang chiếu, kéo dài. Nghĩa bóng quen thuộc.' },
+    { type:'choose', q:'Переговоры ___ трудно, но продуктивно.',
+      opts:['идут','ходят','пойдут','уходят'], ans:0,
+      exp:'«Идти» — tiến trình diễn ra: переговоры идут (đàm phán đang diễn ra). Nghĩa bóng.' },
+    { type:'choose', q:'Пока я читал, дети ___ гулять на улицу и вернулись.',
+      opts:['шли','ходили','пошли','приходили'], ans:1,
+      exp:'«Ходили» — đã đi và đã về (roundtrip hoàn chỉnh). «Пошли» chỉ nói đến lúc bắt đầu đi.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 9: ехать / ездить — phân biệt sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Мы ___ уже два часа, но ещё не приехали.',
+      opts:['едем','ездим','поедем','приедем'], ans:0,
+      exp:'«Ехать» — đang trên đường đi, tiếp diễn, một hướng. «Ездим» = thói quen lặp lại.' },
+    { type:'choose', q:'Скорая помощь ___ на вызов.',
+      opts:['едет','ездит','поедет','приедет'], ans:0,
+      exp:'«Ехать» — đang đến hiện trường ngay lúc này, một chiều cụ thể.' },
+    { type:'choose', q:'Вы ___ в Москву впервые? — Да, впервые.',
+      opts:['едете','ездите','поедете','приедете'], ans:0,
+      exp:'«Ехать» — đang trên đường đến Matxcơva lần này (1 chiều). «Ездили» = đã từng đến.' },
+    { type:'choose', q:'Сколько времени ты ___ до офиса?',
+      opts:['едешь','ездишь','поедешь','приедешь'], ans:1,
+      exp:'«Ездить» — hỏi về thói quen/quãng đường thường ngày. «Едешь» chỉ chuyến đi đang diễn ra.' },
+    { type:'choose', q:'Машина не ___. Наверное, аккумулятор сел.',
+      opts:['едет','ездит','поедет','уедет'], ans:0,
+      exp:'«Ехать» — xe không chạy (không khởi động được ngay lúc này). Trạng thái máy móc.' },
+    { type:'choose', q:'Он никогда не ___ за границу до этой поездки.',
+      opts:['ездил','ехал','поехал','уехал'], ans:0,
+      exp:'«Никогда не ездил» — chưa bao giờ đi (kinh nghiệm). «Ехал» chỉ đang đi tại một thời điểm.' },
+    { type:'choose', q:'Я ___ на работу, когда вдруг увидел аварию.',
+      opts:['ехал','ездил','поехал','приехал'], ans:0,
+      exp:'«Ехал» — đang đi (quá khứ tiếp diễn, bối cảnh) khi có sự kiện khác xảy ra.' },
+    { type:'choose', q:'Завтра я ___ к родителям на весь день.',
+      opts:['еду','езжу','поеду','уеду'], ans:2,
+      exp:'«Поеду» (СВ) — kế hoạch trong tương lai, một lần cụ thể. «Еду» cũng có thể, nhưng «поеду» rõ hơn.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 10: лететь / летать — phân biệt sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Листья ___ с деревьев — осень пришла.',
+      opts:['летят','летают','полетели','прилетели'], ans:0,
+      exp:'«Лететь» — đang rơi/bay lúc quan sát, một hướng. «Летают» = bay qua lại thường xuyên.' },
+    { type:'choose', q:'Пчёлы ___ с цветка на цветок.',
+      opts:['летят','летают','полетели','перелетели'], ans:1,
+      exp:'«Летать» — bay từ chỗ này sang chỗ kia, nhiều chiều, không theo một hướng cố định.' },
+    { type:'choose', q:'Мы ___ через Дубай с пересадкой.',
+      opts:['летим','летаем','полетим','прилетим'], ans:0,
+      exp:'«Лететь» — đang bay chuyến này, một chiều, hành trình cụ thể (qua Dubai).' },
+    { type:'choose', q:'В детстве я мечтал ___ как птица.',
+      opts:['лететь','летать','полететь','прилететь'], ans:1,
+      exp:'«Летать» — bay nói chung (kỹ năng/khả năng). «Лететь» là đang bay cụ thể.' },
+    { type:'choose', q:'Ракета ___ к Луне уже трое суток.',
+      opts:['летит','летает','полетела','прилетела'], ans:0,
+      exp:'«Лететь» — đang bay liên tục về một hướng. «Летает» dùng cho việc bay đi bay lại.' },
+    { type:'choose', q:'— Ты когда-нибудь ___ на вертолёте? — Нет, никогда.',
+      opts:['летел','летал','полетел','прилетел'], ans:1,
+      exp:'«Летал» — kinh nghiệm trong quá khứ (bao giờ chưa). «Летел» chỉ đang bay lúc đó.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 11: бежать / бегать — phân biệt sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Кто-то ___ за мной! Я слышу шаги.',
+      opts:['бежит','бегает','побежит','прибежит'], ans:0,
+      exp:'«Бежать» — đang chạy theo một hướng (đuổi theo), ngay lúc này.' },
+    { type:'choose', q:'Собака ___ по двору и лает.',
+      opts:['бежит','бегает','побежала','прибежала'], ans:1,
+      exp:'«Бегать» — chạy qua lại trong sân, nhiều chiều, không theo hướng cụ thể.' },
+    { type:'choose', q:'Я ___ марафон каждый год.',
+      opts:['бегу','бегаю','побегу','прибегаю'], ans:1,
+      exp:'«Бегать» — thói quen hàng năm. «Бегу» = đang chạy ngay lúc này.' },
+    { type:'choose', q:'Увидев пожар, все ___ на улицу.',
+      opts:['бежали','бегали','побежали','прибежали'], ans:2,
+      exp:'«Побежали» (СВ) — bắt đầu chạy (phản ứng tức thì). «Бежали» = đang chạy trên đường.' },
+    { type:'choose', q:'Дети ___ по всему парку, их не поймать.',
+      opts:['бегут','бегают','побегут','разбегутся'], ans:1,
+      exp:'«Бегать» — chạy khắp nơi trong công viên, nhiều chiều, không theo hướng cố định.' },
+    { type:'choose', q:'Он ___ из больницы ночью.',
+      opts:['сбежал','убежал','добежал','перебежал'], ans:1,
+      exp:'«Убежать» (у-) — bỏ trốn, chạy đi. «Сбежать» cũng đúng nhưng có nghĩa "trốn thoát" mạnh hơn.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 12: плыть / плавать — phân biệt sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Рыба ___ против течения.',
+      opts:['плывёт','плавает','поплыла','приплыла'], ans:0,
+      exp:'«Плыть» — đang bơi theo một hướng cụ thể (ngược dòng). «Плавать» = bơi lặp lại/kỹ năng.' },
+    { type:'choose', q:'В этой реке ___ крокодилы — будь осторожен!',
+      opts:['плывут','плавают','поплыли','приплыли'], ans:1,
+      exp:'«Плавать» — sống và bơi trong môi trường đó (thường xuyên). «Плывут» = đang bơi ngay lúc đó.' },
+    { type:'choose', q:'Я не умею ___. Меня никто не учил.',
+      opts:['плыть','плавать','поплыть','приплыть'], ans:1,
+      exp:'«Плавать» — kỹ năng (biết bơi/không biết bơi). «Плыть» chỉ hành động đang diễn ra.' },
+    { type:'choose', q:'Облака медленно ___ по небу.',
+      opts:['плывут','плавают','поплыли','проплыли'], ans:0,
+      exp:'«Плыть» — đang trôi theo một hướng, nghĩa bóng (mây trôi). «Проплыли» = đã trôi qua rồi.' },
+    { type:'choose', q:'Наш корабль ___ из Владивостока в Японию 2 дня.',
+      opts:['плыл','плавал','поплыл','приплыл'], ans:0,
+      exp:'«Плыл» — đang trên đường đi (quá khứ tiếp diễn, một hướng). «Поплыл» = bắt đầu đi.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 13: нести/носить & везти/возить — mang/chở
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Официант ___ нам суп. Сейчас принесёт.',
+      opts:['несёт','носит','принесёт','занесёт'], ans:0,
+      exp:'«Нести» — đang mang (bằng tay, đi bộ) về phía chúng ta, một chiều cụ thể.' },
+    { type:'choose', q:'Она всегда ___ с собой большую сумку.',
+      opts:['несёт','носит','принесла','занесла'], ans:1,
+      exp:'«Носить» — thói quen (luôn mang theo). «Несёт» = đang mang ngay lúc này.' },
+    { type:'choose', q:'Водитель ___ продукты в магазин каждое утро.',
+      opts:['везёт','возит','привезёт','завезёт'], ans:1,
+      exp:'«Возить» — chở bằng phương tiện, thói quen hàng ngày. «Везёт» = đang chở ngay lúc này.' },
+    { type:'choose', q:'Грузовик ___ кирпичи на стройку.',
+      opts:['везёт','возит','привезёт','отвезёт'], ans:0,
+      exp:'«Везти» — đang chở (bằng xe), một chiều cụ thể. «Возит» = thói quen.' },
+    { type:'choose', q:'Мама ___ детей в школу на машине.',
+      opts:['везёт','возит','привезёт','отвезёт'], ans:1,
+      exp:'«Возить» — đưa (bằng xe) thường xuyên/thói quen. «Везёт» = đang đưa ngay lúc này.' },
+    { type:'choose', q:'Ветер ___ листья по дороге.',
+      opts:['несёт','носит','принёс','занёс'], ans:0,
+      exp:'«Нести» (bị động gió thổi) — gió đang thổi lá theo một hướng. Nghĩa bóng.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 14: вести/водить — dẫn/lái
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Гид ___ туристов по музею.',
+      opts:['ведёт','водит','поведёт','приведёт'], ans:0,
+      exp:'«Вести» — đang dẫn (ngay lúc này), một chiều cụ thể qua bảo tàng.' },
+    { type:'choose', q:'Он ___ машину уже 20 лет.',
+      opts:['ведёт','водит','поведёт','привёл'], ans:1,
+      exp:'«Водить» — lái xe (kỹ năng / thói quen lâu dài). «Ведёт» = đang lái ngay lúc này.' },
+    { type:'choose', q:'Слепого ___ собака-поводырь.',
+      opts:['ведёт','водит','поведёт','приведёт'], ans:0,
+      exp:'«Вести» — đang dẫn đường (một chiều, ngay lúc này). Chó dẫn đường dắt người mù.' },
+    { type:'choose', q:'Мама ___ детей в зоопарк каждое лето.',
+      opts:['ведёт','водит','поведёт','приводит'], ans:1,
+      exp:'«Водить» — thói quen đưa đi hàng năm. «Ведёт» = đang đưa ngay lúc này.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 15: tiền tố ПРИ- và У- chuyên sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Он ___ на работу в 9 утра каждый день.',
+      opts:['приходит','приезжает','уходит','уезжает'], ans:0,
+      exp:'«Приходить» — đến nơi (đi bộ), thói quen. «Приезжать» = đến bằng phương tiện.' },
+    { type:'choose', q:'Поезд ___ на перрон 3.',
+      opts:['приходит','приезжает','прибывает','прилетает'], ans:2,
+      exp:'«Прибывать» — (lịch sự/chính thức) tàu đến ga. «Приходить/приезжать» cũng dùng được.' },
+    { type:'choose', q:'Он навсегда ___ из страны.',
+      opts:['ушёл','уехал','вышел','уплыл'], ans:1,
+      exp:'«Уехать» — rời đi bằng phương tiện, vĩnh viễn. «Ушёл» = đi bộ ra đi (ít phù hợp hơn với "из страны").' },
+    { type:'choose', q:'Директор ___ из кабинета и попросил всех подождать.',
+      opts:['вышел','ушёл','уехал','выехал'], ans:0,
+      exp:'«Выйти» — ra ngoài (từ không gian kín — кабинет). «Уйти» = rời đi hẳn.' },
+    { type:'choose', q:'Самолёт ___ из Москвы в 7 утра.',
+      opts:['улетел','вылетел','полетел','отлетел'], ans:1,
+      exp:'«Вылететь» — cất cánh từ (вы- = ra ngoài ra). «Улетел» = đã bay đi rồi. Cả hai đúng nhưng «вылетел» nhấn mạnh điểm xuất phát.' },
+    { type:'choose', q:'Ребёнок ___ из рук и упал.',
+      opts:['убежал','выбежал','убрался','выскользнул'], ans:3,
+      exp:'«Выскользнул» — trượt khỏi tay. Đây là động từ chuyển động nghĩa bóng.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 16: tiền tố ВЫ-, В(О)-, ЗА- chuyên sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'___ из машины и заходи в дом!',
+      opts:['Выйди','Войди','Уйди','Зайди'], ans:0,
+      exp:'«Выйти» — ra ngoài (từ trong xe ra). «Войди» = vào bên trong.' },
+    { type:'choose', q:'Можно к вам ___?',
+      opts:['войти','выйти','зайти','уйти'], ans:0,
+      exp:'«Войти» — bước vào (phòng/nhà người khác). «Зайти» cũng đúng (ghé vào).' },
+    { type:'choose', q:'Я хотел ___ к тебе по дороге домой.',
+      opts:['зайти','войти','выйти','уйти'], ans:0,
+      exp:'«Зайти» (за-) — ghé qua, singgah. Khác với «войти» là bước vào hẳn.' },
+    { type:'choose', q:'Он ___ в магазин, купил хлеб и вышел.',
+      opts:['вошёл','зашёл','ушёл','вышел'], ans:1,
+      exp:'«Зайти» — ghé vào (nhanh). «Войти» có thể dùng nhưng «зашёл» tự nhiên hơn cho việc ghé mua đồ.' },
+    { type:'choose', q:'Солнце ___ за тучу.',
+      opts:['зашло','вошло','ушло','выше'], ans:0,
+      exp:'«Зайти» (за-) — đi vào phía sau. Мặт trời lặn sau đám mây. Nghĩa bóng thường gặp.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 17: tiền tố ПРО-, ПЕРЕ-, ДО-, ОТ-, НА- chuyên sâu
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Мы ___ мимо парка, но не останавливались.',
+      opts:['прошли','перешли','дошли','зашли'], ans:0,
+      exp:'«Пройти мимо» — đi qua (không dừng lại). Пере- = sang bên kia, до- = đến đích.' },
+    { type:'choose', q:'Осторожно! ___ дорогу только на зелёный свет.',
+      opts:['Переходи','Проходи','Доходи','Уходи'], ans:0,
+      exp:'«Перейти дорогу» — sang đường (qua bên kia). Пере- = qua/sang.' },
+    { type:'choose', q:'Мы наконец ___ до вершины горы!',
+      opts:['дошли','прошли','перешли','вошли'], ans:0,
+      exp:'«Дойти до» — đến được đích sau quá trình đi. До- = đến nơi đích.' },
+    { type:'choose', q:'Автобус ___ от нашей остановки на 200 метров.',
+      opts:['отъехал','уехал','выехал','доехал'], ans:0,
+      exp:'«Отъехать» (от-) — dời đi một chút, rời trạm dừng. «Уехал» = đi mất hẳn.' },
+    { type:'choose', q:'Корабль ___ на скалу в шторм.',
+      opts:['наплыл','наехал','наткнулся','приплыл'], ans:0,
+      exp:'«Наплыть на» — bơi/trôi va vào. На- = di chuyển va vào cái gì đó.' },
+    { type:'choose', q:'Мы ___ 500 километров без остановки.',
+      opts:['проехали','переехали','доехали','отъехали'], ans:0,
+      exp:'«Проехать» (про-) — đã đi qua/đã di chuyển được (500 km). Про- = xuyên qua/đi hết.' },
+    { type:'choose', q:'Семья ___ в новый район.',
+      opts:['переехала','приехала','доехала','уехала'], ans:0,
+      exp:'«Переехать» — chuyển nhà/chuyển chỗ ở. Пере- = chuyển sang chỗ khác.' },
+    { type:'choose', q:'Я ___ от работы — так устал.',
+      opts:['отошёл','ушёл','вышел','зашёл'], ans:0,
+      exp:'«Отойти от» — rời ra khỏi (một chút, không xa). «Отошёл от работы» = rời bàn làm việc.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 18: С-, РАЗ-, ВЗ-, ПОД-
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Толпа ___ после концерта.',
+      opts:['разошлась','ушла','вышла','прошла'], ans:0,
+      exp:'«Разойтись» (раз-) — mọi người tản đi các hướng. Раз- = phân tán.' },
+    { type:'choose', q:'Такси ___ к подъезду.',
+      opts:['подъехало','приехало','заехало','доехало'], ans:0,
+      exp:'«Подъехать» (под-) — đến gần, dừng trước cửa. «Приехать» cũng đúng nhưng «подъехало к» = sát vào.' },
+    { type:'choose', q:'Лифт ___ на наш этаж.',
+      opts:['поднялся','пришёл','приехал','взлетел'], ans:0,
+      exp:'«Подняться» — đi lên (thang máy lên tầng). Động từ chuyển động chiều dọc.' },
+    { type:'choose', q:'Самолёт начал ___ над взлётной полосой.',
+      opts:['взлетать','улетать','прилетать','перелетать'], ans:0,
+      exp:'«Взлетать» (взлететь) — cất cánh. ВЗ- = lên cao.' },
+    { type:'choose', q:'Лодка медленно ___ к берегу.',
+      opts:['подплыла','приплыла','доплыла','проплыла'], ans:0,
+      exp:'«Подплыть к» — bơi/trôi lại gần. Под- = lại gần.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 19: dịch từ tiếng Việt (nâng cao)
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'«Chó đang chạy về phía tôi.» →',
+      opts:['Собака бегает ко мне.','Собака бежит ко мне.','Собака побежала ко мне.','Собака прибежала ко мне.'], ans:1,
+      exp:'«Бежать» — đang chạy về phía (một chiều cụ thể, ngay lúc này). «Бегает» = chạy loanh quanh.' },
+    { type:'choose', q:'«Tôi chưa bao giờ bơi ở biển.» →',
+      opts:['Я никогда не плыл в море.','Я никогда не плавал в море.','Я никогда не поплыл в море.','Я никогда не приплыл в море.'], ans:1,
+      exp:'«Плавать» — kinh nghiệm (bơi ở biển bao giờ chưa). «Плыл» = đang bơi tại một thời điểm.' },
+    { type:'choose', q:'«Hàng xóm chuyển đến đây năm ngoái.» →',
+      opts:['Соседи пришли сюда в прошлом году.','Соседи приехали сюда в прошлом году.','Соседи переехали сюда в прошлом году.','Соседи подошли сюда в прошлом году.'], ans:2,
+      exp:'«Переехать» — chuyển đến (chuyển chỗ ở). «Приехать» = đến thăm.' },
+    { type:'choose', q:'«Anh ấy đang chở hàng bằng xe tải.» →',
+      opts:['Он несёт товары на грузовике.','Он везёт товары на грузовике.','Он возит товары на грузовике.','Он тащит товары на грузовике.'], ans:1,
+      exp:'«Везти» — đang chở bằng phương tiện, một chiều. «Возит» = thói quen chở.' },
+    { type:'choose', q:'«Mẹ thường đưa tôi đến trường.» →',
+      opts:['Мама ведёт меня в школу.','Мама водит меня в школу.','Мама приводит меня в школу.','Мама приводила меня в школу.'], ans:1,
+      exp:'«Водить» — thường xuyên dẫn đi (thói quen). «Ведёт» = đang dẫn ngay lúc này.' },
+    { type:'choose', q:'«Tàu đã cập bến.» →',
+      opts:['Корабль поплыл в порт.','Корабль плыл в порт.','Корабль приплыл в порт.','Корабль проплыл порт.'], ans:2,
+      exp:'«Приплыть» (при-) — tàu đến bến (đã hoàn thành chuyến đi). При- = đến nơi.' },
+    { type:'choose', q:'«Cô ấy chạy ra ngoài và hét lên.» →',
+      opts:['Она вышла и закричала.','Она выбежала и закричала.','Она убежала и закричала.','Она прибежала и закричала.'], ans:1,
+      exp:'«Выбежать» — chạy ra ngoài (вы- = ra ngoài + бежать). «Вышла» = đi ra, không có yếu tố chạy.' },
+    { type:'choose', q:'«Tôi mang sách đến trường mỗi ngày.» →',
+      opts:['Я несу книги в школу каждый день.','Я ношу книги в школу каждый день.','Я принёс книги в школу каждый день.','Я принесу книги в школу каждый день.'], ans:1,
+      exp:'«Носить» — thói quen hàng ngày mang theo. «Несу» = đang mang ngay lúc này.' },
+    { type:'choose', q:'«Gió thổi mây bay.» →',
+      opts:['Ветер несёт облака.','Ветер носит облака.','Ветер везёт облака.','Ветер возит облака.'], ans:0,
+      exp:'«Нести» — mang theo (một chiều, gió đang thổi mây). «Носить» = thói quen, «везти» = chở bằng xe.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 20: phân biệt tinh tế — lỗi hay gặp nâng cao
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'[LỖI] Вчера я ___ в магазин. (đã đi và đã về)',
+      opts:['шёл','ходил','иду','хожу'], ans:1,
+      exp:'«Ходил» — đi và về trong ngày hôm qua (roundtrip). «Шёл» = đang trên đường đi (chưa về).' },
+    { type:'choose', q:'[LỖI] Завтра мы ___ на экскурсию. (đã lên kế hoạch)',
+      opts:['идём','ходим','пойдём','приходим'], ans:2,
+      exp:'«Пойдём» (СВ) — kế hoạch tương lai. «Идём» cũng được (lịch đã định) nhưng «пойдём» rõ hơn.' },
+    { type:'choose', q:'[LỖI] Он ___ в Москву и вернулся через неделю.',
+      opts:['ехал','ездил','поехал','приехал'], ans:1,
+      exp:'«Ездил» — đã đi và đã về (roundtrip hoàn chỉnh). «Поехал» chỉ nói đến lúc bắt đầu đi.' },
+    { type:'choose', q:'[LỖI] Я ___ домой пешком. Мне нравилось. (thói quen cũ)',
+      opts:['шёл','ходил','иду','хожу'], ans:1,
+      exp:'«Ходил» — thói quen cũ trong quá khứ. «Шёл» chỉ đang đi tại một thời điểm.' },
+    { type:'choose', q:'[LỖI] Куда ты ___? — Никуда, просто гуляю.',
+      opts:['идёшь','ходишь','пойдёшь','уходишь'], ans:1,
+      exp:'Trả lời «никуда» → không có hướng cụ thể → «ходишь» (đi loanh quanh). «Идёшь» = có hướng.' },
+    { type:'choose', q:'[LỖI] Лодка ___ по озеру без мотора.',
+      opts:['ездит','едет','плывёт','плавает'], ans:2,
+      exp:'Thuyền trôi trên hồ → «плыть» (di chuyển trên mặt nước, một chiều). «Плавает» = trôi loanh quanh.' },
+    { type:'choose', q:'[LỖI] Врач ___ из палаты в палату весь день.',
+      opts:['шёл','ходил','идёт','пойдёт'], ans:1,
+      exp:'«Ходил» — đi từ phòng này sang phòng khác suốt cả ngày (nhiều chiều). «Шёл» = đang đi một chiều.' },
+    { type:'choose', q:'[LỖI] Он ___ в Европу три раза.',
+      opts:['ехал','ездил','едет','поехал'], ans:1,
+      exp:'Số lần (три раза) → «ездил» (nhiều chiều, kinh nghiệm lặp lại). «Ехал» không dùng cho số lần.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 21: ngữ cảnh đặc biệt & thành ngữ
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Как ___ дела? (thành ngữ)',
+      opts:['идут','ходят','едут','плывут'], ans:0,
+      exp:'«Как идут дела?» — công việc diễn ra thế nào? Thành ngữ cố định với «идти».' },
+    { type:'choose', q:'Время ___.',
+      opts:['идёт','ходит','летит','едет'], ans:2,
+      exp:'«Время летит» — thời gian trôi nhanh. Thành ngữ phổ biến. «Идёт» cũng đúng nhưng «летит» hay hơn.' },
+    { type:'choose', q:'У него ___ успехи в учёбе. (tiến bộ đang diễn ra)',
+      opts:['идут','ходят','летят','едут'], ans:0,
+      exp:'«Идут успехи» — sự tiến bộ đang diễn ra. Thành ngữ với «идти» cho các quá trình.' },
+    { type:'choose', q:'Я ___ с ума от этой музыки! (thành ngữ)',
+      opts:['схожу','ухожу','выхожу','перехожу'], ans:0,
+      exp:'«Сходить с ума» — phát điên lên vì (thích quá/chán quá). Thành ngữ cố định.' },
+    { type:'choose', q:'Это не ___ ни в какие ворота! (thành ngữ)',
+      opts:['идёт','ходит','едет','летит'], ans:0,
+      exp:'«Ни в какие ворота не идёт» — vô lý, không thể chấp nhận được. Thành ngữ cố định.' },
+    { type:'choose', q:'Слухи ___ по городу.',
+      opts:['ходят','идут','ездят','летят'], ans:0,
+      exp:'«Ходят слухи» — tin đồn lan truyền. «Ходить» dùng cho tin đồn lan đi lan lại.' },
+    { type:'choose', q:'Студент ___ по специальности инженера.',
+      opts:['идёт','идёт','учится','ходит'], ans:2,
+      exp:'«Идти по специальности» ít dùng hơn. Thông thường dùng «учиться на инженера». Câu đúng là «учится».' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 22: ngữ cảnh B2 — học thuật & văn học
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Реформы ___ медленно, несмотря на усилия правительства.',
+      opts:['идут','ходят','едут','летят'], ans:0,
+      exp:'«Идти» cho các quá trình/tiến trình: реформы идут (cải cách đang diễn ra). Nghĩa bóng.' },
+    { type:'choose', q:'Переговоры зашли в тупик. (Nghĩa đúng:)',
+      opts:['Đàm phán đã bước vào ngõ cụt.','Đàm phán đã đến nơi.','Đàm phán bắt đầu tốt.','Đàm phán kết thúc.'], ans:0,
+      exp:'«Зайти в тупик» — đi vào bế tắc. За- + в тупик = bước vào (ngõ cụt). Thành ngữ quan trọng.' },
+    { type:'choose', q:'Он ___ в политику после армии.',
+      opts:['пришёл','приехал','прибежал','прилетел'], ans:0,
+      exp:'«Прийти в политику» — bước vào chính trường. Nghĩa bóng, «прийти» là chuẩn cho "gia nhập lĩnh vực".' },
+    { type:'choose', q:'Идеи Маркса ___ через всю его жизнь.',
+      opts:['прошли','прошли','пришли','ушли'], ans:0,
+      exp:'«Пройти через» — đi xuyên suốt. Ý tưởng xuyên suốt cuộc đời ông. Про- = xuyên qua.' },
+    { type:'choose', q:'Компания ___ через кризис и выжила.',
+      opts:['прошла','пришла','перешла','вошла'], ans:0,
+      exp:'«Пройти через кризис» — vượt qua khủng hoảng. «Прошла» = đã vượt qua.' },
+    { type:'choose', q:'После смерти короля власть ___ к его сыну.',
+      opts:['перешла','пришла','ушла','вышла'], ans:0,
+      exp:'«Перейти к» — chuyển giao (quyền lực). «Власть перешла» = quyền lực chuyển sang. Nghĩa bóng.' },
+    { type:'choose', q:'Граница ___ по реке Амур.',
+      opts:['проходит','ходит','идёт','переходит'], ans:0,
+      exp:'«Проходить» — kéo dài qua (biên giới chạy dọc theo sông). «Проходить по» = đi dọc theo.' },
+    { type:'choose', q:'В голове у него ___ разные мысли.',
+      opts:['ходили','шли','ездили','летали'], ans:0,
+      exp:'«Ходить в голове» — những suy nghĩ cứ lởn vởn trong đầu. «Ходить» = đi lại, loanh quanh (nhiều chiều).' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 23: câu hỏi về nghĩa & phân loại
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'«Идти» và «ходить» — điểm khác biệt cơ bản nhất là gì?',
+      opts:['1 chiều vs nhiều chiều','Hoàn thành vs không hoàn thành','Đi bộ vs đi xe','Nhanh vs chậm'], ans:0,
+      exp:'Cặp НСВ động từ chuyển động: «идти» (1 chiều, cụ thể) vs «ходить» (nhiều chiều, lặp lại/thói quen).' },
+    { type:'choose', q:'Nêu ví dụ: «Он хорошо ___» — thể hiện kỹ năng?',
+      opts:['идёт','ходит','идти','ходить'], ans:3,
+      exp:'«Он хорошо ходит» (đi tốt/không bị ngã) hoặc động từ инфинитив. «Ходить» = kỹ năng đi lại.' },
+    { type:'choose', q:'Tiền tố nào thể hiện ý nghĩa "SANG/QUA bên kia"?',
+      opts:['При-','У-','Пере-','До-'], ans:2,
+      exp:'Пере- = sang/qua bên kia. Перейти улицу, переехать реку, перелететь океан.' },
+    { type:'choose', q:'«Доехать до» — tiền tố ДО- có nghĩa gì?',
+      opts:['Rời đi','Đến được đích','Ra ngoài','Ghé vào'], ans:1,
+      exp:'До- = đến được đích sau quá trình di chuyển. Дойти до, доехать до, добежать до...' },
+    { type:'choose', q:'Chọn câu đúng diễn đạt "Tôi đã bơi về bờ":',
+      opts:['Я плавал к берегу.','Я доплыл до берега.','Я приплывал к берегу.','Я плыл берег.'], ans:1,
+      exp:'«Доплыть до берега» — bơi đến được bờ (đến đích). До- = đến nơi đích.' },
+    { type:'choose', q:'«Нести — носить» tương ứng với cặp nào?',
+      opts:['Идти — ходить','Ехать — ездить','Лететь — летать','Бежать — бегать'], ans:0,
+      exp:'Нести/носить (mang tay, 1/nhiều chiều) cùng mô hình với идти/ходить (đi bộ, 1/nhiều chiều).' },
+    { type:'choose', q:'Tiền tố В- (войти) diễn đạt ý nghĩa gì?',
+      opts:['Ra ngoài','Đi vào bên trong','Đến nơi','Rời đi'], ans:1,
+      exp:'В- (во-) = đi vào bên trong một không gian. Войти, въехать, влететь, войти в доверие.' },
+
+    // ══════════════════════════════════════════════════════
+    // NHÓM 24: bài tập hỗn hợp tổng hợp
+    // ══════════════════════════════════════════════════════
+    { type:'choose', q:'Дети ___ в море каждый день на курорте.',
+      opts:['плыли','плавали','поплыли','приплыли'], ans:1,
+      exp:'«Плавали» — thói quen hàng ngày trong kỳ nghỉ (nhiều chiều). «Плыли» = đang bơi theo hướng.' },
+    { type:'choose', q:'Он ___ в аэропорт на такси и успел на рейс.',
+      opts:['ехал','ездил','поехал','приехал'], ans:2,
+      exp:'«Поехал» (СВ) — đã đi (một lần, kết quả = kịp chuyến bay). «Приехал» = đã đến nơi.' },
+    { type:'choose', q:'Мы ___ из аэропорта уже полтора часа.',
+      opts:['едем','ездим','поедем','приедем'], ans:0,
+      exp:'«Едем» — đang trên xe, hành trình đang diễn ra. «Ездим» = thói quen.' },
+    { type:'choose', q:'Бегун ___ к финишной черте изо всех сил.',
+      opts:['бежит','бегает','побежал','добежал'], ans:0,
+      exp:'«Бежит» — đang chạy về phía vạch đích, một chiều, ngay lúc này.' },
+    { type:'choose', q:'Лекция ___ уже два часа.',
+      opts:['идёт','ходит','едет','летит'], ans:0,
+      exp:'«Лекция идёт» — bài giảng đang diễn ra, kéo dài. «Идти» cho sự kiện/quá trình.' },
+    { type:'choose', q:'Мы ___ по горной тропинке три часа подряд.',
+      opts:['шли','ходили','пошли','прошли'], ans:0,
+      exp:'«Шли» — đang đi liên tục theo một hướng (con đường núi). «Ходили» = đi lại qua lại.' },
+    { type:'choose', q:'Он ___ домой один через тёмный лес.',
+      opts:['шёл','ходил','пошёл','приходил'], ans:0,
+      exp:'«Шёл» — đang đi về nhà (một chiều, quá khứ tiếp diễn). «Ходил» = thói quen hoặc đi và về.' },
+    { type:'choose', q:'Ура, каникулы! Можно никуда не ___!',
+      opts:['идти','ходить','пойти','прийти'], ans:1,
+      exp:'«Никуда не ходить» — không cần đi đâu (nói chung, thói quen bị cắt). «Идти» = một hướng cụ thể.' },
+    { type:'choose', q:'Паром ___ между двумя островами.',
+      opts:['ходит','идёт','едет','плавает'], ans:0,
+      exp:'«Ходить» — phương tiện đi theo tuyến cố định. «Ходит» cho tàu, xe buýt, tàu điện theo lịch trình.' },
+    { type:'choose', q:'Давление ___ вниз — значит, будет дождь. (áp suất)',
+      opts:['идёт','падает','ходит','летит'], ans:1,
+      exp:'Áp suất "rơi xuống" — «падает» là đúng. Động từ chuyển động «идти» không dùng cho áp suất.' },
+
 ]
 };
 
 function renderMotion(){
   var exTotal = motionData.exercises.length;
-  var topH = '<div style="display:flex;gap:8px;margin-bottom:18px;">'
-    + '<button onclick="App.motionSection(&apos;theory&apos;)" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section!=='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section!=='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section!=='ex'?'#ff9f0a':'var(--com)')+';">\u{1F4D6} L\xfd thuy\u1ebft</button>'
-    + '<button onclick="App.motionSection(&apos;ex&apos;)" style="flex:1;padding:9px;border-radius:12px;font-size:12px;font-weight:700;border:1px solid '+(motionState.section==='ex'?'rgba(255,159,10,.5)':'rgba(255,255,255,.1)')+';background:'+(motionState.section==='ex'?'rgba(255,159,10,.12)':'transparent')+';color:'+(motionState.section==='ex'?'#ff9f0a':'var(--com)') +';">\u270f\ufe0f B\xe0i t\u1eadp ('+exTotal+')</button>'
+  var isTheory = motionState.section !== 'ex';
+  var svgBook = '<svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+  var svgEdit = '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>';
+  var topH = '<div class="seg-tabs">'
+    + '<button class="seg-tab'+(isTheory?' on':'')+'" onclick="App.motionSection(\'theory\')" style="'+(isTheory?'border-color:rgba(255,159,10,.55);background:rgba(255,159,10,.12);color:#ff9f0a;box-shadow:0 0 18px rgba(255,159,10,.15) inset,0 1px 0 rgba(255,255,255,.08) inset;':'')+'">' + svgBook + 'Lý thuyết</button>'
+    + '<button class="seg-tab'+(!isTheory?' on':'')+'" onclick="App.motionSection(\'ex\')" style="'+(!isTheory?'border-color:rgba(255,159,10,.55);background:rgba(255,159,10,.12);color:#ff9f0a;box-shadow:0 0 18px rgba(255,159,10,.15) inset,0 1px 0 rgba(255,255,255,.08) inset;':'')+'">' + svgEdit + 'Bài tập <span style="font-size:10px;opacity:.7;font-family:var(--mono);">('+exTotal+')</span></button>'
     + '</div>';
 
   if(motionState.section !== 'ex'){
@@ -11287,7 +11993,7 @@ function renderDailyHub(){
     h += '</div>';
 
     if(isDone)      h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>';
-    else if(isCur)  h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="'+st.color+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    else if(isCur)  h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="'+st.color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
     else if(locked) h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
 
     h += '</div>';
@@ -12098,7 +12804,7 @@ function App_rdOpenTopic(topicId){
         h += '<div style="font-size:14px;font-weight:600;color:var(--tx);">'+chLabel+'</div>';
         h += '<div style="font-size:11px;color:var(--com);">~'+s.time+' '+ t('rd.mins')+'</div>';
         h += '</div>';
-        h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
+        h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
         h += '</div>';
       });
       h += '</div>';
@@ -12116,7 +12822,7 @@ function App_rdOpenTopic(topicId){
          + '<span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;color:'+lvlColor+';background:rgba(255,255,255,0.06);font-family:var(--mono);">'+s.level+'</span>'
          + '<span style="font-size:11px;color:var(--com);">'+wordCount+' '+t('topic.words')+' · ~'+s.time+' '+t('rd.mins')+'</span>'
          + '</div></div>'
-         + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
+         + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>'
          + '</div>';
     });
   }
